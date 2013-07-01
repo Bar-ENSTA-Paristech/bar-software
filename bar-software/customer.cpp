@@ -69,15 +69,12 @@ void Customer::setBalance(float _balance)
 
 void Customer::addToBalance(float addedBalance)
 {
-    if (addedBalance > 50.0)
-        cout << "More than 50 euros were added to " << name.first << " " << name.second << "'s account." << endl;
-    balance += addedBalance;
-    checkBalance();
+   balance += addedBalance;
 }
 
 void Customer::removeToBalance(float removedBalance)
 {
-    addToBalance(-removedBalance);
+    balance += (-removedBalance);
 }
 
 bool Customer::checkBalance() const
@@ -86,4 +83,18 @@ bool Customer::checkBalance() const
         return true;
     cout << "Customer " << name.first << " " << name.second << " now has a negative balance." << endl;
     return false;
+}
+
+Customer &Customer::operator +=(int addedBalance)
+{
+    if (addedBalance > 50.0)
+        cout << "More than 50 euros were added to " << name.first << " " << name.second << "'s account." << endl;
+    balance += addedBalance;
+    checkBalance();
+    return *this;
+}
+
+Customer &Customer::operator -=(int removedBalance)
+{
+    return (*this)+=(-removedBalance);
 }

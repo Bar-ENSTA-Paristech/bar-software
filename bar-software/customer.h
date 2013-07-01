@@ -23,6 +23,8 @@ public:
     void addToBalance(float addedBalance);
     void removeToBalance(float removedBalance);
     bool checkBalance() const;
+    Customer& operator+=(int addedBalance);
+    Customer& operator-=(int removedBalance);
 
 private:
     std::pair<std::string,std::string> name;
