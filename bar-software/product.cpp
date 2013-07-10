@@ -3,6 +3,10 @@
 
 using namespace std;
 
+Product::Product()
+{
+}
+
 Product::Product(std::string _name, float _price, unsigned _stock) : name(_name), price(_price), stock(_stock)
 {
 }

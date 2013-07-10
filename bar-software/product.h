@@ -6,6 +6,7 @@
 class Product
 {
 public:
+    Product();
     Product(std::string _name, float _price, unsigned _stock);
     std::string getName() const;
     float getPrice() const;
@@ -22,6 +23,7 @@ public:
     Product& operator-=(int removedStock);
 private:
     std::string name;
+    std::string type; //based on data table, for example "Boisson", "Divers", ...
     float price;
     int stock; // Can be negative but must be unisgned at construction of object
 

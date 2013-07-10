@@ -15,11 +15,13 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     customer.cpp \
-    product.cpp
+    product.cpp \
+    cart.cpp
 
 HEADERS  += mainwindow.h \
     customer.h \
-    product.h
+    product.h \
+    cart.h
 
 FORMS    += mainwindow.ui
 
