@@ -4,10 +4,10 @@
 #include <string>
 #include <utility>
 
-
 class Customer
 {
 public:
+    Customer() = delete;
     Customer(std::string login, std::pair<std::string,std::string> name, std::string groupe = "", float balance = 0);
     Customer(std::string login, std::string firstName, std::string familyName, std::string groupe = "", float balance = 0);
     std::string getFirstName() const;
@@ -31,7 +31,7 @@ private:
     std::string login;
     std::string group;
     float balance;
-    static unsigned numberOfConsumers;
+    static unsigned numberOfCustomers;
     // Est-il nécessaire de garder un historique plutôt que de faire une requête à la volée ?
 
 };

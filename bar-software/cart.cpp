@@ -5,63 +5,56 @@ using namespace std;
 Cart::Cart()
 {
     numberOfProducts = 0;
-    products = new Product[10];
-    sizeOfCart = 10;
-    price = 0;
+    price = 0.0;
 }
-Cart::Cart(Product& product)
+Cart::Cart(Product& product) : Cart()
 {
-    Cart();
-    addProductToCart(product);
+    auto productPtr = make_shared<Product>(product);
+    addProductToCart(productPtr);
 }
 
-void Cart::addProductToCart(Product& product)
+void Cart::addProductToCart(shared_ptr<Product> product, unsigned quantity)
 {
-    // if cart is full, we get a bigger
-    if (numberOfProducts == sizeOfCart)
-    {
-        Product* tmp = new Product[numberOfProducts + 10];
-        sizeOfCart += 10;
-        //then we copy it to the new cart
-        for(int i=0 ; i < numberOfProducts ; i++)
-        {
-            tmp[i] = products[i];
-        }
-        delete products;
-        products = tmp;
-    }
-    products[0] = product; //Check if it is correct : Does it really clone the product, or just point it ?
-    numberOfProducts++;
-    price += product.getPrice();
+    // We might need to check if there is enough stock available ?
+    auto ret = products.insert(make_pair(product,quantity)); // We try to insert the product in the map
+    if (ret.second == false) // insert returns a std::pair, whose .second is false if key already existed
+        products[product] += quantity; // In which case, we just add to the quantity
+    numberOfProducts += quantity;
+    price += product->getPrice()*quantity;
+    refreshPrice();
 }
 
-void Cart::removeProductFromCart(int productNumber)
-{
-    price -= products[productNumber].getPrice();
+void Cart::removeProductFromCart(shared_ptr<Product> product, unsigned quantity)
+{ // TODO
+    /*price -= products[productNumber].getPrice();
     for(int i=productNumber ; i<sizeOfCart-1 ; i++)
     {
         products[i] = products[i+1];
     }
     numberOfProducts--;
+    refreshPrice();*/
 }
 
 void Cart::clearCart()
 {
-    price = 0;
+    price = 0.0;
     numberOfProducts = 0;
+    products.clear();
 }
 
 bool Cart::saveCart()
 {
+    // Do all needed queries
+    clearCart();
     return true;
 }
 
 void Cart::refreshPrice()
 {
     price = 0;
-    for (int i=0 ; i < numberOfProducts ; i++ )
+    for (auto product : products )
     {
-        price += products[i].getPrice();
+        price += product.first->getPrice()*product.second;
     }
 }
 
@@ -73,8 +66,4 @@ float Cart::getPrice() const
 unsigned int Cart::getNumberOfProducts() const
 {
     return numberOfProducts;
-}
-void Cart::sortProducts()
-{
-    //TODO
 }

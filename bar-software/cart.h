@@ -2,14 +2,21 @@
 #define CART_H
 
 #include "product.h"
+#include <map>
+#include <memory>
+
+struct CartMapCompare {
+  bool operator() (const std::shared_ptr<Product>& lhs, const std::shared_ptr<Product>& rhs) const
+  {return lhs->getName()<rhs->getName();}
+};
 
 class Cart
 {
 public:
     Cart();
     Cart(Product& product);
-    void addProductToCart(Product& product);
-    void removeProductFromCart(int productNumber); //begin at 0
+    void addProductToCart(std::shared_ptr<Product> product, unsigned quantity = 1);
+    void removeProductFromCart(std::shared_ptr<Product> product, unsigned quantity = 1);
     void clearCart();
     bool saveCart(); //Return True if sucessful otherwise False
     void refreshPrice();
@@ -18,7 +25,7 @@ public:
     void sortProducts();
 
 private:
-    Product* products; //table of products in the cart
+    std::map<std::shared_ptr<Product>, unsigned, CartMapCompare> products;
     unsigned int numberOfProducts;
     float price;
     unsigned int sizeOfCart; //usefull to set a bigger table for products

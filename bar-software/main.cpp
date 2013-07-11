@@ -4,7 +4,7 @@
 #include <iostream>
 #include <QApplication>
 
-unsigned Customer::numberOfConsumers = 0;
+unsigned Customer::numberOfCustomers = 0;
 
 int main(int argc, char *argv[])
 {
