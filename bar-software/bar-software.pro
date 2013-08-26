@@ -16,12 +16,18 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     customer.cpp \
     product.cpp \
-    cart.cpp
+    cart.cpp \
+    database.cpp \
+    query.cpp \
+    sqlite3.c
 
 HEADERS  += mainwindow.h \
     customer.h \
     product.h \
-    cart.h
+    cart.h \
+    database.h \
+    query.h \
+    sqlite3.h
 
 FORMS    += mainwindow.ui
 
