@@ -3,11 +3,10 @@
 #include "customer.h"
 #include <iostream>
 #include <QApplication>
-<<<<<<< HEAD
+
 #include <QDebug>
-=======
+
 #include "database.h"
->>>>>>> Ajout des classes (incomplètes) database et query
 
 unsigned Customer::numberOfCustomers = 0;
 
@@ -21,6 +20,11 @@ int main(int argc, char *argv[])
 
     database DB;
     DB.openDatabase();
+
+    Query test_q;
+    test_q.setQuery("CREATE TABLE IF NOT EXISTS Bar(test VARCHAR(40));");
+    DB.executeQuery(test_q);
+
     DB.closeDatabase();
 
     QApplication a(argc, argv);
