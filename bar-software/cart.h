@@ -4,6 +4,7 @@
 #include "product.h"
 #include <map>
 #include <memory>
+#include <iostream>
 
 struct CartMapCompare {
   bool operator() (const std::shared_ptr<Product>& lhs, const std::shared_ptr<Product>& rhs) const

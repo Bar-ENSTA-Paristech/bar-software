@@ -22,10 +22,30 @@ void Cart::addProductToCart(shared_ptr<Product> product, unsigned quantity)
     numberOfProducts += quantity;
     price += product->getPrice()*quantity;
     refreshPrice();
+    cout << "Ajout du produit " << product->getName() << "au panier : succès" << endl;
 }
 
 void Cart::removeProductFromCart(shared_ptr<Product> product, unsigned quantity)
-{ // TODO
+{
+
+    unsigned remoQuantity;
+    // We might want to check if the product is already in the cart ?
+    if(quantity < products[product]){ // If we remove less than the quantity in the cart
+        products[product] -= quantity;  // Just decrease the number of that product in the cart
+        remoQuantity = quantity;
+    }
+    else{
+        remoQuantity = products[product];
+        products.erase(products.find(product)); // If we remove more than there is in the cart, just erase the product
+        cout << "Suppresion du produit " << product->getName() << "depuis le panier : succès" << endl;
+    }
+    numberOfProducts -= remoQuantity;
+    price -= product->getPrice()*remoQuantity;
+    refreshPrice();
+
+    // TODO
+
+    // TODO
     /*price -= products[productNumber].getPrice();
     for(int i=productNumber ; i<sizeOfCart-1 ; i++)
     {

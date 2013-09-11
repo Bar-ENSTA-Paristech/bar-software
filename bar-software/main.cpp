@@ -7,6 +7,8 @@
 #include <QDebug>
 
 #include "database.h"
+#include "cart.h"
+#include "product.h"
 
 unsigned Customer::numberOfCustomers = 0;
 
@@ -17,6 +19,13 @@ int main(int argc, char *argv[])
     qDebug() << cus.getFirstName().c_str() << " " << cus.getFamilyName().c_str() << " has " << cus.getBalance() << "€ available.";
     cus.addToBalance(70);
     qDebug() << cus.getFirstName().c_str() << " " << cus.getFamilyName().c_str() << " has " << cus.getBalance() << "€ available.";
+
+    // Test cart
+    Product Duvel;
+    Cart monPanier(Duvel);
+    monPanier.removeProductFromCart( std::make_shared<Product>(Duvel) );
+    monPanier.clearCart();
+
 
     database DB;
     DB.openDatabase();
