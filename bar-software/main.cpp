@@ -1,8 +1,9 @@
-#include "mainwindow.h"
+#include "gui/mainwindow.h"
 #include <initializer_list>
 #include "customer.h"
 #include <iostream>
 #include <QApplication>
+#include <QFile>
 
 #include <QDebug>
 
@@ -37,6 +38,11 @@ int main(int argc, char *argv[])
     DB.closeDatabase();
 
     QApplication a(argc, argv);
+    /* Pas de BUG avec le .qss (css pour Qt) mais aucun effet ...*/
+    QFile css(":/qss/mainDesign.qss");
+    if(css.open(QIODevice::ReadOnly)) {
+       a.setStyleSheet(css.readAll());
+    }
     MainWindow w;
     w.show();
     

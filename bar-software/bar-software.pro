@@ -13,22 +13,29 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp \
+        gui/mainwindow.cpp \
     customer.cpp \
     product.cpp \
     cart.cpp \
     database.cpp \
     query.cpp \
-    sqlite3.c
+    sqlite3.c \
+    gui/leftpart.cpp \
+    gui/rightpart.cpp
 
-HEADERS  += mainwindow.h \
+HEADERS  += gui/mainwindow.h \
     customer.h \
     product.h \
     cart.h \
     database.h \
     query.h \
-    sqlite3.h
+    sqlite3.h \
+    gui/leftpart.h \
+    gui/rightpart.h
 
-FORMS    += mainwindow.ui
+FORMS    +=
 
 QMAKE_CXXFLAGS += -std=c++0x
+
+OTHER_FILES += \
+    gui/mainDesign.qss
