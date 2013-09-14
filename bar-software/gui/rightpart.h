@@ -2,6 +2,9 @@
 #define RIGHTPART_H
 
 #include <QFrame>
+#include <QGridLayout>
+#include "cartdisplay.h"
+#include "productschoices.h"
 
 class RightPart : public QFrame
 {

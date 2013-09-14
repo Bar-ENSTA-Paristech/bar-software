@@ -21,7 +21,12 @@ SOURCES += main.cpp\
     query.cpp \
     sqlite3.c \
     gui/leftpart.cpp \
-    gui/rightpart.cpp
+    gui/rightpart.cpp \
+    gui/searchresults.cpp \
+    gui/history.cpp \
+    gui/cartdisplay.cpp \
+    gui/productschoices.cpp \
+    gui/customerpanel.cpp
 
 HEADERS  += gui/mainwindow.h \
     customer.h \
@@ -31,7 +36,12 @@ HEADERS  += gui/mainwindow.h \
     query.h \
     sqlite3.h \
     gui/leftpart.h \
-    gui/rightpart.h
+    gui/rightpart.h \
+    gui/searchresults.h \
+    gui/history.h \
+    gui/cartdisplay.h \
+    gui/productschoices.h \
+    gui/customerpanel.h
 
 FORMS    +=
 
