@@ -14,8 +14,16 @@ MainWindow::MainWindow()
     centralWidget->setLayout(mainWindowLayout);
 
     // Adding content of the top menu (searcbar and configuration buttons)
-    QLineEdit *searchBar = new QLineEdit("search", menu);
-    searchBar->setMaximumSize(150, 20);
+    QFrame *searchBar = new QFrame(menu);
+    QLabel *searchIcon = new QLabel(searchBar);
+    searchIcon->setPixmap(QPixmap(GLOBAL_PATH + "gui/pictures/search.png"));
+    QLineEdit *searchText = new QLineEdit("", searchBar);
+    searchBar->setObjectName("searchBar");
+    //searchBar->setMaximumSize(150, 20);
+    QHBoxLayout *searchBarLayout = new QHBoxLayout(searchBar);
+    searchBarLayout->addWidget(searchIcon);
+    searchBarLayout->addWidget(searchText);
+    searchBar->setLayout(searchBarLayout);
 
     // Adding the left and right frames
     RightPart *rightPart = new RightPart(mainPart);

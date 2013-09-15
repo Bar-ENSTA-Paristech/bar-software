@@ -9,7 +9,7 @@ class CartDisplay : public QFrame
     Q_OBJECT
 public:
     explicit CartDisplay(QWidget *parent = 0);
-    void setCart(/*voir ce que l'on envoie. Un vector me semble pas mal*/);
+    void setCart(/*voir ce que l'on envoie. Un vector me semble pas mal. Ou bien une sorte de dictionnaire*/);
 
 private:
     Cart* cart;

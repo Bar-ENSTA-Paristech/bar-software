@@ -48,4 +48,4 @@ FORMS    +=
 QMAKE_CXXFLAGS += -std=c++0x
 
 OTHER_FILES += \
-    gui/mainDesign.qss
+    gui/mainDesign.css
