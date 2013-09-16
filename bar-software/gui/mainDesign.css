@@ -9,3 +9,28 @@ QLineEdit{
     background-color: white;
     padding: 0px;
 }
+
+#menu{
+    background-color: red;
+}
+
+#leftPart{
+    background-color: blue;
+}
+
+#rightPart{
+    background-color: purple;
+}
+
+#searchResults{
+    background-color: black;
+}
+
+/*#searchResultsTable{
+    color: yellow;
+}*/
+
+/*QMainWindow{
+    padding: 0px;
+    background-color: green;
+}*/

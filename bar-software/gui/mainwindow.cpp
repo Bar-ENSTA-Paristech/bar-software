@@ -1,16 +1,23 @@
 #include "mainwindow.h"
+#include <QDebug>
 
 MainWindow::MainWindow()
 {
     QWidget *centralWidget = new QWidget;
     this->setCentralWidget(centralWidget);
     this->setGeometry(20, 40, 1000, 800);
+    this->setWindowTitle("RAB WareSoft");
+    this->setMinimumSize(800, 600);
 
     QGridLayout *mainWindowLayout = new QGridLayout(centralWidget);
     QFrame *menu = new QFrame(centralWidget);
+    menu->setObjectName("menu");
     QFrame *mainPart = new QFrame(centralWidget);
     mainWindowLayout->addWidget(menu, 0, 0);
     mainWindowLayout->addWidget(mainPart, 1, 0);
+    mainWindowLayout->setRowStretch(0, 1);
+    mainWindowLayout->setRowStretch(1, 20);
+    qDebug() << mainWindowLayout->rowStretch(0);
     centralWidget->setLayout(mainWindowLayout);
 
     // Adding content of the top menu (searcbar and configuration buttons)

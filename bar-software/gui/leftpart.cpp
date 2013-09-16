@@ -3,6 +3,7 @@
 LeftPart::LeftPart(QWidget* parent)
 {
     setParent(parent);
+    this->setObjectName("leftPart");
 
     SearchResults* searchResults = new SearchResults(this);
     History* history = new History(this);
@@ -13,7 +14,7 @@ LeftPart::LeftPart(QWidget* parent)
     layout->addWidget(searchResults, 0, 0, 1, 10);
     layout->addWidget(categories, 1, 0);
     layout->addWidget(customerPanel, 1, 1);
-    layout->addWidget(history, 2, 1, 1, 10);
+    layout->addWidget(history, 2, 0, 1, 10);
 
     this->setLayout(layout);
 }

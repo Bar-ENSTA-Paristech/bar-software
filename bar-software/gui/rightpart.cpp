@@ -3,6 +3,7 @@
 RightPart::RightPart(QWidget* parent)
 {
     setParent(parent);
+    setObjectName("rightPart");
 
     QFrame *logoFrame = new QFrame(this);
     CartDisplay *cartDisplay = new CartDisplay(this);
