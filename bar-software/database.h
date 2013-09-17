@@ -5,14 +5,14 @@
 #include "sqlite3.h"
 #include "query.h"
 
-class database
+class Database
 {
 public:
-    database();
+    Database();
     int openDatabase(); //Cette méthode ne prend pas d'argument car la BDD à ouvrir est unique et fixée
     int executeQuery (Query &query);
     int closeDatabase();
-    int initializeDatabase();
+    int initializeDatabaseForm();
 
 private:
     sqlite3* handle; //Pointeur vers la BDD

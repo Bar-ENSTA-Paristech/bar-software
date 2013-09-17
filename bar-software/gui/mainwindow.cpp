@@ -20,7 +20,7 @@ MainWindow::MainWindow()
     qDebug() << mainWindowLayout->rowStretch(0);
     centralWidget->setLayout(mainWindowLayout);
 
-    // Adding content of the top menu (searcbar and configuration buttons)
+    // Adding content of the top menu (searchbar and configuration buttons)
     QFrame *searchBar = new QFrame(menu);
     QLabel *searchIcon = new QLabel(searchBar);
     searchIcon->setPixmap(QPixmap(GLOBAL_PATH + "gui/pictures/search.png"));
