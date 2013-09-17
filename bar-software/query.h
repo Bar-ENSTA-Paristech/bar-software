@@ -7,14 +7,17 @@ class Query
 {
 public:
     Query();
-    char* getQuery();
-    int getQueryStatus();
+    std::string getQuery();
+    int getStatus();
+    bool getVerbose();
     void setQuery(const std::string _query);
     void setQueryStatus(int _status);
+    void setVerbose(bool _verbose);
 
 private:
-    char* query;
+    std::string query;
     int status;
+    bool verbose;// 0=discret/1=verbose
 };
 
 #endif // QUERY_H

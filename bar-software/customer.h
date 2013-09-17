@@ -20,6 +20,7 @@ public:
     void setFamilyName(const std::string &familyName);
     void setLogin(const std::string &login);
     void setBalance(float balance);
+    void setId (int id);
     void addToBalance(float addedBalance);
     void removeToBalance(float removedBalance);
     bool checkBalance() const;
@@ -31,9 +32,9 @@ private:
     std::string login;
     std::string group;
     float balance;
+    unsigned int id;
     static unsigned numberOfCustomers;
-    // Est-il nécessaire de garder un historique plutôt que de faire une requête à la volée ?
 
-};
+ };
 
 #endif // CUSTOMER_H

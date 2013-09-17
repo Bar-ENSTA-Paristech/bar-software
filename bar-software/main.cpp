@@ -15,6 +15,7 @@
 unsigned Customer::numberOfCustomers = 0;
 QString GLOBAL_PATH;
 
+
 int main(int argc, char *argv[])
 {
     QDir currentDir(QDir::currentPath());
@@ -38,13 +39,9 @@ int main(int argc, char *argv[])
     monPanier.clearCart();
 
 
-    database DB;
+    Database DB;
     DB.openDatabase();
-
-    Query test_q;
-    test_q.setQuery("CREATE TABLE IF NOT EXISTS Bar(test VARCHAR(40));");
-    DB.executeQuery(test_q);
-
+    DB.initializeDatabaseForm();
     DB.closeDatabase();
 
     QApplication a(argc, argv);

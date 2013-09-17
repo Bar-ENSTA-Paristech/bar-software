@@ -1,28 +1,29 @@
 #include "query.h"
 #include <iostream>
-#include <cstring>
 
-#include <QDebug>
-
-Query::Query()
+Query::Query(): query(""),status(1),verbose(false)
 {
 }
 
-char* Query::getQuery()
+std::string Query::getQuery()
 {
         return query;
 }
 
+bool Query::getVerbose()
+{
+    return verbose;
+}
+
 void Query::setQuery(std::string _query)
 {
-    char* query_array = new char[_query.length()+1];
-    strcpy (query_array,_query.c_str());
-    //Copie de _query dans query_array
 
-    query=query_array;
+    query=_query;
+    return;
+}
 
-    qDebug()<<query_array;
-
-    delete query_array;
-    return ;
+void Query::setVerbose(bool _verbose)
+{
+    verbose=_verbose;
+    return;
 }
