@@ -18,3 +18,9 @@ LeftPart::LeftPart(QWidget* parent)
 
     this->setLayout(layout);
 }
+
+
+void LeftPart::setCategories()
+{
+
+}

@@ -1,23 +1,20 @@
 #ifndef SEARCHRESULTS_H
 #define SEARCHRESULTS_H
 
-#include <QDebug>
 #include <QFrame>
-#include <QHeaderView>
-#include <QListView>
-#include <QTableWidget>
-#include <QStandardItemModel>
-#include <QTreeWidget>
+#include "multilist.h"
 
-class SearchResults : public QFrame
+class SearchResults : public MultiList
 {
+    Q_OBJECT
 public:
-    SearchResults(QWidget* parent = NULL);
-    void setSearchResults();
+    explicit SearchResults(QWidget *parent = 0);
+    void setSearchResults(Customer* customers, int numberOfResults);
 
-private:
-    int rows;
-    int columns;
+signals:
+    
+public slots:
+    
 };
 
 #endif // SEARCHRESULTS_H
