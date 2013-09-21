@@ -6,6 +6,7 @@
 #include <QFrame>
 #include <QLineEdit>
 #include <QLabel>
+#include <QTimer>
 #include "leftpart.h"
 #include "rightpart.h"
 
@@ -13,10 +14,17 @@ extern QString GLOBAL_PATH;
 
 class MainWindow : public QMainWindow
 {
+    Q_OBJECT
     public:
         MainWindow();
 
+    private slots:
+        void searchChanged(const QString &text);
+        void sendSearch();
+
     private:
+        QTimer* timer;
+        QString search;
 
 };
 

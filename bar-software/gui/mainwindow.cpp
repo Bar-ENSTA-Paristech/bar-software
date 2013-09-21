@@ -40,5 +40,21 @@ MainWindow::MainWindow()
     mainPartLayout->addWidget(rightPart, 0, 1);
     mainPart->setLayout(mainPartLayout);
 
+    timer = new QTimer();
+    timer->setSingleShot(true);
+    QObject::connect(searchText, SIGNAL(textEdited(const QString &)), this, SLOT(searchChanged(const QString &)));
+    QObject::connect(timer, SIGNAL(timeout()), this, SLOT(sendSearch()));
 
+}
+
+
+void MainWindow::searchChanged(const QString & text)
+{
+    timer->start(250); // on évite de faire des requêtes à moins de 250 ms d'écart
+    search =  text;
+}
+
+void MainWindow::sendSearch()
+{
+    qDebug() << search;
 }
