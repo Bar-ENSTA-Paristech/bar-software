@@ -12,42 +12,48 @@ TARGET = bar-software
 TEMPLATE = app
 
 
-SOURCES += main.cpp\
-        gui/mainwindow.cpp \
-    customer.cpp \
-    product.cpp \
-    cart.cpp \
-    database.cpp \
-    query.cpp \
-    sqlite3.c \
-    gui/leftpart.cpp \
-    gui/rightpart.cpp \
-    gui/history.cpp \
-    gui/cartdisplay.cpp \
-    gui/productschoices.cpp \
-    gui/customerpanel.cpp \
-    gui/multilist.cpp \
-    gui/searchresults.cpp
+SOURCES +=  controller/main.cpp \
+    controller/product.cpp \
+    controller/customer.cpp \
+    controller/cart.cpp \
+    model/sqlite3.c \
+    model/query.cpp \
+    model/database.cpp \
+    view/searchresults.cpp \
+    view/rightpart.cpp \
+    view/productschoices.cpp \
+    view/multilist.cpp \
+    view/mainwindow.cpp \
+    #view/mainwindow_old.cpp \
+    view/leftpart.cpp \
+    view/history.cpp \
+    view/customerpanel.cpp \
+    view/cartdisplay.cpp \
+    controller/controller.cpp
 
-HEADERS  += gui/mainwindow.h \
-    customer.h \
-    product.h \
-    cart.h \
-    database.h \
-    query.h \
-    sqlite3.h \
-    gui/leftpart.h \
-    gui/rightpart.h \
-    gui/history.h \
-    gui/cartdisplay.h \
-    gui/productschoices.h \
-    gui/customerpanel.h \
-    gui/multilist.h \
-    gui/searchresults.h
+HEADERS  += controller/product.h \
+    controller/customer.h \
+    controller/cart.h \
+    model/sqlite3.h \
+    model/query.h \
+    model/database.h \
+    view/searchresults.h \
+    view/rightpart.h \
+    view/productschoices.h \
+    view/multilist.h \
+    view/mainwindow.h \
+    #view/mainwindow_old.h \
+    view/leftpart.h \
+    view/history.h \
+    view/customerpanel.h \
+    view/cartdisplay.h \
+    controller/controller.h
 
-FORMS    +=
+FORMS    += \
+    view/mainwindow_old.ui
 
 QMAKE_CXXFLAGS += -std=c++0x
 
 OTHER_FILES += \
-    gui/mainDesign.css
+    gui/mainDesign.css \
+    view/mainDesign.css
