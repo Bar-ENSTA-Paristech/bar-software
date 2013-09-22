@@ -5,8 +5,8 @@ LeftPart::LeftPart(QWidget* parent)
     setParent(parent);
     this->setObjectName("leftPart");
 
-    SearchResults* searchResults = new SearchResults(this);
-    History* history = new History(this);
+    searchResults = new SearchResults(this);
+    history = new History(this);
     CustomerPanel* customerPanel = new CustomerPanel(this);
     categoriesList = new QFrame(this);
     categoriesList->setObjectName("categoriesList");
@@ -52,4 +52,10 @@ void LeftPart::setCategories(std::queue<QString> &categories)
     layout->setSpacing(0);
     layout->setContentsMargins(0,0,0,0);
     categoriesList->setLayout(layout);
+}
+
+void LeftPart::updateSize()
+{
+    searchResults->updateSize();
+    history->updateSize();
 }

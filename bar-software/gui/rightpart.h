@@ -10,6 +10,7 @@ class RightPart : public QFrame
 {
 public:
     RightPart(QWidget* parent = NULL);
+    void updateSize();
 };
 
 #endif // RIGHTPART_H

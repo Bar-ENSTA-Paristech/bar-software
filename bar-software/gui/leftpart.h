@@ -15,11 +15,15 @@ class LeftPart : public QFrame
 public:
     LeftPart(QWidget* parent = NULL);
     void setCategories(std::queue<QString> &categories);
+    void updateSize();
 
 private:
     QPushButton* categoriesLabels;
     QFrame *categoriesList;
     QFont font;
+    SearchResults* searchResults;
+    History* history;
+
     
 };
 

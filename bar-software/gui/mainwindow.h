@@ -23,10 +23,15 @@ class MainWindow : public QMainWindow
         void searchChanged(const QString &text);
         void sendSearch();
         void shortcut();
+        void updateSize();
 
     private:
-        QTimer* timer;
+        QTimer* timerSearch;
+        QTimer* timerAtStart;
         QString search;
+        RightPart *rightPart;
+        LeftPart *leftPart;
+
 
 };
 

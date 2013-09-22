@@ -35,28 +35,30 @@ MainWindow::MainWindow()
     searchBar->setLayout(searchBarLayout);
 
     // Adding the left and right frames
-    RightPart *rightPart = new RightPart(mainPart);
-    LeftPart *leftPart = new LeftPart(mainPart);
+    rightPart = new RightPart(mainPart);
+    leftPart = new LeftPart(mainPart);
     QGridLayout *mainPartLayout = new QGridLayout(mainPart);
     mainPartLayout->addWidget(leftPart, 0, 0);
     mainPartLayout->addWidget(rightPart, 0, 1);
     mainPartLayout->setContentsMargins(0,0,0,0);
     mainPart->setLayout(mainPartLayout);
 
-    timer = new QTimer();
-    timer->setSingleShot(true);
+    timerSearch = new QTimer();
+    timerSearch->setSingleShot(true);
+    timerAtStart = new QTimer();
+    timerAtStart->setSingleShot(true);
+    timerAtStart->start(500);
     QShortcut *shortcut = new QShortcut(QKeySequence("Ctrl+D"), this);
     QObject::connect(searchText, SIGNAL(textEdited(const QString &)), this, SLOT(searchChanged(const QString &)));
-    QObject::connect(timer, SIGNAL(timeout()), this, SLOT(sendSearch()));
+    QObject::connect(timerSearch, SIGNAL(timeout()), this, SLOT(sendSearch()));
     QObject::connect(shortcut, SIGNAL(activated()), this, SLOT(shortcut()));
-
-
+    QObject::connect(timerAtStart, SIGNAL(timeout()), this, SLOT(updateSize()));
 }
 
 
 void MainWindow::searchChanged(const QString & text)
 {
-    timer->start(250); // on évite de faire des requêtes à moins de 250 ms d'écart
+    timerSearch->start(250); // on évite de faire des requêtes à moins de 250 ms d'écart
     search =  text;
 }
 
@@ -68,4 +70,11 @@ void MainWindow::sendSearch()
 void MainWindow::shortcut()
 {
     qDebug() << "CTRL + D";
+    this->updateSize();
+}
+
+void MainWindow::updateSize()
+{
+    leftPart->updateSize();
+    rightPart->updateSize();
 }

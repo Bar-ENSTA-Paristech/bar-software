@@ -15,3 +15,8 @@ RightPart::RightPart(QWidget* parent)
     layout->setContentsMargins(0, 0, 0, 0);
     this->setLayout(layout);
 }
+
+void RightPart::updateSize()
+{
+
+}
