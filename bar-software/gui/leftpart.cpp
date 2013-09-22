@@ -16,6 +16,7 @@ LeftPart::LeftPart(QWidget* parent)
     layout->addWidget(categoriesList, 1, 0);
     layout->addWidget(customerPanel, 1, 1);
     layout->addWidget(history, 2, 0, 1, 10);
+    layout->setContentsMargins(0, 0, 0, 0);
 
     //##### TEST ####
     std::queue<QString> categories;
@@ -43,8 +44,12 @@ void LeftPart::setCategories(std::queue<QString> &categories)
         categoriesLabels[i].setFlat(true);
         categoriesLabels[i].setFont(font);
         categoriesLabels[i].setFixedHeight(30);
+        categoriesLabels[i].setFixedWidth(100);
         layout->addWidget(&categoriesLabels[i]);
         categories.pop();
     }
+    layout->setAlignment(Qt::AlignTop);
+    layout->setSpacing(0);
+    layout->setContentsMargins(0,0,0,0);
     categoriesList->setLayout(layout);
 }

@@ -5,7 +5,6 @@
 #include <QApplication>
 #include <QFile>
 #include <QDir>
-
 #include <QDebug>
 
 #include "database.h"

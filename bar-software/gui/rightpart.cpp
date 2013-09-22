@@ -12,5 +12,6 @@ RightPart::RightPart(QWidget* parent)
     layout->addWidget(logoFrame, 0, 0);
     layout->addWidget(cartDisplay, 0, 1);
     layout->addWidget(productsChoices, 1, 0, 1, 10);
+    layout->setContentsMargins(0, 0, 0, 0);
     this->setLayout(layout);
 }

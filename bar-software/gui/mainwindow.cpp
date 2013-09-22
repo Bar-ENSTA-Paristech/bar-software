@@ -8,6 +8,7 @@ MainWindow::MainWindow()
     this->setGeometry(20, 40, 1000, 800);
     this->setWindowTitle("RAB WareSoft");
     this->setMinimumSize(800, 600);
+    centralWidget->setStyleSheet("padding-top: 0px;");
 
     QGridLayout *mainWindowLayout = new QGridLayout(centralWidget);
     QFrame *menu = new QFrame(centralWidget);
@@ -17,6 +18,7 @@ MainWindow::MainWindow()
     mainWindowLayout->addWidget(mainPart, 1, 0);
     mainWindowLayout->setRowStretch(0, 1);
     mainWindowLayout->setRowStretch(1, 20);
+    mainWindowLayout->setContentsMargins(0,0,0,0);
     qDebug() << mainWindowLayout->rowStretch(0);
     centralWidget->setLayout(mainWindowLayout);
 
@@ -38,6 +40,7 @@ MainWindow::MainWindow()
     QGridLayout *mainPartLayout = new QGridLayout(mainPart);
     mainPartLayout->addWidget(leftPart, 0, 0);
     mainPartLayout->addWidget(rightPart, 0, 1);
+    mainPartLayout->setContentsMargins(0,0,0,0);
     mainPart->setLayout(mainPartLayout);
 
     timer = new QTimer();
