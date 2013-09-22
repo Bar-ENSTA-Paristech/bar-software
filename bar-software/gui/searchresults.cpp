@@ -12,6 +12,10 @@ SearchResults::SearchResults(QWidget *parent) :
     for(int i=0 ; i < columns ; i++)
         list->setHorizontalHeaderItem(i, &headers[i]);
 
+    list->horizontalHeader()->setDefaultSectionSize(70);
+    list->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
+    list->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
+
     QTableWidgetItem *test = new QTableWidgetItem;
     test->setText("prout");
     QTableWidgetItem *test2 = new QTableWidgetItem;

@@ -1,9 +1,9 @@
 #ifndef HISTORY_H
 #define HISTORY_H
 
-#include <QFrame>
+#include "multilist.h"
 
-class History : public QFrame
+class History : public MultiList
 {
     Q_OBJECT
 public:

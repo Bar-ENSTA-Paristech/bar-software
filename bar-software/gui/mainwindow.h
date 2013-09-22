@@ -7,6 +7,7 @@
 #include <QLineEdit>
 #include <QLabel>
 #include <QTimer>
+#include <QShortcut>
 #include "leftpart.h"
 #include "rightpart.h"
 
@@ -21,6 +22,7 @@ class MainWindow : public QMainWindow
     private slots:
         void searchChanged(const QString &text);
         void sendSearch();
+        void shortcut();
 
     private:
         QTimer* timer;

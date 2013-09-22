@@ -26,6 +26,14 @@ QLineEdit{
     background-color: black;
 }
 
+#categoriesList{
+    background-color: yellow;
+}
+
+#history{
+    background-color: #f71;/*orange*/
+}
+
 /*#searchResultsTable{
     color: yellow;
 }*/

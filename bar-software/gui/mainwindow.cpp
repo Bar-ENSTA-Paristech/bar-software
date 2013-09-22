@@ -42,8 +42,11 @@ MainWindow::MainWindow()
 
     timer = new QTimer();
     timer->setSingleShot(true);
+    QShortcut *shortcut = new QShortcut(QKeySequence("Ctrl+D"), this);
     QObject::connect(searchText, SIGNAL(textEdited(const QString &)), this, SLOT(searchChanged(const QString &)));
     QObject::connect(timer, SIGNAL(timeout()), this, SLOT(sendSearch()));
+    QObject::connect(shortcut, SIGNAL(activated()), this, SLOT(shortcut()));
+
 
 }
 
@@ -57,4 +60,9 @@ void MainWindow::searchChanged(const QString & text)
 void MainWindow::sendSearch()
 {
     qDebug() << search;
+}
+
+void MainWindow::shortcut()
+{
+    qDebug() << "CTRL + D";
 }
