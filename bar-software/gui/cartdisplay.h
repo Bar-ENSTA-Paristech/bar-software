@@ -2,6 +2,8 @@
 #define CARTDISPLAY_H
 
 #include <QFrame>
+#include <queue>
+#include <tuple>
 #include "../cart.h"
 
 class CartDisplay : public QFrame
@@ -9,7 +11,8 @@ class CartDisplay : public QFrame
     Q_OBJECT
 public:
     explicit CartDisplay(QWidget *parent = 0);
-    void setCart(/*voir ce que l'on envoie. Un vector me semble pas mal. Ou bien une sorte de dictionnaire*/);
+    void setCart(std::queue< std::tuple<  > > & queue);
+    void setTotalPrice(float price);
 
 private:
     Cart* cart;

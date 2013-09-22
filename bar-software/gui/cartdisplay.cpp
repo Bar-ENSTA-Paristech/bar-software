@@ -5,7 +5,12 @@ CartDisplay::CartDisplay(QWidget *parent) :
 {
 }
 
-void CartDisplay::setCart()
+void CartDisplay::setCart(std::queue< std::tuple< > > & queue)
+{
+
+}
+
+void CartDisplay::setTotalPrice(float price)
 {
 
 }

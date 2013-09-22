@@ -9,6 +9,8 @@ class SearchResults : public MultiList
     Q_OBJECT
 public:
     explicit SearchResults(QWidget *parent = 0);
+
+    // receive search results from controller
     void setSearchResults(Customer* customers, int numberOfResults);
 
 signals:

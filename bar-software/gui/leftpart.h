@@ -14,7 +14,11 @@ class LeftPart : public QFrame
 {
 public:
     LeftPart(QWidget* parent = NULL);
+
+    //receive informations from controller
     void setCategories(std::queue<QString> &categories);
+
+    // update size of element to fit to frame (after resize of windows e.g)
     void updateSize();
 
 private:

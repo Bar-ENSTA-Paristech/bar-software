@@ -43,14 +43,14 @@ int main(int argc, char *argv[])
     DB.initializeDatabaseForm();
     DB.closeDatabase();
 
-    QApplication a(argc, argv);
+    QApplication application(argc, argv);
     QFile css(GLOBAL_PATH + "gui/mainDesign.css");
     if(css.open(QIODevice::ReadOnly)) {
-       a.setStyleSheet(css.readAll());
+       application.setStyleSheet(css.readAll());
     }
     qDebug() << "test " << QDir::currentPath() ;
-    MainWindow w;
-    w.show();
+    MainWindow mainWindow;
+    mainWindow.show();
     
-    return a.exec();
+    return application.exec();
 }

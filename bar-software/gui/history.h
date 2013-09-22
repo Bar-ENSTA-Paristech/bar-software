@@ -8,6 +8,8 @@ class History : public MultiList
     Q_OBJECT
 public:
     explicit History(QWidget *parent = 0);
+
+    // Revceive history from controller
     void setHistory();
     
 signals:

@@ -4,10 +4,8 @@
 #include <QDebug>
 #include <QFrame>
 #include <QHeaderView>
-#include <QListView>
 #include <QTableWidget>
 #include <QStandardItemModel>
-#include <QTreeWidget>
 #include <queue>
 #include "../customer.h"
 

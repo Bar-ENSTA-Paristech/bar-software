@@ -3,11 +3,13 @@
 LeftPart::LeftPart(QWidget* parent)
 {
     setParent(parent);
+    // for CSS
     this->setObjectName("leftPart");
 
     searchResults = new SearchResults(this);
     history = new History(this);
     CustomerPanel* customerPanel = new CustomerPanel(this);
+    // categoriesList will be the widget which will show categories on the left (TOUS, BAR, 2014, 2015, etc)
     categoriesList = new QFrame(this);
     categoriesList->setObjectName("categoriesList");
 
@@ -23,18 +25,19 @@ LeftPart::LeftPart(QWidget* parent)
     categories.push(QString("Tous"));
     categories.push(QString("RAB"));
     setCategories(categories);
+    // ##### FIN TEST #####
 
     this->setLayout(layout);
 }
 
-
+// Normally launch once at start of software to set categories on the left (no delete planned if not ...)
 void LeftPart::setCategories(std::queue<QString> &categories)
 {
     QVBoxLayout *layout = new QVBoxLayout(categoriesList);
     font.setStyleHint(QFont::SansSerif);
     font.setPixelSize(18);
     font.setBold(true);
-    unsigned n = categories.size();qDebug() << "test" << categories.front();
+    unsigned n = categories.size();
     categoriesLabels = new QPushButton[n];
     for(unsigned i=0 ; i<n ; i++)
     {
@@ -48,6 +51,7 @@ void LeftPart::setCategories(std::queue<QString> &categories)
         layout->addWidget(&categoriesLabels[i]);
         categories.pop();
     }
+    // to get them at top and without space between them
     layout->setAlignment(Qt::AlignTop);
     layout->setSpacing(0);
     layout->setContentsMargins(0,0,0,0);

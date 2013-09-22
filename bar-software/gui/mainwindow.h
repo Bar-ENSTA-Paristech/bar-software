@@ -20,10 +20,10 @@ class MainWindow : public QMainWindow
         MainWindow();
 
     private slots:
-        void searchChanged(const QString &text);
-        void sendSearch();
+        void searchChanged(const QString &text); //something written in searchbar
+        void sendSearch(); // to controller
         void shortcut();
-        void updateSize();
+        void updateSize(); // after resize of window e.g
 
     private:
         QTimer* timerSearch;
