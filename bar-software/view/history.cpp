@@ -1,6 +1,6 @@
 #include "history.h"
 
-History::History(QWidget *parent) : MultiList(parent, 4, 4)
+History::History(QWidget *parent) : MultiList(parent, 4, 0)
 {
     this->setObjectName("history"); // for CSS
     // ##### Definition des légendes en haut de colonne ######

@@ -52,7 +52,7 @@ HEADERS  += controller/product.h \
 FORMS    += \
     view/mainwindow_old.ui
 
-QMAKE_CXXFLAGS += -std=c++0x
+QMAKE_CXXFLAGS += -std=c++11
 
 OTHER_FILES += \
     gui/mainDesign.css \

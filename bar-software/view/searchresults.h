@@ -2,6 +2,8 @@
 #define SEARCHRESULTS_H
 
 #include <QFrame>
+#include <tuple>
+#include <queue>
 #include "multilist.h"
 
 class SearchResults : public MultiList
@@ -11,7 +13,10 @@ public:
     explicit SearchResults(QWidget *parent = 0);
 
     // receive search results from controller
-    void setSearchResults(Customer* customers, int numberOfResults);
+    virtual void setSearchResults(std::queue<std::tuple<QString, QString, QString, float, unsigned>>& queue);
+
+private:
+
 
 signals:
     
