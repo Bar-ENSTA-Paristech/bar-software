@@ -1,7 +1,7 @@
 #include "searchresults.h"
 
 SearchResults::SearchResults(QWidget *parent) :
-    MultiList(parent)
+    MultiList(parent, 5, 4)
 {
     this->setObjectName("searchResults");
     QTableWidgetItem *headers = new QTableWidgetItem[columns];
@@ -9,12 +9,15 @@ SearchResults::SearchResults(QWidget *parent) :
     headers[1].setText("Prénom");
     headers[2].setText("Catégorie");
     headers[3].setText("Solde");
+    headers[4].setText("Id");
     for(int i=0 ; i < columns ; i++)
         list->setHorizontalHeaderItem(i, &headers[i]);
 
     list->horizontalHeader()->setDefaultSectionSize(70);
     list->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
     list->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
+    list->horizontalHeader()->setSectionHidden(4, true);
+    setRows(20);
 
     QTableWidgetItem *test = new QTableWidgetItem;
     test->setText("prout");
@@ -32,6 +35,7 @@ SearchResults::SearchResults(QWidget *parent) :
     test->setForeground(negativeSold);
     test->setFont(font);
 
+    qDebug() << list->item(0,0)->text();
     list->resize(470, 300);
 }
 

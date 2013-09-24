@@ -14,7 +14,7 @@ class MultiList : public QFrame
     Q_OBJECT
 public:
     MultiList();
-    MultiList(QWidget* parent = NULL);
+    MultiList(QWidget* parent = NULL, int column=0, int row=0);
     void updateSize();
 
 private slots:
@@ -28,6 +28,8 @@ protected:
     QTableWidget *list;
     QTableWidgetItem **itemList;
     QFont font;
+    QTableWidgetItem *emptyHeader;
+    void setRows(int numberOfRows);
 
 };
 

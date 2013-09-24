@@ -1,10 +1,11 @@
 #include "searchresults.h"
 
 // Si Erreur bizarre ici, lancer un qmake sur le projet
-MultiList::MultiList(QWidget *parent)
+MultiList::MultiList(QWidget *parent, int column, int row)
 {
     setParent(parent);
-
+    columns = column;
+    rows = row;
     list = new QTableWidget(this);
     list->setSelectionBehavior(QAbstractItemView::SelectRows);
     list->setObjectName("multiListTable");
@@ -14,24 +15,13 @@ MultiList::MultiList(QWidget *parent)
     font.setStyleHint(QFont::SansSerif);
     font.setPixelSize(15);
     // ####### TEST #####
-    columns = 4;
-    rows = 4;
+    //columns = 4;
+    //rows = 4;
     // ####### FIN TEST ####
     list->setColumnCount(columns);
-    list->setRowCount(rows);
+    emptyHeader = new QTableWidgetItem[1000];
+    setRows(4);
 
-    list->horizontalHeader()->setSortIndicatorShown(true);
-    for(int i = 0 ; i< rows ; i++)
-        list->setRowHeight(i, 20);
-
-    QTableWidgetItem *emptyHeader = new QTableWidgetItem[1000];
-    for(int i=0 ; i<rows ; i++)
-    {
-        emptyHeader[i].setText("");
-        list->setVerticalHeaderItem(i, emptyHeader);
-    }
-
-    // TEST
     ascendingSort = true;
     sortColumn = 0;
     list->sortItems(0, Qt::AscendingOrder);
@@ -60,5 +50,20 @@ void MultiList::sortItems(int index)
 void MultiList::updateSize()
 {
     list->resize(this->width(), this->height());
-    qDebug() << this->width() << this->height();
+}
+
+void MultiList::setRows(int numberOfRows)
+{
+    rows = numberOfRows;
+    list->setRowCount(rows);
+
+    list->horizontalHeader()->setSortIndicatorShown(true);
+    for(int i = 0 ; i< rows ; i++)
+        list->setRowHeight(i, 20);
+
+    for(int i=0 ; i<rows ; i++)
+    {
+        emptyHeader[i].setText("");
+        list->setVerticalHeaderItem(i, emptyHeader);
+    }
 }
