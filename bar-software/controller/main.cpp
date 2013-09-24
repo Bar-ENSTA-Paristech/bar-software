@@ -44,7 +44,7 @@ int main(int argc, char *argv[])
     DB.closeDatabase();
 
     QApplication application(argc, argv);
-    QFile css(GLOBAL_PATH + "gui/mainDesign.css");
+    QFile css(GLOBAL_PATH + "view/mainDesign.css");
     if(css.open(QIODevice::ReadOnly)) {
        application.setStyleSheet(css.readAll());
     }
