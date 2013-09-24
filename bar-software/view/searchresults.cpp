@@ -36,11 +36,10 @@ void SearchResults::setSearchResults(std::queue< std::tuple< QString, QString, Q
     std::tuple< QString, QString, QString, float, unsigned > tuple;
     // Deleting old results
     for(int i = 0 ; i<rows ; i++)
-    {qDebug() << "test de glaouch" << rows;
+    {
         delete itemList[i];
     }
     delete itemList;
-
 
     // Inserting new results
     QBrush negativeSold(Qt::red);

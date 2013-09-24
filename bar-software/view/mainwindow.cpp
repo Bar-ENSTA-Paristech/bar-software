@@ -80,3 +80,8 @@ void MainWindow::updateSize()
     leftPart->updateSize();
     rightPart->updateSize();
 }
+
+void MainWindow::resizeEvent(QResizeEvent *event)
+{
+    this->updateSize();
+}

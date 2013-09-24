@@ -13,7 +13,7 @@ public:
     explicit SearchResults(QWidget *parent = 0);
 
     // receive search results from controller
-    virtual void setSearchResults(std::queue<std::tuple<QString, QString, QString, float, unsigned>>& queue);
+    void setSearchResults(std::queue<std::tuple<QString, QString, QString, float, unsigned>>& queue);
 
 private:
 
