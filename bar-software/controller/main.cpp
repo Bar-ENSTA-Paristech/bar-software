@@ -1,4 +1,4 @@
-#include "gui/mainwindow.h"
+#include "view/mainwindow.h"
 #include <initializer_list>
 #include "customer.h"
 #include <iostream>
@@ -7,7 +7,7 @@
 #include <QDir>
 #include <QDebug>
 
-#include "database.h"
+#include "../model/database.h"
 #include "cart.h"
 #include "product.h"
 

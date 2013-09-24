@@ -27,7 +27,6 @@ void Cart::addProductToCart(shared_ptr<Product> product, unsigned quantity)
 
 void Cart::removeProductFromCart(shared_ptr<Product> product, unsigned quantity)
 {
-
     unsigned remoQuantity;
     // We might want to check if the product is already in the cart ?
     if(quantity < products[product]){ // If we remove less than the quantity in the cart
@@ -42,17 +41,6 @@ void Cart::removeProductFromCart(shared_ptr<Product> product, unsigned quantity)
     numberOfProducts -= remoQuantity;
     price -= product->getPrice()*remoQuantity;
     refreshPrice();
-
-    // TODO
-
-    // TODO
-    /*price -= products[productNumber].getPrice();
-    for(int i=productNumber ; i<sizeOfCart-1 ; i++)
-    {
-        products[i] = products[i+1];
-    }
-    numberOfProducts--;
-    refreshPrice();*/
 }
 
 void Cart::clearCart()
