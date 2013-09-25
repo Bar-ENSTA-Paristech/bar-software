@@ -27,6 +27,7 @@ private:
     QFont font;
     SearchResults* searchResults;
     History* history;
+    CustomerPanel* customerPanel;
 
     
 };

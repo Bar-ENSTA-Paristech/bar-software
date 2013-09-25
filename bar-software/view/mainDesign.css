@@ -34,6 +34,9 @@ QLineEdit{
     background-color: #f71;/*orange*/
 }
 
+#customerPanel{
+    background-color: #faa;/*rose*/
+}
 /*#searchResultsTable{
     color: yellow;
 }*/

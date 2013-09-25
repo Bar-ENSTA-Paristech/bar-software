@@ -8,6 +8,7 @@
 #include <QLabel>
 #include <QTimer>
 #include <QShortcut>
+#include <queue>
 #include "leftpart.h"
 #include "rightpart.h"
 
@@ -16,22 +17,26 @@ extern QString GLOBAL_PATH;
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
-    public:
-        MainWindow();
-        void resizeEvent(QResizeEvent *event);
+public:
+    MainWindow();
+    void resizeEvent(QResizeEvent *event);
 
-    private slots:
-        void searchChanged(const QString &text); //something written in searchbar
-        void sendSearch(); // to controller
-        void shortcut();
-        void updateSize(); // after resize of window e.g
 
-    private:
-        QTimer* timerSearch;
-        QTimer* timerAtStart;
-        QString search;
-        RightPart *rightPart;
-        LeftPart *leftPart;
+private:
+
+
+private slots:
+    void searchChanged(const QString &text); //something written in searchbar
+    void sendSearch(); // to controller
+    void shortcut();
+    void updateSize(); // after resize of window e.g
+
+private:
+    QTimer* timerSearch;
+    QTimer* timerAtStart;
+    QString search;
+    RightPart *rightPart;
+    LeftPart *leftPart;
 
 
 };

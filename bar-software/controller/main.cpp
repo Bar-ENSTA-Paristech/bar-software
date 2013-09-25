@@ -18,11 +18,15 @@ QString GLOBAL_PATH;
 int main(int argc, char *argv[])
 {
     QDir currentDir(QDir::currentPath());
-    #ifndef Q_OS_MAC //pour windows et linux
-    currentDir.cd("../bar-software/bar-software");
-    qDebug() << "plouf";
-    #else // Pour MAC
+    #ifdef Q_OS_LINUX //pour linux
+    currentDir.cdUp();
+    currentDir.cd("bar-software");
+    #endif
+    #ifdef Q_OS_MAC // Pour MAC
     // A définir
+    #endif
+    #ifdef Q_OS_WIN32 // Pour Windows
+    currentDir.cd("../bar-software/bar-software");
     #endif
     GLOBAL_PATH = currentDir.absolutePath()+"/";
 
@@ -39,10 +43,10 @@ int main(int argc, char *argv[])
     monPanier.clearCart();
 
 
-    /*Database DB;
+    Database DB;
     DB.openDatabase();
     DB.initializeDatabaseForm();
-    DB.closeDatabase();*/
+    DB.closeDatabase();
 
     QApplication application(argc, argv);
     QFile css(GLOBAL_PATH + "view/mainDesign.css");
