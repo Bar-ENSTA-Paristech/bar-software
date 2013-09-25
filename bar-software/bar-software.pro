@@ -57,4 +57,4 @@ QMAKE_CXXFLAGS += -std=c++11
 OTHER_FILES += \
     view/mainDesign.css
 
-LIBS += /lib/x86_64-linux-gnu/libdl.so.2
+#LIBS += /lib/x86_64-linux-gnu/libdl.so.2
