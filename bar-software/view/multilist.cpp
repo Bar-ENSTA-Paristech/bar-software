@@ -6,6 +6,7 @@ MultiList::MultiList(QWidget *parent, int column, int row)
     setParent(parent);
     columns = column;
     rows = row;
+    isInitialised = false;
     list = new QTableWidget(this);
     list->setSelectionBehavior(QAbstractItemView::SelectRows);
     list->setObjectName("multiListTable");

@@ -23,13 +23,13 @@ History::History(QWidget *parent) : MultiList(parent, 5, 0)
 
     // ####### TEST #######
     std::queue< std::tuple< QString, QString, QString, float, QString > > toto;
-    std::tuple< QString, QString, QString, float, QString > titi("Chat", "Mehdi", "DEBIT", -1000, "17h45-24-09-2013");
-    std::tuple< QString, QString, QString, float, QString > titi2("Diallo", "Guytoof", "CREDIT", 20, "17h44-24-09-2013");
-    std::tuple< QString, QString, QString, float, QString > titi3("Manchoul", "Simon", "Duvel 33cL", 1.9, "17h41-24-09-2013");
+    std::tuple< QString, QString, QString, float, QString > titi("Chat", "Mehdi", "DEBIT", -1000, "17h45 24-09-2013");
+    std::tuple< QString, QString, QString, float, QString > titi2("Diallo", "Guytoof", "CREDIT", 20, "17h44 24-09-2013");
+    std::tuple< QString, QString, QString, float, QString > titi3("Manchoul", "Simon", "Duvel 33cL", 1.9, "17h41 24-09-2013");
     toto.push(titi);
     toto.push(titi2);
     toto.push(titi3);
-    //this->setHistory(toto);
+    this->setHistory(toto);
     qDebug() << list->columnCount() << list->rowCount();
     // ####### FIN TEST #######
 
@@ -39,17 +39,22 @@ History::History(QWidget *parent) : MultiList(parent, 5, 0)
 
 void History::setHistory(std::queue < std::tuple < QString, QString, QString, float, QString > > & queue)
 {
-    //TUPLE : QString name, QString firstName, QString operation, float value, QString date(hh-mm-JJ-MM-YYYY)
+    //TUPLE : QString name, QString firstName, QString operation, float value, QString date(hh-mm JJ-MM-YYYY)
     // Deleting old results
     std::tuple < QString, QString, QString, float, QString > tuple;
-qDebug() << itemList;
+    qDebug() << itemList;
+    QFont historyFont;
+    historyFont.setPixelSize(11);
     for(int i=0 ; i<rows ; i++)
     {
         delete itemList[i];
     }
-    //delete itemList;
+    if(isInitialised)
+        delete itemList;
+    else
+        isInitialised = true;
 
-    /* // Inserting new results
+    // Inserting new results
     QBrush color;
     unsigned numberOfElements = queue.size();
     setRows(numberOfElements);
@@ -72,16 +77,17 @@ qDebug() << itemList;
         if(std::get<2>(tuple) == "DEBIT")
             color.setColor(Qt::red);
         else if(std::get<2>(tuple) == "CREDIT")
-            color.setColor(Qt::green);
+            color.setColor("#008800");
         else
             color.setColor(Qt::black);
 
         for(int j=0 ; j < columns ; j++)
         {
+            itemList[i][j].setFont(historyFont);
             itemList[i][j].setForeground(color);
             list->setItem(i, j, &itemList[i][j]);
         }
-    }*/
+    }
     list->sortItems(0, Qt::AscendingOrder);
     return;
 }

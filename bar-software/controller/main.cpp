@@ -18,10 +18,15 @@ QString GLOBAL_PATH;
 int main(int argc, char *argv[])
 {
     QDir currentDir(QDir::currentPath());
-    #ifndef Q_OS_MAC //pour windows et linux
-    currentDir.cd("../bar-software/bar-software");
-    #else // Pour MAC
+    #ifdef Q_OS_LINUX //pour linux
+    currentDir.cdUp();
+    currentDir.cd("bar-software/bar-software");
+    #endif
+    #ifdef Q_OS_MAC // Pour MAC
     currentDir.cd("../../../../bar-software");
+    #endif
+    #ifdef Q_OS_WIN32 // Pour Windows
+    currentDir.cd("../bar-software/bar-software");
     #endif
     GLOBAL_PATH = currentDir.absolutePath()+"/";
 
@@ -48,9 +53,9 @@ int main(int argc, char *argv[])
     if(css.open(QIODevice::ReadOnly)) {
        application.setStyleSheet(css.readAll());
     }
-    qDebug() << "test " << QDir::currentPath() ;
+    qDebug() << "test " << GLOBAL_PATH;
     MainWindow mainWindow;
     mainWindow.show();
-    
+
     return application.exec();
 }
