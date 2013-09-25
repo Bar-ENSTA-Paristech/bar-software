@@ -29,7 +29,7 @@ History::History(QWidget *parent) : MultiList(parent, 5, 0)
     toto.push(titi);
     toto.push(titi2);
     toto.push(titi3);
-    //this->setHistory(toto);
+    this->setHistory(toto);
     qDebug() << list->columnCount() << list->rowCount();
     // ####### FIN TEST #######
 
@@ -47,9 +47,12 @@ qDebug() << itemList;
     {
         delete itemList[i];
     }
-    //delete itemList;
+    if(isInitialised)
+        delete itemList;
+    else
+        isInitialised = true;
 
-    /* // Inserting new results
+    // Inserting new results
     QBrush color;
     unsigned numberOfElements = queue.size();
     setRows(numberOfElements);
@@ -72,7 +75,7 @@ qDebug() << itemList;
         if(std::get<2>(tuple) == "DEBIT")
             color.setColor(Qt::red);
         else if(std::get<2>(tuple) == "CREDIT")
-            color.setColor(Qt::green);
+            color.setColor("#008800");
         else
             color.setColor(Qt::black);
 
@@ -81,7 +84,7 @@ qDebug() << itemList;
             itemList[i][j].setForeground(color);
             list->setItem(i, j, &itemList[i][j]);
         }
-    }*/
+    }
     list->sortItems(0, Qt::AscendingOrder);
     return;
 }

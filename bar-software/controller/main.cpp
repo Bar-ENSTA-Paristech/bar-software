@@ -20,6 +20,7 @@ int main(int argc, char *argv[])
     QDir currentDir(QDir::currentPath());
     #ifndef Q_OS_MAC //pour windows et linux
     currentDir.cd("../bar-software/bar-software");
+    qDebug() << "plouf";
     #else // Pour MAC
     // A définir
     #endif
@@ -38,17 +39,17 @@ int main(int argc, char *argv[])
     monPanier.clearCart();
 
 
-    Database DB;
+    /*Database DB;
     DB.openDatabase();
     DB.initializeDatabaseForm();
-    DB.closeDatabase();
+    DB.closeDatabase();*/
 
     QApplication application(argc, argv);
     QFile css(GLOBAL_PATH + "view/mainDesign.css");
     if(css.open(QIODevice::ReadOnly)) {
        application.setStyleSheet(css.readAll());
     }
-    qDebug() << "test " << QDir::currentPath() ;
+    qDebug() << "test " << GLOBAL_PATH;
     MainWindow mainWindow;
     mainWindow.show();
     

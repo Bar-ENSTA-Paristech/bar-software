@@ -55,5 +55,6 @@ FORMS    += \
 QMAKE_CXXFLAGS += -std=c++11
 
 OTHER_FILES += \
-    gui/mainDesign.css \
     view/mainDesign.css
+
+LIBS += /lib/x86_64-linux-gnu/libdl.so.2

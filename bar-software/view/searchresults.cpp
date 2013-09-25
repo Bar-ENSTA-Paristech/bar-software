@@ -39,7 +39,10 @@ void SearchResults::setSearchResults(std::queue< std::tuple< QString, QString, Q
     {
         delete itemList[i];
     }
-    delete itemList;
+    if(isInitialised)
+        delete itemList;
+    else
+        isInitialised = true;
 
     // Inserting new results
     QBrush negativeSold(Qt::red);
