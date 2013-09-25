@@ -15,6 +15,12 @@ class Controller
 {
 public:
     Controller();
+    void newSearch(QString search);
+    void newClicCustomer(unsigned int customerId);
+    void newClicCustomerPanel(unsigned int buttonId);
+    void newClicCart(unsigned int buttonId);
+    void newClicProductTypes(QString productTypeName);
+    void newClicProduct(QString productName);
 
 private:
         /* View objects */

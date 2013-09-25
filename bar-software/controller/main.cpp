@@ -21,7 +21,7 @@ int main(int argc, char *argv[])
     #ifndef Q_OS_MAC //pour windows et linux
     currentDir.cd("../bar-software/bar-software");
     #else // Pour MAC
-    // A définir
+    currentDir.cd("../../../../bar-software");
     #endif
     GLOBAL_PATH = currentDir.absolutePath()+"/";
 
