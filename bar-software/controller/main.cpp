@@ -20,7 +20,7 @@ int main(int argc, char *argv[])
     QDir currentDir(QDir::currentPath());
     #ifdef Q_OS_LINUX //pour linux
     currentDir.cdUp();
-    currentDir.cd("bar-software");
+    currentDir.cd("bar-software/bar-software");
     #endif
     #ifdef Q_OS_MAC // Pour MAC
     // A définir
