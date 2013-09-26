@@ -26,6 +26,7 @@ protected:
     int sortColumn;
     bool ascendingSort;
     bool isInitialised;
+    bool isSortable;
     QTableWidget *list;
     QTableWidgetItem **itemList;
     QFont font;

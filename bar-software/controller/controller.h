@@ -15,7 +15,7 @@ class Controller
 {
 public:
     Controller();
-    void newText_Search(QString search);
+    void newText_Search(QString &search);
     void newClic_Customer(unsigned int customerId);
     void newClic_CustomerPanel(unsigned int buttonId);
     void newClic_Cart(unsigned int buttonId);

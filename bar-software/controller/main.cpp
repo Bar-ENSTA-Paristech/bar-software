@@ -1,4 +1,5 @@
 #include "view/mainwindow.h"
+#include "controller.h"
 #include <initializer_list>
 #include "customer.h"
 #include <iostream>
@@ -42,6 +43,7 @@ int main(int argc, char *argv[])
     monPanier.removeProductFromCart( std::make_shared<Product>(Duvel) );
     monPanier.clearCart();
 
+    Controller *controller = new Controller;
 
     Database DB;
     DB.openDatabase();
@@ -55,6 +57,7 @@ int main(int argc, char *argv[])
     }
     qDebug() << "test " << GLOBAL_PATH;
     MainWindow mainWindow;
+    mainWindow.setController(controller);
     mainWindow.show();
 
     return application.exec();

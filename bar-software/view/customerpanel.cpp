@@ -31,12 +31,18 @@ CustomerPanel::CustomerPanel(QWidget *parent) :
     firstName = new QLabel(infosFrame);
     categorie = new QLabel(infosFrame);
     balance = new QLabel(infosFrame);
-    QFont bold;
+    QFont bold, normal;
     bold.setBold(true);
+    normal.setPixelSize(13);
+    bold.setPixelSize(13);
     name->setFont(bold);
     firstName->setFont(bold);
     categorie->setFont(bold);
     balance->setFont(bold);
+    nameLabel->setFont(normal);
+    firstNameLabel->setFont(normal);
+    categorieLabel->setFont(normal);
+    balanceLabel->setFont(normal);
 
     infosLayout->addWidget(nameLabel, 0, 0);
     infosLayout->addWidget(name, 0, 1);
@@ -50,7 +56,7 @@ CustomerPanel::CustomerPanel(QWidget *parent) :
     infosFrame->setLayout(infosLayout);
 
     // ###### TEST #########
-    std::tuple<QString, QString, QString, QString, float> toto("Rousseau", "Woody", "wrousseau", "2015", 3.5);
+    std::tuple<QString, QString, QString, QString, float> toto("Rousseau", "Woody", "wrousseau", "2015", -3.5);
     setCustomer(toto);
 }
 

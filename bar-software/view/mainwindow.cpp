@@ -66,7 +66,8 @@ void MainWindow::searchChanged(const QString & text)
 
 void MainWindow::sendSearch()
 {
-    qDebug() << search;
+    controller->newText_Search(search);
+
 }
 
 void MainWindow::shortcut()
@@ -84,6 +85,11 @@ void MainWindow::updateSize()
 void MainWindow::resizeEvent(QResizeEvent *event)
 {
     this->updateSize();
+}
+
+void MainWindow::setController(Controller *controllerParam)
+{
+    controller = controllerParam;
 }
 
 

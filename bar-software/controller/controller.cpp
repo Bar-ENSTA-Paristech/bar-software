@@ -6,7 +6,7 @@ Controller::Controller()
     /*Call here functions for the default display : allCustomers, history, productTypes ... */
 }
 
-void Controller::newText_Search(QString viewSearch)
+void Controller::newText_Search(QString &viewSearch)
 {
     typedef std::tuple< std::string, std::string, std::string, float, unsigned > type_dbTuple;
     typedef std::tuple< QString, QString, QString, float, unsigned > type_viewTuple;

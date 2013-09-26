@@ -7,6 +7,7 @@ MultiList::MultiList(QWidget *parent, int column, int row)
     columns = column;
     rows = row;
     isInitialised = false;
+    isSortable = true;
     list = new QTableWidget(this);
     list->setSelectionBehavior(QAbstractItemView::SelectRows);
     list->setObjectName("multiListTable");
@@ -17,6 +18,7 @@ MultiList::MultiList(QWidget *parent, int column, int row)
     font.setPixelSize(15);
     list->setColumnCount(columns);
     emptyHeader = new QTableWidgetItem[1000];
+     list->horizontalHeader()->setSortIndicatorShown(true);
     setRows(rows);
 
     ascendingSort = true;
@@ -37,6 +39,8 @@ MultiList::MultiList(QWidget *parent, int column, int row)
 
 void MultiList::sortItems(int index)
 {
+    if(!isSortable)
+        return;
     if(index == sortColumn)
         ascendingSort = !ascendingSort;
     else
@@ -61,7 +65,6 @@ void MultiList::setRows(int numberOfRows)
     rows = numberOfRows;
     list->setRowCount(rows);
 
-    list->horizontalHeader()->setSortIndicatorShown(true);
     for(int i = 0 ; i< rows ; i++)
         list->setRowHeight(i, 20);
 

@@ -11,6 +11,7 @@
 #include <queue>
 #include "leftpart.h"
 #include "rightpart.h"
+#include "../controller/controller.h"
 
 extern QString GLOBAL_PATH;
 
@@ -20,6 +21,7 @@ class MainWindow : public QMainWindow
 public:
     MainWindow();
     void resizeEvent(QResizeEvent *event);
+    void setController(Controller *controllerParam);
 
 
 private:
@@ -32,6 +34,7 @@ private slots:
     void updateSize(); // after resize of window e.g
 
 private:
+    Controller* controller;
     QTimer* timerSearch;
     QTimer* timerAtStart;
     QString search;
