@@ -8,12 +8,10 @@ Controller::Controller()
 
 void Controller::newText_Search(QString &viewSearch)
 {
-    typedef std::tuple< std::string, std::string, std::string, float, unsigned > type_dbTuple;
-    typedef std::tuple< QString, QString, QString, float, unsigned > type_viewTuple;
 
-    std::string dbSearch;       // The search as send to the database
-    std::queue< std::tuple< std::string, std::string, std::string, float, unsigned > > dbQueue;     // Information returned from the database as a queue
-    std::queue< std::tuple< QString, QString, QString, float, unsigned > > viewQueue;
+    std::string dbSearch;                   // The search as send to the database
+    std::queue< type_dbTuple > dbQueue;      // Information returned from the database as a queue
+    std::queue< type_viewTuple > viewQueue;  // Information send to the view as a queue
     type_dbTuple tmp_dbTuple;
     type_viewTuple tmp_viewTuple;
 
@@ -23,7 +21,6 @@ void Controller::newText_Search(QString &viewSearch)
     /* Call query fonction from model to get the fields for view.
      * To begin The QString can be either name or firstName of the client : From the DB, query all fields :
      * Name, firstName, Categorie, Solde and Id
-     * Mehdi, tu décide si tu fais des returns ou des pointeurs (à mon avis cette 2e solution est mieux)
     */
 
         // Copy the dbQueue into the viewQueue
@@ -43,5 +40,14 @@ void Controller::newText_Search(QString &viewSearch)
 
 void Controller::newClic_Customer(unsigned int customerId)
 {
+    type_dbTuple tmp_dbTuple;   // Output for SQL request
+
+    /* SQL Request : type_dbTuple Query_dbFunction0( int customerId ); */
+    /* SQL request : std::string photoFilename = Query_dbFunction1(int customerId ) */
+
+        /* Create the customer */
+    curCustomer = Customer( "Vinzo", std::get<0>(tmp_dbTuple), std::get<1>(tmp_dbTuple), std::get<2>(tmp_dbTuple), std::get<3>(tmp_dbTuple));
+
+
 
 }

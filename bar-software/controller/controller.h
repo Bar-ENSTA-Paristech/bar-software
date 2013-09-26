@@ -9,7 +9,11 @@
 #include "../view/productschoices.h"
 #include "../view/history.h"
 
+#include "customer.h"
+#include "cart.h"
 
+typedef std::tuple< std::string, std::string, std::string, float, unsigned > type_dbTuple;
+typedef std::tuple< QString, QString, QString, float, unsigned > type_viewTuple;
 
 class Controller
 {
@@ -19,8 +23,8 @@ public:
     void newClic_Customer(unsigned int customerId);
     void newClic_CustomerPanel(unsigned int buttonId);
     void newClic_Cart(unsigned int buttonId);
-    void newClic_ProductTypes(QString productTypeName);
-    void newClic_Product(QString productName);
+    void newClic_ProductTypes(QString &productTypeName);
+    void newClic_Product(QString &productName);
 
 private:
         /* View objects */
@@ -29,6 +33,10 @@ private:
     CartDisplay* viewCartDisplay;
     ProductsChoices* viewProductsChoices;
     History* viewHistory;
+
+        /* Controller objects */
+    Customer curCustomer;
+    Cart curCart; // Should the Cart be a member of Customer ?
 
 
 

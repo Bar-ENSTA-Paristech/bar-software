@@ -3,8 +3,13 @@
 
 using namespace std;
 
+Customer::Customer()
+{
+}
+
 Customer::Customer(string _login, pair<string,string> _name, string _group, float _balance) : login(_login), name(_name), group(_group), balance(_balance)
 {
+
 }
 
 Customer::Customer(string _login, string _firstName, string _familyName, string _group, float _balance) : login(_login), balance(_balance), group(_group)
