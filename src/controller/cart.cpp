@@ -75,3 +75,19 @@ unsigned int Cart::getNumberOfProducts() const
 {
     return numberOfProducts;
 }
+
+void Cart::getList( std::queue< std::tuple < QString, float, unsigned > > &queue)
+{
+    typedef tuple<QString, float, unsigned > view_productTuple;
+
+    view_productTuple view_tmpProductInfo;
+
+    for (auto product : products )
+    {
+        get<0>(view_tmpProductInfo).fromStdString( product.first->getName() );
+        get<1>(view_tmpProductInfo) = product.first->getPrice();
+        get<2>(view_tmpProductInfo) = product.second;
+
+        queue.push(view_tmpProductInfo);
+    }
+}

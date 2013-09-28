@@ -30,6 +30,7 @@ int main(int argc, char *argv[])
     currentDir.cd("../bar-software/bar-software");
     #endif
     GLOBAL_PATH = currentDir.absolutePath()+"/";
+    qDebug() << GLOBAL_PATH;
 
     std::pair<std::string,std::string> name = {"Woody","Rousseau"};
     Customer cus("wrousseau",name,"2014");
@@ -51,7 +52,7 @@ int main(int argc, char *argv[])
     DB.closeDatabase();
 
     QApplication application(argc, argv);
-    QFile css(GLOBAL_PATH + "view/mainDesign.css");
+    QFile css(GLOBAL_PATH + "include/view/mainDesign.css");
     if(css.open(QIODevice::ReadOnly)) {
        application.setStyleSheet(css.readAll());
     }

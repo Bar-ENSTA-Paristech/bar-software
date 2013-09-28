@@ -11,7 +11,7 @@ class CartDisplay : public QFrame
     Q_OBJECT
 public:
     explicit CartDisplay(QWidget *parent = 0);
-    void setCart(std::queue< std::tuple<  > > & queue);
+    void setCart(std::queue< std::tuple<QString, float, unsigned int> > & queue);
     void setTotalPrice(float price);
 
 private:
