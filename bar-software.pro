@@ -56,8 +56,12 @@ FORMS    += \
 OTHER_FILES += \
     ui/view/mainDesign.css
 
+macx {
 QMAKE_CXXFLAGS += -std=c++11 -stdlib=libc++ -mmacosx-version-min=10.7
 LIBS += -stdlib=libc++ -mmacosx-version-min=10.7
+} else {
+  QMAKE_CXXFLAGS += -std=c++11
+}
 
 LIBS += -lsqlite3
 
