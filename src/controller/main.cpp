@@ -1,4 +1,4 @@
-#include "view/mainwindow.h"
+#include "mainwindow.h"
 #include "controller.h"
 #include <initializer_list>
 #include "customer.h"

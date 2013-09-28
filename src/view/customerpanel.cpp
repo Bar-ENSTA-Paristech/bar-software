@@ -72,6 +72,6 @@ void CustomerPanel::setCustomer(std::tuple< QString, QString, QString, QString, 
     else
         balance->setStyleSheet("color: black;");
 
-    photo->setPixmap(GLOBAL_PATH + "photos/"+ std::get<2>(tuple).toLower() + ".jpg");
+    photo->setPixmap(GLOBAL_PATH + "resources/photos/"+ std::get<2>(tuple).toLower() + ".jpg");
 
 }

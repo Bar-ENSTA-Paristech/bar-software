@@ -4,7 +4,7 @@
 #include <QFrame>
 #include <queue>
 #include <tuple>
-#include "../controller/cart.h"
+#include "cart.h"
 
 class CartDisplay : public QFrame
 {
