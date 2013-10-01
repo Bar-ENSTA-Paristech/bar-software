@@ -11,7 +11,7 @@
 #include <queue>
 #include "leftpart.h"
 #include "rightpart.h"
-#include "../controller/controller.h"
+#include "controller.h"
 
 extern QString GLOBAL_PATH;
 

@@ -7,7 +7,7 @@
 class Customer
 {
 public:
-    Customer() = delete;
+    Customer();
     Customer(std::string login, std::pair<std::string,std::string> name, std::string groupe = "", float balance = 0);
     Customer(std::string login, std::string firstName, std::string familyName, std::string groupe = "", float balance = 0);
     std::string getFirstName() const;

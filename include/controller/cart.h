@@ -5,6 +5,9 @@
 #include <map>
 #include <memory>
 #include <iostream>
+#include <queue>
+#include <QString>
+
 
 struct CartMapCompare {
   bool operator() (const std::shared_ptr<Product>& lhs, const std::shared_ptr<Product>& rhs) const
@@ -24,12 +27,14 @@ public:
     float getPrice() const;
     unsigned int getNumberOfProducts() const;
     void sortProducts();
+    void getList( std::queue< std::tuple < QString, float, unsigned > > &queue);
 
 private:
     std::map<std::shared_ptr<Product>, unsigned, CartMapCompare> products;
     unsigned int numberOfProducts;
     float price;
     unsigned int sizeOfCart; //usefull to set a bigger table for products
+
 };
 
 #endif // CART_H
