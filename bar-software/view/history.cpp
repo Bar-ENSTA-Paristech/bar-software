@@ -53,7 +53,7 @@ void History::setHistory(std::queue < std::tuple < QString, QString, QString, fl
     {
         delete itemList[i];
     }
-    if(isInitialised)
+    if(isInitialised && rows !=0)
         delete itemList;
     else
         isInitialised = true;
