@@ -5,7 +5,7 @@ CartDisplay::CartDisplay(QWidget *parent) :
 {
 }
 
-void CartDisplay::setCart(std::queue< std::tuple< > > & queue)
+void CartDisplay::setCart(std::queue< std::tuple<QString, float, unsigned int> > & queue)
 {
 
 }
