@@ -32,7 +32,7 @@ int Database::openDatabase()
 
     std::cout<<"Tentative d'ouverture de db"<<std::endl;
     sqlite3* DB;
-    char* DBfilename="file:../bar.db";
+    char* DBfilename="file:bar.db";
     int coderesult=sqlite3_open(DBfilename //Database filename
                                 ,&DB);//adresse mémoire de la BDD
 
@@ -173,7 +173,7 @@ type_dbQueue Database::searchCustomer(std::string &string)
 
     //Implémentation de la query et execution de celle ci
     query.setQuery(queryString);
-    query.setVerbose(0);
+    query.setVerbose(1);
     executeQuery(query);
 
     //Récupération des données renvoyées par la db que l'on met dans une queue<string>

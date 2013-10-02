@@ -49,7 +49,11 @@ int main(int argc, char *argv[])
     Database DB;
     DB.openDatabase();
     DB.initializeDatabaseForm();
+    DB.getCustomerFromId(152);
+    std::string kikoo="";
+    DB.searchCustomer(kikoo);
     DB.closeDatabase();
+
 
     QApplication application(argc, argv);
     QFile css(GLOBAL_PATH + "include/view/mainDesign.css");
