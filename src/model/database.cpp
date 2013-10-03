@@ -141,7 +141,7 @@ int Database::initializeDatabaseForm()
     return coderesult;
 }
 
-type_dbQueue Database::searchCustomer(std::string &string)
+type_customerdbQueue Database::searchCustomer(std::string &string)
 {
     std::string searchString=string;
     std::string queryString="";
@@ -156,11 +156,11 @@ type_dbQueue Database::searchCustomer(std::string &string)
 
     unsigned i;
     unsigned j=0;
-    type_dbQueue *result(0);
-    result=new type_dbQueue;
+    type_customerdbQueue *result(0);
+    result=new type_customerdbQueue;
 
-    type_dbTuple *customer(0);
-    customer=new type_dbTuple;
+    type_customerdbTuple *customer(0);
+    customer=new type_customerdbTuple;
 
     //Formation du string de query adapté
     queryString+=" SELECT * FROM notes WHERE nom LIKE '";
@@ -316,7 +316,7 @@ type_histdbQueue Database::getLastOperations()
 
 }
 
-type_dbTuple Database::getCustomerFromId(int customerId)
+type_customerdbTuple Database::getCustomerFromId(int customerId)
 {
     std::string queryString="";
 
@@ -334,8 +334,8 @@ type_dbTuple Database::getCustomerFromId(int customerId)
     unsigned i;
     unsigned j=0;
 
-    type_dbTuple *customer(0);
-    customer=new type_dbTuple;
+    type_customerdbTuple *customer(0);
+    customer=new type_customerdbTuple;
 
     //Formation du string de query adapté
     queryString+=" SELECT * FROM notes WHERE client_id=";
