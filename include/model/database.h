@@ -28,17 +28,50 @@ public:
     int executeQuery (Query &query);
     int closeDatabase();
     int initializeDatabaseForm();
+
     type_customerdbQueue searchCustomer(std::string &string);//Méthode qui renvoie une queue de tuple correspondant aux infos des consommateurs dont le nom correspond à la recherche
+    //OK (Fonctionne - a tester plus en profondeur)
 
-    type_customerdbTuple getCustomerFromId(int id);//Méthode recevant l'id d'un client et renvoyant le tuple de ses infos
+    type_customerdbTuple getCustomerFromId(unsigned id);//Méthode recevant l'id d'un client et renvoyant le tuple de ses infos
+    //OK (Fonctionne - a tester plus en profondeur)
 
-    type_consodbQueue getProductsFromCategory(unsigned);//Méthode recevant un unsigned correspondant à une catégorie de conso et renvoie toutes les consos correspondates
+    type_consodbQueue getProductsFromCategory(unsigned cat);//Méthode recevant un unsigned correspondant à une catégorie de conso et renvoie toutes les consos correspondates
+    //OK (Fonctionne - a tester plus en profondeur)
 
-    type_consodbTuple getProductFromId(unsigned);//Méthode recevant l'id d'une conso et renvoyant le tuple de ses infos
+    type_consodbTuple getProductFromId(unsigned id);//Méthode recevant l'id d'une conso et renvoyant le tuple de ses infos
+    //Implémentée / Non testée (SegFault si resultat vide)
 
     type_histdbQueue getLastOperations(); //Méthode qui récupère les 15 dernières opérations effectuées
 
     type_histdbQueue getCustomerHist(unsigned);//Renvoie l'historique d'un client en ayant recu son id
+
+    /* (tuple a définir) getCategories();  */
+
+    int editCustomerAccount (type_customerdbTuple); //Méthode générique qui met à jour TOUTES les informations du client
+    //Implémentée / Non testée
+
+    int createCustomerAccount (type_customerdbTuple);// Méthode créant un nouveau champ dans la Table 'notes' de la BDD/ Par défaut l'id envoyé vaut -1
+    //Implémentée / Non testée
+
+    int deleteCustomerAccount (int id);// Supprime le compte d'un client ainsi que toutes ses opérations , [les infos seront transférées dans une BDD séparée (si possible), l'opération est protégée = effectué par le controleur]
+    //Implémentée / Non testée
+
+    int createConso (type_consodbTuple);//Méthode créant un nouveau champ dans consos /Par défaut le nouvel id envoyé par le controlleur vaut -1
+
+    int deleteConso (int id);
+
+    int editConso (type_consodbTuple);//Méthode générique qui met à jour TOUTES les informations de la conso
+    //Rq : penser à Maj prix_consos
+
+    int createCategory (/*tuple à définir*/);//Méthode créant un nouveau champ dans categories /Par défaut le nouvel id vaut -1
+
+    int editCategory (/*même tuple*/);
+
+    int deleteCategory (/*idem*/);
+
+
+
+    int addHist (type_histdbTuple);
 
 private:
 

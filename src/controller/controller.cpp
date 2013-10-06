@@ -8,8 +8,8 @@ Controller::Controller()
     /*Call here functions for the default display : allCustomers, history, productTypes ... */
 }
 
-//void Controller::newText_Search(QString &viewSearch)
-//{
+void Controller::newText_Search(QString &viewSearch)
+{
 
 //    string dbSearch;
 //    db_customerTuple db_tmpCurstomerInfo;
@@ -33,7 +33,7 @@ Controller::Controller()
 //        get<4>(view_tmpCustomerInfo) = get<5>(db_tmpCurstomerInfo);
 //        viewQueue.push(view_tmpCustomerInfo);
 //        dbQueue.pop();
-//    }
+    }
 
 //    viewSearchResults->setSearchResults( viewQueue );
 //}

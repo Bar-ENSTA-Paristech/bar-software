@@ -1,6 +1,5 @@
 #include <iostream>
 #include "database.h"
-#include "sqlite3.h"
 #include <cstring>
 #include "QDebug"
 #include <tuple>
@@ -14,7 +13,7 @@ std::queue<std::string> *queryResult(0);
 //On définit de même queue dans l'espace global pour que celle-ci ne soit pas locale du callback.
 //
 // queue correspond à la file des résultats renvoyés par la BDD, si celle-ci n'est pas vide lors de l'execution d'une nouvelle requête,
-//cela signifie que toutes les informations n'ont pas encore été remises au controleur
+//cela signifie que toutes les informations n'ont pas encore été remises au controleur (sécurité à implémenter)
 //
 std::queue<std::string> queue;
 
@@ -133,7 +132,7 @@ int Database::initializeDatabaseForm()
     coderesult+=executeQuery(test_q);
     test_q.setQuery("CREATE TABLE IF NOT EXISTS `types_conso` (`type_conso_id` int(11) NOT NULL,`nom_type` varchar(25) NOT NULL);");
     coderesult+=executeQuery(test_q);
-    /* test_q.setQuery("INSERT INTO `notes` (`client_id`, `nom`, `prenom`, `type`, `compte`, `vip`) VALUES(152, 'Toof', 'Gui', 5, -4, 0),(3, 'Manchoule', 'Shimone', 1, 3.3, 0);");
+    /*test_q.setQuery("INSERT INTO `consos` (`conso_id`, `nom`,`type`, `prix`, `stock`) VALUES(152, 'Biere', 5, 4.2, 120);");
     coderesult+=executeQuery(test_q);*/
 
     //test_q.setVerbose(1);
@@ -228,6 +227,8 @@ type_customerdbQueue Database::searchCustomer(std::string &string)
 
 type_consodbQueue Database::getProductsFromCategory(unsigned categorie)
 {
+    //On doit transformer l'int categorie en string pour effectuer la requête
+    std::string idString = static_cast<std::ostringstream*>( &(std::ostringstream() << categorie) )->str();
     std::string queryString;
     //std::string str;
     Query query;
@@ -249,7 +250,7 @@ type_consodbQueue Database::getProductsFromCategory(unsigned categorie)
 
     //Formation du string de query adapté
     queryString+=" SELECT * FROM consos WHERE type=";
-    queryString+=categorie;
+    queryString+=idString;
     queryString+=" ORDER BY nom ASC;";
 
     //Implémentation de la query et execution de celle ci
@@ -311,12 +312,91 @@ type_consodbQueue Database::getProductsFromCategory(unsigned categorie)
     return *result;
 }
 
-type_histdbQueue Database::getLastOperations()
+type_consodbTuple Database::getProductFromId(unsigned id)
 {
+    //On doit transformer l'int id en string pour effectuer la requête
+    std::string idString = static_cast<std::ostringstream*>( &(std::ostringstream() << id) )->str();
+    std::string queryString;
+    //std::string str;
+    Query query;
 
+    type_consodbTuple *conso(0);
+    conso=new type_consodbTuple;
+
+    std::queue<std::string> *queryResultFunction(0);
+    queryResultFunction = new std::queue<std::string> ;
+
+    //queryResult n'est alloué que dans les fonctions l'utilisant
+    queryResult = new std::queue<std::string> ;
+
+    unsigned i;
+
+    //Formation du string de query adapté
+    queryString+=" SELECT * FROM consos WHERE conso_id=";
+    queryString+=idString;
+    queryString+=" ORDER BY nom ASC;";
+
+    //Implémentation de la query et execution de celle ci
+    query.setQuery(queryString);
+    query.setVerbose(1);
+    executeQuery(query);
+
+    //Récupération des données renvoyées par la db que l'on met dans une queue<string>
+    *queryResultFunction=*queryResult;
+
+    //str=queryResultFunction->front();
+    //std::cout<<str<<std::endl;
+    //std::cout<<queryResultFunction->size()<<std::endl;
+
+    //Il faut désormais caster le queue <string> dans un queue<tuple< // >> que l'on va return
+
+    //Pour cela on utilise une list de string
+    std::vector<std::string> vectorFromQueue;
+
+    //Boucle sur tout le resultat (L'emploi de while n'est peut être pas le plus judicieux)
+        while (queryResultFunction->front()!= "\n"||queryResultFunction->size()>1)
+        {
+            //La ligne suivante pop les noms des colonnes dans le cas ou elles sont push initialement
+            //queryResultFunction->pop();
+            vectorFromQueue.push_back(queryResultFunction->front());
+            //On supprime l'élément qui vient d'être extrait.
+            queryResultFunction->pop();
+        }
+
+        //On parse les std::string en float et unsigned pour Balance et Id
+        float recuperatedPrice;
+        unsigned recuperatedId;
+        unsigned recuperatedStock;
+        unsigned recuperatedCategory;
+
+        std::istringstream(vectorFromQueue[3]) >> recuperatedPrice;
+        std::istringstream(vectorFromQueue[0]) >> recuperatedId;
+        std::istringstream(vectorFromQueue[4]) >> recuperatedStock;
+        std::istringstream(vectorFromQueue[2]) >> recuperatedCategory;
+
+        *conso = std::make_tuple (vectorFromQueue[1],recuperatedCategory,recuperatedPrice,recuperatedStock,recuperatedId);
+
+        //On supprime le dernier element du résultat unique , le parser '\n'
+        queryResultFunction->pop();
+
+    return *conso;
 }
 
-type_customerdbTuple Database::getCustomerFromId(int customerId)
+type_histdbQueue Database::getLastOperations()
+{
+    //Utiliser des jointures
+    // From client_id -> nom + prénom
+    // From conso_id -> conso + prix
+}
+
+type_histdbQueue Database::getCustomerHist(unsigned customerId)
+{
+    //Utiliser des jointures
+    // From client_id -> nom + prénom
+    // From conso_id -> conso + prix
+}
+
+type_customerdbTuple Database::getCustomerFromId(unsigned customerId)
 {
     std::string queryString="";
 
@@ -393,4 +473,96 @@ type_customerdbTuple Database::getCustomerFromId(int customerId)
     }
 
     return *customer;
+}
+
+int Database::createCustomerAccount(type_customerdbTuple tuple)
+{
+    std::string nom,prenom;
+    int code;
+    float balance;
+    std::string categorie;
+    std::string queryString="";
+    Query query;
+
+    nom=std::get<0>(tuple);
+    prenom=std::get<1>(tuple);
+    categorie=std::get<2>(tuple);
+    balance=std::get<3>(tuple);
+
+    //Il faut transfomer les int et float en std::string
+    //std::string categorieString = static_cast<std::ostringstream*>( &(std::ostringstream() << categorie) )->str();
+    std::string balanceString = static_cast<std::ostringstream*>( &(std::ostringstream() << balance) )->str();
+
+    queryString+="INSERT INTO notes (nom,prenom,type,compte) VALUES (";
+    queryString+=nom;
+    queryString+=", ";
+    queryString+=prenom;
+    queryString+=", ";
+    queryString+=categorie;
+    queryString+=", ";
+    queryString+=balanceString;
+    queryString+=");";
+
+    query.setQuery(queryString);
+    query.setVerbose(1);
+    code=executeQuery(query);
+
+    return (code);
+}
+
+int Database::editCustomerAccount(type_customerdbTuple tuple)
+{
+    std::string categorie,nom,prenom;
+    int code;
+    unsigned id;
+    float balance;
+    std::string queryString="";
+    Query query;
+
+    nom=std::get<0>(tuple);
+    prenom=std::get<1>(tuple);
+    categorie=std::get<2>(tuple);
+    balance=std::get<3>(tuple);
+    id=std::get<4>(tuple);
+
+    //std::string categorieString = static_cast<std::ostringstream*>( &(std::ostringstream() << categorie) )->str();
+    std::string balanceString = static_cast<std::ostringstream*>( &(std::ostringstream() << balance) )->str();
+    std::string idString = static_cast<std::ostringstream*>( &(std::ostringstream() << id) )->str();
+
+    queryString+="UPDATE notes";
+    queryString+="SET nom=";
+    queryString+=nom;
+    queryString+=", prenom=";
+    queryString+=prenom;
+    queryString+=", type=";
+    queryString+=categorie;
+    queryString+=", balance=";
+    queryString+=balanceString;
+    queryString+="WHERE client_id=";
+    queryString+=idString;
+    queryString+=";";
+
+    query.setQuery(queryString);
+    query.setVerbose(1);
+    code=executeQuery(query);
+
+    return (code);
+}
+
+int Database::deleteCustomerAccount(int id)
+{
+    int code;
+    Query query;
+    std::string queryString="";
+    std::string idString = static_cast<std::ostringstream*>( &(std::ostringstream() << id) )->str();
+
+    queryString+="DELETE FROM notes WHERE client_id=";
+    queryString+=idString;
+    queryString+=";";
+
+    query.setQuery(queryString);
+    query.setVerbose(1);
+    code=executeQuery(query);
+
+    return (code);
 }

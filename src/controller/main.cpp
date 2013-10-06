@@ -50,6 +50,8 @@ int main(int argc, char *argv[])
     DB.openDatabase();
     DB.initializeDatabaseForm();
     DB.getCustomerFromId(152);
+    DB.getProductsFromCategory(5);
+    //DB.getProductFromId(151);
     std::string kikoo="";
     DB.searchCustomer(kikoo);
     DB.closeDatabase();
