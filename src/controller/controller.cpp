@@ -10,11 +10,12 @@ Controller::Controller()
 
 void Controller::newText_Search(QString &viewSearch)
 {
-/*
+
     string dbSearch;
-    db_customerTuple db_tmpCurstomerInfo;
+    type_customerdbTuple db_tmpCurstomerInfo;
     view_customerTuple view_tmpCustomerInfo;
-    db_customerQueue dbQueue;                   // Information returned from the database as a queue
+    //db_customerQueue dbQueue;                   // Information returned from the database as a queue
+    type_customerdbQueue dbQueue;
     view_customerQueue viewQueue;               // Information send to the view as a queue
 
 
@@ -35,7 +36,7 @@ void Controller::newText_Search(QString &viewSearch)
         dbQueue.pop();
     }
 
-    viewSearchResults->setSearchResults( viewQueue );*/
+    viewSearchResults->setSearchResults( viewQueue );
 }
 
 //void Controller::newClic_Customer(unsigned int customerId)
