@@ -51,10 +51,10 @@ int main(int argc, char *argv[])
     DB.initializeDatabaseForm();
     DB.getCustomerFromId(152);
     DB.getProductsFromCategory(5);
-    //DB.getProductFromId(151);
+    DB.getProductFromId(1);
     std::string kikoo="";
     DB.searchCustomer(kikoo);
-    //))))))))))))DB.closeDatabase();
+    DB.closeDatabase();
 
 
     QApplication application(argc, argv);

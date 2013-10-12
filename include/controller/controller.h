@@ -19,8 +19,8 @@
 
 #include "../model/database.h"
 
-    //TUPLE model du consommateur : Nom, Prénom , Catégorie , balance , id
-typedef std::tuple<  std::string, std::string, std::string, float, unsigned > db_customerTuple;
+    //TUPLE model du consommateur : Nom, Prénom ,Login, Catégorie , balance , id
+typedef std::tuple<  std::string, std::string, std::string , std::string, float, unsigned > db_customerTuple;
     //TUPLE view du consommateur : Nom, Prénom , Catégorie , balance , id
 typedef std::tuple< QString, QString, QString, float, unsigned > view_customerTuple;
     //TUPLE model du produit : Produit, Catégorie , prix ,stock , id

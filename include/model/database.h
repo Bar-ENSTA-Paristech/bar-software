@@ -39,7 +39,7 @@ public:
     //OK (Fonctionne - a tester plus en profondeur)
 
     type_consodbTuple getProductFromId(unsigned id);//Méthode recevant l'id d'une conso et renvoyant le tuple de ses infos
-    //Implémentée / Non testée (SegFault si resultat vide)
+    //OK (Fonctionne - a tester plus en profondeur)
 
     type_histdbQueue getLastOperations(); //Méthode qui récupère les 15 dernières opérations effectuées
 
