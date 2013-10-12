@@ -54,7 +54,7 @@ int main(int argc, char *argv[])
     //DB.getProductFromId(151);
     std::string kikoo="";
     DB.searchCustomer(kikoo);
-    DB.closeDatabase();
+    //))))))))))))DB.closeDatabase();
 
 
     QApplication application(argc, argv);
