@@ -126,15 +126,17 @@ int Database::initializeDatabaseForm()
     coderesult+=executeQuery(test_q);
     test_q.setQuery("CREATE TABLE IF NOT EXISTS `historique` (`his_id` int(11) NOT NULL,`client_id` int(11) NOT NULL,`conso_id` int(11) NOT NULL,`date_conso` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP);");
     coderesult+=executeQuery(test_q);
-    test_q.setQuery("CREATE TABLE IF NOT EXISTS `notes` (`client_id` int(11) NOT NULL,`nom` varchar(25) NOT NULL,`prenom` varchar(25) NOT NULL,`type` int(11) NOT NULL,`compte` float NOT NULL,`vip` tinyint(1) NOT NULL) ;");
+    test_q.setQuery("CREATE TABLE IF NOT EXISTS `notes` (`client_id` int(11) NOT NULL,`nom` varchar(25) NOT NULL,`prenom` varchar(25) NOT NULL,`login` varchar(25) NOT NULL,`type` int(11) NOT NULL,`compte` float NOT NULL,`vip` tinyint(1)) ;");
     coderesult+=executeQuery(test_q);
     test_q.setQuery("CREATE TABLE IF NOT EXISTS `prix_consos` (`id_conso` int(11) NOT NULL,`prix_precedent` float DEFAULT NULL,`date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP);");
     coderesult+=executeQuery(test_q);
     test_q.setQuery("CREATE TABLE IF NOT EXISTS `types_conso` (`type_conso_id` int(11) NOT NULL,`nom_type` varchar(25) NOT NULL);");
     coderesult+=executeQuery(test_q);
-    /*test_q.setQuery("INSERT INTO `consos` (`conso_id`, `nom`,`type`, `prix`, `stock`) VALUES(152, 'Biere', 5, 4.2, 120);");
-    coderesult+=executeQuery(test_q);*/
-
+    //Valeurs de test//
+    test_q.setQuery("INSERT INTO `consos` (`conso_id`, `nom`,`type`, `prix`, `stock`) VALUES(152, 'Kro 50 CL', 5, 2.4, 120),(1, 'Maredsous', 2, 2.3, 120);");
+    coderesult+=executeQuery(test_q);
+    test_q.setQuery("INSERT INTO `notes` (`client_id`, `nom`,`prenom`,`login` ,`type`, `compte`,`vip`) VALUES(1,'Simon', 'Manchoule', 'smanchel',1, 2.3,0),(12,'Guitoof', 'Diallouze', 'diallo',1, 12.3,1);");
+    coderesult+=executeQuery(test_q);
     //test_q.setVerbose(1);
 
     return coderesult;
@@ -209,10 +211,10 @@ type_customerdbQueue Database::searchCustomer(std::string &string)
             float recuperatedBalance;
             int recuperatedId;
 
-            std::istringstream(vectorFromQueue[4]) >> recuperatedBalance;
+            std::istringstream(vectorFromQueue[5]) >> recuperatedBalance;
             std::istringstream(vectorFromQueue[0]) >> recuperatedId;
 
-            *customer = std::make_tuple (vectorFromQueue[1],vectorFromQueue[2],vectorFromQueue[3],recuperatedBalance,recuperatedId);
+            *customer = std::make_tuple (vectorFromQueue[1],vectorFromQueue[2],vectorFromQueue[4],recuperatedBalance,recuperatedId,vectorFromQueue[3]);
 
             //On supprime le dernier element du résultat unique , le parser '\n'
             queryResultFunction->pop();
@@ -354,30 +356,30 @@ type_consodbTuple Database::getProductFromId(unsigned id)
     std::vector<std::string> vectorFromQueue;
 
     //Boucle sur tout le resultat (L'emploi de while n'est peut être pas le plus judicieux)
-        while (queryResultFunction->front()!= "\n"||queryResultFunction->size()>1)
-        {
-            //La ligne suivante pop les noms des colonnes dans le cas ou elles sont push initialement
-            //queryResultFunction->pop();
-            vectorFromQueue.push_back(queryResultFunction->front());
-            //On supprime l'élément qui vient d'être extrait.
-            queryResultFunction->pop();
-        }
-
-        //On parse les std::string en float et unsigned pour Balance et Id
-        float recuperatedPrice;
-        unsigned recuperatedId;
-        unsigned recuperatedStock;
-        unsigned recuperatedCategory;
-
-        std::istringstream(vectorFromQueue[3]) >> recuperatedPrice;
-        std::istringstream(vectorFromQueue[0]) >> recuperatedId;
-        std::istringstream(vectorFromQueue[4]) >> recuperatedStock;
-        std::istringstream(vectorFromQueue[2]) >> recuperatedCategory;
-
-        *conso = std::make_tuple (vectorFromQueue[1],recuperatedCategory,recuperatedPrice,recuperatedStock,recuperatedId);
-
-        //On supprime le dernier element du résultat unique , le parser '\n'
+    while (queryResultFunction->front()!= "\n"||queryResultFunction->size()>1)
+    {
+        //La ligne suivante pop les noms des colonnes dans le cas ou elles sont push initialement
+        //queryResultFunction->pop();
+        vectorFromQueue.push_back(queryResultFunction->front());
+        //On supprime l'élément qui vient d'être extrait.
         queryResultFunction->pop();
+    }
+
+    //On parse les std::string en float et unsigned pour Balance et Id
+    float recuperatedPrice;
+    unsigned recuperatedId;
+    unsigned recuperatedStock;
+    unsigned recuperatedCategory;
+
+    std::istringstream(vectorFromQueue[3]) >> recuperatedPrice;
+    std::istringstream(vectorFromQueue[0]) >> recuperatedId;
+    std::istringstream(vectorFromQueue[4]) >> recuperatedStock;
+    std::istringstream(vectorFromQueue[2]) >> recuperatedCategory;
+
+    *conso = std::make_tuple (vectorFromQueue[1],recuperatedCategory,recuperatedPrice,recuperatedStock,recuperatedId);
+
+    //On supprime le dernier element du résultat unique , le parser '\n'
+    queryResultFunction->pop();
 
     return *conso;
 }
@@ -460,10 +462,10 @@ type_customerdbTuple Database::getCustomerFromId(unsigned customerId)
             float recuperatedBalance;
             int recuperatedId;
 
-            std::istringstream(vectorFromQueue[4]) >> recuperatedBalance;
+            std::istringstream(vectorFromQueue[5]) >> recuperatedBalance;
             std::istringstream(vectorFromQueue[0]) >> recuperatedId;
 
-            *customer = std::make_tuple (vectorFromQueue[1],vectorFromQueue[2],vectorFromQueue[3],recuperatedBalance,recuperatedId);
+            *customer = std::make_tuple (vectorFromQueue[1],vectorFromQueue[2],vectorFromQueue[4],recuperatedBalance,recuperatedId,vectorFromQueue[3]);
 
             //On supprime le dernier element du résultat unique , le parser '\n'
             queryResultFunction->pop();
