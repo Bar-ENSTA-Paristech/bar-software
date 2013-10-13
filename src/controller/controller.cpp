@@ -10,7 +10,7 @@ Controller::Controller()
 
 void Controller::newText_Search(QString &viewSearch)
 {
-
+    database.openDatabase();
     string dbSearch;
     type_customerdbTuple db_tmpCurstomerInfo;
     view_customerTuple view_tmpCustomerInfo;
@@ -22,10 +22,10 @@ void Controller::newText_Search(QString &viewSearch)
     dbSearch = viewSearch.toStdString();
 
         // Get customer information corresponding to the search from model
-    dbQueue = database->searchCustomer(dbSearch);
+    dbQueue = database.searchCustomer(dbSearch);
 
         // Copy the dbQueue into the viewQueue
-    while( dbQueue.empty() ){
+    while( !dbQueue.empty() ){
         db_tmpCurstomerInfo = dbQueue.front();
         get<0>(view_tmpCustomerInfo).fromStdString( get<0>(db_tmpCurstomerInfo) ) ;
         get<1>(view_tmpCustomerInfo).fromStdString( get<1>(db_tmpCurstomerInfo) );

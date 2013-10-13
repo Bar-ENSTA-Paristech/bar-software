@@ -76,6 +76,12 @@ static int callback(void *NotUsed, int argc, char **argv, char **azColName){
     return 0;
 }
 
+void clear( std::queue<std::string> &q )
+{
+    std::queue<std::string> empty;
+    std::swap( q, empty );
+}
+
 int Database::executeQuery(Query &_query)
 {
     std::string query_string=_query.getQuery();
@@ -192,41 +198,46 @@ type_customerdbQueue Database::searchCustomer(std::string &string)
     std::vector<std::string> vectorFromQueue;
 
     //Boucle sur tout le resultat (L'emploi de while n'est peut être pas le plus judicieux)
-    for (i=0;i<=queryResultFunction->size();i++)
+    if (queryResultFunction->size()!=0)
     {
-        while(queryResultFunction->size()>1)
+        for (i=0;i<=queryResultFunction->size();i++)
         {
-            //Travail des données d'une personne unique
-
-            //Remplissage de Result
-
-            while (queryResultFunction->front()!= "\n"||queryResultFunction->size()>1)
+            while(!queryResultFunction->empty())
             {
-                //La ligne suivante pop les noms des colonnes dans le cas ou elles sont push initialement
-                //queryResultFunction->pop();
-                vectorFromQueue.push_back(queryResultFunction->front());
-                //On supprime l'élément qui vient d'être extrait.
+                //Travail des données d'une personne unique
+
+                //Remplissage de Result
+
+                while (queryResultFunction->front()!= "\n"&& !queryResultFunction->empty())
+                {
+                    //La ligne suivante pop les noms des colonnes dans le cas ou elles sont push initialement
+                    //queryResultFunction->pop();
+                    vectorFromQueue.push_back(queryResultFunction->front());
+                    //On supprime l'élément qui vient d'être extrait.
+                    queryResultFunction->pop();
+                }
+
+                //On parse les std::string en float et unsigned pour Balance et Id
+                float recuperatedBalance;
+                int recuperatedId;
+
+                std::istringstream(vectorFromQueue[5]) >> recuperatedBalance;
+                std::istringstream(vectorFromQueue[0]) >> recuperatedId;
+
+                *customer = std::make_tuple (vectorFromQueue[1],vectorFromQueue[2],vectorFromQueue[4],recuperatedBalance,recuperatedId,vectorFromQueue[3]);
+
+                //On supprime le dernier element du résultat unique , le parser '\n'
                 queryResultFunction->pop();
+                result->push(*customer);
+                // L'int j correspond à l'index dans la queue , il est incrémenté a chaque boucle sur une personne
+                j++;
             }
-
-            //On parse les std::string en float et unsigned pour Balance et Id
-            float recuperatedBalance;
-            int recuperatedId;
-
-            std::istringstream(vectorFromQueue[5]) >> recuperatedBalance;
-            std::istringstream(vectorFromQueue[0]) >> recuperatedId;
-
-            *customer = std::make_tuple (vectorFromQueue[1],vectorFromQueue[2],vectorFromQueue[4],recuperatedBalance,recuperatedId,vectorFromQueue[3]);
-
-            //On supprime le dernier element du résultat unique , le parser '\n'
-            queryResultFunction->pop();
-            result->push(*customer);
-            // L'int j correspond à l'index dans la queue , il est incrémenté a chaque boucle sur une personne
-            j++;
         }
     }
-
+    vectorFromQueue.clear();
+    clear(queue);
     return *result;
+
 }
 
 type_consodbQueue Database::getProductsFromCategory(unsigned categorie)
@@ -277,13 +288,13 @@ type_consodbQueue Database::getProductsFromCategory(unsigned categorie)
     //Boucle sur tout le resultat (L'emploi de while n'est peut être pas le plus judicieux)
     for (i=0;i<=queryResultFunction->size();i++)
     {
-        while(queryResultFunction->size()>1)
+        while(!queryResultFunction->empty())
         {
             //Travail des données d'une personne unique
 
             //Remplissage de Result
 
-            while (queryResultFunction->front()!= "\n"||queryResultFunction->size()>1)
+            while (queryResultFunction->front()!= "\n"&&!queryResultFunction->empty())
             {
                 //La ligne suivante pop les noms des colonnes dans le cas ou elles sont push initialement
                 //queryResultFunction->pop();
@@ -312,7 +323,8 @@ type_consodbQueue Database::getProductsFromCategory(unsigned categorie)
             j++;
         }
     }
-
+    clear(queue);
+    vectorFromQueue.clear();
     return *result;
 }
 
@@ -388,7 +400,8 @@ type_consodbTuple Database::getProductFromId(unsigned id)
     else
     {
     }
-
+    clear(queue);
+    vectorFromQueue.clear();
     return *conso;
 
 }
@@ -452,13 +465,13 @@ type_customerdbTuple Database::getCustomerFromId(unsigned customerId)
     //Boucle sur tout le resultat (L'emploi de while n'est peut être pas le plus judicieux)
     if (queryResultFunction->size()!=0)
     {
-        while(queryResultFunction->front()!="\n" && queryResultFunction->size()>1)
+        while(queryResultFunction->front()!="\n" && !queryResultFunction->empty())
         {
             //Travail des données d'une personne unique
 
             //Remplissage de Result
 
-            while (queryResultFunction->front()!= "\n"||queryResultFunction->size()>1)
+            while (queryResultFunction->front()!= "\n"&& !queryResultFunction->empty())
             {
                 //La ligne suivante pop les noms des colonnes dans le cas ou elles sont push initialement
                 //queryResultFunction->pop();
@@ -483,6 +496,12 @@ type_customerdbTuple Database::getCustomerFromId(unsigned customerId)
         }
     }
 
+    else
+    {
+
+    }
+    vectorFromQueue.clear();
+    clear(queue);
     return *customer;
 }
 

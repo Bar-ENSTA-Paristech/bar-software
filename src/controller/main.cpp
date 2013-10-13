@@ -52,7 +52,7 @@ int main(int argc, char *argv[])
     DB.getCustomerFromId(152);
     DB.getProductsFromCategory(5);
     DB.getProductFromId(1);
-    std::string kikoo="";
+    std::string kikoo="s";
     DB.searchCustomer(kikoo);
     DB.closeDatabase();
 

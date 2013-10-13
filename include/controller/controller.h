@@ -63,7 +63,7 @@ private:
     Cart * curCart; // Should the Cart be a member of Customer ?
 
         /* Model objects */
-    Database * database;
+    Database database;
 
 
 
