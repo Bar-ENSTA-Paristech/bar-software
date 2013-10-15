@@ -130,7 +130,7 @@ int Database::initializeDatabaseForm()
     coderesult+=executeQuery(test_q);
     test_q.setQuery("CREATE TABLE IF NOT EXISTS `consos` (`conso_id` unsigned int(11) NOT NULL,`nom` varchar(25) NOT NULL DEFAULT 'NULL',`type` int(11) DEFAULT NULL,`prix` float DEFAULT NULL,`stock` int(11) DEFAULT NULL);");
     coderesult+=executeQuery(test_q);
-    test_q.setQuery("CREATE TABLE IF NOT EXISTS `historique` (`his_id` int(11) NOT NULL,`client_id` int(11) NOT NULL,`conso_id` int(11) NOT NULL,`date_conso` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP);");
+    test_q.setQuery("CREATE TABLE IF NOT EXISTS `historique` (`his_id` int(11) NOT NULL,`client_id` int(11) NOT NULL,`conso_id` int(11) NOT NULL,`conso_price` float DEFAULT NULL,`date_conso` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP);");
     coderesult+=executeQuery(test_q);
     test_q.setQuery("CREATE TABLE IF NOT EXISTS `notes` (`client_id` int(11) NOT NULL,`nom` varchar(25) NOT NULL,`prenom` varchar(25) NOT NULL,`login` varchar(25) NOT NULL,`type` int(11) NOT NULL,`compte` float NOT NULL,`vip` tinyint(1)) ;");
     coderesult+=executeQuery(test_q);
@@ -139,12 +139,14 @@ int Database::initializeDatabaseForm()
     test_q.setQuery("CREATE TABLE IF NOT EXISTS `types_conso` (`type_conso_id` int(11) NOT NULL,`nom_type` varchar(25) NOT NULL);");
     coderesult+=executeQuery(test_q);
     //Valeurs de test//
-    /*
-     test_q.setQuery("INSERT INTO `consos` (`conso_id`, `nom`,`type`, `prix`, `stock`) VALUES(152, 'Kro 50 CL', 5, 2.4, 120),(1, 'Maredsous', 2, 2.3, 120);");
+     /*test_q.setQuery("INSERT INTO `consos` (`conso_id`, `nom`,`type`, `prix`, `stock`) VALUES(152, 'Kro 50 CL', 5, 2.4, 120),(1, 'Maredsous', 2, 2.3, 120);");
     coderesult+=executeQuery(test_q);
     test_q.setQuery("INSERT INTO `notes` (`client_id`, `nom`,`prenom`,`login` ,`type`, `compte`,`vip`) VALUES(1,'Simon', 'Manchoule', 'smanchel',1, 2.3,0),(12,'Guitoof', 'Diallouze', 'diallo',1, 12.3,1);");
     coderesult+=executeQuery(test_q);
+    test_q.setQuery("INSERT INTO `historique` (`his_id`, `client_id`,`conso_id`,`conso_price` ,`date_conso`) VALUES(1,1,152,2.4,CURRENT_TIMESTAMP);");
+    coderesult+=executeQuery(test_q);
     */
+
     //test_q.setVerbose(1);
 
     return coderesult;
@@ -275,7 +277,6 @@ type_consodbQueue Database::getProductsFromCategory(unsigned categorie)
 
     //Récupération des données renvoyées par la db que l'on met dans une queue<string>
     *queryResultFunction=*queryResult;
-
     //str=queryResultFunction->front();
     //std::cout<<str<<std::endl;
     //std::cout<<queryResultFunction->size()<<std::endl;
@@ -408,16 +409,163 @@ type_consodbTuple Database::getProductFromId(unsigned id)
 
 type_histdbQueue Database::getLastOperations()
 {
+    Query query;
+
+    type_histdbTuple *hist(0);
+    hist=new type_histdbTuple;
+
+    unsigned i;
+    unsigned j=0;
+    type_histdbQueue *result(0);
+    result=new type_histdbQueue;
+
+    std::queue<std::string> *queryResultFunction(0);
+    queryResultFunction = new std::queue<std::string> ;
+
     //Utiliser des jointures
     // From client_id -> nom + prénom
     // From conso_id -> conso + prix
+    std::string queryString="SELECT historique.his_id, notes.nom, notes.prenom,consos.nom, historique.conso_price, historique.date_conso ";
+    queryString+="FROM historique ";
+    queryString+="LEFT JOIN consos ";
+    queryString+="ON consos.conso_id = historique.conso_id ";
+    queryString+="LEFT JOIN notes ";
+    queryString+="ON notes.client_id=historique.client_id ";
+    queryString+="ORDER BY historique.date_conso DESC LIMIT 15;";
+
+    //Implémentation de la query et execution de celle ci
+    query.setQuery(queryString);
+    query.setVerbose(1);
+    executeQuery(query);
+
+    //Récupération des données renvoyées par la db que l'on met dans une queue<string>
+    *queryResultFunction=*queryResult;
+    //str=queryResultFunction->front();
+    //std::cout<<str<<std::endl;
+    //std::cout<<queryResultFunction->size()<<std::endl;
+    std::vector<std::string> vectorFromQueue;
+    //Boucle sur tout le resultat (L'emploi de while n'est peut être pas le plus judicieux)
+    for (i=0;i<=queryResultFunction->size();i++)
+    {
+        while(!queryResultFunction->empty())
+        {
+            //Travail des données d'une personne unique
+
+            //Remplissage de Result
+
+            while (queryResultFunction->front()!= "\n"&&!queryResultFunction->empty())
+            {
+                //La ligne suivante pop les noms des colonnes dans le cas ou elles sont push initialement
+                //queryResultFunction->pop();
+                vectorFromQueue.push_back(queryResultFunction->front());
+                //On supprime l'élément qui vient d'être extrait.
+                queryResultFunction->pop();
+            }
+
+            //On parse les std::string en float et unsigned pour Balance et Id
+            float recuperatedPrice;
+            unsigned recuperatedId;
+
+
+            std::istringstream(vectorFromQueue[4]) >> recuperatedPrice;
+            std::istringstream(vectorFromQueue[0]) >> recuperatedId;
+
+
+            *hist = std::make_tuple (vectorFromQueue[1],vectorFromQueue[2],vectorFromQueue[3],vectorFromQueue[5],recuperatedPrice,recuperatedId);
+
+            //On supprime le dernier element du résultat unique , le parser '\n'
+            queryResultFunction->pop();
+            result->push(*hist);
+            // L'int j correspond à l'index dans la queue , il est incrémenté a chaque boucle sur une personne
+            j++;
+        }
+    }
+    clear(queue);
+    vectorFromQueue.clear();
+    return *result;
+
 }
 
-type_histdbQueue Database::getCustomerHist(unsigned customerId)
+type_histdbQueue Database::getCustomerHist(unsigned id)
 {
+    Query query;
+    std::string id_String = static_cast<std::ostringstream*>( &(std::ostringstream() << id) )->str();
+
+    type_histdbTuple *hist(0);
+    hist=new type_histdbTuple;
+
+    unsigned i;
+    unsigned j=0;
+    type_histdbQueue *result(0);
+    result=new type_histdbQueue;
+
+    std::queue<std::string> *queryResultFunction(0);
+    queryResultFunction = new std::queue<std::string> ;
+
     //Utiliser des jointures
     // From client_id -> nom + prénom
     // From conso_id -> conso + prix
+    std::string queryString="SELECT historique.his_id, notes.nom, notes.prenom,consos.nom, historique.conso_price, historique.date_conso ";
+    queryString+="FROM historique ";
+    queryString+="LEFT JOIN consos ";
+    queryString+="ON consos.conso_id = historique.conso_id ";
+    queryString+="LEFT JOIN notes ";
+    queryString+="ON notes.client_id=historique.client_id ";
+    queryString+="AND notes.client_id=";
+    queryString+=id_String;
+    queryString+="ORDER BY historique.date_conso DESC LIMIT 30;";
+
+    //Implémentation de la query et execution de celle ci
+    query.setQuery(queryString);
+    query.setVerbose(1);
+    executeQuery(query);
+
+    //Récupération des données renvoyées par la db que l'on met dans une queue<string>
+    *queryResultFunction=*queryResult;
+    //str=queryResultFunction->front();
+    //std::cout<<str<<std::endl;
+    //std::cout<<queryResultFunction->size()<<std::endl;
+    std::vector<std::string> vectorFromQueue;
+    //Boucle sur tout le resultat (L'emploi de while n'est peut être pas le plus judicieux)
+    for (i=0;i<=queryResultFunction->size();i++)
+    {
+        while(!queryResultFunction->empty())
+        {
+            //Travail des données d'une personne unique
+
+            //Remplissage de Result
+
+            while (queryResultFunction->front()!= "\n"&&!queryResultFunction->empty())
+            {
+                //La ligne suivante pop les noms des colonnes dans le cas ou elles sont push initialement
+                //queryResultFunction->pop();
+                vectorFromQueue.push_back(queryResultFunction->front());
+                //On supprime l'élément qui vient d'être extrait.
+                queryResultFunction->pop();
+            }
+
+            //On parse les std::string en float et unsigned pour Balance et Id
+            float recuperatedPrice;
+            unsigned recuperatedId;
+
+
+            std::istringstream(vectorFromQueue[4]) >> recuperatedPrice;
+            std::istringstream(vectorFromQueue[0]) >> recuperatedId;
+
+
+            *hist = std::make_tuple (vectorFromQueue[1],vectorFromQueue[2],vectorFromQueue[3],vectorFromQueue[5],recuperatedPrice,recuperatedId);
+
+            //On supprime le dernier element du résultat unique , le parser '\n'
+            queryResultFunction->pop();
+            result->push(*hist);
+            // L'int j correspond à l'index dans la queue , il est incrémenté a chaque boucle sur une personne
+            j++;
+        }
+    }
+    clear(queue);
+    vectorFromQueue.clear();
+    return *result;
+
 }
 
 type_customerdbTuple Database::getCustomerFromId(unsigned customerId)

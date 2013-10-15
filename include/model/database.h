@@ -11,8 +11,8 @@
 typedef std::tuple< std::string, std::string, std::string, float, unsigned ,std::string> type_customerdbTuple;
 //TUPLE du produit : Produit, Catégorie , prix ,stock , id
 typedef std::tuple< std::string, unsigned, float , unsigned, unsigned > type_consodbTuple;
-//TUPLE d'un historique (une transaction) : Nom, Prénom, Produit, Date, valeur
-typedef std::tuple< std::string,std::string,std::string,std::string , float> type_histdbTuple;
+//TUPLE d'un historique (une transaction) : Nom, Prénom, Produit, Date, valeur,id
+typedef std::tuple< std::string,std::string,std::string,std::string , float , unsigned> type_histdbTuple;
 
 
 //On définit les structures de queue<> correspondant à chaque type de tuple
@@ -42,8 +42,10 @@ public:
     //OK (Fonctionne - a tester plus en profondeur)
 
     type_histdbQueue getLastOperations(); //Méthode qui récupère les 15 dernières opérations effectuées
+    //OK (Fonctionne - a tester plus en profondeur)
 
     type_histdbQueue getCustomerHist(unsigned);//Renvoie l'historique d'un client en ayant recu son id
+    //OK (Fonctionne - a tester plus en profondeur)
 
     /* (tuple a définir) getCategories();  */
 
@@ -68,8 +70,6 @@ public:
     int editCategory (/*même tuple*/);
 
     int deleteCategory (/*idem*/);
-
-
 
     int addHist (type_histdbTuple);
 

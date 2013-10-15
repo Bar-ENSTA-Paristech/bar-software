@@ -54,6 +54,7 @@ int main(int argc, char *argv[])
     DB.getProductFromId(1);
     std::string kikoo="s";
     DB.searchCustomer(kikoo);
+    DB.getLastOperations();
     DB.closeDatabase();
 
 
