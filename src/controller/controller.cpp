@@ -10,7 +10,7 @@ Controller::Controller()
 
 void Controller::newText_Search(QString &viewSearch)
 {
-    database.openDatabase();
+
     string dbSearch;
     type_customerdbTuple db_tmpCurstomerInfo;
     view_customerTuple view_tmpCustomerInfo;
@@ -18,25 +18,49 @@ void Controller::newText_Search(QString &viewSearch)
     type_customerdbQueue dbQueue;
     view_customerQueue viewQueue;               // Information send to the view as a queue
 
+    QString view_tmpName;
+    QString view_tmpFirstName;
+    QString view_tmpGroup;
+    float view_tmpBalance;
+    unsigned view_tmpId;
+
+    database.openDatabase();
 
     dbSearch = viewSearch.toStdString();
 
         // Get customer information corresponding to the search from model
     dbQueue = database.searchCustomer(dbSearch);
 
+
+    if ( dbQueue.empty() ){
+        qDebug() << " Model returned empty queue ";
+    }
+    else{
+
+        qDebug() << "TEST";
         // Copy the dbQueue into the viewQueue
-    while( !dbQueue.empty() ){
-        db_tmpCurstomerInfo = dbQueue.front();
-        get<0>(view_tmpCustomerInfo).fromStdString( get<0>(db_tmpCurstomerInfo) ) ;
-        get<1>(view_tmpCustomerInfo).fromStdString( get<1>(db_tmpCurstomerInfo) );
-        get<2>(view_tmpCustomerInfo).fromStdString( get<2>(db_tmpCurstomerInfo) );
-        get<3>(view_tmpCustomerInfo) = get<3>(db_tmpCurstomerInfo);
-        get<4>(view_tmpCustomerInfo) = get<4>(db_tmpCurstomerInfo);
-        viewQueue.push(view_tmpCustomerInfo);
-        dbQueue.pop();
+        while( !dbQueue.empty() ){
+            db_tmpCurstomerInfo = dbQueue.front();
+
+            view_tmpName.fromStdString( get<0>(db_tmpCurstomerInfo) );
+            view_tmpFirstName.fromStdString( get<1>(db_tmpCurstomerInfo) );
+            view_tmpGroup.fromStdString( get<2>(db_tmpCurstomerInfo) );
+            view_tmpBalance = get<3>(db_tmpCurstomerInfo);
+            view_tmpId = get<4>(db_tmpCurstomerInfo);
+            view_tmpCustomerInfo = make_tuple( view_tmpName, view_tmpFirstName, view_tmpGroup, view_tmpBalance, view_tmpId  );
+
+            qDebug() << " Results found :" << get<0>(view_tmpCustomerInfo);
+            viewQueue.push(view_tmpCustomerInfo);
+            dbQueue.pop();
+        }
+
+        qDebug() << " Results found :" << get<0>(view_tmpCustomerInfo);
+        // Sent result to view
+        viewSearchResults->setSearchResults( viewQueue );
     }
 
-    viewSearchResults->setSearchResults( viewQueue );
+
+
 }
 
 //void Controller::newClic_Customer(unsigned int customerId)
