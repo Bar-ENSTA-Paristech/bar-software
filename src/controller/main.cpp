@@ -49,7 +49,7 @@ int main(int argc, char *argv[])
     Database DB;
     DB.openDatabase();
     DB.initializeDatabaseForm();
-    DB.getCustomerFromId(152);
+    //DB.getCustomerFromId(152);
     DB.getProductsFromCategory(5);
     DB.getProductFromId(1);
     std::string kikoo="s";

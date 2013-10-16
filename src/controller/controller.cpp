@@ -37,7 +37,7 @@ void Controller::newText_Search(QString &viewSearch)
     }
     else{
 
-        qDebug() << "TEST";
+        /* TODO */
         // Copy the dbQueue into the viewQueue
         while( !dbQueue.empty() ){
             db_tmpCurstomerInfo = dbQueue.front();
@@ -56,7 +56,7 @@ void Controller::newText_Search(QString &viewSearch)
 
         qDebug() << " Results found :" << get<0>(view_tmpCustomerInfo);
         // Sent result to view
-        viewSearchResults->setSearchResults( viewQueue );
+        //viewSearchResults->setSearchResults( viewQueue );
     }
 
 
