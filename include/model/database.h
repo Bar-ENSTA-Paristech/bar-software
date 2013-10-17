@@ -8,7 +8,7 @@
 #include "tuple"
 
 //TUPLE du consommateur : Nom, Prénom , Catégorie , balance , id, login
-typedef std::tuple< std::string, std::string, std::string, float, unsigned ,std::string> type_customerdbTuple;
+typedef std::tuple< std::string, std::string, std::string, float, unsigned, std::string> type_customerdbTuple;
 //TUPLE du produit : Produit, Catégorie , prix ,stock , id
 typedef std::tuple< std::string, unsigned, float , unsigned, unsigned > type_consodbTuple;
 //TUPLE d'un historique (une transaction) : Nom, Prénom, Produit, Date, valeur,id

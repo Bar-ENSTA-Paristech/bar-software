@@ -41,7 +41,6 @@ void Controller::newText_Search(QString &viewSearch)
         // Copy the dbQueue into the viewQueue
         while( !dbQueue.empty() ){
             db_tmpCurstomerInfo = dbQueue.front();
-
             view_tmpName.fromStdString( get<0>(db_tmpCurstomerInfo) );
             view_tmpFirstName.fromStdString( get<1>(db_tmpCurstomerInfo) );
             view_tmpGroup.fromStdString( get<2>(db_tmpCurstomerInfo) );
@@ -49,12 +48,17 @@ void Controller::newText_Search(QString &viewSearch)
             view_tmpId = get<4>(db_tmpCurstomerInfo);
             view_tmpCustomerInfo = make_tuple( view_tmpName, view_tmpFirstName, view_tmpGroup, view_tmpBalance, view_tmpId  );
 
-            qDebug() << " Results found :" << get<0>(view_tmpCustomerInfo);
+            qDebug() << "Tuple renvoyée par le modèle :";
+            qDebug() << view_tmpName << ", ";
+            qDebug() << view_tmpFirstName << ", " ;
+            qDebug() << view_tmpGroup << ", " ;
+            qDebug() << view_tmpBalance << ", " ;
+            qDebug() << view_tmpId << ", " ;
+
             viewQueue.push(view_tmpCustomerInfo);
             dbQueue.pop();
         }
 
-        qDebug() << " Results found :" << get<0>(view_tmpCustomerInfo);
         // Sent result to view
         //viewSearchResults->setSearchResults( viewQueue );
     }
