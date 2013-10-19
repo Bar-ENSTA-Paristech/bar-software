@@ -7,7 +7,7 @@ RightPart::RightPart(QWidget* parent)
 
     ConsoLogos *logosFrame = new ConsoLogos(this);
     CartDisplay *cartDisplay = new CartDisplay(this);
-    ProductsChoices *productsChoices = new ProductsChoices(this);
+    productsChoices = new ProductsChoices(this);
     QGridLayout *layout = new QGridLayout(this);
     layout->addWidget(logosFrame, 0, 0);
     layout->addWidget(cartDisplay, 0, 1);
@@ -18,5 +18,5 @@ RightPart::RightPart(QWidget* parent)
 
 void RightPart::updateSize()
 {
-
+    productsChoices->updateSize();
 }
