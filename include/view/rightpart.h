@@ -15,6 +15,8 @@ public:
 
 private:
     ProductsChoices *productsChoices;
+    ConsoLogos *logosFrame;
+    CartDisplay *cartDisplay;
 };
 
 #endif // RIGHTPART_H

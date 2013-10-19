@@ -5,8 +5,8 @@ RightPart::RightPart(QWidget* parent)
     setParent(parent);
     setObjectName("rightPart");
 
-    ConsoLogos *logosFrame = new ConsoLogos(this);
-    CartDisplay *cartDisplay = new CartDisplay(this);
+    logosFrame = new ConsoLogos(this);
+    cartDisplay = new CartDisplay(this);
     productsChoices = new ProductsChoices(this);
     QGridLayout *layout = new QGridLayout(this);
     layout->addWidget(logosFrame, 0, 0);

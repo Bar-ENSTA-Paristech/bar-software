@@ -4,7 +4,10 @@
 #include <QFrame>
 #include <queue>
 #include <tuple>
+#include <QListWidget>
+#include <QGridLayout>
 #include "cart.h"
+#include <QDebug>
 
 class CartDisplay : public QFrame
 {
@@ -15,7 +18,7 @@ public:
     void setTotalPrice(float price);
 
 private:
-    Cart* cart;
+    QListWidget* list;
     
 signals:
     
