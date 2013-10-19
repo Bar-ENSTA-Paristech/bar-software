@@ -27,7 +27,7 @@ MainWindow::MainWindow()
     // Adding content of the top menu (searchbar and configuration buttons)
     QFrame *searchBar = new QFrame(menu);
     QLabel *searchIcon = new QLabel(searchBar);
-    searchIcon->setPixmap(QPixmap(GLOBAL_PATH + "view/pictures/search.png"));
+    searchIcon->setPixmap(QPixmap(GLOBAL_PATH + "resources/pictures/search.png"));
     QLineEdit *searchText = new QLineEdit("", searchBar);
     searchBar->setObjectName("searchBar");
     QHBoxLayout *searchBarLayout = new QHBoxLayout(searchBar);

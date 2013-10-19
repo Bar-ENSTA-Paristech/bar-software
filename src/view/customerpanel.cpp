@@ -71,7 +71,10 @@ void CustomerPanel::setCustomer(std::tuple< QString, QString, QString, QString, 
         balance->setStyleSheet("color: #FF0000;");
     else
         balance->setStyleSheet("color: black;");
+    if(QFile::exists(GLOBAL_PATH + "resources/photos/"+ std::get<2>(tuple).toLower() + ".jpg"))
+        photo->setPixmap(GLOBAL_PATH + "resources/photos/"+ std::get<2>(tuple).toLower() + ".jpg");
+    else
+        photo->setPixmap(GLOBAL_PATH + "resources/photos/no_photo.jpg");
 
-    photo->setPixmap(GLOBAL_PATH + "resources/photos/"+ std::get<2>(tuple).toLower() + ".jpg");
 
 }

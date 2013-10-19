@@ -5,6 +5,8 @@
 #include <QGridLayout>
 #include <QLabel>
 #include <tuple>
+#include <QDebug>
+#include <QFile>
 
 extern QString GLOBAL_PATH;
 

@@ -18,6 +18,7 @@ src/controller/main.cpp \
 src/controller/product.cpp \
 src/model/database.cpp \
 src/model/query.cpp \
+src/model/sqlite3.c \
 src/view/cartdisplay.cpp \
 src/view/customerpanel.cpp \
 src/view/history.cpp \
@@ -40,6 +41,7 @@ include/controller/main.h \
 include/controller/product.h \
 include/model/database.h \
 include/model/query.h \
+include/model/sqlite3.h \
 include/view/cartdisplay.h \
 include/view/customerpanel.h \
 include/view/history.h \
@@ -65,6 +67,6 @@ LIBS +=  -mmacosx-version-min=10.7
   QMAKE_CXXFLAGS += -std=c++11
 }
 
-LIBS += -lsqlite3
+#LIBS += -lsqlite3
 
 #LIBS += /lib/x86_64-linux-gnu/libdl.so.2
