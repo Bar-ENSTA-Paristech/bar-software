@@ -28,6 +28,7 @@ src/view/multilist.cpp \
 src/view/productschoices.cpp \
 src/view/rightpart.cpp \
 src/view/searchresults.cpp \
+src/view/consologos.cpp
 
 
 INCLUDEPATH += include/controller \
@@ -51,12 +52,14 @@ include/view/multilist.h \
 include/view/productschoices.h \
 include/view/rightpart.h \
 include/view/searchresults.h \
+include/view/consologos.h
 
 FORMS    += \
     ui/mainwindow_old.ui \
 
 OTHER_FILES += \
-    ui/view/mainDesign.css
+    ui/view/mainDesign.css \
+    include/view/mainDesign.css
 
 macx {
 #QMAKE_CXXFLAGS += -std=c++11 -stdlib=libc++ -mmacosx-version-min=10.7

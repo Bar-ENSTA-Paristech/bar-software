@@ -5,6 +5,7 @@
 #include <QGridLayout>
 #include "cartdisplay.h"
 #include "productschoices.h"
+#include "consologos.h"
 
 class RightPart : public QFrame
 {
