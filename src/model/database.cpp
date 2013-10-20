@@ -184,7 +184,7 @@ type_customerdbQueue Database::searchCustomer(std::string &string)
 
     //Implémentation de la query et execution de celle ci
     query.setQuery(queryString);
-    query.setVerbose(1);
+    query.setVerbose(0);
     executeQuery(query);
 
     //Récupération des données renvoyées par la db que l'on met dans une queue<string>
