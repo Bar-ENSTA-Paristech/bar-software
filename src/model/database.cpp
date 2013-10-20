@@ -184,7 +184,7 @@ type_customerdbQueue Database::searchCustomer(std::string &string)
 
     //Implémentation de la query et execution de celle ci
     query.setQuery(queryString);
-    query.setVerbose(1);
+    query.setVerbose(0);
     executeQuery(query);
 
     //Récupération des données renvoyées par la db que l'on met dans une queue<string>
@@ -233,10 +233,11 @@ type_customerdbQueue Database::searchCustomer(std::string &string)
                 result->push(*customer);
                 // L'int j correspond à l'index dans la queue , il est incrémenté a chaque boucle sur une personne
                 j++;
+                vectorFromQueue.clear();
             }
         }
+
     }
-    vectorFromQueue.clear();
     clear(queue);
     return *result;
 
@@ -322,10 +323,11 @@ type_consodbQueue Database::getProductsFromCategory(unsigned categorie)
             result->push(*conso);
             // L'int j correspond à l'index dans la queue , il est incrémenté a chaque boucle sur une personne
             j++;
+            vectorFromQueue.clear();
+
         }
     }
     clear(queue);
-    vectorFromQueue.clear();
     return *result;
 }
 
@@ -478,10 +480,11 @@ type_histdbQueue Database::getLastOperations()
             result->push(*hist);
             // L'int j correspond à l'index dans la queue , il est incrémenté a chaque boucle sur une personne
             j++;
+            vectorFromQueue.clear();
         }
     }
     clear(queue);
-    vectorFromQueue.clear();
+
     return *result;
 
 }
@@ -560,10 +563,11 @@ type_histdbQueue Database::getCustomerHist(unsigned id)
             result->push(*hist);
             // L'int j correspond à l'index dans la queue , il est incrémenté a chaque boucle sur une personne
             j++;
+            vectorFromQueue.clear();
         }
     }
     clear(queue);
-    vectorFromQueue.clear();
+
     return *result;
 
 }
@@ -641,6 +645,7 @@ type_customerdbTuple Database::getCustomerFromId(unsigned customerId)
             queryResultFunction->pop();
             // L'int j correspond à l'index dans la queue , il est incrémenté a chaque boucle sur une personne
             j++;
+            vectorFromQueue.clear();
         }
     }
 
@@ -648,7 +653,7 @@ type_customerdbTuple Database::getCustomerFromId(unsigned customerId)
     {
 
     }
-    vectorFromQueue.clear();
+
     clear(queue);
     return *customer;
 }
@@ -744,3 +749,4 @@ int Database::deleteCustomerAccount(int id)
 
     return (code);
 }
+
