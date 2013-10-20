@@ -1,6 +1,5 @@
 #include "controller.h"
-
-using namespace std;
+#include <QString>
 
 
 Controller::Controller()
@@ -11,7 +10,7 @@ Controller::Controller()
 void Controller::newText_Search(QString &viewSearch)
 {
 
-    string dbSearch;
+    std::string dbSearch;
     type_customerdbTuple db_tmpCurstomerInfo;
     view_customerTuple view_tmpCustomerInfo;
     //db_customerQueue dbQueue;                   // Information returned from the database as a queue
@@ -20,9 +19,10 @@ void Controller::newText_Search(QString &viewSearch)
 
     QString view_tmpName;
     QString view_tmpFirstName;
-    QString view_tmpGroup;
+    QString view_tmpLogin;
     float view_tmpBalance;
     unsigned view_tmpId;
+    QString view_tmpGroup;
 
     database.openDatabase();
 
@@ -37,24 +37,28 @@ void Controller::newText_Search(QString &viewSearch)
     }
     else{
 
-        /* TODO */
         // Copy the dbQueue into the viewQueue
         while( !dbQueue.empty() ){
             db_tmpCurstomerInfo = dbQueue.front();
-            view_tmpName.fromStdString( get<0>(db_tmpCurstomerInfo) );
-            view_tmpFirstName.fromStdString( get<1>(db_tmpCurstomerInfo) );
-            view_tmpGroup.fromStdString( get<2>(db_tmpCurstomerInfo) );
-            view_tmpBalance = get<3>(db_tmpCurstomerInfo);
-            view_tmpId = get<4>(db_tmpCurstomerInfo);
-            view_tmpCustomerInfo = make_tuple( view_tmpName, view_tmpFirstName, view_tmpGroup, view_tmpBalance, view_tmpId  );
 
-            qDebug() << "Tuple renvoyée par le modèle :";
+            view_tmpName=QString::fromStdString( std::get<0>(db_tmpCurstomerInfo) );
+            view_tmpFirstName=QString::fromStdString( std::get<1>(db_tmpCurstomerInfo) );
+            view_tmpGroup=QString::fromStdString( std::get<2>(db_tmpCurstomerInfo) );
+            view_tmpBalance = std::get<3>(db_tmpCurstomerInfo);
+            view_tmpId = std::get<4>(db_tmpCurstomerInfo);
+            view_tmpLogin=QString::fromStdString( std::get<5>(db_tmpCurstomerInfo) );
+
+            view_tmpCustomerInfo = std::make_tuple( view_tmpName, view_tmpFirstName, view_tmpGroup, view_tmpBalance, view_tmpId ,view_tmpLogin );
+
+            /*
+             qDebug() << "Tuple renvoyée par le modèle :";
             qDebug() << view_tmpName << ", ";
             qDebug() << view_tmpFirstName << ", " ;
             qDebug() << view_tmpGroup << ", " ;
             qDebug() << view_tmpBalance << ", " ;
             qDebug() << view_tmpId << ", " ;
-
+            qDebug() << view_tmpLogin<<", ";
+            */
             viewQueue.push(view_tmpCustomerInfo);
             dbQueue.pop();
         }
