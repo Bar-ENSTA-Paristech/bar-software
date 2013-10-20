@@ -26,13 +26,11 @@ SearchResults::SearchResults(QWidget *parent) :
     toto.push(titi2);
     this->setSearchResults(toto);
     // ####### FIN TEST #######
-    list->resize(470, 300);
 }
 
 void SearchResults::setSearchResults(std::queue< std::tuple< QString, QString, QString, float, unsigned > > & queue)
 {
     // TUPLE : QString name, QString firstName, QString categorie, float balance, unsigned id
-    updateSize();
     std::tuple< QString, QString, QString, float, unsigned > tuple;
     // Deleting old results
     for(int i = 0 ; i<rows ; i++)

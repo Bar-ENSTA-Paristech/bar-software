@@ -9,9 +9,9 @@ RightPart::RightPart(QWidget* parent)
     cartDisplay = new CartDisplay(this);
     productsChoices = new ProductsChoices(this);
     QGridLayout *layout = new QGridLayout(this);
-    layout->addWidget(logosFrame, 0, 0);
-    layout->addWidget(cartDisplay, 0, 1);
-    layout->addWidget(productsChoices, 1, 0, 3, 2);
+    layout->addWidget(logosFrame, 0, 0, 1, 2);
+    layout->addWidget(cartDisplay, 0, 2, 1, 3);
+    layout->addWidget(productsChoices, 1, 0, 3, 5);
     layout->setContentsMargins(0, 0, 0, 0);
     this->setLayout(layout);
 }
@@ -19,4 +19,5 @@ RightPart::RightPart(QWidget* parent)
 void RightPart::updateSize()
 {
     productsChoices->updateSize();
+    cartDisplay->updateSize();
 }

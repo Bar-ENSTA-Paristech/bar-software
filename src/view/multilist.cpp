@@ -1,13 +1,13 @@
 #include "searchresults.h"
 
 // Si Erreur bizarre ici, lancer un qmake sur le projet
-MultiList::MultiList(QWidget *parent, int column, int row)
+MultiList::MultiList(QWidget *parent, int column, int row, bool _isSortable)
 {
     setParent(parent);
     columns = column;
     rows = row;
     isInitialised = false;
-    isSortable = true;
+    isSortable = _isSortable;
     list = new QTableWidget(this);
     list->setSelectionBehavior(QAbstractItemView::SelectRows);
     list->setObjectName("multiListTable");
@@ -18,7 +18,7 @@ MultiList::MultiList(QWidget *parent, int column, int row)
     font.setPixelSize(15);
     list->setColumnCount(columns);
     emptyHeader = new QTableWidgetItem[1000];
-     list->horizontalHeader()->setSortIndicatorShown(true);
+    list->horizontalHeader()->setSortIndicatorShown(isSortable);
     setRows(rows);
 
     ascendingSort = true;
@@ -73,4 +73,17 @@ void MultiList::setRows(int numberOfRows)
         emptyHeader[i].setText("");
         list->setVerticalHeaderItem(i, emptyHeader);
     }
+}
+
+MultiList::~MultiList()
+{
+    for(int i = 0 ; i<rows ; i++)
+    {
+        delete itemList[i];
+    }
+    if(isInitialised && rows !=0)
+        delete itemList;
+
+    delete list;
+    delete emptyHeader;
 }

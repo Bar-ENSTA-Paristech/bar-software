@@ -1,9 +1,8 @@
 #include "history.h"
 
-History::History(QWidget *parent) : MultiList(parent, 6, 0)
+History::History(QWidget *parent) : MultiList(parent, 6, 0, false)
 {
     this->setObjectName("history"); // for CSS
-    isSortable = false;
     // ##### Definition des légendes en haut de colonne ######
     QTableWidgetItem *headers = new QTableWidgetItem[columns];
     headers[0].setText("Nom");
@@ -23,7 +22,7 @@ History::History(QWidget *parent) : MultiList(parent, 6, 0)
     list->horizontalHeader()->setSectionResizeMode(2, QHeaderView::Stretch);
     list->horizontalHeader()->setSectionResizeMode(4, QHeaderView::Stretch);
     list->horizontalHeader()->setSectionHidden(5, true);
-     list->horizontalHeader()->setSortIndicatorShown(false);
+    list->horizontalHeader()->setSortIndicatorShown(false);
 
     // ####### TEST #######
     std::queue< std::tuple< QString, QString, QString, float, QString > > toto;
@@ -34,11 +33,8 @@ History::History(QWidget *parent) : MultiList(parent, 6, 0)
     toto.push(titi2);
     toto.push(titi3);
     this->setHistory(toto);
-    qDebug() << list->columnCount() << list->rowCount();
     // ####### FIN TEST #######
 
-    // on redimensionne à un valeur arbitraire au démarrage
-    list->resize(470, 300);
 }
 
 void History::setHistory(std::queue < std::tuple < QString, QString, QString, float, QString > > & queue)
