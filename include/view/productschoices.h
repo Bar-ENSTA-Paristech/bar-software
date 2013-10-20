@@ -2,15 +2,18 @@
 #define PRODUCTSCHOICES_H
 
 #include <QFrame>
+#include "multilist.h"
+#include <tuple>
+#include <queue>
 
-class ProductsChoices : public QFrame
+class ProductsChoices : public MultiList
 {
     Q_OBJECT
 public:
     explicit ProductsChoices(QWidget *parent = 0);
 
     // receive product choices from controller
-    void setProductsChoices();
+    void setProductsChoices(std::queue<std::tuple<QString, QString, float, unsigned> > &queue);
 
 signals:
     

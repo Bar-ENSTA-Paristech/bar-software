@@ -1,5 +1,9 @@
 #include "controller.h"
+<<<<<<< HEAD
 #include <QString>
+=======
+
+>>>>>>> b65c67d0095d3cb08ca4e046b20d08a468379b15
 
 
 Controller::Controller()
@@ -40,6 +44,7 @@ void Controller::newText_Search(QString &viewSearch)
         // Copy the dbQueue into the viewQueue
         while( !dbQueue.empty() ){
             db_tmpCurstomerInfo = dbQueue.front();
+<<<<<<< HEAD
 
             view_tmpName=QString::fromStdString( std::get<0>(db_tmpCurstomerInfo) );
             view_tmpFirstName=QString::fromStdString( std::get<1>(db_tmpCurstomerInfo) );
@@ -52,6 +57,16 @@ void Controller::newText_Search(QString &viewSearch)
 
             /*
              qDebug() << "Tuple renvoyée par le modèle :";
+=======
+            view_tmpName.fromStdString( std::get<0>(db_tmpCurstomerInfo) );
+            view_tmpFirstName.fromStdString( std::get<1>(db_tmpCurstomerInfo) );
+            view_tmpGroup.fromStdString( std::get<2>(db_tmpCurstomerInfo) );
+            view_tmpBalance = std::get<3>(db_tmpCurstomerInfo);
+            view_tmpId = std::get<4>(db_tmpCurstomerInfo);
+            view_tmpCustomerInfo = std::make_tuple( view_tmpName, view_tmpFirstName, view_tmpGroup, view_tmpBalance, view_tmpId  );
+
+            qDebug() << "Tuple renvoyée par le modèle :";
+>>>>>>> b65c67d0095d3cb08ca4e046b20d08a468379b15
             qDebug() << view_tmpName << ", ";
             qDebug() << view_tmpFirstName << ", " ;
             qDebug() << view_tmpGroup << ", " ;
