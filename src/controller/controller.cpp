@@ -51,7 +51,7 @@ void Controller::newText_Search(QString &viewSearch)
 
             view_tmpCustomerInfo = std::make_tuple( view_tmpName, view_tmpFirstName, view_tmpGroup, view_tmpBalance, view_tmpId ,view_tmpLogin );
 
-            /*
+
              qDebug() << "Tuple renvoyée par le modèle :";
             qDebug() << view_tmpName << ", ";
             qDebug() << view_tmpFirstName << ", " ;
@@ -59,13 +59,13 @@ void Controller::newText_Search(QString &viewSearch)
             qDebug() << view_tmpBalance << ", " ;
             qDebug() << view_tmpId << ", " ;
             qDebug() << view_tmpLogin<<", ";
-            */
+
             viewQueue.push(view_tmpCustomerInfo);
             dbQueue.pop();
         }
 
         // Sent result to view
-        viewSearchResults->setSearchResults( viewQueue );
+        //viewSearchResults->setSearchResults( viewQueue );
     }
 
 
