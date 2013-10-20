@@ -1,6 +1,5 @@
 #include "controller.h"
 
-using namespace std;
 
 
 Controller::Controller()
@@ -11,7 +10,7 @@ Controller::Controller()
 void Controller::newText_Search(QString &viewSearch)
 {
 
-    string dbSearch;
+    std::string dbSearch;
     type_customerdbTuple db_tmpCurstomerInfo;
     view_customerTuple view_tmpCustomerInfo;
     //db_customerQueue dbQueue;                   // Information returned from the database as a queue
@@ -41,12 +40,12 @@ void Controller::newText_Search(QString &viewSearch)
         // Copy the dbQueue into the viewQueue
         while( !dbQueue.empty() ){
             db_tmpCurstomerInfo = dbQueue.front();
-            view_tmpName.fromStdString( get<0>(db_tmpCurstomerInfo) );
-            view_tmpFirstName.fromStdString( get<1>(db_tmpCurstomerInfo) );
-            view_tmpGroup.fromStdString( get<2>(db_tmpCurstomerInfo) );
-            view_tmpBalance = get<3>(db_tmpCurstomerInfo);
-            view_tmpId = get<4>(db_tmpCurstomerInfo);
-            view_tmpCustomerInfo = make_tuple( view_tmpName, view_tmpFirstName, view_tmpGroup, view_tmpBalance, view_tmpId  );
+            view_tmpName.fromStdString( std::get<0>(db_tmpCurstomerInfo) );
+            view_tmpFirstName.fromStdString( std::get<1>(db_tmpCurstomerInfo) );
+            view_tmpGroup.fromStdString( std::get<2>(db_tmpCurstomerInfo) );
+            view_tmpBalance = std::get<3>(db_tmpCurstomerInfo);
+            view_tmpId = std::get<4>(db_tmpCurstomerInfo);
+            view_tmpCustomerInfo = std::make_tuple( view_tmpName, view_tmpFirstName, view_tmpGroup, view_tmpBalance, view_tmpId  );
 
             qDebug() << "Tuple renvoyée par le modèle :";
             qDebug() << view_tmpName << ", ";
