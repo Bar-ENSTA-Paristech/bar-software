@@ -16,7 +16,9 @@ void Controller::newText_Search(QString &viewSearch)
     view_customerTuple view_tmpCustomerInfo;
     //db_customerQueue dbQueue;                   // Information returned from the database as a queue
     type_customerdbQueue dbQueue;
-    view_customerQueue viewQueue;               // Information send to the view as a queue
+    //view_customerQueue viewQueue;               // Information send to the view as a queue
+    std::queue< std::tuple< QString, QString, QString, float, unsigned > > viewQueue;
+
 
     QString view_tmpName;
     QString view_tmpFirstName;
@@ -47,25 +49,20 @@ void Controller::newText_Search(QString &viewSearch)
             view_tmpGroup=QString::fromStdString( std::get<2>(db_tmpCurstomerInfo) );
             view_tmpBalance = std::get<3>(db_tmpCurstomerInfo);
             view_tmpId = std::get<4>(db_tmpCurstomerInfo);
-            view_tmpLogin=QString::fromStdString( std::get<5>(db_tmpCurstomerInfo) );
+            //view_tmpLogin=QString::fromStdString( std::get<5>(db_tmpCurstomerInfo) );
 
-            view_tmpCustomerInfo = std::make_tuple( view_tmpName, view_tmpFirstName, view_tmpGroup, view_tmpBalance, view_tmpId ,view_tmpLogin );
-
-
-             qDebug() << "Tuple renvoyée par le modèle :";
-            qDebug() << view_tmpName << ", ";
-            qDebug() << view_tmpFirstName << ", " ;
-            qDebug() << view_tmpGroup << ", " ;
-            qDebug() << view_tmpBalance << ", " ;
-            qDebug() << view_tmpId << ", " ;
-            qDebug() << view_tmpLogin<<", ";
+            view_tmpCustomerInfo = std::make_tuple( view_tmpName, view_tmpFirstName, view_tmpGroup, view_tmpBalance, view_tmpId /*,view_tmpLogin*/ );
 
             viewQueue.push(view_tmpCustomerInfo);
             dbQueue.pop();
         }
 
         // Sent result to view
+        qDebug() << "Taille de la queue :" << viewQueue.size();
         //viewSearchResults->setSearchResults( viewQueue );
+
+
+        return;
     }
 
 
