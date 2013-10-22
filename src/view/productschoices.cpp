@@ -16,6 +16,8 @@ ProductsChoices::ProductsChoices(QWidget *parent) :
     list->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
     list->horizontalHeader()->setSectionHidden(3, true);
 
+    QObject::connect(list, SIGNAL(cellDoubleClicked(int,int)), this, SLOT(lineClicked(int,int)));
+
     // ####### TEST #######
     std::queue< std::tuple< QString, QString, float, unsigned > > toto;
     std::tuple< QString, QString, float, unsigned > titi("Duvel", "0.33L", 1.9, 1);
@@ -64,4 +66,9 @@ void ProductsChoices::setProductsChoices(std::queue< std::tuple< QString, QStrin
     }
     list->sortItems(0, Qt::AscendingOrder);
     return;
+}
+
+void ProductsChoices::lineClicked(int row, int column)
+{
+    //controller->newClic_Customer((unsigned) itemList[row][3].text().toInt());
 }

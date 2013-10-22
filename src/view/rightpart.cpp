@@ -29,3 +29,11 @@ void RightPart::getPointers(ProductsChoices** par1, ConsoLogos** par2, CartDispl
     *par3 = cartDisplay;
 }
 
+void RightPart::setController(Controller* par)
+{
+    controller = par;
+    productsChoices->controller = par;
+    logosFrame->controller = par;
+    cartDisplay->controller = par;
+}
+

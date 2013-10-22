@@ -1,5 +1,5 @@
-#include "mainwindow.h"
 #include "controller.h"
+#include "mainwindow.h"
 #include <initializer_list>
 #include "customer.h"
 #include <iostream>
@@ -14,7 +14,6 @@
 
 unsigned Customer::numberOfCustomers = 0;
 QString GLOBAL_PATH;
-
 
 int main(int argc, char *argv[])
 {
@@ -44,7 +43,7 @@ int main(int argc, char *argv[])
     monPanier.removeProductFromCart( std::make_shared<Product>(Duvel) );
     monPanier.clearCart();
 
-    Controller *controller = new Controller;
+    Controller * controller = new Controller;
 
     Database DB;
     DB.openDatabase();

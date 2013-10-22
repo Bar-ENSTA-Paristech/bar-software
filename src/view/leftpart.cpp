@@ -70,3 +70,11 @@ void LeftPart::getPointers(SearchResults** par1, History** par2, CustomerPanel**
     *par2 = history;
     *par3 = customerPanel;
 }
+
+void LeftPart::setController(Controller* par)
+{
+    controller = par;
+    searchResults->controller = par;
+    history->controller = par;
+    customerPanel->controller = par;
+}

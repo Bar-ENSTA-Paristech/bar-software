@@ -10,8 +10,9 @@
 #include <QGridLayout>
 #include "multilist.h"
 #include <QDebug>
+#include "controller.h"
 
-
+class Controller;
 class CartDisplayFrame : public MultiList
 {
     Q_OBJECT
@@ -25,6 +26,7 @@ class CartDisplay : public QFrame
 {
     Q_OBJECT
 public:
+    Controller* controller;
     explicit CartDisplay(QWidget *parent = 0);
     void setCart(std::queue< std::tuple<QString, float, unsigned int> > & queue);
     void setTotalPrice(float price);

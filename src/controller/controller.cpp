@@ -1,4 +1,5 @@
 #include "controller.h"
+#include "searchresults.h"
 
 #include <QString>
 
@@ -15,6 +16,11 @@ void Controller::setViewPointers(SearchResults* par1, CustomerPanel* par2, CartD
     viewCartDisplay = par3;
     viewProductsChoices = par4;
     viewHistory = par5;
+}
+
+void Controller::newClic_Customer(unsigned int customerId)
+{
+    qDebug() << customerId << "Mehdi Chat miaule";
 }
 
 void Controller::newText_Search(QString &viewSearch)

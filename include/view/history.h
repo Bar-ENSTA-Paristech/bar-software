@@ -2,8 +2,9 @@
 #define HISTORY_H
 
 #include "multilist.h"
+#include "controller.h"
 
-
+class Controller;
 class History : public MultiList
 {
     Q_OBJECT

@@ -1,4 +1,5 @@
 #include "searchresults.h"
+#include "controller.h"
 
 // Si Erreur bizarre ici, lancer un qmake sur le projet
 MultiList::MultiList(QWidget *parent, int column, int row, bool _isSortable)

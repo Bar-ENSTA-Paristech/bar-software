@@ -1,4 +1,5 @@
 #include "mainwindow.h"
+#include "controller.h"
 #include <QDebug>
 
 MainWindow::MainWindow()
@@ -95,6 +96,9 @@ void MainWindow::setController(Controller *controllerParam)
 {
     controller = controllerParam;
     controller->setViewPointers(searchResults, customerPanel, cartDisplay, productsChoices, history);
+    //viewManager->controller = controllerParam;
+    rightPart->setController(controller);
+    leftPart->setController(controller);
 }
 
 

@@ -1,5 +1,6 @@
 #include "searchresults.h"
 
+
 SearchResults::SearchResults(QWidget *parent) :
     MultiList(parent, 5, 0)
 {
@@ -18,6 +19,8 @@ SearchResults::SearchResults(QWidget *parent) :
     list->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
     list->horizontalHeader()->setSectionHidden(4, true);
 
+    QObject::connect(list, SIGNAL(cellClicked(int, int)), this, SLOT(lineClicked(int, int)));
+
     // ####### TEST #######
     std::queue< std::tuple< QString, QString, QString, float, unsigned > > toto;
     std::tuple< QString, QString, QString, float, unsigned > titi("Chat", "Mehdi", "2015", -2, 1);
@@ -31,9 +34,7 @@ SearchResults::SearchResults(QWidget *parent) :
 void SearchResults::setSearchResults(std::queue< std::tuple< QString, QString, QString, float, unsigned > > & queue)
 {
     // TUPLE : QString name, QString firstName, QString categorie, float balance, unsigned id
-    qDebug() << "test1" << rows;
     std::tuple< QString, QString, QString, float, unsigned > tuple;
-    qDebug() << "test";
     // Deleting old results
 
     for(int i = 0 ; i<rows ; i++)
@@ -55,7 +56,7 @@ void SearchResults::setSearchResults(std::queue< std::tuple< QString, QString, Q
     for(unsigned i = 0 ; i<numberOfElements ; i++)
     {
         itemList[i] = new QTableWidgetItem[columns];
-    }qDebug() << "test2";
+    }
     // Setting it up to table
     for(unsigned i=0 ; i<numberOfElements ; i++)
     {
@@ -71,7 +72,12 @@ void SearchResults::setSearchResults(std::queue< std::tuple< QString, QString, Q
         itemList[i][4].setText(QString::number(std::get<4>(tuple)));
         for(int j=0 ; j < columns ; j++)
             list->setItem(i, j, &itemList[i][j]);
-    }qDebug() << "test3";
+    }
     list->sortItems(0, Qt::AscendingOrder);
     return;
+}
+
+void SearchResults::lineClicked(int row, int column)
+{
+    controller->newClic_Customer((unsigned) itemList[row][4].text().toInt());
 }

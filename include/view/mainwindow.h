@@ -15,6 +15,8 @@
 
 extern QString GLOBAL_PATH;
 
+class Controller;
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT

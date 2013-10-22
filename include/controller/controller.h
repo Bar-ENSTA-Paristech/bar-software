@@ -38,7 +38,11 @@ typedef std::queue<db_histTuple> db_histQueue;
 typedef std::queue<view_customerTuple> view_customerQueue;
 typedef std::queue<view_productTuple> view_productQueue;
 
-
+class SearchResults;
+class CustomerPanel;
+class CartDisplay;
+class ProductsChoices;
+class History;
 
 class Controller
 {

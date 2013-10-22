@@ -7,13 +7,16 @@
 #include <tuple>
 #include <QDebug>
 #include <QFile>
+#include "controller.h"
 
 extern QString GLOBAL_PATH;
 
+class Controller;
 class CustomerPanel : public QFrame
 {
     Q_OBJECT
 public:
+    Controller* controller;
     explicit CustomerPanel(QWidget *parent = 0);
     void setCustomer(std::tuple<QString, QString, QString, QString, float> &tuple);
     

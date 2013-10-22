@@ -5,7 +5,9 @@
 #include "multilist.h"
 #include <tuple>
 #include <queue>
+#include "controller.h"
 
+class Controller;
 class ProductsChoices : public MultiList
 {
     Q_OBJECT
@@ -17,7 +19,8 @@ public:
 
 signals:
     
-public slots:
+private slots:
+    void lineClicked(int row, int column);
     
 };
 

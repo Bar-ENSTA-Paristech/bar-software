@@ -5,15 +5,18 @@
 #include <QGridLayout>
 #include <QLabel>
 #include <QFont>
+#include "controller.h"
 
 #define NUMBER_OF_CONSUMPTION_TYPES 4
 
 extern QString GLOBAL_PATH;
 
+class Controller;
 class ConsoLogos : public QFrame
 {
     Q_OBJECT
 public:
+    Controller* controller;
     explicit ConsoLogos(QWidget *parent = 0);
 
 private:

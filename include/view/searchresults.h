@@ -5,6 +5,9 @@
 #include <tuple>
 #include <queue>
 #include "multilist.h"
+#include "controller.h"
+
+class Controller;
 
 class SearchResults : public MultiList
 {
@@ -13,11 +16,12 @@ public:
     explicit SearchResults(QWidget *parent = 0);
 
     // receive search results from controller
-    void setSearchResults(std::queue<std::tuple<QString, QString, QString, float, unsigned>>& queue);
+    void setSearchResults(std::queue< std::tuple< QString, QString, QString, float, unsigned > >& queue);
 
 signals:
     
-public slots:
+private slots:
+    void lineClicked(int row, int column);
     
 };
 
