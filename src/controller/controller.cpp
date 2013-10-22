@@ -82,7 +82,7 @@ void Controller::newText_Search(QString &viewSearch)
 
         // Sent result to view
         qDebug() << "Taille de la queue :" << viewQueue.size();
-        //viewSearchResults->setSearchResults( viewQueue );
+        viewSearchResults->setSearchResults( viewQueue );
 
 
         return;

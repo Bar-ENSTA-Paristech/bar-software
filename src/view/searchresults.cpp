@@ -22,12 +22,12 @@ SearchResults::SearchResults(QWidget *parent) :
     QObject::connect(list, SIGNAL(cellClicked(int, int)), this, SLOT(lineClicked(int, int)));
 
     // ####### TEST #######
-    std::queue< std::tuple< QString, QString, QString, float, unsigned > > toto;
-    std::tuple< QString, QString, QString, float, unsigned > titi("Chat", "Mehdi", "2015", -2, 1);
-    std::tuple< QString, QString, QString, float, unsigned > titi2("Diallo", "Guytoof", "2015", 3.5, 2);
-    toto.push(titi);
-    toto.push(titi2);
-    this->setSearchResults(toto);
+//    std::queue< std::tuple< QString, QString, QString, float, unsigned > > toto;
+//    std::tuple< QString, QString, QString, float, unsigned > titi("Chat", "Mehdi", "2015", -2, 1);
+//    std::tuple< QString, QString, QString, float, unsigned > titi2("Diallo", "Guytoof", "2015", 3.5, 2);
+//    toto.push(titi);
+//    toto.push(titi2);
+//    this->setSearchResults(toto);
     // ####### FIN TEST #######
 }
 
@@ -39,10 +39,10 @@ void SearchResults::setSearchResults(std::queue< std::tuple< QString, QString, Q
 
     for(int i = 0 ; i<rows ; i++)
     {
-        delete itemList[i];
+            delete itemList[i];
     }
     if(isInitialised && rows !=0)
-        delete itemList;
+            delete itemList;
     else
         isInitialised = true;
 
