@@ -7,7 +7,8 @@
 #include <QTableWidget>
 #include <QStandardItemModel>
 #include <queue>
-#include "customer.h"
+
+class Controller;
 
 class MultiList : public QFrame
 {

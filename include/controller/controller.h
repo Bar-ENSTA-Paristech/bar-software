@@ -19,6 +19,7 @@
 
 #include "../model/database.h"
 
+
     //TUPLE model du consommateur : Nom, Prénom ,Login, Catégorie , balance , id , login
 //typedef std::tuple<  std::string, std::string, std::string , std::string, float, unsigned > db_customerTuple;
     //TUPLE view du consommateur : Nom, Prénom , Catégorie , balance , id

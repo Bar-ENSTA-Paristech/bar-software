@@ -28,3 +28,4 @@ ConsoLogos::ConsoLogos(QWidget *parent) :
     this->setLayout(layout);
 
 }
+

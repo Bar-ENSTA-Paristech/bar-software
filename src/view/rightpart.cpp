@@ -21,3 +21,4 @@ void RightPart::updateSize()
     productsChoices->updateSize();
     cartDisplay->updateSize();
 }
+

@@ -8,7 +8,7 @@ LeftPart::LeftPart(QWidget* parent)
 
     searchResults = new SearchResults(this);
     history = new History(this);
-    CustomerPanel* customerPanel = new CustomerPanel(this);
+    customerPanel = new CustomerPanel(this);
     // categoriesList will be the widget which will show categories on the left (TOUS, BAR, 2014, 2015, etc)
     categoriesList = new QFrame(this);
     categoriesList->setObjectName("categoriesList");

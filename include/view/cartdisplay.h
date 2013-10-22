@@ -8,9 +8,9 @@
 #include <QLabel>
 #include <QPushButton>
 #include <QGridLayout>
-#include "cart.h"
 #include "multilist.h"
 #include <QDebug>
+
 
 class CartDisplayFrame : public MultiList
 {
@@ -35,6 +35,8 @@ private:
     QLabel* totalPrice;
     QPushButton* validateButton;
     QPushButton* cancelButton;
+    QFont bold;
+
     
 signals:
     

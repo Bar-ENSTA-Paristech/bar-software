@@ -76,5 +76,5 @@ void CustomerPanel::setCustomer(std::tuple< QString, QString, QString, QString, 
     else
         photo->setPixmap(GLOBAL_PATH + "resources/photos/no_photo.jpg");
 
-
 }
+

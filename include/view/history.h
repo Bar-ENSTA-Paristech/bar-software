@@ -3,6 +3,7 @@
 
 #include "multilist.h"
 
+
 class History : public MultiList
 {
     Q_OBJECT
@@ -12,6 +13,10 @@ public:
     // Revceive history from controller
     void setHistory( std::queue < std::tuple < QString, QString, QString, float, QString > > & queue);
     
+private:
+
+
+
 signals:
     
 public slots:

@@ -17,8 +17,13 @@ CartDisplay::CartDisplay(QWidget *parent) :
     layout->setContentsMargins(0,0,0,0);
     this->setLayout(layout);
 
+    bold.setBold(true);
+    bold.setPixelSize(17);
     validateButton->setText("Valider");
     cancelButton->setText("Annuler");
+    totalPrice->setText("- €");
+    totalPrice->setFont(bold);
+    totalPrice->setAlignment(Qt::AlignCenter);
 
     // ####### TEST #######
     std::queue< std::tuple< QString, float, unsigned > > toto;
@@ -29,6 +34,7 @@ CartDisplay::CartDisplay(QWidget *parent) :
     toto.push(titi2);
     toto.push(titi3);
     this->setCart(toto);
+    this->setTotalPrice(5.4+5+2.4*3);
     // ####### FIN TEST #######
 }
 
@@ -37,25 +43,19 @@ void CartDisplay::setCart(std::queue< std::tuple<QString, float, unsigned int> >
     // TUPLE : QString consumption, float price, unsigned int number of these products
 
     cartList->setCart(queue);
-    // Removing old entrys
-    /*QListWidgetItem* item;
-    while((item = cartList->takeItem(0)) != NULL)
-        delete item;
-
-    std::tuple<QString, float, unsigned int> tuple;
-    for(unsigned i =0, n = queue.size() ; i < n ; i++)
-    {
-        tuple = queue.front();
-        queue.pop();
-        cartList->addItem(QString::number(std::get<1>(tuple)) + "€ : " + QString::number(std::get<2>(tuple))+" "+std::get<0>(tuple));
-    }*/
 }
 
 void CartDisplay::setTotalPrice(float price)
 {
-
+    if(price !=0)
+        totalPrice->setText(QString::number(price) + " €");
+    else
+        totalPrice->setText("- €");
 }
 
+
+
+// ################### CART_DISPLAY_FRAME #######################
 
 CartDisplayFrame::CartDisplayFrame(QWidget *parent) :
     MultiList(parent, 3, 0, false)

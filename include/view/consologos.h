@@ -15,6 +15,9 @@ class ConsoLogos : public QFrame
     Q_OBJECT
 public:
     explicit ConsoLogos(QWidget *parent = 0);
+
+private:
+
     
 signals:
     

@@ -87,3 +87,4 @@ MultiList::~MultiList()
     delete list;
     delete emptyHeader;
 }
+
