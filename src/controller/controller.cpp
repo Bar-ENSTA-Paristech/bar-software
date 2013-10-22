@@ -8,6 +8,15 @@ Controller::Controller()
     /*Call here functions for the default display : allCustomers, history, productTypes ... */
 }
 
+void Controller::setViewPointers(SearchResults* par1, CustomerPanel* par2, CartDisplay* par3, ProductsChoices* par4, History* par5)
+{
+    viewSearchResults = par1;
+    viewCustomerPanel = par2;
+    viewCartDisplay = par3;
+    viewProductsChoices = par4;
+    viewHistory = par5;
+}
+
 void Controller::newText_Search(QString &viewSearch)
 {
 
@@ -16,7 +25,9 @@ void Controller::newText_Search(QString &viewSearch)
     view_customerTuple view_tmpCustomerInfo;
     //db_customerQueue dbQueue;                   // Information returned from the database as a queue
     type_customerdbQueue dbQueue;
-    view_customerQueue viewQueue;               // Information send to the view as a queue
+    //view_customerQueue viewQueue;               // Information send to the view as a queue
+    std::queue< std::tuple< QString, QString, QString, float, unsigned > > viewQueue;
+
 
     QString view_tmpName;
     QString view_tmpFirstName;
@@ -35,6 +46,14 @@ void Controller::newText_Search(QString &viewSearch)
 
     if ( dbQueue.empty() ){
         qDebug() << " Model returned empty queue ";
+        // ####### TEST #######
+        std::queue< std::tuple< QString, QString, QString, float, unsigned > > toto;
+        std::tuple< QString, QString, QString, float, unsigned > titi("Rousseau", "Woody", "2015", -2, 1);
+        std::tuple< QString, QString, QString, float, unsigned > titi2("Manchoul", "Lamoule", "2014", 3.5, 2);
+        toto.push(titi);
+        toto.push(titi2);
+        viewSearchResults->setSearchResults(toto);
+        // ####### FIN TEST #######
     }
     else{
 
@@ -47,25 +66,20 @@ void Controller::newText_Search(QString &viewSearch)
             view_tmpGroup=QString::fromStdString( std::get<2>(db_tmpCurstomerInfo) );
             view_tmpBalance = std::get<3>(db_tmpCurstomerInfo);
             view_tmpId = std::get<4>(db_tmpCurstomerInfo);
-            view_tmpLogin=QString::fromStdString( std::get<5>(db_tmpCurstomerInfo) );
+            //view_tmpLogin=QString::fromStdString( std::get<5>(db_tmpCurstomerInfo) );
 
-            view_tmpCustomerInfo = std::make_tuple( view_tmpName, view_tmpFirstName, view_tmpGroup, view_tmpBalance, view_tmpId ,view_tmpLogin );
-
-
-             qDebug() << "Tuple renvoyée par le modèle :";
-            qDebug() << view_tmpName << ", ";
-            qDebug() << view_tmpFirstName << ", " ;
-            qDebug() << view_tmpGroup << ", " ;
-            qDebug() << view_tmpBalance << ", " ;
-            qDebug() << view_tmpId << ", " ;
-            qDebug() << view_tmpLogin<<", ";
+            view_tmpCustomerInfo = std::make_tuple( view_tmpName, view_tmpFirstName, view_tmpGroup, view_tmpBalance, view_tmpId /*,view_tmpLogin*/ );
 
             viewQueue.push(view_tmpCustomerInfo);
             dbQueue.pop();
         }
 
         // Sent result to view
+        qDebug() << "Taille de la queue :" << viewQueue.size();
         //viewSearchResults->setSearchResults( viewQueue );
+
+
+        return;
     }
 
 

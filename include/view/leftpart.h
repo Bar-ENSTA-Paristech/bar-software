@@ -20,6 +20,7 @@ public:
 
     // update size of element to fit to frame (after resize of windows e.g)
     void updateSize();
+    void getPointers(SearchResults** searchResults, History** history, CustomerPanel** customerPanel);
 
 private:
     QPushButton* categoriesLabels;

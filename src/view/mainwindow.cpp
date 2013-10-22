@@ -38,6 +38,10 @@ MainWindow::MainWindow()
     // Adding the left and right frames
     rightPart = new RightPart(mainPart);
     leftPart = new LeftPart(mainPart);
+    // Referencing all pointers of objects in mainWindow
+    leftPart->getPointers(&searchResults, &history, &customerPanel);
+    rightPart->getPointers(&productsChoices, &consoLogos, &cartDisplay);
+
     QGridLayout *mainPartLayout = new QGridLayout(mainPart);
     mainPartLayout->addWidget(leftPart, 0, 0);
     mainPartLayout->addWidget(rightPart, 0, 1);
@@ -90,6 +94,7 @@ void MainWindow::resizeEvent(QResizeEvent *event)
 void MainWindow::setController(Controller *controllerParam)
 {
     controller = controllerParam;
+    controller->setViewPointers(searchResults, customerPanel, cartDisplay, productsChoices, history);
 }
 
 

@@ -20,10 +20,10 @@
 #include "../model/database.h"
 
 
-    //TUPLE model du consommateur : Nom, Prénom ,Login, Catégorie , balance , id , login
+    //TUPLE model du consommateur : Nom, Prénom ,Login, Catégorie , balance , id
 //typedef std::tuple<  std::string, std::string, std::string , std::string, float, unsigned > db_customerTuple;
     //TUPLE view du consommateur : Nom, Prénom , Catégorie , balance , id
-typedef std::tuple< QString, QString, QString, float, unsigned,QString > view_customerTuple;
+typedef std::tuple< QString, QString, QString, float, unsigned/*,QString*/ > view_customerTuple;
     //TUPLE model du produit : Produit, Catégorie , prix ,stock , id
 typedef std::tuple< std::string, unsigned, float , unsigned, unsigned > db_consoTuple;
     //TUPLE view du produit : Produit, prix, quantity
@@ -50,6 +50,8 @@ public:
     void newClic_Cart(unsigned int buttonId);
     void newClic_ProductTypes(QString &view_productTypeName);
     void newClic_Product(QString &view_productName);
+    void setViewPointers(SearchResults* par1, CustomerPanel* par2, CartDisplay* par3, ProductsChoices* par4, History* par5);
+
 
 private:
         /* View objects */

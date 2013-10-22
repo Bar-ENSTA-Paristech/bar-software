@@ -31,8 +31,11 @@ SearchResults::SearchResults(QWidget *parent) :
 void SearchResults::setSearchResults(std::queue< std::tuple< QString, QString, QString, float, unsigned > > & queue)
 {
     // TUPLE : QString name, QString firstName, QString categorie, float balance, unsigned id
+    qDebug() << "test1" << rows;
     std::tuple< QString, QString, QString, float, unsigned > tuple;
+    qDebug() << "test";
     // Deleting old results
+
     for(int i = 0 ; i<rows ; i++)
     {
         delete itemList[i];
@@ -52,7 +55,7 @@ void SearchResults::setSearchResults(std::queue< std::tuple< QString, QString, Q
     for(unsigned i = 0 ; i<numberOfElements ; i++)
     {
         itemList[i] = new QTableWidgetItem[columns];
-    }
+    }qDebug() << "test2";
     // Setting it up to table
     for(unsigned i=0 ; i<numberOfElements ; i++)
     {
@@ -68,7 +71,7 @@ void SearchResults::setSearchResults(std::queue< std::tuple< QString, QString, Q
         itemList[i][4].setText(QString::number(std::get<4>(tuple)));
         for(int j=0 ; j < columns ; j++)
             list->setItem(i, j, &itemList[i][j]);
-    }
+    }qDebug() << "test3";
     list->sortItems(0, Qt::AscendingOrder);
     return;
 }

@@ -40,6 +40,12 @@ private:
     QString search;
     RightPart *rightPart;
     LeftPart *leftPart;
+    SearchResults * searchResults;
+    CustomerPanel * customerPanel;
+    CartDisplay * cartDisplay;
+    ProductsChoices * productsChoices;
+    History * history;
+    ConsoLogos* consoLogos;
 
 
 };

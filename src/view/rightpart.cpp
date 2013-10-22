@@ -22,3 +22,10 @@ void RightPart::updateSize()
     cartDisplay->updateSize();
 }
 
+void RightPart::getPointers(ProductsChoices** par1, ConsoLogos** par2, CartDisplay** par3)
+{
+    *par1 = productsChoices;
+    *par2 = logosFrame;
+    *par3 = cartDisplay;
+}
+

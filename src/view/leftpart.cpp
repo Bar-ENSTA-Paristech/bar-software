@@ -63,3 +63,10 @@ void LeftPart::updateSize()
     searchResults->updateSize();
     history->updateSize();
 }
+
+void LeftPart::getPointers(SearchResults** par1, History** par2, CustomerPanel** par3)
+{
+    *par1 = searchResults;
+    *par2 = history;
+    *par3 = customerPanel;
+}

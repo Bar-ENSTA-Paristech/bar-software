@@ -12,6 +12,7 @@ class RightPart : public QFrame
 public:
     RightPart(QWidget* parent = NULL);
     void updateSize();
+    void getPointers(ProductsChoices** par1, ConsoLogos** par2, CartDisplay** par3);
 
 private:
     ProductsChoices *productsChoices;
