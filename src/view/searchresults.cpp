@@ -39,10 +39,10 @@ void SearchResults::setSearchResults(std::queue< std::tuple< QString, QString, Q
 
     for(int i = 0 ; i<rows ; i++)
     {
-            delete itemList[i];
+        delete[] itemList[i];
     }
     if(isInitialised && rows !=0)
-            delete itemList;
+        delete[] itemList;
     else
         isInitialised = true;
 
