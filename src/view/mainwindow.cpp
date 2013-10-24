@@ -60,11 +60,12 @@ MainWindow::MainWindow()
     QObject::connect(timerSearch, SIGNAL(timeout()), this, SLOT(sendSearch()));
     QObject::connect(shortcut, SIGNAL(activated()), this, SLOT(shortcutRoutine()));
     QObject::connect(timerAtStart, SIGNAL(timeout()), this, SLOT(updateSize()));
+
 }
 
 MainWindow::~MainWindow()
-{
-    delete controller;
+{qDebug() << "toto";
+    /*delete controller;
     delete timerSearch;
     delete timerAtStart;
     delete rightPart;
@@ -84,7 +85,7 @@ MainWindow::~MainWindow()
     delete searchText;
     delete searchBarLayout;
     delete mainPartLayout;
-    delete shortcut;
+    delete shortcut;*/
 }
 
 

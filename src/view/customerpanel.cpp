@@ -62,7 +62,7 @@ CustomerPanel::CustomerPanel(QWidget *parent) :
 
 CustomerPanel::~CustomerPanel()
 {
-    delete photo;
+    /*delete photo;
     delete name;
     delete firstName;
     delete categorie;
@@ -76,7 +76,7 @@ CustomerPanel::~CustomerPanel()
     delete nameLabel;
     delete firstNameLabel;
     delete categorieLabel;
-    delete balanceLabel;
+    delete balanceLabel;*/
 }
 
 void CustomerPanel::setCustomer(std::tuple< QString, QString, QString, QString, float> & tuple)

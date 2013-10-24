@@ -31,7 +31,7 @@ ConsoLogos::ConsoLogos(QWidget *parent) :
 
 ConsoLogos::~ConsoLogos()
 {
-    delete layout;
+    /*delete layout;
     delete[] logos;
-    delete[] logosLabels;
+    delete[] logosLabels;*/
 }

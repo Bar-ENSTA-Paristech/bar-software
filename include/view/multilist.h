@@ -31,7 +31,7 @@ protected:
     bool isInitialised;
     bool isSortable;
     QTableWidgetItem *headers;
-    QTableWidget *list;
+    QTableWidget *table;
     QTableWidgetItem **itemList;
     QFont font;
     QTableWidgetItem *emptyHeader;

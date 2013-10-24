@@ -32,12 +32,12 @@ LeftPart::LeftPart(QWidget* parent)
 
 LeftPart::~LeftPart()
 {
-    delete categoriesLabels;
+    /*delete[] categoriesLabels;
     delete layout;
     delete categoriesList;
     delete searchResults;
     delete history;
-    delete customerPanel;
+    delete customerPanel;*/
 }
 
 // Normally launch once at start of software to set categories on the left (no delete planned if not ...)

@@ -9,13 +9,13 @@ ProductsChoices::ProductsChoices(QWidget *parent) :
     headers[2].setText("Prix");
     headers[3].setText("Id");
     for(int i=0 ; i < columns ; i++)
-        list->setHorizontalHeaderItem(i, &headers[i]);
+        table->setHorizontalHeaderItem(i, &headers[i]);
 
-    list->horizontalHeader()->setDefaultSectionSize(70);
-    list->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
-    list->horizontalHeader()->setSectionHidden(3, true);
+    table->horizontalHeader()->setDefaultSectionSize(70);
+    table->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
+    table->horizontalHeader()->setSectionHidden(3, true);
 
-    QObject::connect(list, SIGNAL(cellDoubleClicked(int,int)), this, SLOT(lineClicked(int,int)));
+    QObject::connect(table, SIGNAL(cellDoubleClicked(int,int)), this, SLOT(lineClicked(int,int)));
 
     // ####### TEST #######
     std::queue< std::tuple< QString, QString, float, unsigned > > toto;
@@ -61,9 +61,9 @@ void ProductsChoices::setProductsChoices(std::queue< std::tuple< QString, QStrin
         itemList[i][2].setText(QString::number(std::get<2>(tuple)));
         itemList[i][3].setText(QString::number(std::get<3>(tuple)));
         for(int j=0 ; j < columns ; j++)
-            list->setItem(i, j, &itemList[i][j]);
+            table->setItem(i, j, &itemList[i][j]);
     }
-    list->sortItems(0, Qt::AscendingOrder);
+    table->sortItems(0, Qt::AscendingOrder);
     return;
 }
 

@@ -12,14 +12,14 @@ SearchResults::SearchResults(QWidget *parent) :
     headers[3].setText("Solde");
     headers[4].setText("Id");
     for(int i=0 ; i < columns ; i++)
-        list->setHorizontalHeaderItem(i, &headers[i]);
+        table->setHorizontalHeaderItem(i, &headers[i]);
 
-    list->horizontalHeader()->setDefaultSectionSize(70);
-    list->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
-    list->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
-    list->horizontalHeader()->setSectionHidden(4, true);
+    table->horizontalHeader()->setDefaultSectionSize(70);
+    table->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
+    table->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
+    table->horizontalHeader()->setSectionHidden(4, true);
 
-    QObject::connect(list, SIGNAL(cellClicked(int, int)), this, SLOT(lineClicked(int, int)));
+    QObject::connect(table, SIGNAL(cellClicked(int, int)), this, SLOT(lineClicked(int, int)));
 
     // ####### TEST #######
 //    std::queue< std::tuple< QString, QString, QString, float, unsigned > > toto;
@@ -71,9 +71,9 @@ void SearchResults::setSearchResults(std::queue< std::tuple< QString, QString, Q
             itemList[i][3].setForeground(negativeSold);
         itemList[i][4].setText(QString::number(std::get<4>(tuple)));
         for(int j=0 ; j < columns ; j++)
-            list->setItem(i, j, &itemList[i][j]);
+            table->setItem(i, j, &itemList[i][j]);
     }
-    list->sortItems(0, Qt::AscendingOrder);
+    table->sortItems(0, Qt::AscendingOrder);
     return;
 }
 

@@ -40,11 +40,11 @@ CartDisplay::CartDisplay(QWidget *parent) :
 
 CartDisplay::~CartDisplay()
 {
-    delete cartList;
+    /*delete cartList;
     delete totalPrice;
     delete validateButton;
     delete cancelButton;
-    delete layout;
+    delete layout;*/
 }
 
 void CartDisplay::setCart(std::queue< std::tuple<QString, float, unsigned int> > & queue)
@@ -74,10 +74,10 @@ CartDisplayFrame::CartDisplayFrame(QWidget *parent) :
     headers[1].setText("Qté");
     headers[2].setText("Prix");
     for(int i=0 ; i < columns ; i++)
-        list->setHorizontalHeaderItem(i, &headers[i]);
+        table->setHorizontalHeaderItem(i, &headers[i]);
 
-    list->horizontalHeader()->setDefaultSectionSize(40);
-    list->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
+    table->horizontalHeader()->setDefaultSectionSize(40);
+    table->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
 }
 
 
@@ -112,9 +112,9 @@ void CartDisplayFrame::setCart(std::queue< std::tuple<QString, float, unsigned i
         itemList[i][1].setText(QString::number(std::get<2>(tuple)));
         itemList[i][2].setText(QString::number(std::get<1>(tuple)));
         for(int j=0 ; j < columns ; j++)
-            list->setItem(i, j, &itemList[i][j]);
+            table->setItem(i, j, &itemList[i][j]);
     }
-    list->sortItems(2, Qt::AscendingOrder);
+    table->sortItems(2, Qt::AscendingOrder);
 }
 
 

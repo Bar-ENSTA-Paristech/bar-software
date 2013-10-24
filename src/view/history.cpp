@@ -11,17 +11,17 @@ History::History(QWidget *parent) : MultiList(parent, 6, 0, false)
     headers[4].setText("Date");
     headers[5].setText("id");
     for(int i=0 ; i < columns ; i++)// On assigne ces légendes au tableau
-        list->setHorizontalHeaderItem(i, &headers[i]);
+        table->setHorizontalHeaderItem(i, &headers[i]);
     // ##### Fin Définition #####
 
     // une colonne fait 60 pixels par défaut. Les colonnes 0,1,2,4 s'adapteront également à l'espace restant
-    list->horizontalHeader()->setDefaultSectionSize(60);
-    list->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
-    list->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
-    list->horizontalHeader()->setSectionResizeMode(2, QHeaderView::Stretch);
-    list->horizontalHeader()->setSectionResizeMode(4, QHeaderView::Stretch);
-    list->horizontalHeader()->setSectionHidden(5, true);
-    list->horizontalHeader()->setSortIndicatorShown(false);
+    table->horizontalHeader()->setDefaultSectionSize(60);
+    table->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
+    table->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
+    table->horizontalHeader()->setSectionResizeMode(2, QHeaderView::Stretch);
+    table->horizontalHeader()->setSectionResizeMode(4, QHeaderView::Stretch);
+    table->horizontalHeader()->setSectionHidden(5, true);
+    table->horizontalHeader()->setSortIndicatorShown(false);
 
     // ####### TEST #######
     std::queue< std::tuple< QString, QString, QString, float, QString > > toto;
@@ -85,10 +85,10 @@ void History::setHistory(std::queue < std::tuple < QString, QString, QString, fl
         {
             itemList[i][j].setFont(historyFont);
             itemList[i][j].setForeground(color);
-            list->setItem(i, j, &itemList[i][j]);
+            table->setItem(i, j, &itemList[i][j]);
         }
     }
     // Ascending or Descending depends on order of queue
-    list->sortItems(5, Qt::AscendingOrder);
+    table->sortItems(5, Qt::AscendingOrder);
     return;
 }
