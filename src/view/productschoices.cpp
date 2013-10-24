@@ -4,7 +4,6 @@ ProductsChoices::ProductsChoices(QWidget *parent) :
     MultiList(parent, 4, 0)
 {
     setObjectName("productChoices");
-    QTableWidgetItem *headers = new QTableWidgetItem[columns];
     headers[0].setText("Consommation");
     headers[1].setText("Volume");
     headers[2].setText("Prix");
@@ -36,10 +35,10 @@ void ProductsChoices::setProductsChoices(std::queue< std::tuple< QString, QStrin
     // Deleting old results
     for(int i = 0 ; i<rows ; i++)
     {
-        delete itemList[i];
+        delete[] itemList[i];
     }
     if(isInitialised && rows !=0)
-        delete itemList;
+        delete[] itemList;
     else
         isInitialised = true;
 

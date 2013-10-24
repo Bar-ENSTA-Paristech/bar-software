@@ -14,6 +14,7 @@ class RightPart : public QFrame
 public:
     Controller* controller;
     RightPart(QWidget* parent = NULL);
+    ~RightPart();
     void updateSize();
     void getPointers(ProductsChoices** par1, ConsoLogos** par2, CartDisplay** par3);
     void setController(Controller* par);
@@ -22,6 +23,7 @@ private:
     ProductsChoices *productsChoices;
     ConsoLogos *logosFrame;
     CartDisplay *cartDisplay;
+    QGridLayout *layout;
 
 };
 

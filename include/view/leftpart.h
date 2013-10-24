@@ -17,6 +17,7 @@ class LeftPart : public QFrame
 public:
     Controller* controller;
     LeftPart(QWidget* parent = NULL);
+    ~LeftPart();
 
 
     //receive informations from controller
@@ -29,6 +30,7 @@ public:
 
 private:
     QPushButton* categoriesLabels;
+    QGridLayout *layout;
     QFrame *categoriesList;
     QFont font;
     SearchResults* searchResults;

@@ -22,6 +22,7 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 public:
     MainWindow();
+    ~MainWindow();
     void resizeEvent(QResizeEvent *event);
     void setController(Controller *controllerParam);
 
@@ -32,7 +33,7 @@ private:
 private slots:
     void searchChanged(const QString &text); //something written in searchbar
     void sendSearch(); // to controller
-    void shortcut();
+    void shortcutRoutine();
     void updateSize(); // after resize of window e.g
 
 private:
@@ -48,6 +49,16 @@ private:
     ProductsChoices * productsChoices;
     History * history;
     ConsoLogos* consoLogos;
+    QWidget *centralWidget;
+    QGridLayout *mainWindowLayout;
+    QFrame *menu;
+    QFrame *mainPart;
+    QFrame *searchBar;
+    QLabel *searchIcon;
+    QLineEdit *searchText;
+    QHBoxLayout *searchBarLayout;
+    QGridLayout *mainPartLayout;
+    QShortcut *shortcut;
 
 
 };

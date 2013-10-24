@@ -9,6 +9,7 @@ MultiList::MultiList(QWidget *parent, int column, int row, bool _isSortable)
     rows = row;
     isInitialised = false;
     isSortable = _isSortable;
+    headers = new QTableWidgetItem[columns];
     list = new QTableWidget(this);
     list->setSelectionBehavior(QAbstractItemView::SelectRows);
     list->setObjectName("multiListTable");
@@ -80,12 +81,13 @@ MultiList::~MultiList()
 {
     for(int i = 0 ; i<rows ; i++)
     {
-        delete itemList[i];
+        delete[] itemList[i];
     }
     if(isInitialised && rows !=0)
-        delete itemList;
+        delete[] itemList;
 
     delete list;
-    delete emptyHeader;
+    delete[] emptyHeader;
+    delete[] headers;
 }
 

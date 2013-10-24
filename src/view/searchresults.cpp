@@ -5,7 +5,7 @@ SearchResults::SearchResults(QWidget *parent) :
     MultiList(parent, 5, 0)
 {
     this->setObjectName("searchResults");
-    QTableWidgetItem *headers = new QTableWidgetItem[columns];
+
     headers[0].setText("Nom");
     headers[1].setText("Prénom");
     headers[2].setText("Catégorie");

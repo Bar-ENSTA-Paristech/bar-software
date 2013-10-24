@@ -4,10 +4,10 @@ CustomerPanel::CustomerPanel(QWidget *parent) :
     QFrame(parent)
 {
     setObjectName("customerPanel");
-    QFrame* photoFrame = new QFrame(this);
-    QFrame* infosFrame = new QFrame(this);
-    QFrame* optionsFrame = new QFrame(this);
-    QGridLayout* layout = new QGridLayout(this);
+    photoFrame = new QFrame(this);
+    infosFrame = new QFrame(this);
+    optionsFrame = new QFrame(this);
+    layout = new QGridLayout(this);
     layout->addWidget(photoFrame, 0, 0, 2, 1);
     layout->addWidget(infosFrame, 0, 1);
     layout->addWidget(optionsFrame, 1, 1);
@@ -16,17 +16,17 @@ CustomerPanel::CustomerPanel(QWidget *parent) :
 
     //###### PHOTO ######
     photo = new QLabel(photoFrame);
-    QGridLayout* photoLayout = new QGridLayout(photoFrame);
+    photoLayout = new QGridLayout(photoFrame);
     photoLayout->addWidget(photo, 0, 0);
     photoLayout->setContentsMargins(0, 0, 0, 0);
     photoFrame->setLayout(photoLayout);
 
     //###### INFOS ########
-    QGridLayout* infosLayout = new QGridLayout(infosFrame);
-    QLabel* nameLabel = new QLabel("Nom :", infosFrame);
-    QLabel* firstNameLabel = new QLabel("Prénom :", infosFrame);
-    QLabel* categorieLabel = new QLabel("Catégorie :", infosFrame);
-    QLabel* balanceLabel = new QLabel("Solde :", infosFrame);
+    infosLayout = new QGridLayout(infosFrame);
+    nameLabel = new QLabel("Nom :", infosFrame);
+    firstNameLabel = new QLabel("Prénom :", infosFrame);
+    categorieLabel = new QLabel("Catégorie :", infosFrame);
+    balanceLabel = new QLabel("Solde :", infosFrame);
     name = new QLabel(infosFrame);
     firstName = new QLabel(infosFrame);
     categorie = new QLabel(infosFrame);
@@ -58,6 +58,25 @@ CustomerPanel::CustomerPanel(QWidget *parent) :
     // ###### TEST #########
     std::tuple<QString, QString, QString, QString, float> toto("Rousseau", "Woody", "wrousseau", "2015", -3.5);
     setCustomer(toto);
+}
+
+CustomerPanel::~CustomerPanel()
+{
+    delete photo;
+    delete name;
+    delete firstName;
+    delete categorie;
+    delete balance;
+    delete photoFrame;
+    delete infosFrame;
+    delete optionsFrame;
+    delete layout;
+    delete photoLayout;
+    delete infosLayout;
+    delete nameLabel;
+    delete firstNameLabel;
+    delete categorieLabel;
+    delete balanceLabel;
 }
 
 void CustomerPanel::setCustomer(std::tuple< QString, QString, QString, QString, float> & tuple)

@@ -28,6 +28,7 @@ class CartDisplay : public QFrame
 public:
     Controller* controller;
     explicit CartDisplay(QWidget *parent = 0);
+    ~CartDisplay();
     void setCart(std::queue< std::tuple<QString, float, unsigned int> > & queue);
     void setTotalPrice(float price);
     void updateSize(){cartList->updateSize();}
@@ -38,6 +39,7 @@ private:
     QPushButton* validateButton;
     QPushButton* cancelButton;
     QFont bold;
+    QGridLayout* layout;
 
     
 signals:

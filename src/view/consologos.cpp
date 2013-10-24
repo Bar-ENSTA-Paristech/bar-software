@@ -4,12 +4,12 @@ ConsoLogos::ConsoLogos(QWidget *parent) :
     QFrame(parent)
 {
     setObjectName("consoLogos");
-    QGridLayout* layout = new QGridLayout(this);
+    layout = new QGridLayout(this);
     QFont font;
     font.setBold(true);
     font.setPixelSize(14);
-    QLabel* logos = new QLabel[NUMBER_OF_CONSUMPTION_TYPES];
-    QLabel* logosLabels = new QLabel[NUMBER_OF_CONSUMPTION_TYPES];
+    logos = new QLabel[NUMBER_OF_CONSUMPTION_TYPES];
+    logosLabels = new QLabel[NUMBER_OF_CONSUMPTION_TYPES];
     for(int i=0 ; i < NUMBER_OF_CONSUMPTION_TYPES ; i++)
     {
         logos[i].setParent(this);
@@ -29,3 +29,9 @@ ConsoLogos::ConsoLogos(QWidget *parent) :
 
 }
 
+ConsoLogos::~ConsoLogos()
+{
+    delete layout;
+    delete[] logos;
+    delete[] logosLabels;
+}

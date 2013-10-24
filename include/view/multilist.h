@@ -30,6 +30,7 @@ protected:
     bool ascendingSort;
     bool isInitialised;
     bool isSortable;
+    QTableWidgetItem *headers;
     QTableWidget *list;
     QTableWidgetItem **itemList;
     QFont font;

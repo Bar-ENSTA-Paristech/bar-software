@@ -4,7 +4,6 @@ History::History(QWidget *parent) : MultiList(parent, 6, 0, false)
 {
     this->setObjectName("history"); // for CSS
     // ##### Definition des légendes en haut de colonne ######
-    QTableWidgetItem *headers = new QTableWidgetItem[columns];
     headers[0].setText("Nom");
     headers[1].setText("Prénom");
     headers[2].setText("Opération");
@@ -47,10 +46,10 @@ void History::setHistory(std::queue < std::tuple < QString, QString, QString, fl
     historyFont.setPixelSize(11);
     for(int i=0 ; i<rows ; i++)
     {
-        delete itemList[i];
+        delete[] itemList[i];
     }
     if(isInitialised && rows !=0)
-        delete itemList;
+        delete[] itemList;
     else
         isInitialised = true;
 

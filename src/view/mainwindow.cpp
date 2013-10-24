@@ -5,17 +5,17 @@
 MainWindow::MainWindow()
 {
     // Setting up central widget of Mainwindow (actually the only part of MainWindow)
-    QWidget *centralWidget = new QWidget;
+    centralWidget = new QWidget;
     this->setCentralWidget(centralWidget);
     this->setGeometry(20, 40, 1000, 800);
     this->setWindowTitle("RAB WareSoft");
     this->setMinimumSize(800, 600);
 
     // Creating main widgets (menu at top and the remaining
-    QGridLayout *mainWindowLayout = new QGridLayout(centralWidget);
-    QFrame *menu = new QFrame(centralWidget);
+    mainWindowLayout = new QGridLayout(centralWidget);
+    menu = new QFrame(centralWidget);
     menu->setObjectName("menu");
-    QFrame *mainPart = new QFrame(centralWidget);
+    mainPart = new QFrame(centralWidget);
     mainWindowLayout->addWidget(menu, 0, 0);
     mainWindowLayout->addWidget(mainPart, 1, 0);
     // row 0 (the menu) have a weight of 1 and the row remaining (at bottom) have a weight of 20
@@ -26,12 +26,12 @@ MainWindow::MainWindow()
     centralWidget->setLayout(mainWindowLayout);
 
     // Adding content of the top menu (searchbar and configuration buttons)
-    QFrame *searchBar = new QFrame(menu);
-    QLabel *searchIcon = new QLabel(searchBar);
+    searchBar = new QFrame(menu);
+    searchIcon = new QLabel(searchBar);
     searchIcon->setPixmap(QPixmap(GLOBAL_PATH + "resources/pictures/search.png"));
-    QLineEdit *searchText = new QLineEdit("", searchBar);
+    searchText = new QLineEdit("", searchBar);
     searchBar->setObjectName("searchBar");
-    QHBoxLayout *searchBarLayout = new QHBoxLayout(searchBar);
+    searchBarLayout = new QHBoxLayout(searchBar);
     searchBarLayout->addWidget(searchIcon);
     searchBarLayout->addWidget(searchText);
     searchBar->setLayout(searchBarLayout);
@@ -43,7 +43,7 @@ MainWindow::MainWindow()
     leftPart->getPointers(&searchResults, &history, &customerPanel);
     rightPart->getPointers(&productsChoices, &consoLogos, &cartDisplay);
 
-    QGridLayout *mainPartLayout = new QGridLayout(mainPart);
+    mainPartLayout = new QGridLayout(mainPart);
     mainPartLayout->addWidget(leftPart, 0, 0);
     mainPartLayout->addWidget(rightPart, 0, 1);
     mainPartLayout->setContentsMargins(0,0,0,0);
@@ -55,11 +55,36 @@ MainWindow::MainWindow()
     timerAtStart = new QTimer();
     timerAtStart->setSingleShot(true);
     timerAtStart->start(500);
-    QShortcut *shortcut = new QShortcut(QKeySequence("Ctrl+D"), this);
+    shortcut = new QShortcut(QKeySequence("Ctrl+D"), this);
     QObject::connect(searchText, SIGNAL(textEdited(const QString &)), this, SLOT(searchChanged(const QString &)));
     QObject::connect(timerSearch, SIGNAL(timeout()), this, SLOT(sendSearch()));
-    QObject::connect(shortcut, SIGNAL(activated()), this, SLOT(shortcut()));
+    QObject::connect(shortcut, SIGNAL(activated()), this, SLOT(shortcutRoutine()));
     QObject::connect(timerAtStart, SIGNAL(timeout()), this, SLOT(updateSize()));
+}
+
+MainWindow::~MainWindow()
+{
+    delete controller;
+    delete timerSearch;
+    delete timerAtStart;
+    delete rightPart;
+    delete leftPart;
+    delete searchResults;
+    delete customerPanel;
+    delete cartDisplay;
+    delete productsChoices;
+    delete history;
+    delete consoLogos;
+    delete centralWidget;
+    delete mainWindowLayout;
+    delete menu;
+    delete mainPart;
+    delete searchBar;
+    delete searchIcon;
+    delete searchText;
+    delete searchBarLayout;
+    delete mainPartLayout;
+    delete shortcut;
 }
 
 
@@ -75,7 +100,7 @@ void MainWindow::sendSearch()
 
 }
 
-void MainWindow::shortcut()
+void MainWindow::shortcutRoutine()
 {
     qDebug() << "CTRL + D";
     this->updateSize();

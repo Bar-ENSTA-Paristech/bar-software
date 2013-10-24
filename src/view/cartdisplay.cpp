@@ -9,7 +9,7 @@ CartDisplay::CartDisplay(QWidget *parent) :
     totalPrice = new QLabel(this);
     validateButton = new QPushButton(this);
     cancelButton = new QPushButton(this);
-    QGridLayout* layout = new QGridLayout(this);
+    layout = new QGridLayout(this);
     layout->addWidget(cartList, 0, 0, 1, 3);
     layout->addWidget(totalPrice, 1, 0);
     layout->addWidget(validateButton, 1,1);
@@ -38,6 +38,15 @@ CartDisplay::CartDisplay(QWidget *parent) :
     // ####### FIN TEST #######
 }
 
+CartDisplay::~CartDisplay()
+{
+    delete cartList;
+    delete totalPrice;
+    delete validateButton;
+    delete cancelButton;
+    delete layout;
+}
+
 void CartDisplay::setCart(std::queue< std::tuple<QString, float, unsigned int> > & queue)
 {
     // TUPLE : QString consumption, float price, unsigned int number of these products
@@ -61,7 +70,6 @@ CartDisplayFrame::CartDisplayFrame(QWidget *parent) :
     MultiList(parent, 3, 0, false)
 {
     this->setObjectName("cartDiplayFrame");
-    QTableWidgetItem *headers = new QTableWidgetItem[columns];
     headers[0].setText("Consommation");
     headers[1].setText("Qté");
     headers[2].setText("Prix");
@@ -79,10 +87,10 @@ void CartDisplayFrame::setCart(std::queue< std::tuple<QString, float, unsigned i
     std::tuple<QString, float, unsigned int> tuple;
     for(int i = 0 ; i<rows ; i++)
     {
-        delete itemList[i];
+        delete[] itemList[i];
     }
     if(isInitialised && rows !=0)
-        delete itemList;
+        delete[] itemList;
     else
         isInitialised = true;
 

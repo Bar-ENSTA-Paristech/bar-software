@@ -18,6 +18,7 @@ class CustomerPanel : public QFrame
 public:
     Controller* controller;
     explicit CustomerPanel(QWidget *parent = 0);
+    ~CustomerPanel();
     void setCustomer(std::tuple<QString, QString, QString, QString, float> &tuple);
     
 private:
@@ -26,6 +27,16 @@ private:
     QLabel* firstName;
     QLabel* categorie;
     QLabel* balance;
+    QFrame* photoFrame;
+    QFrame* infosFrame;
+    QFrame* optionsFrame;
+    QGridLayout* layout;
+    QGridLayout* photoLayout;
+    QGridLayout* infosLayout;
+    QLabel* nameLabel;
+    QLabel* firstNameLabel;
+    QLabel* categorieLabel;
+    QLabel* balanceLabel;
 
 signals:
     

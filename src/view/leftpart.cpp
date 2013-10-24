@@ -13,7 +13,7 @@ LeftPart::LeftPart(QWidget* parent)
     categoriesList = new QFrame(this);
     categoriesList->setObjectName("categoriesList");
 
-    QGridLayout *layout = new QGridLayout(this);
+    layout = new QGridLayout(this);
     layout->addWidget(searchResults, 0, 0, 1, 10);
     layout->addWidget(categoriesList, 1, 0);
     layout->addWidget(customerPanel, 1, 1, 1, 9);
@@ -28,6 +28,16 @@ LeftPart::LeftPart(QWidget* parent)
     // ##### FIN TEST #####
 
     this->setLayout(layout);
+}
+
+LeftPart::~LeftPart()
+{
+    delete categoriesLabels;
+    delete layout;
+    delete categoriesList;
+    delete searchResults;
+    delete history;
+    delete customerPanel;
 }
 
 // Normally launch once at start of software to set categories on the left (no delete planned if not ...)
