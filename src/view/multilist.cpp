@@ -79,15 +79,15 @@ void MultiList::setRows(int numberOfRows)
 
 MultiList::~MultiList()
 {
-    /*for(int i = 0 ; i<rows ; i++)
+    for(int i = 0 ; i<rows ; i++)
     {
         delete[] itemList[i];
     }
     if(isInitialised && rows !=0)
         delete[] itemList;
 
-    /*delete table;
+    delete table;
     delete[] emptyHeader;
-    delete[] headers;*/
+    delete[] headers;
 }
 

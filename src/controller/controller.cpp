@@ -18,11 +18,6 @@ void Controller::setViewPointers(SearchResults* par1, CustomerPanel* par2, CartD
     viewHistory = par5;
 }
 
-void Controller::newClic_Customer(unsigned int customerId)
-{
-    qDebug() << customerId << "Mehdi Chat miaule";
-}
-
 void Controller::newText_Search(QString &viewSearch)
 {
 
@@ -53,12 +48,12 @@ void Controller::newText_Search(QString &viewSearch)
     if ( dbQueue.empty() ){
         qDebug() << " Model returned empty queue ";
         // ####### TEST #######
-        std::queue< std::tuple< QString, QString, QString, float, unsigned > > toto;
-        std::tuple< QString, QString, QString, float, unsigned > titi("Rousseau", "Woody", "2015", -2, 1);
-        std::tuple< QString, QString, QString, float, unsigned > titi2("Manchoul", "Lamoule", "2014", 3.5, 2);
-        toto.push(titi);
-        toto.push(titi2);
-        viewSearchResults->setSearchResults(toto);
+//        std::queue< std::tuple< QString, QString, QString, float, unsigned > > toto;
+//        std::tuple< QString, QString, QString, float, unsigned > titi("Rousseau", "Woody", "2015", -2, 1);
+//        std::tuple< QString, QString, QString, float, unsigned > titi2("Manchoul", "Lamoule", "2014", 3.5, 2);
+//        toto.push(titi);
+//        toto.push(titi2);
+//        viewSearchResults->setSearchResults(toto);
         // ####### FIN TEST #######
     }
     else{
@@ -84,38 +79,44 @@ void Controller::newText_Search(QString &viewSearch)
         qDebug() << "Taille de la queue :" << viewQueue.size();
         viewSearchResults->setSearchResults( viewQueue );
 
-
-        return;
     }
 
 
 
 }
 
-//void Controller::newClic_Customer(unsigned int customerId)
-//{
+void Controller::newClic_Customer(unsigned int customerId)
+{
 //    string firstName;
 //    string familyName;
 //    string group;
 //    float money;
 
-//    db_customerTuple db_tmpCurstomerInfo;   // Output for SQL request
+    type_customerdbTuple tmpDBCurstomerInfo;   // Output for SQL request
+    std::tuple<QString, QString, QString, QString, float> tmpViewCurstomerInfo;
 
-//    db_tmpCurstomerInfo = database->getCustomerFromId( customerId );
+    qDebug() << "TEST0";
+    tmpDBCurstomerInfo = database.getCustomerFromId( customerId );
+    qDebug() << "TEST1";
 
-//        /* Create the customer */
+        /* Create the customer */
 
-//    curCustomer = new Customer( get<0>(db_tmpCurstomerInfo),
-//                            get<1>(db_tmpCurstomerInfo),
-//                            get<2>(db_tmpCurstomerInfo),
-//                            get<3>(db_tmpCurstomerInfo),
-//                            get<4>(db_tmpCurstomerInfo)
-//                          );
+    curCustomer = new Customer( std::get<5>( tmpDBCurstomerInfo ).c_str(),
+                                std::get<0>( tmpDBCurstomerInfo ).c_str(),
+                                std::get<1>( tmpDBCurstomerInfo ).c_str(),
+                                std::get<2>( tmpDBCurstomerInfo ).c_str(),
+                                std::get<3>( tmpDBCurstomerInfo ) );
 
-//    //CustomerPanel.setLogin( curCustomer.getLogin() );
+    tmpViewCurstomerInfo = std::make_tuple( QString::fromStdString( curCustomer->getLogin() ),
+                                            QString::fromStdString( curCustomer->getFirstName() ),
+                                            QString::fromStdString( curCustomer->getFamilyName() ),
+                                            QString::fromStdString( std::get<2>( tmpDBCurstomerInfo ) ),
+                                            curCustomer->getBalance() );
+
+    viewCustomerPanel->setCustomer( tmpViewCurstomerInfo );
 
 
-//}
+}
 
 //void Controller::newClic_CustomerPanel(unsigned int buttonId)
 //{
