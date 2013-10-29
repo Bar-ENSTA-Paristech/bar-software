@@ -7,7 +7,7 @@
 #include <QFont>
 #include "controller.h"
 
-#define NUMBER_OF_CONSUMPTION_TYPES 4
+#define NUMBER_OF_CONSUMPTION_TYPES 6
 
 extern QString GLOBAL_PATH;
 

@@ -33,8 +33,8 @@ CustomerPanel::CustomerPanel(QWidget *parent) :
     balance = new QLabel(infosFrame);
     QFont bold, normal;
     bold.setBold(true);
-    normal.setPixelSize(13);
-    bold.setPixelSize(13);
+    normal.setPixelSize(14);
+    bold.setPixelSize(14);
     name->setFont(bold);
     firstName->setFont(bold);
     categorie->setFont(bold);

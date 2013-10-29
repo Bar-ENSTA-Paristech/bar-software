@@ -55,6 +55,7 @@ void LeftPart::setCategories(std::queue<QString> &categories)
         categoriesLabels[i].setParent(categoriesList);
         categoriesLabels[i].setText(categories.front());
         categoriesLabels[i].setFlat(true);
+        categoriesLabels[i].setEnabled(false);
         categoriesLabels[i].setFont(font);
         categoriesLabels[i].setFixedHeight(30);
         categoriesLabels[i].setFixedWidth(100);

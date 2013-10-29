@@ -17,10 +17,12 @@ MultiList::MultiList(QWidget *parent, int column, int row, bool _isSortable)
     table->setEditTriggers(QAbstractItemView::NoEditTriggers);
     table->setSelectionMode(QAbstractItemView::SingleSelection);
     font.setStyleHint(QFont::SansSerif);
-    font.setPixelSize(15);
+    font.setPixelSize(13);
     table->setColumnCount(columns);
     emptyHeader = new QTableWidgetItem[1000];
     table->horizontalHeader()->setSortIndicatorShown(isSortable);
+    for(int i=0 ; i<columns ; i++)
+        headers[i].setFont(font);
     setRows(rows);
 
     ascendingSort = true;

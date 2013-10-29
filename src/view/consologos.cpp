@@ -24,7 +24,9 @@ ConsoLogos::ConsoLogos(QWidget *parent) :
     logosLabels[0].setText("Bières - Ctrl+B");
     logosLabels[1].setText("Pression - Ctrl+P");
     logosLabels[2].setText("Vin - Ctrl+V");
-    logosLabels[3].setText("Divers - Ctrl+D");
+    logosLabels[3].setText("Bouffe salée - Ctrl+A");
+    logosLabels[4].setText("Bouffe sucrée - Ctrl+U");
+    logosLabels[5].setText("Divers - Ctrl+D");
     this->setLayout(layout);
 
 }
