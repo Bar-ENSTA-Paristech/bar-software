@@ -66,12 +66,15 @@ static int callback(void *NotUsed, int argc, char **argv, char **azColName){
 
     for(i=0; i<argc; i++)
     {
-        printf("%s = %s\n", azColName[i], argv[i] ? argv[i] : "NULL");
+        //printf("%s = %s\n", azColName[i], argv[i] ? argv[i] : "NULL");
         //queue.push(azColName[i]);
+
         queue.push(argv[i] ? argv[i] : "NULL");
     }
-    printf("\n");
+    //printf("\n");
+
     queue.push("\n");
+
     *queryResult=queue;
     return 0;
 }
@@ -87,8 +90,7 @@ int Database::executeQuery(Query &_query)
     std::string query_string=_query.getQuery();
     bool verbose=_query.getVerbose();
 
-    //Transformation de la requete en string sous forme explicite de char*
-    char* query= new char[query_string.length()+1];
+    char* query= new char[query_string.length()+1];    //Transformation de la requete en string sous forme explicite de char*
     strcpy (query,query_string.c_str());
 
     int coderesult;
@@ -123,7 +125,8 @@ int Database::initializeDatabaseForm()
 {
     Query test_q;
     int coderesult=0;
-    //Structure de la table `acces`
+    //Structure des différentes tables
+
     test_q.setQuery("CREATE TABLE IF NOT EXISTS `acces` (`password` varchar(15) NOT NULL,`id` unsigned int(10) NOT NULL);");
     coderesult+=executeQuery(test_q);
     test_q.setQuery("CREATE TABLE IF NOT EXISTS `categories` (`cat_id` unsigned int(11) NOT NULL,`categorie` varchar(20) NOT NULL);");
@@ -138,42 +141,47 @@ int Database::initializeDatabaseForm()
     coderesult+=executeQuery(test_q);
     test_q.setQuery("CREATE TABLE IF NOT EXISTS `types_conso` (`type_conso_id` int(11) NOT NULL,`nom_type` varchar(25) NOT NULL);");
     coderesult+=executeQuery(test_q);
-    //Valeurs de test//
-     /*test_q.setQuery("INSERT INTO `consos` (`conso_id`, `nom`,`type`, `prix`, `stock`) VALUES(152, 'Kro 50 CL', 5, 2.4, 120),(1, 'Maredsous', 2, 2.3, 120);");
-    coderesult+=executeQuery(test_q);
-    test_q.setQuery("INSERT INTO `notes` (`client_id`, `nom`,`prenom`,`login` ,`type`, `compte`,`vip`) VALUES(1,'Simon', 'Manchoule', 'smanchel',1, 2.3,0),(12,'Guitoof', 'Diallouze', 'diallo',1, 12.3,1);");
-    coderesult+=executeQuery(test_q);
-    test_q.setQuery("INSERT INTO `historique` (`his_id`, `client_id`,`conso_id`,`conso_price` ,`date_conso`) VALUES(1,1,152,2.4,CURRENT_TIMESTAMP);");
-    coderesult+=executeQuery(test_q);
-    */
 
     //test_q.setVerbose(1);
-
     return coderesult;
 }
+
+/*---------------------------------------------------
+Toutes les méthodes qui renvoient les résultats d'une
+requête depuis la BDD jusqu'au controlleur sont
+construites sous le même schema que la méthode suivante
+Elles ne seront donc pas commentées aussi précisément
+que la méthode qui suit.
+---------------------------------------------------*/
 
 type_customerdbQueue Database::searchCustomer(std::string &string)
 {
     std::string searchString=string;
-    std::string queryString="";
+    std::string queryString="";   //Initialisation du string qui contiendra la requête SQL
 
-    //std::string str;
-    Query query;
+    Query query; //Initialisation de la requête
 
-    std::queue<std::string> *queryResultFunction(0);
+    std::queue<std::string> *queryResultFunction(0);  //
     queryResultFunction = new std::queue<std::string> ;
-    //queryResult n'est alloué que dans les fonctions l'utilisant
-    queryResult = new std::queue<std::string> ;
 
+    queryResult = new std::queue<std::string> ;   //queryResult n'est alloué que dans les fonctions l'utilisant
+
+    /*
+     * Remarque sur queryResultFunction et queryResult
+     *    queryResult est définie en dehors de toute méthode. Cela est du a la syntaxe "fermée" de sqlite3_exec et de son argument callback.
+     *    Par la suite queryResultFunction est définie comme pointant vers la même adresse que queryResult. Cela revient à un passage par adresse
+     *    un peu dégeu mais cette solution fonctionne.
+    */
     unsigned i;
     unsigned j=0;
-    type_customerdbQueue *result(0);
+    type_customerdbQueue *result(0); //On initialise la queue de tuple qui sera retournée à la fin au controlleur
     result=new type_customerdbQueue;
 
-    type_customerdbTuple *customer(0);
+    type_customerdbTuple *customer(0); //On initialise aussi le tuple correspondant
     customer=new type_customerdbTuple;
 
     //Formation du string de query adapté
+
     queryString+=" SELECT * FROM notes WHERE nom LIKE '";
     queryString+=searchString;
     queryString+="%";
@@ -184,42 +192,30 @@ type_customerdbQueue Database::searchCustomer(std::string &string)
 
     //Implémentation de la query et execution de celle ci
     query.setQuery(queryString);
-    query.setVerbose(0);
+    query.setVerbose(1);
     executeQuery(query);
 
-    //Récupération des données renvoyées par la db que l'on met dans une queue<string>
-    *queryResultFunction=*queryResult;
+    *queryResultFunction=*queryResult;    //Récupération des données renvoyées par la db que l'on met dans une queue<string>
 
-    //str=queryResultFunction->front();
-    //std::cout<<str<<std::endl;
-    //std::cout<<queryResultFunction->size()<<std::endl;
+    /*Il faut désormais caster le queue <string> dans un queue<tuple< // >> que l'on va return
+    Pour cela on utilise un vector de string */
 
-    //Il faut désormais caster le queue <string> dans un queue<tuple< // >> que l'on va return
-
-    //Pour cela on utilise une list de string
     std::vector<std::string> vectorFromQueue;
 
-    //Boucle sur tout le resultat (L'emploi de while n'est peut être pas le plus judicieux)
-    if (queryResultFunction->size()!=0)
+    if (queryResultFunction->size()!=0) //Boucle sur tout le resultat
     {
         for (i=0;i<=queryResultFunction->size();i++)
         {
             while(!queryResultFunction->empty())
             {
-                //Travail des données d'une personne unique
-
                 //Remplissage de Result
-
                 while (queryResultFunction->front()!= "\n"&& !queryResultFunction->empty())
                 {
-                    //La ligne suivante pop les noms des colonnes dans le cas ou elles sont push initialement
-                    //queryResultFunction->pop();
-                    vectorFromQueue.push_back(queryResultFunction->front());
-                    //On supprime l'élément qui vient d'être extrait.
-                    queryResultFunction->pop();
+                    vectorFromQueue.push_back(queryResultFunction->front()); // Pour chaque individu, on récupère les informations dans le vector vectorFromQueue
+                    queryResultFunction->pop();      //On supprime l'élément qui vient d'être extrait.
                 }
 
-                //On parse les std::string en float et unsigned pour Balance et Id
+                //On transforme les std::string en float et unsigned pour les champs Balance et Id
                 float recuperatedBalance;
                 int recuperatedId;
 
@@ -228,19 +224,16 @@ type_customerdbQueue Database::searchCustomer(std::string &string)
 
                 *customer = std::make_tuple (vectorFromQueue[1],vectorFromQueue[2],vectorFromQueue[4],recuperatedBalance,recuperatedId,vectorFromQueue[3]);
 
-                //On supprime le dernier element du résultat unique , le parser '\n'
-                queryResultFunction->pop();
+                queryResultFunction->pop();      //On supprime le dernier element du résultat unique , le parser '\n'
+
                 result->push(*customer);
-                // L'int j correspond à l'index dans la queue , il est incrémenté a chaque boucle sur une personne
-                j++;
-                vectorFromQueue.clear();
+                j++; // L'int j correspond à l'index dans la queue , il est incrémenté a chaque boucle sur une personne
+                vectorFromQueue.clear(); // Ne pas oublier de vider le vecteur à chaque individu
             }
         }
-
     }
-    clear(queue);
+    clear(queue); // queue étant défini en dehors de la fonction, par précaution on la vide à la fin de l'appel
     return *result;
-
 }
 
 type_consodbQueue Database::getProductsFromCategory(unsigned categorie)
@@ -248,7 +241,6 @@ type_consodbQueue Database::getProductsFromCategory(unsigned categorie)
     //On doit transformer l'int categorie en string pour effectuer la requête
     std::string idString = static_cast<std::ostringstream*>( &(std::ostringstream() << categorie) )->str();
     std::string queryString;
-    //std::string str;
     Query query;
 
     type_consodbQueue *result(0);
@@ -260,52 +252,33 @@ type_consodbQueue Database::getProductsFromCategory(unsigned categorie)
     std::queue<std::string> *queryResultFunction(0);
     queryResultFunction = new std::queue<std::string> ;
 
-    //queryResult n'est alloué que dans les fonctions l'utilisant
     queryResult = new std::queue<std::string> ;
 
     unsigned i;
     unsigned j=0;
 
-    //Formation du string de query adapté
     queryString+=" SELECT * FROM consos WHERE type=";
     queryString+=idString;
     queryString+=" ORDER BY nom ASC;";
 
-    //Implémentation de la query et execution de celle ci
     query.setQuery(queryString);
     query.setVerbose(1);
     executeQuery(query);
 
-    //Récupération des données renvoyées par la db que l'on met dans une queue<string>
     *queryResultFunction=*queryResult;
-    //str=queryResultFunction->front();
-    //std::cout<<str<<std::endl;
-    //std::cout<<queryResultFunction->size()<<std::endl;
 
-    //Il faut désormais caster le queue <string> dans un queue<tuple< // >> que l'on va return
-
-    //Pour cela on utilise une list de string
     std::vector<std::string> vectorFromQueue;
 
-    //Boucle sur tout le resultat (L'emploi de while n'est peut être pas le plus judicieux)
     for (i=0;i<=queryResultFunction->size();i++)
     {
         while(!queryResultFunction->empty())
         {
-            //Travail des données d'une personne unique
-
-            //Remplissage de Result
-
             while (queryResultFunction->front()!= "\n"&&!queryResultFunction->empty())
             {
-                //La ligne suivante pop les noms des colonnes dans le cas ou elles sont push initialement
-                //queryResultFunction->pop();
                 vectorFromQueue.push_back(queryResultFunction->front());
-                //On supprime l'élément qui vient d'être extrait.
                 queryResultFunction->pop();
             }
 
-            //On parse les std::string en float et unsigned pour Balance et Id
             float recuperatedPrice;
             unsigned recuperatedId;
             unsigned recuperatedStock;
@@ -318,10 +291,8 @@ type_consodbQueue Database::getProductsFromCategory(unsigned categorie)
 
             *conso = std::make_tuple (vectorFromQueue[1],recuperatedCategory,recuperatedPrice,recuperatedStock,recuperatedId);
 
-            //On supprime le dernier element du résultat unique , le parser '\n'
             queryResultFunction->pop();
             result->push(*conso);
-            // L'int j correspond à l'index dans la queue , il est incrémenté a chaque boucle sur une personne
             j++;
             vectorFromQueue.clear();
 
@@ -336,7 +307,6 @@ type_consodbTuple Database::getProductFromId(unsigned id)
     //On doit transformer l'int id en string pour effectuer la requête
     std::string idString = static_cast<std::ostringstream*>( &(std::ostringstream() << id) )->str();
     std::string queryString;
-    //std::string str;
     Query query;
 
     type_consodbTuple *conso(0);
@@ -345,46 +315,28 @@ type_consodbTuple Database::getProductFromId(unsigned id)
     std::queue<std::string> *queryResultFunction(0);
     queryResultFunction = new std::queue<std::string> ;
 
-    //queryResult n'est alloué que dans les fonctions l'utilisant
     queryResult = new std::queue<std::string> ;
 
-    unsigned i;
-
-    //Formation du string de query adapté
     queryString+=" SELECT * FROM consos WHERE conso_id=";
     queryString+=idString;
     queryString+=" ORDER BY nom ASC;";
-
-    //Implémentation de la query et execution de celle ci
     query.setQuery(queryString);
     query.setVerbose(1);
     executeQuery(query);
 
-    //Récupération des données renvoyées par la db que l'on met dans une queue<string>
+
     *queryResultFunction=*queryResult;
 
-    //str=queryResultFunction->front();
-    //std::cout<<str<<std::endl;
-    //std::cout<<queryResultFunction->size()<<std::endl;
-
-    //Il faut désormais caster le queue <string> dans un queue<tuple< // >> que l'on va return
-
-    //Pour cela on utilise une list de string
     std::vector<std::string> vectorFromQueue;
 
-    //Boucle sur tout le resultat (L'emploi de while n'est peut être pas le plus judicieux)
     if (queryResultFunction->size()!=0)
     {
         while (queryResultFunction->front()!= "\n"&&queryResultFunction->size()>1)
         {
-            //La ligne suivante pop les noms des colonnes dans le cas ou elles sont push initialement
-            //queryResultFunction->pop();
             vectorFromQueue.push_back(queryResultFunction->front());
-            //On supprime l'élément qui vient d'être extrait.
             queryResultFunction->pop();
         }
 
-        //On parse les std::string en float et unsigned pour Balance et Id
         float recuperatedPrice;
         unsigned recuperatedId;
         unsigned recuperatedStock;
@@ -396,8 +348,6 @@ type_consodbTuple Database::getProductFromId(unsigned id)
         std::istringstream(vectorFromQueue[2]) >> recuperatedCategory;
 
         *conso = std::make_tuple (vectorFromQueue[1],recuperatedCategory,recuperatedPrice,recuperatedStock,recuperatedId);
-
-        //On supprime le dernier element du résultat unique , le parser '\n'
         queryResultFunction->pop();
     }
     else
@@ -424,6 +374,8 @@ type_histdbQueue Database::getLastOperations()
     std::queue<std::string> *queryResultFunction(0);
     queryResultFunction = new std::queue<std::string> ;
 
+    std::vector<std::string> vectorFromQueue;
+
     //Utiliser des jointures
     // From client_id -> nom + prénom
     // From conso_id -> conso + prix
@@ -435,56 +387,39 @@ type_histdbQueue Database::getLastOperations()
     queryString+="ON notes.client_id=historique.client_id ";
     queryString+="ORDER BY historique.date_conso DESC LIMIT 15;";
 
-    //Implémentation de la query et execution de celle ci
+
     query.setQuery(queryString);
     query.setVerbose(1);
     executeQuery(query);
 
-    //Récupération des données renvoyées par la db que l'on met dans une queue<string>
     *queryResultFunction=*queryResult;
-    //str=queryResultFunction->front();
-    //std::cout<<str<<std::endl;
-    //std::cout<<queryResultFunction->size()<<std::endl;
-    std::vector<std::string> vectorFromQueue;
-    //Boucle sur tout le resultat (L'emploi de while n'est peut être pas le plus judicieux)
+
     for (i=0;i<=queryResultFunction->size();i++)
     {
         while(!queryResultFunction->empty())
         {
-            //Travail des données d'une personne unique
-
-            //Remplissage de Result
-
             while (queryResultFunction->front()!= "\n"&&!queryResultFunction->empty())
             {
-                //La ligne suivante pop les noms des colonnes dans le cas ou elles sont push initialement
-                //queryResultFunction->pop();
                 vectorFromQueue.push_back(queryResultFunction->front());
-                //On supprime l'élément qui vient d'être extrait.
                 queryResultFunction->pop();
             }
 
-            //On parse les std::string en float et unsigned pour Balance et Id
             float recuperatedPrice;
             unsigned recuperatedId;
-
 
             std::istringstream(vectorFromQueue[4]) >> recuperatedPrice;
             std::istringstream(vectorFromQueue[0]) >> recuperatedId;
 
-
             *hist = std::make_tuple (vectorFromQueue[1],vectorFromQueue[2],vectorFromQueue[3],vectorFromQueue[5],recuperatedPrice,recuperatedId);
 
-            //On supprime le dernier element du résultat unique , le parser '\n'
             queryResultFunction->pop();
             result->push(*hist);
-            // L'int j correspond à l'index dans la queue , il est incrémenté a chaque boucle sur une personne
+
             j++;
             vectorFromQueue.clear();
         }
     }
     clear(queue);
-
     return *result;
 
 }
@@ -518,50 +453,34 @@ type_histdbQueue Database::getCustomerHist(unsigned id)
     queryString+=id_String;
     queryString+="ORDER BY historique.date_conso DESC LIMIT 30;";
 
-    //Implémentation de la query et execution de celle ci
     query.setQuery(queryString);
     query.setVerbose(1);
     executeQuery(query);
 
-    //Récupération des données renvoyées par la db que l'on met dans une queue<string>
+
     *queryResultFunction=*queryResult;
-    //str=queryResultFunction->front();
-    //std::cout<<str<<std::endl;
-    //std::cout<<queryResultFunction->size()<<std::endl;
     std::vector<std::string> vectorFromQueue;
-    //Boucle sur tout le resultat (L'emploi de while n'est peut être pas le plus judicieux)
+
     for (i=0;i<=queryResultFunction->size();i++)
     {
         while(!queryResultFunction->empty())
         {
-            //Travail des données d'une personne unique
-
-            //Remplissage de Result
 
             while (queryResultFunction->front()!= "\n"&&!queryResultFunction->empty())
             {
-                //La ligne suivante pop les noms des colonnes dans le cas ou elles sont push initialement
-                //queryResultFunction->pop();
                 vectorFromQueue.push_back(queryResultFunction->front());
-                //On supprime l'élément qui vient d'être extrait.
                 queryResultFunction->pop();
             }
-
-            //On parse les std::string en float et unsigned pour Balance et Id
             float recuperatedPrice;
             unsigned recuperatedId;
-
 
             std::istringstream(vectorFromQueue[4]) >> recuperatedPrice;
             std::istringstream(vectorFromQueue[0]) >> recuperatedId;
 
-
             *hist = std::make_tuple (vectorFromQueue[1],vectorFromQueue[2],vectorFromQueue[3],vectorFromQueue[5],recuperatedPrice,recuperatedId);
 
-            //On supprime le dernier element du résultat unique , le parser '\n'
             queryResultFunction->pop();
             result->push(*hist);
-            // L'int j correspond à l'index dans la queue , il est incrémenté a chaque boucle sur une personne
             j++;
             vectorFromQueue.clear();
         }
@@ -578,22 +497,17 @@ type_customerdbTuple Database::getCustomerFromId(unsigned customerId)
 
     //On doit transformer l'int customerId en string pour effectuer la requête
     std::string idString = static_cast<std::ostringstream*>( &(std::ostringstream() << customerId) )->str();
-
-    //std::string str;
     Query query;
     std::queue<std::string> *queryResultFunction(0);
 
     queryResultFunction = new std::queue<std::string> ;
-    //queryResult n'est alloué que dans les fonctions l'utilisant
     queryResult = new std::queue<std::string> ;
 
-    unsigned i;
     unsigned j=0;
 
     type_customerdbTuple *customer(0);
     customer=new type_customerdbTuple;
 
-    //Formation du string de query adapté
     queryString+=" SELECT * FROM notes WHERE client_id=";
     queryString+=idString;
     queryString+=" ORDER BY nom DESC;";
@@ -603,36 +517,21 @@ type_customerdbTuple Database::getCustomerFromId(unsigned customerId)
     query.setVerbose(1);
     executeQuery(query);
 
-    //Récupération des données renvoyées par la db que l'on met dans une queue<string>
     *queryResultFunction=*queryResult;
 
-    //str=queryResultFunction->front();
-    //std::cout<<str<<std::endl;
-    //std::cout<<queryResultFunction->size()<<std::endl;
-
-    //Il faut désormais caster le queue <string> dans un queue<tuple< // >> que l'on va return
-    //Pour cela on utilise une list de string
     std::vector<std::string> vectorFromQueue;
 
-    //Boucle sur tout le resultat (L'emploi de while n'est peut être pas le plus judicieux)
     if (queryResultFunction->size()!=0)
     {
         while(queryResultFunction->front()!="\n" && !queryResultFunction->empty())
         {
-            //Travail des données d'une personne unique
-
-            //Remplissage de Result
 
             while (queryResultFunction->front()!= "\n"&& !queryResultFunction->empty())
             {
-                //La ligne suivante pop les noms des colonnes dans le cas ou elles sont push initialement
-                //queryResultFunction->pop();
                 vectorFromQueue.push_back(queryResultFunction->front());
-                //On supprime l'élément qui vient d'être extrait.
                 queryResultFunction->pop();
             }
 
-            //On parse les std::string en float et unsigned pour Balance et Id
             float recuperatedBalance;
             int recuperatedId;
 
@@ -641,9 +540,7 @@ type_customerdbTuple Database::getCustomerFromId(unsigned customerId)
 
             *customer = std::make_tuple (vectorFromQueue[1],vectorFromQueue[2],vectorFromQueue[4],recuperatedBalance,recuperatedId,vectorFromQueue[3]);
 
-            //On supprime le dernier element du résultat unique , le parser '\n'
             queryResultFunction->pop();
-            // L'int j correspond à l'index dans la queue , il est incrémenté a chaque boucle sur une personne
             j++;
             vectorFromQueue.clear();
         }
