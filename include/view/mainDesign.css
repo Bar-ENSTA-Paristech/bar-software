@@ -39,15 +39,19 @@ QLineEdit{
 }
 
 #consoLogos{
-    background-color: #C18CFF/*mauve clair*/
+    background-color: #C18CFF;/*mauve clair*/
 }
 
 #cartDisplay{
-    background-color: #3FE8FF/*turquoise*/
+    background-color: #3FE8FF;/*turquoise*/
 }
 
 #productChoices{
-    background-color: #89FF66/*vert clair*/
+    background-color: #89FF66;/*vert clair*/
+}
+
+/*#activeCategorie{
+    background-image: url(../bar-software/resources/pictures/test.png);
 }
 /*#searchResultsTable{
     color: yellow;

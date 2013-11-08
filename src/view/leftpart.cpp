@@ -26,6 +26,8 @@ LeftPart::LeftPart(QWidget* parent)
     categories.push(QString("RAB"));
     setCategories(categories);
     // ##### FIN TEST #####
+    //QObject::connect(&categoriesLabels[1], SIGNAL(pressed()), this, SLOT(clickOnCategorie()));
+    QObject::connect(&updateCategorieTimer, SIGNAL(timeout()), this, SLOT(unsetCategorieUpdate()));
 
     this->setLayout(layout);
 }
@@ -47,26 +49,50 @@ void LeftPart::setCategories(std::queue<QString> &categories)
     font.setStyleHint(QFont::SansSerif);
     font.setPixelSize(18);
     font.setBold(true);
-    unsigned n = categories.size();
-    categoriesLabels = new QPushButton[n];
-    for(unsigned i=0 ; i<n ; i++)
+    numberOfCategories = categories.size();
+    categoriesLabels = new QPushButton[numberOfCategories];
+    for(int i=0 ; i<numberOfCategories ; i++)
     {
 
         categoriesLabels[i].setParent(categoriesList);
         categoriesLabels[i].setText(categories.front());
         categoriesLabels[i].setFlat(true);
-        categoriesLabels[i].setEnabled(false);
         categoriesLabels[i].setFont(font);
         categoriesLabels[i].setFixedHeight(30);
         categoriesLabels[i].setFixedWidth(100);
+        //categoriesLabels[i].setId(i);
         layout->addWidget(&categoriesLabels[i]);
         categories.pop();
+        QObject::connect(&categoriesLabels[i], SIGNAL(categorieClicked(int)), this, SLOT(clickOnCategorie(int)));
     }
+    categoriesLabels[0].setObjectName("activeCategorie");
     // to get them at top and without space between them
     layout->setAlignment(Qt::AlignTop);
     layout->setSpacing(0);
     layout->setContentsMargins(0,0,0,0);
     categoriesList->setLayout(layout);
+}
+
+void LeftPart::clickOnCategorie(int id)
+{
+    categoriesLabels[0].setUpdatesEnabled(true);
+    //categoriesLabels[0].setObjectName("inactiveCategorie");
+    //categoriesLabels[1].setObjectName("activeCategorie");
+    categoriesLabels[0].setStyleSheet("background : url("+GLOBAL_PATH+"resources/pictures/test.png)");
+    //categoriesList[1].setStyleSheet("background-image: url(../bar-software/resources/pictures/test.png)");
+    qDebug() << "pute" << id;
+    updateCategorieTimer.start(500);
+    //this->update();
+    //categoriesLabels[0].setUpdatesEnabled(false);
+
+}
+
+void LeftPart::unsetCategorieUpdate()
+{
+    for(int i=0 ; i < numberOfCategories ; i++)
+    {
+        categoriesLabels[i].setUpdatesEnabled(false);
+    }
 }
 
 void LeftPart::updateSize()

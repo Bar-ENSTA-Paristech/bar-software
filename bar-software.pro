@@ -72,4 +72,4 @@ LIBS +=  -mmacosx-version-min=10.7
 
 #LIBS += -lsqlite3
 
-LIBS += /lib/x86_64-linux-gnu/libdl.so.2
+#LIBS += /lib/x86_64-linux-gnu/libdl.so.2

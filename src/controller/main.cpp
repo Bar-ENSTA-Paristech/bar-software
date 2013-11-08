@@ -60,7 +60,6 @@ int main(int argc, char *argv[])
     if(css.open(QIODevice::ReadOnly)) {
        application.setStyleSheet(css.readAll());
     }
-    qDebug() << "test " << GLOBAL_PATH;
     MainWindow mainWindow;
     mainWindow.setController(controller);
     mainWindow.show();
