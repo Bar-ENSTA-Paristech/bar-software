@@ -30,7 +30,10 @@ MultiList::MultiList(QWidget *parent, int column, int row, bool _isSortable)
     table->sortItems(0, Qt::AscendingOrder);
 
     if(rows)
+    {
         itemList = new QTableWidgetItem*[rows];
+        isInitialised = true;
+    }
     for(int i=0 ; i<rows ; i++)
     {
         itemList[i] = new QTableWidgetItem[columns];
@@ -66,6 +69,9 @@ void MultiList::updateSize()
 
 void MultiList::setRows(int numberOfRows)
 {
+    if(numberOfRows == rows)
+        return;
+    qDebug() << "Adresse du QTableWidget mis à jour :" << table;
     rows = numberOfRows;
     table->setRowCount(rows);
 
@@ -77,6 +83,18 @@ void MultiList::setRows(int numberOfRows)
         emptyHeader[i].setText("");
         table->setVerticalHeaderItem(i, emptyHeader);
     }
+}
+
+void MultiList::deleteOldResults()
+{
+    for(int i = 0 ; i<rows ; i++)
+    {
+        delete[] itemList[i];
+    }
+    if(isInitialised && rows !=0)
+        delete[] itemList;
+    else
+        isInitialised = true;
 }
 
 MultiList::~MultiList()

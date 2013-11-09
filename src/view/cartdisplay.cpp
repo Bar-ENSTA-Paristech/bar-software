@@ -85,14 +85,8 @@ void CartDisplayFrame::setCart(std::queue< std::tuple<QString, float, unsigned i
 {
     // TUPLE : QString consumption, float price, unsigned int number of these products
     std::tuple<QString, float, unsigned int> tuple;
-    for(int i = 0 ; i<rows ; i++)
-    {
-        delete[] itemList[i];
-    }
-    if(isInitialised && rows !=0)
-        delete[] itemList;
-    else
-        isInitialised = true;
+    // deleting of old results (method from MultiList)
+    deleteOldResults();
 
     // Inserting new results
     unsigned numberOfElements = queue.size();

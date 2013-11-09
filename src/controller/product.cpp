@@ -59,7 +59,7 @@ Product &Product::operator ++()
 
 Product &Product::operator ++(int)
 {
-    Product temp = *this;
+    Product temp = *this; // y a un Warning bizarre ici, à vérifier si bug. Signé Shimone
     ++stock;
     return temp;
 }

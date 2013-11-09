@@ -24,6 +24,9 @@ LeftPart::LeftPart(QWidget* parent)
     std::queue<QString> categories;
     categories.push(QString("Tous"));
     categories.push(QString("RAB"));
+    categories.push(QString("2014"));
+    categories.push(QString("2015"));
+    categories.push(QString("2016"));
     setCategories(categories);
     // ##### FIN TEST #####
     //QObject::connect(&categoriesLabels[1], SIGNAL(pressed()), this, SLOT(clickOnCategorie()));
@@ -50,7 +53,7 @@ void LeftPart::setCategories(std::queue<QString> &categories)
     font.setPixelSize(18);
     font.setBold(true);
     numberOfCategories = categories.size();
-    categoriesLabels = new QPushButton[numberOfCategories];
+    categoriesLabels = new CategorieButton[numberOfCategories];
     for(int i=0 ; i<numberOfCategories ; i++)
     {
 
@@ -58,9 +61,10 @@ void LeftPart::setCategories(std::queue<QString> &categories)
         categoriesLabels[i].setText(categories.front());
         categoriesLabels[i].setFlat(true);
         categoriesLabels[i].setFont(font);
+        categoriesLabels[i].setUpdatesEnabled(true);
         categoriesLabels[i].setFixedHeight(30);
         categoriesLabels[i].setFixedWidth(100);
-        //categoriesLabels[i].setId(i);
+        categoriesLabels[i].setId(i);
         layout->addWidget(&categoriesLabels[i]);
         categories.pop();
         QObject::connect(&categoriesLabels[i], SIGNAL(categorieClicked(int)), this, SLOT(clickOnCategorie(int)));
@@ -75,15 +79,13 @@ void LeftPart::setCategories(std::queue<QString> &categories)
 
 void LeftPart::clickOnCategorie(int id)
 {
-    categoriesLabels[0].setUpdatesEnabled(true);
-    //categoriesLabels[0].setObjectName("inactiveCategorie");
-    //categoriesLabels[1].setObjectName("activeCategorie");
-    categoriesLabels[0].setStyleSheet("background : url("+GLOBAL_PATH+"resources/pictures/test.png)");
-    //categoriesList[1].setStyleSheet("background-image: url(../bar-software/resources/pictures/test.png)");
-    qDebug() << "pute" << id;
-    updateCategorieTimer.start(500);
-    //this->update();
-    //categoriesLabels[0].setUpdatesEnabled(false);
+    for(int i=0 ; i < numberOfCategories ; i++)
+    {
+        //categoriesLabels[i].setUpdatesEnabled(true);
+        categoriesLabels[i].setStyleSheet("");
+    }
+    categoriesLabels[id].setStyleSheet("background : url("+GLOBAL_PATH+"resources/pictures/activeCategorie.png)");
+    //updateCategorieTimer.start(500);
 
 }
 

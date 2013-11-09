@@ -28,7 +28,8 @@ src/view/multilist.cpp \
 src/view/productschoices.cpp \
 src/view/rightpart.cpp \
 src/view/searchresults.cpp \
-src/view/consologos.cpp
+src/view/consologos.cpp \
+src/view/categoriebutton.cpp
 
 
 INCLUDEPATH += include/controller \
@@ -52,7 +53,8 @@ include/view/multilist.h \
 include/view/productschoices.h \
 include/view/rightpart.h \
 include/view/searchresults.h \
-include/view/consologos.h
+include/view/consologos.h \
+include/view/categoriebutton.h
 
 FORMS    += \
     ui/mainwindow_old.ui \

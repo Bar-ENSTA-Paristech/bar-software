@@ -19,6 +19,7 @@ public:
     MultiList(QWidget* parent = NULL, int column=0, int row=0, bool _isSortable=true);
     ~MultiList();
     void updateSize();
+    void deleteOldResults();
 
 private slots:
     void sortItems(int index);

@@ -35,16 +35,9 @@ void SearchResults::setSearchResults(std::queue< std::tuple< QString, QString, Q
 {
     // TUPLE : QString name, QString firstName, QString categorie, float balance, unsigned id
     std::tuple< QString, QString, QString, float, unsigned > tuple;
-    // Deleting old results
 
-    for(int i = 0 ; i<rows ; i++)
-    {
-        delete[] itemList[i];
-    }
-    if(isInitialised && rows !=0)
-        delete[] itemList;
-    else
-        isInitialised = true;
+    // Deleting old results (MultiList method)
+    deleteOldResults();
 
     // Inserting new results
     QBrush negativeSold(Qt::red);

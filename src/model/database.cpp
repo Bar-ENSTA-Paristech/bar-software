@@ -31,7 +31,7 @@ int Database::openDatabase()
 
     std::cout<<"Tentative d'ouverture de db"<<std::endl;
     sqlite3* DB;
-    char* DBfilename="file:bar.db";
+    char DBfilename[]="file:bar.db";
     int coderesult=sqlite3_open(DBfilename //Database filename
                                 ,&DB);//adresse mémoire de la BDD
 

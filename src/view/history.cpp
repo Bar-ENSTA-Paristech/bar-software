@@ -44,14 +44,8 @@ void History::setHistory(std::queue < std::tuple < QString, QString, QString, fl
     qDebug() << itemList;
     QFont historyFont;
     historyFont.setPixelSize(11);
-    for(int i=0 ; i<rows ; i++)
-    {
-        delete[] itemList[i];
-    }
-    if(isInitialised && rows !=0)
-        delete[] itemList;
-    else
-        isInitialised = true;
+    //deleting old results (MultiList method)
+    deleteOldResults();
 
     // Inserting new results
     QBrush color;

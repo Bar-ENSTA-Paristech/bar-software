@@ -32,15 +32,8 @@ void ProductsChoices::setProductsChoices(std::queue< std::tuple< QString, QStrin
     // TUPLE : QString conso, QString Volume, float price, unsigned id
     std::tuple< QString, QString, float, unsigned > tuple;
 
-    // Deleting old results
-    for(int i = 0 ; i<rows ; i++)
-    {
-        delete[] itemList[i];
-    }
-    if(isInitialised && rows !=0)
-        delete[] itemList;
-    else
-        isInitialised = true;
+    // Deleting old results (Multilist method)
+    deleteOldResults();
 
     // Inserting new results
     unsigned numberOfElements = queue.size();
