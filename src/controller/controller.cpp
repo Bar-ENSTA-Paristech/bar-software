@@ -48,12 +48,12 @@ void Controller::newText_Search(QString &viewSearch)
     if ( dbQueue.empty() ){
         qDebug() << " Model returned empty queue ";
         // ####### TEST #######
-        std::queue< std::tuple< QString, QString, QString, float, unsigned > > toto;
+        /*std::queue< std::tuple< QString, QString, QString, float, unsigned > > toto;
         std::tuple< QString, QString, QString, float, unsigned > titi("Rousseau", "Woody", "2015", -2, 1);
         std::tuple< QString, QString, QString, float, unsigned > titi2("Manchoul", "Lamoule", "2014", 3.5, 2);
         toto.push(titi);
         toto.push(titi2);
-        viewSearchResults->setSearchResults(toto);
+        viewSearchResults->setSearchResults(toto);*/
         // ####### FIN TEST #######
     }
     else{

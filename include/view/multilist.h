@@ -19,7 +19,6 @@ public:
     MultiList(QWidget* parent = NULL, int column=0, int row=0, bool _isSortable=true);
     ~MultiList();
     void updateSize();
-    void deleteOldResults();
 
 private slots:
     void sortItems(int index);
@@ -31,11 +30,9 @@ protected:
     bool ascendingSort;
     bool isInitialised;
     bool isSortable;
-    QTableWidgetItem *headers;
+    QTableWidgetItem **headers;
     QTableWidget *table;
-    QTableWidgetItem **itemList;
     QFont font;
-    QTableWidgetItem *emptyHeader;
     void setRows(int numberOfRows);
 
 };

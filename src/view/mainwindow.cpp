@@ -64,7 +64,7 @@ MainWindow::MainWindow()
 }
 
 MainWindow::~MainWindow()
-{qDebug() << "toto";
+{
     /*delete controller;
     delete timerSearch;
     delete timerAtStart;
