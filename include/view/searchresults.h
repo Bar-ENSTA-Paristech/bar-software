@@ -17,6 +17,7 @@ public:
 
     // receive search results from controller
     void setSearchResults(std::queue< std::tuple< QString, QString, QString, float, unsigned > >& queue);
+    QTimer timer;
 
 signals:
     

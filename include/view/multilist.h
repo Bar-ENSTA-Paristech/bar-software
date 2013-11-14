@@ -7,6 +7,7 @@
 #include <QTableWidget>
 #include <QStandardItemModel>
 #include <queue>
+#include <QTimer>
 
 class Controller;
 
@@ -27,6 +28,7 @@ protected:
     int rows;
     int columns;
     int sortColumn;
+    int rowsAllocated;
     bool ascendingSort;
     bool isInitialised;
     bool isSortable;

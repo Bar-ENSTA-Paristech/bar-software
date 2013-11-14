@@ -22,12 +22,12 @@ SearchResults::SearchResults(QWidget *parent) :
     QObject::connect(table, SIGNAL(cellClicked(int, int)), this, SLOT(lineClicked(int, int)));
 
     // ####### TEST #######
-    /*std::queue< std::tuple< QString, QString, QString, float, unsigned > > toto;
+    std::queue< std::tuple< QString, QString, QString, float, unsigned > > toto;
     std::tuple< QString, QString, QString, float, unsigned > titi("Chat", "Mehdi", "2015", -2, 1);
     std::tuple< QString, QString, QString, float, unsigned > titi2("Diallo", "Guytoof", "2015", 3.5, 2);
     toto.push(titi);
     toto.push(titi2);
-    this->setSearchResults(toto);*/
+    this->setSearchResults(toto);
     // ####### FIN TEST #######
 
 }
@@ -42,42 +42,30 @@ void SearchResults::setSearchResults(std::queue< std::tuple< QString, QString, Q
     QBrush positiveSold(Qt::black);
     float balance = 0;
     unsigned numberOfElements = queue.size();
-    unsigned rows_old = rows;
+    timer.start(10000);
     setRows(numberOfElements);
+    qDebug() << "Fin setRows" << 10000-timer.remainingTime() << "ms";
 
-    // If there are more rows than before, we allocate space for the items and set them to the table
-    if(numberOfElements > rows_old)
-    {
-        for(unsigned i=rows_old ; i<numberOfElements ; i++)
-        {
-            QTableWidgetItem* item0 = new QTableWidgetItem();
-            QTableWidgetItem* item1 = new QTableWidgetItem();
-            QTableWidgetItem* item2 = new QTableWidgetItem();
-            QTableWidgetItem* item3 = new QTableWidgetItem();
-            QTableWidgetItem* item4 = new QTableWidgetItem();
-
-            table->setItem(i, 0, item0);
-            table->setItem(i, 1, item1);
-            table->setItem(i, 2, item2);
-            table->setItem(i, 3, item3);
-            table->setItem(i, 4, item4);
-        }
-    }
     for(unsigned i=0 ; i<numberOfElements ; i++)
     {
         tuple = queue.front();
         queue.pop();
-        table->item(i,0)->setText(std::get<0>(tuple));
-        table->item(i,1)->setText(std::get<1>(tuple));
-        table->item(i,2)->setText(std::get<2>(tuple));
         balance = std::get<3>(tuple);
-        table->item(i,3)->setText(QString::number(balance));
         if(balance < 0)
             table->item(i,3)->setForeground(negativeSold);
         else
             table->item(i,3)->setForeground(positiveSold);
+        /*table->item(i,0)->setData(Qt::DisplayRole, std::get<0>(tuple));
+        table->item(i,1)->setData(Qt::DisplayRole, std::get<1>(tuple));
+        table->item(i,2)->setData(Qt::DisplayRole, std::get<2>(tuple));
+        table->item(i,3)->setData(Qt::DisplayRole, QString::number(balance));
+        table->item(i,4)->setData(Qt::DisplayRole, QString::number(std::get<4>(tuple)));*/
+        table->item(i,0)->setText(std::get<0>(tuple));
+        table->item(i,1)->setText(std::get<1>(tuple));
+        table->item(i,2)->setText(std::get<2>(tuple));
+        table->item(i,3)->setText(QString::number(balance));
         table->item(i,4)->setText(QString::number(std::get<4>(tuple)));
-    }
+    }qDebug() << "Fin setText" << 10000-timer.remainingTime() << "ms";
     table->sortItems(0, Qt::AscendingOrder);
     return;
 }

@@ -88,23 +88,8 @@ void CartDisplayFrame::setCart(std::queue< std::tuple<QString, float, unsigned i
 
     // Inserting new results
     unsigned numberOfElements = queue.size();
-    unsigned rows_old = rows;
     setRows(numberOfElements);
 
-    // If there are more rows than before, we allocate space for the items and set them to the table
-    if(numberOfElements > rows_old)
-    {
-        for(unsigned i=rows_old ; i<numberOfElements ; i++)
-        {
-            QTableWidgetItem* item0 = new QTableWidgetItem();
-            QTableWidgetItem* item1 = new QTableWidgetItem();
-            QTableWidgetItem* item2 = new QTableWidgetItem();
-
-            table->setItem(i, 0, item0);
-            table->setItem(i, 1, item1);
-            table->setItem(i, 2, item2);
-        }
-    }
     for(unsigned i=0 ; i<numberOfElements ; i++)
     {
         tuple = queue.front();
