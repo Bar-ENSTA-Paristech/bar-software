@@ -6,6 +6,7 @@
 #include <sstream>
 #include <vector>
 
+
 //La déclaration du pointeur vers le résultat de la requête doit se faire dans l'espage global
 //car la fonction callback ne peut être incorporée à une classe et l'on ne peut toucher à ses arguments.
 std::queue<std::string> *queryResult(0);
@@ -121,6 +122,16 @@ int Database::executeQuery(Query &_query)
     return coderesult;
 }
 
+sqlite3* Database::getHandle()
+{
+    return handle;
+}
+
+void Database::setHandle(sqlite3* given_handle)
+{
+    handle=given_handle;
+}
+
 int Database::initializeDatabaseForm()
 {
     Query test_q;
@@ -135,12 +146,23 @@ int Database::initializeDatabaseForm()
     coderesult+=executeQuery(test_q);
     test_q.setQuery("CREATE TABLE IF NOT EXISTS `historique` (`his_id` int(11) NOT NULL,`client_id` int(11) NOT NULL,`conso_id` int(11) NOT NULL,`conso_price` float DEFAULT NULL,`date_conso` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP);");
     coderesult+=executeQuery(test_q);
+    test_q.setQuery("CREATE TABLE IF NOT EXISTS `historique_save` (`his_id` int(11) NOT NULL,`client_id` int(11) NOT NULL,`conso_id` int(11) NOT NULL,`conso_price` float DEFAULT NULL,`date_conso` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP);");
+    coderesult+=executeQuery(test_q);
+    test_q.setQuery("CREATE TABLE IF NOT EXISTS `historique_deleted_account` (`his_id` int(11) NOT NULL,`client_id` int(11) NOT NULL,`conso_id` int(11) NOT NULL,`conso_price` float DEFAULT NULL,`date_conso` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP);");
+    coderesult+=executeQuery(test_q);
     test_q.setQuery("CREATE TABLE IF NOT EXISTS `notes` (`client_id` int(11) NOT NULL,`nom` varchar(25) NOT NULL,`prenom` varchar(25) NOT NULL,`login` varchar(25) NOT NULL,`type` int(11) NOT NULL,`compte` float NOT NULL,`vip` tinyint(1)) ;");
     coderesult+=executeQuery(test_q);
     test_q.setQuery("CREATE TABLE IF NOT EXISTS `prix_consos` (`id_conso` int(11) NOT NULL,`prix_precedent` float DEFAULT NULL,`date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP);");
     coderesult+=executeQuery(test_q);
     test_q.setQuery("CREATE TABLE IF NOT EXISTS `types_conso` (`type_conso_id` int(11) NOT NULL,`nom_type` varchar(25) NOT NULL);");
     coderesult+=executeQuery(test_q);
+    test_q.setQuery("CREATE TABLE IF NOT EXISTS `vidage_caisse` (`type_vidage` tinyint(1) NOT NULL,`valeur` float NOT NULL,`date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP);");
+    coderesult+=executeQuery(test_q);
+    test_q.setQuery("CREATE TABLE IF NOT EXISTS `commande` (`commande_id` int(11) NOT NULL,`valeur` float NOT NULL,`libelle` varchar(100) ,`date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP);");
+    coderesult+=executeQuery(test_q);
+    test_q.setQuery("CREATE TABLE IF NOT EXISTS `achats` (`commande_id` int(11) NOT NULL,`conso_id` int(11) NOT NULL,`quantite` int(11),`prix_unitaire` float(11) ,`date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP);");
+    coderesult+=executeQuery(test_q);
+
 
     //test_q.setVerbose(1);
     return coderesult;
@@ -449,9 +471,9 @@ type_histdbQueue Database::getCustomerHist(unsigned id)
     queryString+="ON consos.conso_id = historique.conso_id ";
     queryString+="LEFT JOIN notes ";
     queryString+="ON notes.client_id=historique.client_id ";
-    queryString+="AND notes.client_id=";
+    queryString+="WHERE notes.client_id=";
     queryString+=id_String;
-    queryString+="ORDER BY historique.date_conso DESC LIMIT 30;";
+    queryString+=" ORDER BY historique.date_conso DESC LIMIT 30;";
 
     query.setQuery(queryString);
     query.setVerbose(1);
@@ -592,8 +614,9 @@ int Database::createCustomerAccount(type_customerdbTuple tuple)
 
 int Database::editCustomerAccount(type_customerdbTuple tuple)
 {
-    std::string categorie,nom,prenom;
     int code;
+
+    std::string categorie,nom,prenom;
     unsigned id;
     float balance;
     std::string queryString="";
@@ -647,3 +670,100 @@ int Database::deleteCustomerAccount(int id)
     return (code);
 }
 
+int Database::createProduct(type_consodbTuple tuple)
+{
+    std::string nom;
+    int code;
+    float prix;
+    int stock=0;
+    int categorie;
+    std::string queryString="";
+    Query query;
+
+    nom=std::get<0>(tuple);
+    categorie=std::get<1>(tuple);
+    prix=std::get<2>(tuple);
+
+
+    //Il faut transfomer les int et float en std::string
+    std::string stockString = static_cast<std::ostringstream*>( &(std::ostringstream() << stock) )->str();
+    std::string categorieString = static_cast<std::ostringstream*>( &(std::ostringstream() << categorie) )->str();
+    std::string priceString = static_cast<std::ostringstream*>( &(std::ostringstream() << prix) )->str();
+
+    queryString+="INSERT INTO notes (nom,type,prix,stock) VALUES (";
+    queryString+=nom;
+    queryString+=", ";
+    queryString+=categorieString;
+    queryString+=", ";
+
+    queryString+=priceString;
+    queryString+=", ";
+    queryString+=stockString;
+    queryString+=");";
+
+    query.setQuery(queryString);
+    query.setVerbose(1);
+    code=executeQuery(query);
+
+    return (code);
+}
+
+int Database::editProduct(type_consodbTuple tuple)
+{
+    std::string nom;
+    int code;
+    unsigned id;
+    int stock;
+    int categorie;
+    float price;
+    std::string queryString="";
+    Query query;
+
+    nom=std::get<0>(tuple);
+    categorie=std::get<1>(tuple);
+    price=std::get<2>(tuple);
+    stock=std::get<3>(tuple);
+    id=std::get<4>(tuple);
+
+    std::string categorieString = static_cast<std::ostringstream*>( &(std::ostringstream() << categorie) )->str();
+    std::string stockString = static_cast<std::ostringstream*>( &(std::ostringstream() << stock) )->str();
+    std::string priceString = static_cast<std::ostringstream*>( &(std::ostringstream() << price) )->str();
+    std::string idString = static_cast<std::ostringstream*>( &(std::ostringstream() << id) )->str();
+
+    queryString+="UPDATE consos";
+    queryString+="SET nom=";
+    queryString+=nom;
+    queryString+=", type=";
+    queryString+=categorieString;
+    queryString+=", prix=";
+    queryString+=priceString;
+    queryString+=", stock=";
+    queryString+=stockString;
+    queryString+="WHERE conso_id=";
+    queryString+=idString;
+    queryString+=";";
+
+    query.setQuery(queryString);
+    query.setVerbose(1);
+    code=executeQuery(query);
+
+    return (code);
+}
+
+int Database::deleteProduct(int id)
+{
+    int code;
+    Query query;
+    std::string queryString="";
+    std::string idString = static_cast<std::ostringstream*>( &(std::ostringstream() << id) )->str();
+
+    queryString+="DELETE FROM consos WHERE conso_id=";
+    queryString+=idString;
+    queryString+=";";
+
+    query.setQuery(queryString);
+    query.setVerbose(1);
+    code=executeQuery(query);
+
+    return (code);
+}

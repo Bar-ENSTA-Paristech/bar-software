@@ -43,6 +43,7 @@ class CustomerPanel;
 class CartDisplay;
 class ProductsChoices;
 class History;
+class Database;
 
 class Controller
 {
@@ -56,6 +57,8 @@ public:
     void newClic_Product(QString &view_productName);
     void setViewPointers(SearchResults* par1, CustomerPanel* par2, CartDisplay* par3, ProductsChoices* par4, History* par5);
 
+    void setDb(sqlite3*);
+    sqlite3* getDb();
 
 private:
         /* View objects */

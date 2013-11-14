@@ -1,12 +1,22 @@
 #include "controller.h"
 #include "searchresults.h"
-
+#include "../model/database.h"
 #include <QString>
 
 
 Controller::Controller()
 {
     /*Call here functions for the default display : allCustomers, history, productTypes ... */
+}
+
+void Controller::setDb(sqlite3* handle)
+{
+    database.setHandle(handle);
+}
+
+sqlite3* Controller::getDb()
+{
+    return database.getHandle();
 }
 
 void Controller::setViewPointers(SearchResults* par1, CustomerPanel* par2, CartDisplay* par3, ProductsChoices* par4, History* par5)
