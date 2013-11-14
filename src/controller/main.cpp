@@ -8,6 +8,8 @@
 #include <QDir>
 #include <QDebug>
 
+#include"../model/plotting.h"
+
 #include "../model/database.h"
 #include "cart.h"
 #include "product.h"
@@ -52,7 +54,13 @@ int main(int argc, char *argv[])
     DB.getProductsFromCategory(5);
     DB.getProductFromId(1);
     DB.getLastOperations();
+    Plotting plot;
+    plot.setDb(DB.getHandle());
+    db_dataarray Values = plot.customerConsumption(378,1,0);
     DB.closeDatabase();
+
+    //Test graph
+
 
 
     QApplication application(argc, argv);

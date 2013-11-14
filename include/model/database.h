@@ -20,6 +20,8 @@ typedef std::queue<type_customerdbTuple> type_customerdbQueue;
 typedef std::queue<type_consodbTuple> type_consodbQueue;
 typedef std::queue<type_histdbTuple> type_histdbQueue;
 
+class Plotting;
+
 class Database
 {
 public:
@@ -28,6 +30,9 @@ public:
     int executeQuery (Query &query);
     int closeDatabase();
     int initializeDatabaseForm();
+
+    sqlite3* getHandle();
+    void setHandle(sqlite3*);
 
     type_customerdbQueue searchCustomer(std::string &string);//Méthode qui renvoie une queue de tuple correspondant aux infos des consommateurs dont le nom correspond à la recherche
     //OK (Fonctionne - a tester plus en profondeur)
@@ -58,11 +63,11 @@ public:
     int deleteCustomerAccount (int id);// Supprime le compte d'un client ainsi que toutes ses opérations , [les infos seront transférées dans une BDD séparée (si possible), l'opération est protégée = effectué par le controleur]
     //Implémentée / Non testée
 
-    int createConso (type_consodbTuple);//Méthode créant un nouveau champ dans consos /Par défaut le nouvel id envoyé par le controlleur vaut -1
+    int createProduct (type_consodbTuple);//Méthode créant un nouveau champ dans consos /Par défaut le nouvel id envoyé par le controlleur vaut -1
 
-    int deleteConso (int id);
+    int deleteProduct (int id);
 
-    int editConso (type_consodbTuple);//Méthode générique qui met à jour TOUTES les informations de la conso
+    int editProduct (type_consodbTuple);//Méthode générique qui met à jour TOUTES les informations de la conso
     //Rq : penser à Maj prix_consos
 
     int createCategory (/*tuple à définir*/);//Méthode créant un nouveau champ dans categories /Par défaut le nouvel id vaut -1
@@ -74,7 +79,6 @@ public:
     int addHist (type_histdbTuple);
 
 private:
-
     sqlite3* handle; //Pointeur vers la BDD
 };
 

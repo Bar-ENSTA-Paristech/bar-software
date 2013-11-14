@@ -6,7 +6,7 @@
 
 QT       += core gui
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets printsupport
 
 TARGET = bar-software
 TEMPLATE = app
@@ -29,7 +29,9 @@ src/view/productschoices.cpp \
 src/view/rightpart.cpp \
 src/view/searchresults.cpp \
 src/view/consologos.cpp \
-src/view/categoriebutton.cpp
+src/view/categoriebutton.cpp \
+    resources/lib/qcustomplot.cpp \
+    src/model/plotting.cpp
 
 
 INCLUDEPATH += include/controller \
@@ -54,14 +56,16 @@ include/view/productschoices.h \
 include/view/rightpart.h \
 include/view/searchresults.h \
 include/view/consologos.h \
-include/view/categoriebutton.h
+include/view/categoriebutton.h \
+    resources/lib/matplotpp.h \
+    resources/lib/gl2ps.h \
+    include/model/plotting.h \
+    resources/lib/qcustomplot.h
 
-FORMS    += \
-    ui/mainwindow_old.ui \
 
 OTHER_FILES += \
     ui/view/mainDesign.css \
-    include/view/mainDesign.css
+    include/view/mainDesign.css \
 
 macx {
 #QMAKE_CXXFLAGS += -std=c++11 -stdlib=libc++ -mmacosx-version-min=10.7
