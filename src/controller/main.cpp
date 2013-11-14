@@ -31,7 +31,7 @@ int main(int argc, char *argv[])
     currentDir.cd("../bar-software");
     #endif
     GLOBAL_PATH = currentDir.absolutePath()+"/";
-    qDebug() << GLOBAL_PATH;
+    qDebug() << "GLOBAL_PATH :" << GLOBAL_PATH;
 
     std::pair<std::string,std::string> name = {"Woody","Rousseau"};
     Customer cus("wrousseau",name,"2014");

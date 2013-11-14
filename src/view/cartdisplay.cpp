@@ -70,11 +70,11 @@ CartDisplayFrame::CartDisplayFrame(QWidget *parent) :
     MultiList(parent, 3, 0, false)
 {
     this->setObjectName("cartDiplayFrame");
-    headers[0].setText("Consommation");
-    headers[1].setText("Qté");
-    headers[2].setText("Prix");
+    headers[0]->setText("Consommation");
+    headers[1]->setText("Qté");
+    headers[2]->setText("Prix");
     for(int i=0 ; i < columns ; i++)
-        table->setHorizontalHeaderItem(i, &headers[i]);
+        table->setHorizontalHeaderItem(i, headers[i]);
 
     table->horizontalHeader()->setDefaultSectionSize(40);
     table->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
@@ -85,28 +85,33 @@ void CartDisplayFrame::setCart(std::queue< std::tuple<QString, float, unsigned i
 {
     // TUPLE : QString consumption, float price, unsigned int number of these products
     std::tuple<QString, float, unsigned int> tuple;
-    // deleting of old results (method from MultiList)
-    deleteOldResults();
 
     // Inserting new results
     unsigned numberOfElements = queue.size();
+    unsigned rows_old = rows;
     setRows(numberOfElements);
-    // Creating our matrix representing table
-    itemList = new QTableWidgetItem*[numberOfElements];
-    for(unsigned i = 0 ; i<numberOfElements ; i++)
+
+    // If there are more rows than before, we allocate space for the items and set them to the table
+    if(numberOfElements > rows_old)
     {
-        itemList[i] = new QTableWidgetItem[columns];
+        for(unsigned i=rows_old ; i<numberOfElements ; i++)
+        {
+            QTableWidgetItem* item0 = new QTableWidgetItem();
+            QTableWidgetItem* item1 = new QTableWidgetItem();
+            QTableWidgetItem* item2 = new QTableWidgetItem();
+
+            table->setItem(i, 0, item0);
+            table->setItem(i, 1, item1);
+            table->setItem(i, 2, item2);
+        }
     }
-    // Setting it up to table
     for(unsigned i=0 ; i<numberOfElements ; i++)
     {
         tuple = queue.front();
         queue.pop();
-        itemList[i][0].setText(std::get<0>(tuple));
-        itemList[i][1].setText(QString::number(std::get<2>(tuple)));
-        itemList[i][2].setText(QString::number(std::get<1>(tuple)));
-        for(int j=0 ; j < columns ; j++)
-            table->setItem(i, j, &itemList[i][j]);
+        table->item(i,0)->setText(std::get<0>(tuple));
+        table->item(i,1)->setText(QString::number(std::get<1>(tuple)));
+        table->item(i,2)->setText(QString::number(std::get<2>(tuple)));
     }
     table->sortItems(2, Qt::AscendingOrder);
 }

@@ -1,5 +1,6 @@
 #include "searchresults.h"
 #include "controller.h"
+#include <unistd.h>
 
 // Si Erreur bizarre ici, lancer un qmake sur le projet
 MultiList::MultiList(QWidget *parent, int column, int row, bool _isSortable)
@@ -9,7 +10,10 @@ MultiList::MultiList(QWidget *parent, int column, int row, bool _isSortable)
     rows = row;
     isInitialised = false;
     isSortable = _isSortable;
-    headers = new QTableWidgetItem[columns];
+    // because headers mustn't be in a tab and be made with operator new()
+    headers = new QTableWidgetItem*[columns];
+    for(int i=0 ; i< columns ; i++)
+        headers[i] = new QTableWidgetItem();
     table = new QTableWidget(this);
     table->setSelectionBehavior(QAbstractItemView::SelectRows);
     table->setObjectName("multiListTable");
@@ -19,25 +23,14 @@ MultiList::MultiList(QWidget *parent, int column, int row, bool _isSortable)
     font.setStyleHint(QFont::SansSerif);
     font.setPixelSize(13);
     table->setColumnCount(columns);
-    emptyHeader = new QTableWidgetItem[1000];
     table->horizontalHeader()->setSortIndicatorShown(isSortable);
     for(int i=0 ; i<columns ; i++)
-        headers[i].setFont(font);
+        headers[i]->setFont(font);
     setRows(rows);
 
     ascendingSort = true;
     sortColumn = 0;
     table->sortItems(0, Qt::AscendingOrder);
-
-    if(rows)
-    {
-        itemList = new QTableWidgetItem*[rows];
-        isInitialised = true;
-    }
-    for(int i=0 ; i<rows ; i++)
-    {
-        itemList[i] = new QTableWidgetItem[columns];
-    }
 
     QObject::connect(table->horizontalHeader(), SIGNAL(sectionClicked(int)), this, SLOT(sortItems(int)));
 }
@@ -71,43 +64,25 @@ void MultiList::setRows(int numberOfRows)
 {
     if(numberOfRows == rows)
         return;
-    qDebug() << "Adresse du QTableWidget mis à jour :" << table;
+    int old_rows = rows;
     rows = numberOfRows;
     table->setRowCount(rows);
 
     for(int i = 0 ; i< rows ; i++)
+    {
         table->setRowHeight(i, 20);
 
-    for(int i=0 ; i<rows ; i++)
-    {
-        emptyHeader[i].setText("");
+        QTableWidgetItem* emptyHeader = new QTableWidgetItem();
+        emptyHeader->setText("");
         table->setVerticalHeaderItem(i, emptyHeader);
     }
 }
 
-void MultiList::deleteOldResults()
-{
-    for(int i = 0 ; i<rows ; i++)
-    {
-        delete[] itemList[i];
-    }
-    if(isInitialised && rows !=0)
-        delete[] itemList;
-    else
-        isInitialised = true;
-}
 
 MultiList::~MultiList()
 {
-    for(int i = 0 ; i<rows ; i++)
-    {
-        delete[] itemList[i];
-    }
-    if(isInitialised && rows !=0)
-        delete[] itemList;
 
     delete table;
-    delete[] emptyHeader;
     delete[] headers;
 }
 

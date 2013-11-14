@@ -4,12 +4,12 @@ ProductsChoices::ProductsChoices(QWidget *parent) :
     MultiList(parent, 4, 0)
 {
     setObjectName("productChoices");
-    headers[0].setText("Consommation");
-    headers[1].setText("Volume");
-    headers[2].setText("Prix");
-    headers[3].setText("Id");
+    headers[0]->setText("Consommation");
+    headers[1]->setText("Volume");
+    headers[2]->setText("Prix");
+    headers[3]->setText("Id");
     for(int i=0 ; i < columns ; i++)
-        table->setHorizontalHeaderItem(i, &headers[i]);
+        table->setHorizontalHeaderItem(i, headers[i]);
 
     table->horizontalHeader()->setDefaultSectionSize(70);
     table->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
@@ -32,29 +32,35 @@ void ProductsChoices::setProductsChoices(std::queue< std::tuple< QString, QStrin
     // TUPLE : QString conso, QString Volume, float price, unsigned id
     std::tuple< QString, QString, float, unsigned > tuple;
 
-    // Deleting old results (Multilist method)
-    deleteOldResults();
-
     // Inserting new results
     unsigned numberOfElements = queue.size();
+    unsigned rows_old = rows;
     setRows(numberOfElements);
-    // Creating our matrix representing table
-    itemList = new QTableWidgetItem*[numberOfElements];
-    for(unsigned i = 0 ; i<numberOfElements ; i++)
+
+    // If there are more rows than before, we allocate space for the items and set them to the table
+    if(numberOfElements > rows_old)
     {
-        itemList[i] = new QTableWidgetItem[columns];
+        for(unsigned i=rows_old ; i<numberOfElements ; i++)
+        {
+            QTableWidgetItem* item0 = new QTableWidgetItem();
+            QTableWidgetItem* item1 = new QTableWidgetItem();
+            QTableWidgetItem* item2 = new QTableWidgetItem();
+            QTableWidgetItem* item3 = new QTableWidgetItem();
+
+            table->setItem(i, 0, item0);
+            table->setItem(i, 1, item1);
+            table->setItem(i, 2, item2);
+            table->setItem(i, 3, item3);
+        }
     }
-    // Setting it up to table
     for(unsigned i=0 ; i<numberOfElements ; i++)
     {
         tuple = queue.front();
         queue.pop();
-        itemList[i][0].setText(std::get<0>(tuple));
-        itemList[i][1].setText(std::get<1>(tuple));
-        itemList[i][2].setText(QString::number(std::get<2>(tuple)));
-        itemList[i][3].setText(QString::number(std::get<3>(tuple)));
-        for(int j=0 ; j < columns ; j++)
-            table->setItem(i, j, &itemList[i][j]);
+        table->item(i,0)->setText(std::get<0>(tuple));
+        table->item(i,1)->setText(std::get<1>(tuple));
+        table->item(i,2)->setText(QString::number(std::get<2>(tuple)));
+        table->item(i,3)->setText(QString::number(std::get<3>(tuple)));
     }
     table->sortItems(0, Qt::AscendingOrder);
     return;
