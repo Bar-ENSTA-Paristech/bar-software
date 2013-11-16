@@ -8,14 +8,20 @@ ProductsChoices::ProductsChoices(QWidget *parent) :
     headers[1]->setText("Volume");
     headers[2]->setText("Prix");
     headers[3]->setText("Id");
-    for(int i=0 ; i < columns ; i++)
-        table->setHorizontalHeaderItem(i, headers[i]);
 
-    table->horizontalHeader()->setDefaultSectionSize(70);
-    table->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
-    table->horizontalHeader()->setSectionHidden(3, true);
+    /*for(int i=0 ; i < columns ; i++)
+        table->setHorizontalHeaderItem(i, headers[i]);*/
 
-    QObject::connect(table, SIGNAL(cellDoubleClicked(int,int)), this, SLOT(lineClicked(int,int)));
+    stretchColumns = new int[2];
+    stretchColumns[0]=0;
+    stretchColumns[1]=-1;
+    defaultHeaderWidth = 70;
+    hiddenColumn = 3;
+    updateHeadersSize(defaultHeaderWidth, stretchColumns, hiddenColumn);
+
+    /*table->horizontalHeader()->setSectionHidden(3, true);
+
+    QObject::connect(table, SIGNAL(cellDoubleClicked(int,int)), this, SLOT(lineClicked(int,int)));*/
 
     // ####### TEST #######
     std::queue< std::tuple< QString, QString, float, unsigned > > toto;
@@ -40,12 +46,12 @@ void ProductsChoices::setProductsChoices(std::queue< std::tuple< QString, QStrin
     {
         tuple = queue.front();
         queue.pop();
-        table->item(i,0)->setText(std::get<0>(tuple));
-        table->item(i,1)->setText(std::get<1>(tuple));
-        table->item(i,2)->setText(QString::number(std::get<2>(tuple)));
-        table->item(i,3)->setText(QString::number(std::get<3>(tuple)));
+        model->item(i,0)->setText(std::get<0>(tuple));
+        model->item(i,1)->setText(std::get<1>(tuple));
+        model->item(i,2)->setText(QString::number(std::get<2>(tuple)));
+        model->item(i,3)->setText(QString::number(std::get<3>(tuple)));
     }
-    table->sortItems(0, Qt::AscendingOrder);
+    //table->sortItems(0, Qt::AscendingOrder);
     return;
 }
 

@@ -10,18 +10,24 @@ History::History(QWidget *parent) : MultiList(parent, 6, 0, false)
     headers[3]->setText("Montant");
     headers[4]->setText("Date");
     headers[5]->setText("id");
-    for(int i=0 ; i < columns ; i++)// On assigne ces légendes au tableau
-        table->setHorizontalHeaderItem(i, headers[i]);
+
+    /*for(int i=0 ; i < columns ; i++)// On assigne ces légendes au tableau
+        table->setHorizontalHeaderItem(i, headers[i]);*/
     // ##### Fin Définition #####
 
     // une colonne fait 60 pixels par défaut. Les colonnes 0,1,2,4 s'adapteront également à l'espace restant
-    table->horizontalHeader()->setDefaultSectionSize(60);
-    table->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
-    table->horizontalHeader()->setSectionResizeMode(1, QHeaderView::Stretch);
-    table->horizontalHeader()->setSectionResizeMode(2, QHeaderView::Stretch);
-    table->horizontalHeader()->setSectionResizeMode(4, QHeaderView::Stretch);
-    table->horizontalHeader()->setSectionHidden(5, true);
-    table->horizontalHeader()->setSortIndicatorShown(false);
+    stretchColumns = new int[5];
+    stretchColumns[0]=0;
+    stretchColumns[1]=1;
+    stretchColumns[2]=2;
+    stretchColumns[3]=4;
+    stretchColumns[4]=-1;
+    defaultHeaderWidth = 60;
+    hiddenColumn = 5;
+    updateHeadersSize(defaultHeaderWidth, stretchColumns, hiddenColumn);
+
+    /*table->horizontalHeader()->setSectionHidden(5, true);
+    table->horizontalHeader()->setSortIndicatorShown(false);*/
 
     // ####### TEST #######
     std::queue< std::tuple< QString, QString, QString, float, QString > > toto;
@@ -32,7 +38,7 @@ History::History(QWidget *parent) : MultiList(parent, 6, 0, false)
     toto.push(titi2);
     toto.push(titi3);
     this->setHistory(toto);
-    // ####### FIN TEST #######
+    // ####### FIN TEST #######*/
 
 }
 
@@ -52,12 +58,12 @@ void History::setHistory(std::queue < std::tuple < QString, QString, QString, fl
     {
         tuple = queue.front();
         queue.pop();
-        table->item(i,0)->setText(std::get<0>(tuple));
-        table->item(i,1)->setText(std::get<1>(tuple));
-        table->item(i,2)->setText(std::get<2>(tuple));
-        table->item(i,3)->setText(QString::number(std::get<3>(tuple)));
-        table->item(i,4)->setText(std::get<4>(tuple));
-        table->item(i,5)->setText(QString::number(i));
+        model->item(i,0)->setText(std::get<0>(tuple));
+        model->item(i,1)->setText(std::get<1>(tuple));
+        model->item(i,2)->setText(std::get<2>(tuple));
+        model->item(i,3)->setText(QString::number(std::get<3>(tuple)));
+        model->item(i,4)->setText(std::get<4>(tuple));
+        model->item(i,5)->setText(QString::number(i));
         if(std::get<2>(tuple) == "DEBIT")
             color.setColor(Qt::red);
         else if(std::get<2>(tuple) == "CREDIT")
@@ -67,12 +73,12 @@ void History::setHistory(std::queue < std::tuple < QString, QString, QString, fl
 
         for(int j=0 ; j < columns ; j++)
         {
-            table->item(i,j)->setFont(historyFont);
-            table->item(i,j)->setForeground(color);
+            model->item(i,j)->setFont(historyFont);
+            model->item(i,j)->setForeground(color);
         }
     }
 
     // Ascending or Descending depends on order of queue
-    table->sortItems(5, Qt::AscendingOrder);
+    //table->sortItems(5, Qt::AscendingOrder);
     return;
 }

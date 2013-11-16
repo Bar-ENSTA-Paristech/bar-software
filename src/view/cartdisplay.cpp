@@ -73,11 +73,16 @@ CartDisplayFrame::CartDisplayFrame(QWidget *parent) :
     headers[0]->setText("Consommation");
     headers[1]->setText("Qté");
     headers[2]->setText("Prix");
-    for(int i=0 ; i < columns ; i++)
-        table->setHorizontalHeaderItem(i, headers[i]);
 
-    table->horizontalHeader()->setDefaultSectionSize(40);
-    table->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
+    /*for(int i=0 ; i < columns ; i++)
+        table->setHorizontalHeaderItem(i, headers[i]);*/
+
+    stretchColumns = new int[2];
+    stretchColumns[0]=0;
+    stretchColumns[1]=-1;
+    defaultHeaderWidth = 40;
+    hiddenColumn = -1;
+    updateHeadersSize(defaultHeaderWidth, stretchColumns, hiddenColumn);
 }
 
 
@@ -94,11 +99,11 @@ void CartDisplayFrame::setCart(std::queue< std::tuple<QString, float, unsigned i
     {
         tuple = queue.front();
         queue.pop();
-        table->item(i,0)->setText(std::get<0>(tuple));
-        table->item(i,1)->setText(QString::number(std::get<1>(tuple)));
-        table->item(i,2)->setText(QString::number(std::get<2>(tuple)));
+        model->item(i,0)->setText(std::get<0>(tuple));
+        model->item(i,1)->setText(QString::number(std::get<1>(tuple)));
+        model->item(i,2)->setText(QString::number(std::get<2>(tuple)));
     }
-    table->sortItems(2, Qt::AscendingOrder);
+    //table->sortItems(2, Qt::AscendingOrder);
 }
 
 

@@ -8,6 +8,7 @@
 #include <QStandardItemModel>
 #include <queue>
 #include <QTimer>
+#include <QStandardItemModel>
 
 class Controller;
 
@@ -29,11 +30,20 @@ protected:
     int columns;
     int sortColumn;
     int rowsAllocated;
+    int defaultHeaderWidth;
+    int hiddenColumn;
+    int *stretchColumns;
     bool ascendingSort;
     bool isInitialised;
     bool isSortable;
-    QTableWidgetItem **headers;
-    QTableWidget *table;
+    void updateHeadersSize(int defaultWidth, int *stretchColumns, int hiddenColumn = -1); // stretcColumns ends with value -1
+    //QTableWidgetItem **headers;
+    //QTableWidget *table;
+    QTableView* table;
+    QStandardItemModel* model;
+    QHeaderView* horizontalHeader;
+    QStandardItem** headers;
+
     QFont font;
     void setRows(int numberOfRows);
 

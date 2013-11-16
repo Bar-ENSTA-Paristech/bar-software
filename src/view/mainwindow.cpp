@@ -98,7 +98,6 @@ void MainWindow::searchChanged(const QString & text)
 void MainWindow::sendSearch()
 {
     controller->newText_Search(search);
-
 }
 
 void MainWindow::shortcutRoutine()

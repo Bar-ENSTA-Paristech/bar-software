@@ -22,7 +22,7 @@ public:
 signals:
     
 private slots:
-    void lineClicked(int row, int column);
+    void lineClicked(QModelIndex index);
     
 };
 

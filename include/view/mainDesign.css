@@ -10,7 +10,7 @@ QLineEdit{
     padding: 0px;
 }
 
-#menu{
+/*#menu{
     background-color: red;
 }
 
@@ -31,23 +31,23 @@ QLineEdit{
 }
 
 #history{
-    background-color: #f71;/*orange*/
+    background-color: #f71;/*orange
 }
 
 #customerPanel{
-    background-color: #faa;/*rose*/
+    background-color: #faa;/*rose
 }
 
 #consoLogos{
-    background-color: #C18CFF;/*mauve clair*/
+    background-color: #C18CFF;/*mauve clair
 }
 
 #cartDisplay{
-    background-color: #3FE8FF;/*turquoise*/
+    background-color: #3FE8FF;/*turquoise
 }
 
 #productChoices{
-    background-color: #89FF66;/*vert clair*/
+    background-color: #89FF66;/*vert clair
 }
 
 /*#searchResultsTable{
