@@ -28,6 +28,7 @@ public:
 
 
 private:
+    void setShortcut();
 
 
 private slots:
@@ -58,7 +59,9 @@ private:
     QLineEdit *searchText;
     QHBoxLayout *searchBarLayout;
     QGridLayout *mainPartLayout;
-    QShortcut *shortcut;
+    QShortcut **shortcuts;
+    QGridLayout *menuLayout;
+    QLabel *logo;
 
 
 };

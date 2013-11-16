@@ -1,5 +1,5 @@
 QLineEdit{
-    color: #77f;
+    color: #222;
     font-size: 14px;
     font-weight: bold;
     border-radius: 7px;
@@ -10,9 +10,15 @@ QLineEdit{
     padding: 0px;
 }
 
-/*#menu{
-    background-color: red;
+#categoriesList{
+    background-color: #b0b0b0;
 }
+
+/*#menu{
+    background: url("");;
+
+}
+
 
 #leftPart{
     background-color: blue;
@@ -26,9 +32,7 @@ QLineEdit{
     background-color: black;
 }
 
-#categoriesList{
-    background-color: yellow;
-}
+
 
 #history{
     background-color: #f71;/*orange

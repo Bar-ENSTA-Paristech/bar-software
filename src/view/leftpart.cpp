@@ -84,7 +84,7 @@ void LeftPart::clickOnCategorie(int id)
         //categoriesLabels[i].setUpdatesEnabled(true);
         categoriesLabels[i].setStyleSheet("");
     }
-    categoriesLabels[id].setStyleSheet("background : url("+GLOBAL_PATH+"resources/pictures/activeCategorie.png)");
+    categoriesLabels[id].setStyleSheet("background : url("+GLOBAL_PATH+"resources/pictures/activeCategorie.png) ; color:white");
     //updateCategorieTimer.start(500);
 
 }
