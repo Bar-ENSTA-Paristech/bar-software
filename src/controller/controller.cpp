@@ -34,9 +34,7 @@ void Controller::newText_Search(QString &viewSearch)
     std::string dbSearch;
     type_customerdbTuple db_tmpCurstomerInfo;
     view_customerTuple view_tmpCustomerInfo;
-    //db_customerQueue dbQueue;                   // Information returned from the database as a queue
     type_customerdbQueue dbQueue;
-    //view_customerQueue viewQueue;               // Information send to the view as a queue
     std::queue< std::tuple< QString, QString, QString, float, unsigned > > viewQueue;
 
 
@@ -57,14 +55,6 @@ void Controller::newText_Search(QString &viewSearch)
 
     if ( dbQueue.empty() ){
         qDebug() << " Model returned empty queue ";
-        // ####### TEST #######
-        /*std::queue< std::tuple< QString, QString, QString, float, unsigned > > toto;
-        std::tuple< QString, QString, QString, float, unsigned > titi("Rousseau", "Woody", "2015", -2, 1);
-        std::tuple< QString, QString, QString, float, unsigned > titi2("Manchoul", "Lamoule", "2014", 3.5, 2);
-        toto.push(titi);
-        toto.push(titi2);
-        viewSearchResults->setSearchResults(toto);*/
-        // ####### FIN TEST #######
     }
     else{
 
@@ -86,7 +76,6 @@ void Controller::newText_Search(QString &viewSearch)
         }
 
         // Sent result to view
-        qDebug() << "Taille de la queue :" << viewQueue.size();
         viewSearchResults->setSearchResults( viewQueue );
 
     }
@@ -102,12 +91,12 @@ void Controller::newClic_Customer(unsigned int customerId)
 //    string group;
 //    float money;
 
-    type_customerdbTuple tmpDBCurstomerInfo;   // Output for SQL request
+    type_customerdbTuple tmpDBCurstomerInfo;
     std::tuple<QString, QString, QString, QString, float> tmpViewCurstomerInfo;
 
     qDebug() << "TEST0";
     tmpDBCurstomerInfo = database.getCustomerFromId( customerId );
-    qDebug() << "TEST1";
+
 
         /* Create the customer */
 
