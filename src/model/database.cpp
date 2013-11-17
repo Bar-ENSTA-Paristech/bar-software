@@ -122,6 +122,7 @@ int Database::executeQuery(Query &_query)
     return coderesult;
 }
 
+
 sqlite3* Database::getHandle()
 {
     return handle;
@@ -381,6 +382,70 @@ type_consodbTuple Database::getProductFromId(unsigned id)
 
 }
 
+type_histdbQueue Database::getFullHist()
+{
+    Query query;
+
+    type_histdbTuple *hist(0);
+    hist=new type_histdbTuple;
+
+    unsigned i;
+    unsigned j=0;
+    type_histdbQueue *result(0);
+    result=new type_histdbQueue;
+
+    std::queue<std::string> *queryResultFunction(0);
+    queryResultFunction = new std::queue<std::string> ;
+
+    std::vector<std::string> vectorFromQueue;
+
+    //Utiliser des jointures
+    // From client_id -> nom + prénom
+    // From conso_id -> conso + prix
+    std::string queryString="SELECT historique.his_id, notes.nom, notes.prenom,consos.nom, historique.conso_price, historique.date_conso ";
+    queryString+="FROM historique ";
+    queryString+="LEFT JOIN consos ";
+    queryString+="ON consos.conso_id = historique.conso_id ";
+    queryString+="LEFT JOIN notes ";
+    queryString+="ON notes.client_id=historique.client_id ";
+    queryString+="ORDER BY historique.date_conso DESC;";
+
+
+    query.setQuery(queryString);
+    query.setVerbose(1);
+    executeQuery(query);
+
+    *queryResultFunction=*queryResult;
+
+    for (i=0;i<=queryResultFunction->size();i++)
+    {
+        while(!queryResultFunction->empty())
+        {
+            while (queryResultFunction->front()!= "\n"&&!queryResultFunction->empty())
+            {
+                vectorFromQueue.push_back(queryResultFunction->front());
+                queryResultFunction->pop();
+            }
+
+            float recuperatedPrice;
+            unsigned recuperatedId;
+
+            std::istringstream(vectorFromQueue[4]) >> recuperatedPrice;
+            std::istringstream(vectorFromQueue[0]) >> recuperatedId;
+
+            *hist = std::make_tuple (vectorFromQueue[1],vectorFromQueue[2],vectorFromQueue[3],vectorFromQueue[5],recuperatedPrice,recuperatedId);
+
+            queryResultFunction->pop();
+            result->push(*hist);
+
+            j++;
+            vectorFromQueue.clear();
+        }
+    }
+    clear(queue);
+    return *result;
+}
+
 type_histdbQueue Database::getLastOperations()
 {
     Query query;
@@ -525,7 +590,6 @@ type_customerdbTuple Database::getCustomerFromId(unsigned customerId)
     queryResultFunction = new std::queue<std::string> ;
     queryResult = new std::queue<std::string> ;
 
-    unsigned j=0;
 
     type_customerdbTuple *customer(0);
     customer=new type_customerdbTuple;
@@ -562,17 +626,10 @@ type_customerdbTuple Database::getCustomerFromId(unsigned customerId)
 
             *customer = std::make_tuple (vectorFromQueue[1],vectorFromQueue[2],vectorFromQueue[4],recuperatedBalance,recuperatedId,vectorFromQueue[3]);
 
-            queryResultFunction->pop();
-            j++;
-            vectorFromQueue.clear();
         }
     }
-
-    else
-    {
-
-    }
-
+    vectorFromQueue.clear();
+    queryResultFunction->pop();
     clear(queue);
     return *customer;
 }

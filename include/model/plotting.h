@@ -22,7 +22,7 @@ public:
     db_dataarray productConsumption (int id,int scale);
     db_dataarray productStock (int id,int scale);
 
-    db_dataarray totalConsumption (int scale);
+    db_dataarray totalConsumption (int scale,int type);
 
     db_dataarray stockValue(int scale);
     db_dataarray cashValue (int scale);
