@@ -31,12 +31,12 @@ SearchResults::SearchResults(QWidget *parent) :
     QObject::connect(table, SIGNAL(clicked(QModelIndex)), this, SLOT(lineClicked(QModelIndex)));
 
     // ####### TEST #######
-    std::queue< std::tuple< QString, QString, QString, float, unsigned > > toto;
+    /*std::queue< std::tuple< QString, QString, QString, float, unsigned > > toto;
     std::tuple< QString, QString, QString, float, unsigned > titi("Chat", "Mehdi", "2015", -2, 1);
     std::tuple< QString, QString, QString, float, unsigned > titi2("Diallo", "Guytoof", "2015", 3.5, 2);
     toto.push(titi);
     toto.push(titi2);
-    this->setSearchResults(toto);
+    this->setSearchResults(toto);*/
     // ####### FIN TEST #######
 
 }
