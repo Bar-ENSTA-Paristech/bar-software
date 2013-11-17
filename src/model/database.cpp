@@ -259,6 +259,69 @@ type_customerdbQueue Database::searchCustomer(std::string &string)
     return *result;
 }
 
+type_consodbQueue Database::getAllProducts ()
+{
+ std::string queryString;
+    Query query;
+
+    type_consodbQueue *result(0);
+    result=new type_consodbQueue;
+
+    type_consodbTuple *conso(0);
+    conso=new type_consodbTuple;
+
+    std::queue<std::string> *queryResultFunction(0);
+    queryResultFunction = new std::queue<std::string> ;
+
+    queryResult = new std::queue<std::string> ;
+
+    unsigned i;
+    unsigned j=0;
+
+    queryString+=" SELECT * FROM consos";
+    queryString+=" ORDER BY conso_id ASC;";
+
+    query.setQuery(queryString);
+    query.setVerbose(1);
+    executeQuery(query);
+
+    *queryResultFunction=*queryResult;
+
+    std::vector<std::string> vectorFromQueue;
+
+    for (i=0;i<=queryResultFunction->size();i++)
+    {
+        while(!queryResultFunction->empty())
+        {
+            while (queryResultFunction->front()!= "\n"&&!queryResultFunction->empty())
+            {
+                vectorFromQueue.push_back(queryResultFunction->front());
+                queryResultFunction->pop();
+            }
+
+            float recuperatedPrice;
+            unsigned recuperatedId;
+            unsigned recuperatedStock;
+            unsigned recuperatedCategory;
+
+            std::istringstream(vectorFromQueue[3]) >> recuperatedPrice;
+            std::istringstream(vectorFromQueue[0]) >> recuperatedId;
+            std::istringstream(vectorFromQueue[4]) >> recuperatedStock;
+            std::istringstream(vectorFromQueue[2]) >> recuperatedCategory;
+
+            *conso = std::make_tuple (vectorFromQueue[1],recuperatedCategory,recuperatedPrice,recuperatedStock,recuperatedId);
+
+            queryResultFunction->pop();
+            result->push(*conso);
+            j++;
+            vectorFromQueue.clear();
+
+        }
+    }
+    clear(queue);
+    return *result;
+}
+
 type_consodbQueue Database::getProductsFromCategory(unsigned categorie)
 {
     //On doit transformer l'int categorie en string pour effectuer la requête

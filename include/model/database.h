@@ -43,6 +43,8 @@ public:
     type_consodbQueue getProductsFromCategory(unsigned cat);//Méthode recevant un unsigned correspondant à une catégorie de conso et renvoie toutes les consos correspondates
     //OK (Fonctionne - a tester plus en profondeur)
 
+    type_consodbQueue getAllProducts ();//
+
     type_consodbTuple getProductFromId(unsigned id);//Méthode recevant l'id d'une conso et renvoyant le tuple de ses infos
     //OK (Fonctionne - a tester plus en profondeur)
 

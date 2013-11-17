@@ -57,7 +57,9 @@ int main(int argc, char *argv[])
     Plotting plot;
     plot.setDb(DB.getHandle());
     db_dataarray Values = plot.customerConsumption(378,1,0);
-    Values = plot.totalConsumption(1,0);
+    Values = plot.totalConsumption(0,0);
+    DB.getAllProducts ();
+
     DB.closeDatabase();
 
     //Test graph

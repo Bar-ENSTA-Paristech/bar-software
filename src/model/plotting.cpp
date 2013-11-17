@@ -69,13 +69,13 @@ db_dataarray Plotting::customerConsumption(int id,int scale,int type)
                 }
                 for (int i=0;i<100;i++)
                 {
-                    Values.first[i]=now_int-(2628000)*i;
+                    Values.first[i]=now_int-(3600*24*7)*i;
                 }
             }
             else
             {
                 qtime=QDateTime::fromString(qoperation_time,format);
-                k=-now.secsTo(qtime)/(3600*24*7);
+                k=-now.secsTo(qtime)/(2628000);
 
                 if (k<100 && k>0)
                 {
@@ -105,6 +105,7 @@ db_dataarray Plotting::totalConsumption(int scale,int type)
     QDateTime qtime=QDateTime::currentDateTime();
     QDateTime now=QDateTime::currentDateTime();
     int k;
+    int lowldedebug;
     //recupérer les anciennes données quand getCustomer_Old_Hist sera implémenté
 
     std::vector<double> x(100), y(100);
@@ -123,6 +124,7 @@ db_dataarray Plotting::totalConsumption(int scale,int type)
 
     for (unsigned j=0; j<hist.size();j++)
     {
+        lowldedebug++;
         operation=hist.front();
         hist.pop();
         std::string operation_time=std::get<3>(operation);
@@ -156,13 +158,13 @@ db_dataarray Plotting::totalConsumption(int scale,int type)
                 }
                 for (int i=0;i<100;i++)
                 {
-                    Values.first[i]=now_int-(2628000)*i;
+                    Values.first[i]=now_int-(3600*24*7)*i;
                 }
             }
             else
             {
                 qtime=QDateTime::fromString(qoperation_time,format);
-                k=-now.secsTo(qtime)/(3600*24*7);
+                k=-now.secsTo(qtime)/(2628000);
 
                 if (k<100 && k>0)
                 {
@@ -178,6 +180,7 @@ db_dataarray Plotting::totalConsumption(int scale,int type)
 
 
     }
+    qDebug()<<lowldedebug;
     return (Values);
 }
 
