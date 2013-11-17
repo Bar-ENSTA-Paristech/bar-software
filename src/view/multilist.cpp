@@ -17,11 +17,6 @@ MultiList::MultiList(QWidget *parent, int column, int row, bool _isSortable)
     table->setModel(model);
 
     // because headers mustn't be in a tab and be made with operator new()
-    /*headers = new QTableWidgetItem*[columns];
-    for(int i=0 ; i< columns ; i++)
-        headers[i] = new QTableWidgetItem();*/
-    //horizontalHeader = new QHeaderView(Qt::Horizontal, table);
-    //table->setHorizontalHeader(horizontalHeader);
     headers = new QStandardItem*[columns];
         for(int i=0 ; i< columns ; i++)
         {
@@ -35,14 +30,11 @@ MultiList::MultiList(QWidget *parent, int column, int row, bool _isSortable)
     table->setEditTriggers(QAbstractItemView::NoEditTriggers);
     table->setSelectionMode(QAbstractItemView::SingleSelection);
 
-    //horizontalHeader->setSectionsClickable(isSortable);
-    //horizontalHeader->setSectionsMovable(true);
     table->setSortingEnabled(isSortable);
 
     font.setStyleHint(QFont::SansSerif);
     font.setPixelSize(13);
-    //table->setColumnCount(columns);
-    //table->horizontalHeader()->setSortIndicatorShown(isSortable);
+
     for(int i=0 ; i<columns ; i++)
         headers[i]->setFont(font);
 

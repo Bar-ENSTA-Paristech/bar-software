@@ -38,6 +38,7 @@ MainWindow::MainWindow()
 
     searchIcon = new QLabel(searchBar);
     searchIcon->setPixmap(QPixmap(GLOBAL_PATH + "resources/pictures/search.png"));
+    //searchIcon->setStyleSheet("opacity: 0");
     searchText = new QLineEdit("", searchBar);
     searchBar->setObjectName("searchBar");
     searchBarLayout = new QHBoxLayout(searchBar);

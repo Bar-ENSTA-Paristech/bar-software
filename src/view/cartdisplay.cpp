@@ -74,8 +74,6 @@ CartDisplayFrame::CartDisplayFrame(QWidget *parent) :
     headers[1]->setText("Qté");
     headers[2]->setText("Prix");
 
-    /*for(int i=0 ; i < columns ; i++)
-        table->setHorizontalHeaderItem(i, headers[i]);*/
 
     stretchColumns = new int[2];
     stretchColumns[0]=0;

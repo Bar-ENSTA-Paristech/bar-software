@@ -9,19 +9,12 @@ ProductsChoices::ProductsChoices(QWidget *parent) :
     headers[2]->setText("Prix");
     headers[3]->setText("Id");
 
-    /*for(int i=0 ; i < columns ; i++)
-        table->setHorizontalHeaderItem(i, headers[i]);*/
-
     stretchColumns = new int[2];
     stretchColumns[0]=0;
     stretchColumns[1]=-1;
     defaultHeaderWidth = 70;
     hiddenColumn = 3;
     updateHeadersSize(defaultHeaderWidth, stretchColumns, hiddenColumn);
-
-    /*table->horizontalHeader()->setSectionHidden(3, true);
-
-    QObject::connect(table, SIGNAL(cellDoubleClicked(int,int)), this, SLOT(lineClicked(int,int)));*/
 
     // ####### TEST #######
     std::queue< std::tuple< QString, QString, float, unsigned > > toto;

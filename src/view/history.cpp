@@ -11,8 +11,6 @@ History::History(QWidget *parent) : MultiList(parent, 6, 0, false)
     headers[4]->setText("Date");
     headers[5]->setText("id");
 
-    /*for(int i=0 ; i < columns ; i++)// On assigne ces légendes au tableau
-        table->setHorizontalHeaderItem(i, headers[i]);*/
     // ##### Fin Définition #####
 
     // une colonne fait 60 pixels par défaut. Les colonnes 0,1,2,4 s'adapteront également à l'espace restant
@@ -25,9 +23,6 @@ History::History(QWidget *parent) : MultiList(parent, 6, 0, false)
     defaultHeaderWidth = 60;
     hiddenColumn = 5;
     updateHeadersSize(defaultHeaderWidth, stretchColumns, hiddenColumn);
-
-    /*table->horizontalHeader()->setSectionHidden(5, true);
-    table->horizontalHeader()->setSortIndicatorShown(false);*/
 
     // ####### TEST #######
     std::queue< std::tuple< QString, QString, QString, float, QString > > toto;

@@ -6,12 +6,21 @@ QLineEdit{
     border-width: 1.5px;
     border-style: solid;
     border-color: #aaa;
-    background-color: white;
+    background-color: #D8D17C;
     padding: 0px;
 }
 
 #categoriesList{
     background-color: #b0b0b0;
+    border-radius: 4px;
+}
+
+#customerPanel{
+    border-radius: 10px;
+    border-width: 2px;
+    border-style: solid;
+    border-color: #666;
+    background-color: #f9f9f9;
 }
 
 /*#menu{
@@ -38,9 +47,7 @@ QLineEdit{
     background-color: #f71;/*orange
 }
 
-#customerPanel{
-    background-color: #faa;/*rose
-}
+
 
 #consoLogos{
     background-color: #C18CFF;/*mauve clair
