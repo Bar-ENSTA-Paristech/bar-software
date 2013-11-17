@@ -49,6 +49,8 @@ public:
     type_histdbQueue getLastOperations(); //Méthode qui récupère les 15 dernières opérations effectuées
     //OK (Fonctionne - a tester plus en profondeur)
 
+    type_histdbQueue getFullHist();
+
     type_histdbQueue getCustomerHist(unsigned);//Renvoie l'historique d'un client en ayant recu son id
     //OK (Fonctionne - a tester plus en profondeur)
 
