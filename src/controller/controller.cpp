@@ -28,9 +28,24 @@ void Controller::setViewPointers(SearchResults* par1, CustomerPanel* par2, CartD
     viewHistory = par5;
 }
 
+//void Controller::setProductChoices()
+//{
+//    type_consodbTuple db_tmpProductInfo;
+//    type_consodbQueue dbQueue;
+//    std::tuple<QString, QString, float, unsigned> productInfo;
+//    std::queue<std::tuple<QString, QString, float, unsigned> > productList;
+
+//    database.openDatabase();
+
+
+//    viewProductsChoices->setProductsChoices();
+
+//}
+
+
 void Controller::newText_Search(QString &viewSearch)
 {
-
+    // Inputs and outputs
     std::string dbSearch;
     type_customerdbTuple db_tmpCurstomerInfo;
     view_customerTuple view_tmpCustomerInfo;
@@ -45,18 +60,14 @@ void Controller::newText_Search(QString &viewSearch)
     unsigned view_tmpId;
     QString view_tmpGroup;
 
-    database.openDatabase();
-
     dbSearch = viewSearch.toStdString();
 
-    // Get customer information corresponding to the search from model
-    dbQueue = database.searchCustomer(dbSearch);
+
+    database.openDatabase();
+    dbQueue = database.searchCustomer(dbSearch);        // Get customer information corresponding to the search from model
 
 
-    if ( dbQueue.empty() ){
-        qDebug() << " Model returned empty queue ";
-    }
-    else{
+    if ( !dbQueue.empty() ){
 
         // Copy the dbQueue into the viewQueue
         while( !dbQueue.empty() ){
@@ -75,13 +86,9 @@ void Controller::newText_Search(QString &viewSearch)
             dbQueue.pop();
         }
 
-        // Sent result to view
-        viewSearchResults->setSearchResults( viewQueue );
-
-    }
-
-
-
+    }  
+    // Sent result to view
+    viewSearchResults->setSearchResults( viewQueue );
 }
 
 void Controller::newClic_Customer(unsigned int customerId)
@@ -94,9 +101,7 @@ void Controller::newClic_Customer(unsigned int customerId)
     type_customerdbTuple tmpDBCurstomerInfo;
     std::tuple<QString, QString, QString, QString, float> tmpViewCurstomerInfo;
 
-    qDebug() << "TEST0";
     tmpDBCurstomerInfo = database.getCustomerFromId( customerId );
-
 
         /* Create the customer */
 
