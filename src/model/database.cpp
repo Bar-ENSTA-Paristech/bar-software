@@ -325,7 +325,7 @@ type_consodbQueue Database::getAllProducts ()
 type_consodbQueue Database::getProductsFromCategory(unsigned categorie)
 {
     //On doit transformer l'int categorie en string pour effectuer la requête
-    std::string idString = static_cast<std::ostringstream*>( &(std::ostringstream() << categorie) )->str();
+    std::string idString = std::to_string(categorie);
     std::string queryString;
     Query query;
 
@@ -391,7 +391,7 @@ type_consodbQueue Database::getProductsFromCategory(unsigned categorie)
 type_consodbTuple Database::getProductFromId(unsigned id)
 {
     //On doit transformer l'int id en string pour effectuer la requête
-    std::string idString = static_cast<std::ostringstream*>( &(std::ostringstream() << id) )->str();
+    std::string idString = std::to_string(id);
     std::string queryString;
     Query query;
 
@@ -577,7 +577,7 @@ type_histdbQueue Database::getLastOperations()
 type_histdbQueue Database::getCustomerHist(unsigned id)
 {
     Query query;
-    std::string id_String = static_cast<std::ostringstream*>( &(std::ostringstream() << id) )->str();
+    std::string id_String = std::to_string(id);
 
     type_histdbTuple *hist(0);
     hist=new type_histdbTuple;
@@ -646,7 +646,7 @@ type_customerdbTuple Database::getCustomerFromId(unsigned customerId)
     std::string queryString="";
 
     //On doit transformer l'int customerId en string pour effectuer la requête
-    std::string idString = static_cast<std::ostringstream*>( &(std::ostringstream() << customerId) )->str();
+    std::string idString = std::to_string(customerId);
     Query query;
     std::queue<std::string> *queryResultFunction(0);
 
@@ -713,7 +713,7 @@ int Database::createCustomerAccount(type_customerdbTuple tuple)
 
     //Il faut transfomer les int et float en std::string
     //std::string categorieString = static_cast<std::ostringstream*>( &(std::ostringstream() << categorie) )->str();
-    std::string balanceString = static_cast<std::ostringstream*>( &(std::ostringstream() << balance) )->str();
+    std::string balanceString = std::to_string(balance);
 
     queryString+="INSERT INTO notes (nom,prenom,type,compte) VALUES (";
     queryString+=nom;
@@ -749,8 +749,8 @@ int Database::editCustomerAccount(type_customerdbTuple tuple)
     id=std::get<4>(tuple);
 
     //std::string categorieString = static_cast<std::ostringstream*>( &(std::ostringstream() << categorie) )->str();
-    std::string balanceString = static_cast<std::ostringstream*>( &(std::ostringstream() << balance) )->str();
-    std::string idString = static_cast<std::ostringstream*>( &(std::ostringstream() << id) )->str();
+    std::string balanceString = std::to_string(balance);
+    std::string idString = std::to_string(id);
 
     queryString+="UPDATE notes";
     queryString+="SET nom=";
@@ -777,7 +777,7 @@ int Database::deleteCustomerAccount(int id)
     int code;
     Query query;
     std::string queryString="";
-    std::string idString = static_cast<std::ostringstream*>( &(std::ostringstream() << id) )->str();
+    std::string idString = std::to_string(id);
 
     queryString+="DELETE FROM notes WHERE client_id=";
     queryString+=idString;
@@ -806,9 +806,9 @@ int Database::createProduct(type_consodbTuple tuple)
 
 
     //Il faut transfomer les int et float en std::string
-    std::string stockString = static_cast<std::ostringstream*>( &(std::ostringstream() << stock) )->str();
-    std::string categorieString = static_cast<std::ostringstream*>( &(std::ostringstream() << categorie) )->str();
-    std::string priceString = static_cast<std::ostringstream*>( &(std::ostringstream() << prix) )->str();
+    std::string stockString = std::to_string(stock);
+    std::string categorieString = std::to_string(categorie);
+    std::string priceString = std::to_string(prix);
 
     queryString+="INSERT INTO notes (nom,type,prix,stock) VALUES (";
     queryString+=nom;
@@ -845,10 +845,10 @@ int Database::editProduct(type_consodbTuple tuple)
     stock=std::get<3>(tuple);
     id=std::get<4>(tuple);
 
-    std::string categorieString = static_cast<std::ostringstream*>( &(std::ostringstream() << categorie) )->str();
-    std::string stockString = static_cast<std::ostringstream*>( &(std::ostringstream() << stock) )->str();
-    std::string priceString = static_cast<std::ostringstream*>( &(std::ostringstream() << price) )->str();
-    std::string idString = static_cast<std::ostringstream*>( &(std::ostringstream() << id) )->str();
+    std::string categorieString = std::to_string(categorie);
+    std::string stockString = std::to_string(stock);
+    std::string priceString = std::to_string(price);
+    std::string idString = std::to_string(id);
 
     queryString+="UPDATE consos";
     queryString+="SET nom=";
@@ -875,7 +875,7 @@ int Database::deleteProduct(int id)
     int code;
     Query query;
     std::string queryString="";
-    std::string idString = static_cast<std::ostringstream*>( &(std::ostringstream() << id) )->str();
+    std::string idString = std::to_string(id);
 
     queryString+="DELETE FROM consos WHERE conso_id=";
     queryString+=idString;
