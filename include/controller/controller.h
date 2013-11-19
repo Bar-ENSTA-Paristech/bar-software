@@ -50,8 +50,9 @@ class Controller
 public:
     Controller();
 
-    /* Initialization */
-    //void setProductChoices():
+    void mainController();
+
+    void setProductChoices();
 
     void newText_Search(QString &search);
     void newClic_Customer(unsigned int customerId);

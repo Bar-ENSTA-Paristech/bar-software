@@ -140,6 +140,8 @@ void MainWindow::setController(Controller *controllerParam)
     //viewManager->controller = controllerParam;
     rightPart->setController(controller);
     leftPart->setController(controller);
+
+    controller->mainController();
 }
 
 void MainWindow::setShortcut()

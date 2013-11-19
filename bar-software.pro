@@ -70,7 +70,7 @@ OTHER_FILES += \
 macx {
 #QMAKE_CXXFLAGS += -std=c++11 -stdlib=libc++ -mmacosx-version-min=10.7
 #LIBS += -stdlib=libc++ -mmacosx-version-min=10.7
-QMAKE_CXXFLAGS += -std=c++11 -mmacosx-version-min=10.7 -stdlib=libc++
+QMAKE_CXXFLAGS += -std=c++11 -mmacosx-version-min=10.7 #-stdlib=libc++
 LIBS +=  -mmacosx-version-min=10.7
 } else {
   QMAKE_CXXFLAGS += -std=c++11

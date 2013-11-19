@@ -28,19 +28,52 @@ void Controller::setViewPointers(SearchResults* par1, CustomerPanel* par2, CartD
     viewHistory = par5;
 }
 
-//void Controller::setProductChoices()
-//{
-//    type_consodbTuple db_tmpProductInfo;
-//    type_consodbQueue dbQueue;
-//    std::tuple<QString, QString, float, unsigned> productInfo;
-//    std::queue<std::tuple<QString, QString, float, unsigned> > productList;
-
-//    database.openDatabase();
+void Controller::mainController()
+{
+    QString emptyString;
+    // Initialize view fields
+    newText_Search( emptyString );
+    setProductChoices();
 
 
-//    viewProductsChoices->setProductsChoices();
+}
 
-//}
+void Controller::setProductChoices()
+{
+    type_consodbTuple dbProductInfo;
+    type_consodbQueue dbProductList;
+    std::tuple<QString, QString, float, unsigned> viewProductInfo;
+    std::queue<std::tuple<QString, QString, float, unsigned> > viewProductList;
+
+    QString name;
+    QString category;
+    float price;
+    unsigned stock;
+    //unsigned id;
+
+    database.openDatabase();
+
+    dbProductList = database.getAllProducts();
+
+    while( !dbProductList.empty() )
+    {
+        dbProductInfo = dbProductList.front();
+
+        name = QString::fromStdString( std::get<0>( dbProductInfo ) );
+        category = QString::number( std::get<1>( dbProductInfo ) );
+        price = std::get<2>( dbProductInfo );
+        stock = std::get<3>( dbProductInfo );
+        //id = std::get<4>( dbProductInfo );
+
+        viewProductInfo = std::make_tuple( name, category, price, stock );
+        viewProductList.push( viewProductInfo );
+
+        dbProductList.pop();
+    }
+    viewProductsChoices->setProductsChoices( viewProductList );
+
+    database.closeDatabase();
+}
 
 
 void Controller::newText_Search(QString &viewSearch)
@@ -89,6 +122,8 @@ void Controller::newText_Search(QString &viewSearch)
     }  
     // Sent result to view
     viewSearchResults->setSearchResults( viewQueue );
+
+    database.closeDatabase();
 }
 
 void Controller::newClic_Customer(unsigned int customerId)
@@ -119,6 +154,7 @@ void Controller::newClic_Customer(unsigned int customerId)
 
     viewCustomerPanel->setCustomer( tmpViewCurstomerInfo );
 
+    database.closeDatabase();
 
 }
 
