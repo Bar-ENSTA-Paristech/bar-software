@@ -31,7 +31,8 @@ src/view/searchresults.cpp \
 src/view/consologos.cpp \
 src/view/categoriebutton.cpp \
     resources/lib/qcustomplot.cpp \
-    src/model/plotting.cpp
+    src/model/plotting.cpp \
+    src/controller/stock.cpp
 
 
 INCLUDEPATH += include/controller \
@@ -60,7 +61,8 @@ include/view/categoriebutton.h \
     resources/lib/matplotpp.h \
     resources/lib/gl2ps.h \
     include/model/plotting.h \
-    resources/lib/qcustomplot.h
+    resources/lib/qcustomplot.h \
+    include/controller/stock.h
 
 
 OTHER_FILES += \

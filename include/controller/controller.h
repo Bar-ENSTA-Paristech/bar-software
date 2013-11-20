@@ -13,6 +13,7 @@
 #include "../view/productschoices.h"
 #include "../view/history.h"
 
+
 #include "customer.h"
 #include "cart.h"
 #include "product.h"
@@ -45,6 +46,9 @@ class ProductsChoices;
 class History;
 class Database;
 
+class Stock;
+
+
 class Controller
 {
 public:
@@ -52,7 +56,7 @@ public:
 
     void mainController();
 
-    void setProductChoices();
+
 
     void newText_Search(QString &search);
     void newClic_Customer(unsigned int customerId);
@@ -71,10 +75,10 @@ private:
     SearchResults * viewSearchResults;
     CustomerPanel * viewCustomerPanel;
     CartDisplay * viewCartDisplay;
-    ProductsChoices * viewProductsChoices;
     History * viewHistory;
 
         /* Controller objects */
+    Stock * m_stock;
     Customer * curCustomer;
     Cart * curCart; // Should the Cart be a member of Customer ?
 

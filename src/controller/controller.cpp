@@ -1,4 +1,5 @@
 #include "controller.h"
+#include "stock.h"
 #include "searchresults.h"
 #include "../model/database.h"
 #include <QString>
@@ -24,8 +25,9 @@ void Controller::setViewPointers(SearchResults* par1, CustomerPanel* par2, CartD
     viewSearchResults = par1;
     viewCustomerPanel = par2;
     viewCartDisplay = par3;
-    viewProductsChoices = par4;
     viewHistory = par5;
+
+    m_stock = new Stock( this, &database, par4 );
 }
 
 void Controller::mainController()
@@ -33,47 +35,11 @@ void Controller::mainController()
     QString emptyString;
     // Initialize view fields
     newText_Search( emptyString );
-    setProductChoices();
 
 
 }
 
-void Controller::setProductChoices()
-{
-    type_consodbTuple dbProductInfo;
-    type_consodbQueue dbProductList;
-    std::tuple<QString, QString, float, unsigned> viewProductInfo;
-    std::queue<std::tuple<QString, QString, float, unsigned> > viewProductList;
 
-    QString name;
-    QString category;
-    float price;
-    unsigned stock;
-    //unsigned id;
-
-    database.openDatabase();
-
-    dbProductList = database.getAllProducts();
-
-    while( !dbProductList.empty() )
-    {
-        dbProductInfo = dbProductList.front();
-
-        name = QString::fromStdString( std::get<0>( dbProductInfo ) );
-        category = QString::number( std::get<1>( dbProductInfo ) );
-        price = std::get<2>( dbProductInfo );
-        stock = std::get<3>( dbProductInfo );
-        //id = std::get<4>( dbProductInfo );
-
-        viewProductInfo = std::make_tuple( name, category, price, stock );
-        viewProductList.push( viewProductInfo );
-
-        dbProductList.pop();
-    }
-    viewProductsChoices->setProductsChoices( viewProductList );
-
-    database.closeDatabase();
-}
 
 
 void Controller::newText_Search(QString &viewSearch)
