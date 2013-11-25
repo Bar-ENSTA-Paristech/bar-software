@@ -57,7 +57,6 @@ public:
     void mainController();
 
 
-
     void newText_Search(QString &search);
     void newClic_Customer(unsigned int customerId);
 
@@ -78,7 +77,7 @@ private:
     History * viewHistory;
 
         /* Controller objects */
-    Stock * m_stock;
+    Stock * mp_stock;
     Customer * curCustomer;
     Cart * curCart; // Should the Cart be a member of Customer ?
 

@@ -5,6 +5,8 @@
 #include "productschoices.h"
 #include "product.h"
 
+#include <cstdlib>
+
 class Controller;
 
 class Stock
@@ -15,10 +17,13 @@ public:
      void displayStock();
 
 private:
+    void initializeInventory();
+
     Controller * mep_controller;
     Database * mep_database;
     ProductsChoices * mep_viewProductChoices;
-    std::map<Product, unsigned> m_inventory;        // Inventaire : liste des produits associés à leur quantité en stock
+
+    std::vector<Product> m_inventory;        // Inventaire : liste des produits associés à leur quantité en stock
 
 };
 

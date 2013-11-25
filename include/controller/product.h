@@ -7,8 +7,9 @@ class Product
 {
 public:
     Product();
-    Product(std::string _name, float _price, unsigned _stock);
+    Product(unsigned _id, std::string _name, std::string _type, float _price, unsigned _stock);
     std::string getName() const;
+    std::string getType() const;
     float getPrice() const;
     int getStock() const;
     float getTotalPrice() const;

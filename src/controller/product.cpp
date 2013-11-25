@@ -7,13 +7,18 @@ Product::Product()
 {
 }
 
-Product::Product(std::string _name, float _price, unsigned _stock) : name(_name), price(_price), stock(_stock)
+Product::Product(unsigned int _id, std::string _name, std::string _type, float _price, unsigned _stock) : name(_name), price(_price), stock(_stock)
 {
 }
 
 std::string Product::getName() const
 {
     return name;
+}
+
+std::string Product::getType() const
+{
+    return type;
 }
 
 float Product::getPrice() const

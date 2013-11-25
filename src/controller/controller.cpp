@@ -27,7 +27,7 @@ void Controller::setViewPointers(SearchResults* par1, CustomerPanel* par2, CartD
     viewCartDisplay = par3;
     viewHistory = par5;
 
-    m_stock = new Stock( this, &database, par4 );
+    mp_stock = new Stock( this, &database, par4 );
 }
 
 void Controller::mainController()
@@ -35,8 +35,6 @@ void Controller::mainController()
     QString emptyString;
     // Initialize view fields
     newText_Search( emptyString );
-
-
 }
 
 
