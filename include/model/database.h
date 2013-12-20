@@ -13,13 +13,14 @@ typedef std::tuple< std::string, std::string, std::string, float, unsigned, std:
 typedef std::tuple< std::string, unsigned, float , unsigned, unsigned > type_consodbTuple;
 //TUPLE d'un historique (une transaction) : Nom, Prénom, Produit, Date, valeur,id
 typedef std::tuple< std::string,std::string,std::string,std::string , float , unsigned> type_histdbTuple;
-//TUPLE des catégories : Nom,id
+//TUPLE des catégories : nom,id
 typedef std::tuple< std::string, unsigned> type_categorydbTuple;
 
 //On définit les structures de queue<> correspondant à chaque type de tuple
 typedef std::queue<type_customerdbTuple> type_customerdbQueue;
 typedef std::queue<type_consodbTuple> type_consodbQueue;
 typedef std::queue<type_histdbTuple> type_histdbQueue;
+typedef std::queue<type_categorydbTuple> type_categorydbQueue;
 
 class Plotting;
 
@@ -52,6 +53,8 @@ public:
     type_histdbQueue getLastOperations(); //Méthode qui récupère les 15 dernières opérations effectuées
     //OK (Fonctionne - a tester plus en profondeur)
 
+    type_categorydbQueue getCategories(); //Implémentée / Non testée
+
     type_histdbQueue getFullHist();
 
     type_histdbQueue getCustomerHist(unsigned);//Renvoie l'historique d'un client en ayant recu son id
@@ -75,11 +78,11 @@ public:
     int editProduct (type_consodbTuple);//Méthode générique qui met à jour TOUTES les informations de la conso
     //Rq : penser à Maj prix_consos
 
-    int createCategory (/*tuple à définir*/);//Méthode créant un nouveau champ dans categories /Par défaut le nouvel id vaut -1
+    int createCategory (type_categorydbTuple);//Méthode créant un nouveau champ dans categories /Par défaut le nouvel id vaut -1
 
-    int editCategory (/*même tuple*/);
+    int editCategory (type_categorydbTuple);
 
-    int deleteCategory (/*idem*/);
+    int deleteCategory (int id);
 
     int addHist (type_histdbTuple);
 

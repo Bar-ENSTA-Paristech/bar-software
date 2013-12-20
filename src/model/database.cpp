@@ -322,6 +322,62 @@ type_consodbQueue Database::getAllProducts ()
     return *result;
 }
 
+type_categorydbQueue Database::getCategories()
+{
+Query query;
+
+type_categorydbTuple *cat(0);
+cat=new type_categorydbTuple;
+
+unsigned i;
+unsigned j=0;
+type_categorydbQueue *result(0);
+result=new type_categorydbQueue;
+
+std::queue<std::string> *queryResultFunction(0);
+queryResultFunction = new std::queue<std::string> ;
+
+std::vector<std::string> vectorFromQueue;
+
+std::string queryString =" SELECT * FROM type_consos";
+queryString+=" ORDER BY type_conso_id ASC;";
+
+
+query.setQuery(queryString);
+query.setVerbose(1);
+executeQuery(query);
+
+*queryResultFunction=*queryResult;
+
+for (i=0;i<=queryResultFunction->size();i++)
+{
+    while(!queryResultFunction->empty())
+    {
+        while (queryResultFunction->front()!= "\n"&&!queryResultFunction->empty())
+        {
+            vectorFromQueue.push_back(queryResultFunction->front());
+            queryResultFunction->pop();
+        }
+
+        float recuperatedPrice;
+        unsigned recuperatedId;
+
+        std::istringstream(vectorFromQueue[0]) >> recuperatedId;
+
+        *cat = std::make_tuple (vectorFromQueue[1],recuperatedId);
+
+        queryResultFunction->pop();
+        result->push(*cat);
+
+        j++;
+        vectorFromQueue.clear();
+    }
+}
+clear(queue);
+return *result;
+}
+
+
 type_consodbQueue Database::getProductsFromCategory(unsigned categorie)
 {
     //On doit transformer l'int categorie en string pour effectuer la requête
@@ -876,6 +932,52 @@ int Database::deleteProduct(int id)
     std::string idString = std::to_string(id);
 
     queryString+="DELETE FROM consos WHERE conso_id=";
+    queryString+=idString;
+    queryString+=";";
+
+    query.setQuery(queryString);
+    query.setVerbose(1);
+    code=executeQuery(query);
+
+    return (code);
+}
+
+int Database::createCategory(type_categorydbTuple tuple)
+{
+    std::string nom;
+    int id;
+    int code;
+
+    std::string queryString="";
+    Query query;
+
+    id=std::get<1>(tuple);
+    nom=std::get<0>(tuple);
+
+    //Il faut transfomer les int et float en std::string
+    std::string idString = std::to_string(id);
+
+    queryString+="INSERT INTO types_conso (type_conso_id,nom_type) VALUES (";
+    queryString+=idString;
+    queryString+=", ";
+    queryString+=nom;
+    queryString+=");";
+
+    query.setQuery(queryString);
+    query.setVerbose(1);
+    code=executeQuery(query);
+
+    return (code);
+}
+
+int Database::deleteCategory(int id)
+{
+    int code;
+    Query query;
+    std::string queryString="";
+    std::string idString = std::to_string(id);
+
+    queryString+="DELETE FROM type_consos WHERE conso_id=";
     queryString+=idString;
     queryString+=";";
 
