@@ -13,7 +13,8 @@ typedef std::tuple< std::string, std::string, std::string, float, unsigned, std:
 typedef std::tuple< std::string, unsigned, float , unsigned, unsigned > type_consodbTuple;
 //TUPLE d'un historique (une transaction) : Nom, Prénom, Produit, Date, valeur,id
 typedef std::tuple< std::string,std::string,std::string,std::string , float , unsigned> type_histdbTuple;
-
+//TUPLE des catégories : Nom,id
+typedef std::tuple< std::string, unsigned> type_categorydbTuple;
 
 //On définit les structures de queue<> correspondant à chaque type de tuple
 typedef std::queue<type_customerdbTuple> type_customerdbQueue;

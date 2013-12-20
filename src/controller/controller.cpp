@@ -96,7 +96,7 @@ void Controller::newClic_Customer(unsigned int customerId)
 //    string familyName;
 //    string group;
 //    float money;
-
+    database.openDatabase();
     type_customerdbTuple tmpDBCurstomerInfo;
     std::tuple<QString, QString, QString, QString, float> tmpViewCurstomerInfo;
 

@@ -261,7 +261,7 @@ type_customerdbQueue Database::searchCustomer(std::string &string)
 
 type_consodbQueue Database::getAllProducts ()
 {
- std::string queryString;
+    std::string queryString;
     Query query;
 
     type_consodbQueue *result(0);
@@ -672,27 +672,25 @@ type_customerdbTuple Database::getCustomerFromId(unsigned customerId)
 
     if (queryResultFunction->size()!=0)
     {
-        while(queryResultFunction->front()!="\n" && !queryResultFunction->empty())
+
+        while (queryResultFunction->front()!= "\n"&& !queryResultFunction->empty())
         {
-
-            while (queryResultFunction->front()!= "\n"&& !queryResultFunction->empty())
-            {
-                vectorFromQueue.push_back(queryResultFunction->front());
-                queryResultFunction->pop();
-            }
-
-            float recuperatedBalance;
-            int recuperatedId;
-
-            std::istringstream(vectorFromQueue[5]) >> recuperatedBalance;
-            std::istringstream(vectorFromQueue[0]) >> recuperatedId;
-
-            *customer = std::make_tuple (vectorFromQueue[1],vectorFromQueue[2],vectorFromQueue[4],recuperatedBalance,recuperatedId,vectorFromQueue[3]);
-
+            vectorFromQueue.push_back(queryResultFunction->front());
+            queryResultFunction->pop();
         }
+
+        float recuperatedBalance;
+        int recuperatedId;
+
+        std::istringstream(vectorFromQueue[5]) >> recuperatedBalance;
+        std::istringstream(vectorFromQueue[0]) >> recuperatedId;
+
+        *customer = std::make_tuple (vectorFromQueue[1],vectorFromQueue[2],vectorFromQueue[4],recuperatedBalance,recuperatedId,vectorFromQueue[3]);
+
+        queryResultFunction->pop();
     }
     vectorFromQueue.clear();
-    queryResultFunction->pop();
+
     clear(queue);
     return *customer;
 }
