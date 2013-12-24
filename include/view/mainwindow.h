@@ -8,10 +8,13 @@
 #include <QLabel>
 #include <QTimer>
 #include <QShortcut>
+#include <QVector>
 #include <queue>
 #include "leftpart.h"
 #include "rightpart.h"
 #include "controller.h"
+#include "structures.h"
+#include "qcustomplot.h"
 
 extern QString GLOBAL_PATH;
 
@@ -25,6 +28,7 @@ public:
     ~MainWindow();
     void resizeEvent(QResizeEvent *event);
     void setController(Controller *controllerParam);
+    void setGraph(db_dataarray& data, QString xTitle, QString yTitle, QString title);
 
 
 private:
@@ -36,6 +40,7 @@ private slots:
     void sendSearch(); // to controller
     void shortcutRoutine();
     void updateSize(); // after resize of window e.g
+
 
 private:
     Controller* controller;

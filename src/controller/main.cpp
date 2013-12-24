@@ -8,7 +8,8 @@
 #include <QDir>
 #include <QDebug>
 
-#include"../model/plotting.h"
+#include "../model/plotting.h"
+#include "qcustomplot.h"
 
 #include "../model/database.h"
 #include "cart.h"
@@ -57,8 +58,9 @@ int main(int argc, char *argv[])
     Plotting plot;
     plot.setDb(DB.getHandle());
     db_dataarray Values = plot.customerConsumption(378,1,0);
-    Values = plot.totalConsumption(0,0);
+    Values = plot.totalConsumption(2,0);
     DB.getAllProducts ();
+
 
     DB.closeDatabase();
 
@@ -74,6 +76,9 @@ int main(int argc, char *argv[])
     MainWindow mainWindow;
     mainWindow.setController(controller);
     mainWindow.show();
+
+    // ########## TEST GRAPHE ############
+    mainWindow.setGraph(Values, "xTitle", "yTitle", "Title de famille");
 
     return application.exec();
 }

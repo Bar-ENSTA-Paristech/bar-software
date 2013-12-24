@@ -163,3 +163,47 @@ void MainWindow::setShortcut()
 }
 
 
+void MainWindow::setGraph(db_dataarray& data, QString xTitle, QString yTitle, QString title)
+{
+    if(data.first.size() != data.second.size())
+    {
+        qDebug() << "ERROR : Graph datas haven't the same size !";
+        return;
+    }
+    QCustomPlot* customPlot = new QCustomPlot();
+
+    // create graph and assign data to it:
+    customPlot->addGraph();
+    QVector<double> x, y;
+    x = QVector<double>::fromStdVector(data.first);
+    y = QVector<double>::fromStdVector(data.second);
+    customPlot->graph(0)->setData(x, y);
+    // give the axes some labels:
+    customPlot->xAxis->setLabel(xTitle);
+    customPlot->yAxis->setLabel(yTitle);
+
+    // set axes ranges, so we see all data:
+    register double minX = x.first(), maxX = x.first(), minY = y.first(), maxY=y.first();
+    register double xi, yi;
+    for(int i =0 ; i < x.size() ; i++)
+    {
+        xi = x[i];
+        yi = y[i];
+        if(xi < minX)
+            minX = xi;
+        else if(xi > maxX)
+            maxX = xi;
+
+        if(yi < minY)
+            minY = yi;
+        else if(yi > maxY)
+            maxY = yi;
+    }
+    customPlot->xAxis->setRange(minX, maxX);
+    customPlot->yAxis->setRange(minY, maxY);
+    customPlot->replot();
+    customPlot->setGeometry(20,40,800,600);
+    customPlot->setWindowTitle(title);
+    customPlot->show();
+}
+

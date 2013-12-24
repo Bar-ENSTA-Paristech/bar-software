@@ -30,14 +30,15 @@ src/view/rightpart.cpp \
 src/view/searchresults.cpp \
 src/view/consologos.cpp \
 src/view/categoriebutton.cpp \
-    resources/lib/qcustomplot.cpp \
-    src/model/plotting.cpp \
-    src/controller/stock.cpp
+resources/lib/qcustomplot.cpp \
+src/model/plotting.cpp \
+src/controller/stock.cpp
 
 
 INCLUDEPATH += include/controller \
 include/model \
-include/view
+include/view \
+resources/lib
 
 HEADERS += include/controller/cart.h \
 include/controller/controller.h \
@@ -58,11 +59,12 @@ include/view/rightpart.h \
 include/view/searchresults.h \
 include/view/consologos.h \
 include/view/categoriebutton.h \
-    resources/lib/matplotpp.h \
-    resources/lib/gl2ps.h \
-    include/model/plotting.h \
-    resources/lib/qcustomplot.h \
-    include/controller/stock.h
+resources/lib/matplotpp.h \
+resources/lib/gl2ps.h \
+include/model/plotting.h \
+resources/lib/qcustomplot.h \
+include/controller/stock.h \
+    include/controller/structures.h
 
 
 OTHER_FILES += \
@@ -81,4 +83,6 @@ QMAKE_CXXFLAGS_RELEASE += -O3
 
 #LIBS += -lsqlite3
 
-#LIBS += /lib/x86_64-linux-gnu/libdl.so.2
+linux{
+LIBS += /lib/x86_64-linux-gnu/libdl.so.2
+}

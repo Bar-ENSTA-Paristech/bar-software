@@ -4,10 +4,10 @@
 #include <vector>
 #include <utility>
 #include "database.h"
-#include "../../include/controller/controller.h"
-#include "../../resources/lib/qcustomplot.h"
+#include "controller.h"
+#include "qcustomplot.h"
+#include "structures.h"
 
-typedef std::pair< std::vector< double > , std::vector< double > > db_dataarray;
 
 class Database;
 
