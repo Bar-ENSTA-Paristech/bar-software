@@ -6,6 +6,7 @@
 #include <queue>
 #include "multilist.h"
 #include "controller.h"
+#include "structures.h"
 
 class Controller;
 
@@ -16,7 +17,7 @@ public:
     explicit SearchResults(QWidget *parent = 0);
 
     // receive search results from controller
-    void setSearchResults(std::queue< std::tuple< QString, QString, QString, float, unsigned > >& queue);
+    void setSearchResults(view_customerQueue&);
     QTimer timer;
 
 signals:

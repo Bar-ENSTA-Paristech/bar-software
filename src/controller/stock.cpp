@@ -1,5 +1,6 @@
 #include "stock.h"
 #include "controller.h"
+#include "structures.h"
 
 Stock::Stock(Controller * parent, Database * database, ProductsChoices * viewProductChoices) :
     mep_controller( parent ), mep_database( database), mep_viewProductChoices(viewProductChoices)
@@ -42,8 +43,8 @@ void Stock::initializeInventory()
     std::string type;
     float price;
     unsigned quantity;
-    type_consodbTuple dbProductInfo;
-    type_consodbQueue dbProductList;
+    db_productTuple dbProductInfo;
+    db_productQueue dbProductList;
 
     mep_database->openDatabase();
     dbProductList = mep_database->getAllProducts();
@@ -52,11 +53,11 @@ void Stock::initializeInventory()
     {
         dbProductInfo = dbProductList.front();
 
-        name = std::get<0>( dbProductInfo );
-        type = std::to_string(std::get<1>( dbProductInfo ));
-        price = std::get<2>( dbProductInfo );
-        quantity = std::get<3>( dbProductInfo );
-        id = std::get<4>( dbProductInfo );
+        name = dbProductInfo.getProductName();
+        type = dbProductInfo.getProductCategory();
+        price = dbProductInfo.getProductPrice();
+        quantity = dbProductInfo.getProductStock();
+        id = dbProductInfo.getProductId();
 
         Product newProduct(id,name,type,price,quantity);
         m_inventory.push_back(newProduct);

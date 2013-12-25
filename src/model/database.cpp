@@ -5,6 +5,7 @@
 #include <tuple>
 #include <sstream>
 #include <vector>
+#include "structures.h"
 
 
 //La déclaration du pointeur vers le résultat de la requête doit se faire dans l'espage global
@@ -177,7 +178,7 @@ Elles ne seront donc pas commentées aussi précisément
 que la méthode qui suit.
 ---------------------------------------------------*/
 
-type_customerdbQueue Database::searchCustomer(std::string &string)
+db_customerQueue Database::searchCustomer(std::string &string)
 {
     std::string searchString=string;
     std::string queryString="";   //Initialisation du string qui contiendra la requête SQL
@@ -197,11 +198,11 @@ type_customerdbQueue Database::searchCustomer(std::string &string)
     */
     unsigned i;
     unsigned j=0;
-    type_customerdbQueue *result(0); //On initialise la queue de tuple qui sera retournée à la fin au controlleur
-    result=new type_customerdbQueue;
+    db_customerQueue *result(0); //On initialise la queue de tuple qui sera retournée à la fin au controlleur
+    result=new db_customerQueue;
 
-    type_customerdbTuple *customer(0); //On initialise aussi le tuple correspondant
-    customer=new type_customerdbTuple;
+    //On initialise aussi le tuple correspondant
+    db_customerTuple customer;
 
     //Formation du string de query adapté
 
@@ -241,15 +242,23 @@ type_customerdbQueue Database::searchCustomer(std::string &string)
                 //On transforme les std::string en float et unsigned pour les champs Balance et Id
                 float recuperatedBalance;
                 int recuperatedId;
+                unsigned recuperatedCategory;
 
+                std::istringstream(vectorFromQueue[4]) >> recuperatedCategory;
                 std::istringstream(vectorFromQueue[5]) >> recuperatedBalance;
                 std::istringstream(vectorFromQueue[0]) >> recuperatedId;
 
-                *customer = std::make_tuple (vectorFromQueue[1],vectorFromQueue[2],vectorFromQueue[4],recuperatedBalance,recuperatedId,vectorFromQueue[3]);
+                //*customer = std::make_tuple (vectorFromQueue[1],vectorFromQueue[2],vectorFromQueue[4],recuperatedBalance,recuperatedId,vectorFromQueue[3]);
+                customer.setCustomerId(recuperatedId);
+                customer.setCustomerName(vectorFromQueue[1]);
+                customer.setCustomerFirstname(vectorFromQueue[2]);
+                customer.setCustomerLogin(vectorFromQueue[3]);
+                customer.setCustomerCategory(recuperatedCategory);
+                customer.setCustomerBalance(recuperatedBalance);
 
                 queryResultFunction->pop();      //On supprime le dernier element du résultat unique , le parser '\n'
 
-                result->push(*customer);
+                result->push(customer);
                 j++; // L'int j correspond à l'index dans la queue , il est incrémenté a chaque boucle sur une personne
                 vectorFromQueue.clear(); // Ne pas oublier de vider le vecteur à chaque individu
             }
@@ -259,16 +268,16 @@ type_customerdbQueue Database::searchCustomer(std::string &string)
     return *result;
 }
 
-type_consodbQueue Database::getAllProducts ()
+db_productQueue Database::getAllProducts()
 {
     std::string queryString;
     Query query;
 
-    type_consodbQueue *result(0);
-    result=new type_consodbQueue;
+    db_productQueue *result(0);
+    result=new db_productQueue;
 
-    type_consodbTuple *conso(0);
-    conso=new type_consodbTuple;
+    db_productTuple *conso(0);
+    conso=new db_productTuple;
 
     std::queue<std::string> *queryResultFunction(0);
     queryResultFunction = new std::queue<std::string> ;
@@ -309,10 +318,15 @@ type_consodbQueue Database::getAllProducts ()
             std::istringstream(vectorFromQueue[4]) >> recuperatedStock;
             std::istringstream(vectorFromQueue[2]) >> recuperatedCategory;
 
-            *conso = std::make_tuple (vectorFromQueue[1],recuperatedCategory,recuperatedPrice,recuperatedStock,recuperatedId);
+            //conso = std::make_tuple (vectorFromQueue[1],recuperatedCategory,recuperatedPrice,recuperatedStock,recuperatedId);
+            conso->setProductId(recuperatedId);
+            conso->setProductName(vectorFromQueue[1]);
+            conso->setProductPrice(recuperatedPrice);
+            conso->setProductStock(recuperatedStock);
+            conso->setProductCategory(recuperatedCategory);
 
-            queryResultFunction->pop();
             result->push(*conso);
+            queryResultFunction->pop();
             j++;
             vectorFromQueue.clear();
 
@@ -322,74 +336,77 @@ type_consodbQueue Database::getAllProducts ()
     return *result;
 }
 
-type_categorydbQueue Database::getCategories()
+db_categoryQueue Database::getCategories()
 {
-Query query;
+    Query query;
 
-type_categorydbTuple *cat(0);
-cat=new type_categorydbTuple;
+    db_categoryTuple *cat(0);
+    cat=new db_categoryTuple;
 
-unsigned i;
-unsigned j=0;
-type_categorydbQueue *result(0);
-result=new type_categorydbQueue;
+    unsigned i;
+    unsigned j=0;
+    db_categoryQueue *result(0);
+    result=new db_categoryQueue;
 
-std::queue<std::string> *queryResultFunction(0);
-queryResultFunction = new std::queue<std::string> ;
+    std::queue<std::string> *queryResultFunction(0);
+    queryResultFunction = new std::queue<std::string> ;
 
-std::vector<std::string> vectorFromQueue;
+    std::vector<std::string> vectorFromQueue;
 
-std::string queryString =" SELECT * FROM type_consos";
-queryString+=" ORDER BY type_conso_id ASC;";
+    std::string queryString =" SELECT * FROM type_consos";
+    queryString+=" ORDER BY type_conso_id ASC;";
 
 
-query.setQuery(queryString);
-query.setVerbose(1);
-executeQuery(query);
+    query.setQuery(queryString);
+    query.setVerbose(1);
+    executeQuery(query);
 
-*queryResultFunction=*queryResult;
+    *queryResultFunction=*queryResult;
 
-for (i=0;i<=queryResultFunction->size();i++)
-{
-    while(!queryResultFunction->empty())
+    for (i=0;i<=queryResultFunction->size();i++)
     {
-        while (queryResultFunction->front()!= "\n"&&!queryResultFunction->empty())
+        while(!queryResultFunction->empty())
         {
-            vectorFromQueue.push_back(queryResultFunction->front());
+            while (queryResultFunction->front()!= "\n"&&!queryResultFunction->empty())
+            {
+                vectorFromQueue.push_back(queryResultFunction->front());
+                queryResultFunction->pop();
+            }
+
+            float recuperatedPrice;
+            unsigned recuperatedId;
+
+            std::istringstream(vectorFromQueue[0]) >> recuperatedId;
+
+            //*cat = std::make_tuple (vectorFromQueue[1],recuperatedId);
+
+            cat->setCategoryId(recuperatedId);
+            cat->setCategoryName(vectorFromQueue[1]);
+
             queryResultFunction->pop();
+            result->push(*cat);
+
+            j++;
+            vectorFromQueue.clear();
         }
-
-        float recuperatedPrice;
-        unsigned recuperatedId;
-
-        std::istringstream(vectorFromQueue[0]) >> recuperatedId;
-
-        *cat = std::make_tuple (vectorFromQueue[1],recuperatedId);
-
-        queryResultFunction->pop();
-        result->push(*cat);
-
-        j++;
-        vectorFromQueue.clear();
     }
-}
-clear(queue);
-return *result;
+    clear(queue);
+    return *result;
 }
 
 
-type_consodbQueue Database::getProductsFromCategory(unsigned categorie)
+db_productQueue Database::getProductsFromCategory(unsigned categorie)
 {
     //On doit transformer l'int categorie en string pour effectuer la requête
     std::string idString = std::to_string(categorie);
     std::string queryString;
     Query query;
 
-    type_consodbQueue *result(0);
-    result=new type_consodbQueue;
+    db_productQueue *result(0);
+    result=new db_productQueue;
 
-    type_consodbTuple *conso(0);
-    conso=new type_consodbTuple;
+    db_productTuple *conso(0);
+    conso=new db_productTuple;
 
     std::queue<std::string> *queryResultFunction(0);
     queryResultFunction = new std::queue<std::string> ;
@@ -431,7 +448,12 @@ type_consodbQueue Database::getProductsFromCategory(unsigned categorie)
             std::istringstream(vectorFromQueue[4]) >> recuperatedStock;
             std::istringstream(vectorFromQueue[2]) >> recuperatedCategory;
 
-            *conso = std::make_tuple (vectorFromQueue[1],recuperatedCategory,recuperatedPrice,recuperatedStock,recuperatedId);
+            //*conso = std::make_tuple (vectorFromQueue[1],recuperatedCategory,recuperatedPrice,recuperatedStock,recuperatedId);
+            conso->setProductId(recuperatedId);
+            conso->setProductName(vectorFromQueue[1]);
+            conso->setProductPrice(recuperatedPrice);
+            conso->setProductStock(recuperatedStock);
+            conso->setProductCategory(recuperatedCategory);
 
             queryResultFunction->pop();
             result->push(*conso);
@@ -444,15 +466,15 @@ type_consodbQueue Database::getProductsFromCategory(unsigned categorie)
     return *result;
 }
 
-type_consodbTuple Database::getProductFromId(unsigned id)
+db_productTuple Database::getProductFromId(unsigned id)
 {
     //On doit transformer l'int id en string pour effectuer la requête
     std::string idString = std::to_string(id);
     std::string queryString;
     Query query;
 
-    type_consodbTuple *conso(0);
-    conso=new type_consodbTuple;
+    db_productTuple *conso(0);
+    conso=new db_productTuple;
 
     std::queue<std::string> *queryResultFunction(0);
     queryResultFunction = new std::queue<std::string> ;
@@ -489,7 +511,13 @@ type_consodbTuple Database::getProductFromId(unsigned id)
         std::istringstream(vectorFromQueue[4]) >> recuperatedStock;
         std::istringstream(vectorFromQueue[2]) >> recuperatedCategory;
 
-        *conso = std::make_tuple (vectorFromQueue[1],recuperatedCategory,recuperatedPrice,recuperatedStock,recuperatedId);
+        //*conso = std::make_tuple (vectorFromQueue[1],recuperatedCategory,recuperatedPrice,recuperatedStock,recuperatedId);
+        conso->setProductId(recuperatedId);
+        conso->setProductName(vectorFromQueue[1]);
+        conso->setProductPrice(recuperatedPrice);
+        conso->setProductStock(recuperatedStock);
+        conso->setProductCategory(recuperatedCategory);
+
         queryResultFunction->pop();
     }
     else
@@ -501,17 +529,17 @@ type_consodbTuple Database::getProductFromId(unsigned id)
 
 }
 
-type_histdbQueue Database::getFullHist()
+db_histQueue Database::getFullHist()
 {
     Query query;
 
-    type_histdbTuple *hist(0);
-    hist=new type_histdbTuple;
+    db_histTuple *hist(0);
+    hist=new db_histTuple;
 
     unsigned i;
     unsigned j=0;
-    type_histdbQueue *result(0);
-    result=new type_histdbQueue;
+    db_histQueue *result(0);
+    result=new db_histQueue;
 
     std::queue<std::string> *queryResultFunction(0);
     queryResultFunction = new std::queue<std::string> ;
@@ -552,11 +580,16 @@ type_histdbQueue Database::getFullHist()
             std::istringstream(vectorFromQueue[4]) >> recuperatedPrice;
             std::istringstream(vectorFromQueue[0]) >> recuperatedId;
 
-            *hist = std::make_tuple (vectorFromQueue[1],vectorFromQueue[2],vectorFromQueue[3],vectorFromQueue[5],recuperatedPrice,recuperatedId);
+            //*hist = std::make_tuple (vectorFromQueue[1],vectorFromQueue[2],vectorFromQueue[3],vectorFromQueue[5],recuperatedPrice,recuperatedId);
+            hist->setHistId(recuperatedId);
+            hist->setHistName(vectorFromQueue[1]);
+            hist->setHistFirstname(vectorFromQueue[2]);
+            hist->setHistDatetime(vectorFromQueue[5]);
+            hist->setHistPrice(recuperatedPrice);
+            hist->setHistProduct(vectorFromQueue[3]);
 
-            queryResultFunction->pop();
             result->push(*hist);
-
+            queryResultFunction->pop();
             j++;
             vectorFromQueue.clear();
         }
@@ -565,17 +598,17 @@ type_histdbQueue Database::getFullHist()
     return *result;
 }
 
-type_histdbQueue Database::getLastOperations()
+db_histQueue Database::getLastOperations()
 {
     Query query;
 
-    type_histdbTuple *hist(0);
-    hist=new type_histdbTuple;
+    db_histTuple *hist(0);
+    hist=new db_histTuple;
 
     unsigned i;
     unsigned j=0;
-    type_histdbQueue *result(0);
-    result=new type_histdbQueue;
+    db_histQueue *result(0);
+    result=new db_histQueue;
 
     std::queue<std::string> *queryResultFunction(0);
     queryResultFunction = new std::queue<std::string> ;
@@ -616,11 +649,16 @@ type_histdbQueue Database::getLastOperations()
             std::istringstream(vectorFromQueue[4]) >> recuperatedPrice;
             std::istringstream(vectorFromQueue[0]) >> recuperatedId;
 
-            *hist = std::make_tuple (vectorFromQueue[1],vectorFromQueue[2],vectorFromQueue[3],vectorFromQueue[5],recuperatedPrice,recuperatedId);
+            //*hist = std::make_tuple (vectorFromQueue[1],vectorFromQueue[2],vectorFromQueue[3],vectorFromQueue[5],recuperatedPrice,recuperatedId);
+            hist->setHistId(recuperatedId);
+            hist->setHistName(vectorFromQueue[1]);
+            hist->setHistFirstname(vectorFromQueue[2]);
+            hist->setHistDatetime(vectorFromQueue[5]);
+            hist->setHistPrice(recuperatedPrice);
+            hist->setHistProduct(vectorFromQueue[3]);
 
-            queryResultFunction->pop();
             result->push(*hist);
-
+            queryResultFunction->pop();
             j++;
             vectorFromQueue.clear();
         }
@@ -629,19 +667,19 @@ type_histdbQueue Database::getLastOperations()
     return *result;
 
 }
-
-type_histdbQueue Database::getCustomerHist(unsigned id)
+// hist.conso_price n'est pas dans la db actuellement, il faudra faire avec conso.price
+db_histQueue Database::getCustomerHist(unsigned id)
 {
     Query query;
     std::string id_String = std::to_string(id);
 
-    type_histdbTuple *hist(0);
-    hist=new type_histdbTuple;
+    db_histTuple *hist(0);
+    hist=new db_histTuple;
 
     unsigned i;
     unsigned j=0;
-    type_histdbQueue *result(0);
-    result=new type_histdbQueue;
+    db_histQueue *result(0);
+    result=new db_histQueue;
 
     std::queue<std::string> *queryResultFunction(0);
     queryResultFunction = new std::queue<std::string> ;
@@ -649,7 +687,7 @@ type_histdbQueue Database::getCustomerHist(unsigned id)
     //Utiliser des jointures
     // From client_id -> nom + prénom
     // From conso_id -> conso + prix
-    std::string queryString="SELECT historique.his_id, notes.nom, notes.prenom,consos.nom, historique.conso_price, historique.date_conso ";
+    std::string queryString="SELECT historique.his_id, notes.nom, notes.prenom,consos.nom, consos.prix, historique.date_conso ";
     queryString+="FROM historique ";
     queryString+="LEFT JOIN consos ";
     queryString+="ON consos.conso_id = historique.conso_id ";
@@ -657,7 +695,7 @@ type_histdbQueue Database::getCustomerHist(unsigned id)
     queryString+="ON notes.client_id=historique.client_id ";
     queryString+="WHERE notes.client_id=";
     queryString+=id_String;
-    queryString+=" ORDER BY historique.date_conso DESC LIMIT 30;";
+    queryString+=" ORDER BY historique.date_conso DESC LIMIT 300;";
 
     query.setQuery(queryString);
     query.setVerbose(1);
@@ -683,7 +721,13 @@ type_histdbQueue Database::getCustomerHist(unsigned id)
             std::istringstream(vectorFromQueue[4]) >> recuperatedPrice;
             std::istringstream(vectorFromQueue[0]) >> recuperatedId;
 
-            *hist = std::make_tuple (vectorFromQueue[1],vectorFromQueue[2],vectorFromQueue[3],vectorFromQueue[5],recuperatedPrice,recuperatedId);
+            //*hist = std::make_tuple (vectorFromQueue[1],vectorFromQueue[2],vectorFromQueue[3],vectorFromQueue[5],recuperatedPrice,recuperatedId);
+            hist->setHistId(recuperatedId);
+            hist->setHistName(vectorFromQueue[1]);
+            hist->setHistFirstname(vectorFromQueue[2]);
+            hist->setHistDatetime(vectorFromQueue[5]);
+            hist->setHistPrice(recuperatedPrice);
+            hist->setHistProduct(vectorFromQueue[3]);
 
             queryResultFunction->pop();
             result->push(*hist);
@@ -697,293 +741,372 @@ type_histdbQueue Database::getCustomerHist(unsigned id)
 
 }
 
-type_customerdbTuple Database::getCustomerFromId(unsigned customerId)
+db_histQueue Database::getProductHist(unsigned id)
 {
-    std::string queryString="";
-
-    //On doit transformer l'int customerId en string pour effectuer la requête
-    std::string idString = std::to_string(customerId);
     Query query;
+    std::string id_String = std::to_string(id);
+
+    db_histTuple *hist(0);
+    hist=new db_histTuple;
+
+    unsigned i;
+    unsigned j=0;
+    db_histQueue *result(0);
+    result=new db_histQueue;
+
     std::queue<std::string> *queryResultFunction(0);
-
     queryResultFunction = new std::queue<std::string> ;
-    queryResult = new std::queue<std::string> ;
 
+    //Utiliser des jointures
+    // From client_id -> nom + prénom
+    // From conso_id -> conso + prix
+    std::string queryString="SELECT historique.his_id, notes.nom, notes.prenom,consos.nom, consos.prix, historique.date_conso ";
+    queryString+="FROM historique ";
+    queryString+="LEFT JOIN notes ";
+    queryString+="ON notes.client_id=historique.client_id ";
+    queryString+="LEFT JOIN consos ";
+    queryString+="ON consos.conso_id = historique.conso_id ";
+    queryString+="WHERE consos.conso_id=";
+    queryString+=id_String;
+    queryString+=" ORDER BY historique.date_conso DESC;";
 
-    type_customerdbTuple *customer(0);
-    customer=new type_customerdbTuple;
-
-    queryString+=" SELECT * FROM notes WHERE client_id=";
-    queryString+=idString;
-    queryString+=" ORDER BY nom DESC;";
-
-    //Implémentation de la query et execution de celle ci
     query.setQuery(queryString);
     query.setVerbose(1);
     executeQuery(query);
 
-    *queryResultFunction=*queryResult;
 
+    *queryResultFunction=*queryResult;
     std::vector<std::string> vectorFromQueue;
 
-    if (queryResultFunction->size()!=0)
+    for (i=0;i<=queryResultFunction->size();i++)
     {
-
-        while (queryResultFunction->front()!= "\n"&& !queryResultFunction->empty())
+        while(!queryResultFunction->empty())
         {
-            vectorFromQueue.push_back(queryResultFunction->front());
+
+            while (queryResultFunction->front()!= "\n"&&!queryResultFunction->empty())
+            {
+                vectorFromQueue.push_back(queryResultFunction->front());
+                queryResultFunction->pop();
+            }
+            float recuperatedPrice;
+            unsigned recuperatedId;
+
+            std::istringstream(vectorFromQueue[4]) >> recuperatedPrice;
+            std::istringstream(vectorFromQueue[0]) >> recuperatedId;
+
+            //*hist = std::make_tuple (vectorFromQueue[1],vectorFromQueue[2],vectorFromQueue[3],vectorFromQueue[5],recuperatedPrice,recuperatedId);
+            hist->setHistId(recuperatedId);
+            hist->setHistName(vectorFromQueue[1]);
+            hist->setHistFirstname(vectorFromQueue[2]);
+            hist->setHistDatetime(vectorFromQueue[5]);
+            hist->setHistPrice(recuperatedPrice);
+            hist->setHistProduct(vectorFromQueue[3]);
+
+            queryResultFunction->pop();
+            result->push(*hist);
+            j++;
+            vectorFromQueue.clear();
+        }
+    }
+    clear(queue);
+
+    return *result;
+}
+
+    db_customerTuple Database::getCustomerFromId(unsigned customerId)
+    {
+        std::string queryString="";
+
+        //On doit transformer l'int customerId en string pour effectuer la requête
+        std::string idString = std::to_string(customerId);
+        Query query;
+        std::queue<std::string> *queryResultFunction(0);
+
+        queryResultFunction = new std::queue<std::string> ;
+        queryResult = new std::queue<std::string> ;
+
+
+        db_customerTuple *customer(0);
+        customer=new db_customerTuple;
+
+        queryString+=" SELECT * FROM notes WHERE client_id=";
+        queryString+=idString;
+        queryString+=" ORDER BY nom DESC;";
+
+        //Implémentation de la query et execution de celle ci
+        query.setQuery(queryString);
+        query.setVerbose(1);
+        executeQuery(query);
+
+        *queryResultFunction=*queryResult;
+
+        std::vector<std::string> vectorFromQueue;
+
+        if (queryResultFunction->size()!=0)
+        {
+
+            while (queryResultFunction->front()!= "\n"&& !queryResultFunction->empty())
+            {
+                vectorFromQueue.push_back(queryResultFunction->front());
+                queryResultFunction->pop();
+            }
+
+            float recuperatedBalance;
+            int recuperatedId, recuperatedCategory;
+
+            std::istringstream(vectorFromQueue[5]) >> recuperatedBalance;
+            std::istringstream(vectorFromQueue[0]) >> recuperatedId;
+            std::istringstream(vectorFromQueue[4]) >> recuperatedCategory;
+
+            //*customer = std::make_tuple (vectorFromQueue[1],vectorFromQueue[2],vectorFromQueue[4],recuperatedBalance,recuperatedId,vectorFromQueue[3]);
+            customer->setCustomerId(recuperatedId);
+            customer->setCustomerName(vectorFromQueue[1]);
+            customer->setCustomerFirstname(vectorFromQueue[2]);
+            customer->setCustomerLogin(vectorFromQueue[3]);
+            customer->setCustomerCategory(recuperatedCategory);
+            customer->setCustomerBalance(recuperatedBalance);
+
+
             queryResultFunction->pop();
         }
+        vectorFromQueue.clear();
 
-        float recuperatedBalance;
-        int recuperatedId;
-
-        std::istringstream(vectorFromQueue[5]) >> recuperatedBalance;
-        std::istringstream(vectorFromQueue[0]) >> recuperatedId;
-
-        *customer = std::make_tuple (vectorFromQueue[1],vectorFromQueue[2],vectorFromQueue[4],recuperatedBalance,recuperatedId,vectorFromQueue[3]);
-
-        queryResultFunction->pop();
+        clear(queue);
+        return *customer;
     }
-    vectorFromQueue.clear();
 
-    clear(queue);
-    return *customer;
-}
+    int Database::createCustomerAccount(db_customerTuple tuple)
+    {
+        std::string nom,prenom,login;
+        int code;
+        float balance;
+        std::string categorie;
+        std::string queryString="";
+        Query query;
 
-int Database::createCustomerAccount(type_customerdbTuple tuple)
-{
-    std::string nom,prenom;
-    int code;
-    float balance;
-    std::string categorie;
-    std::string queryString="";
-    Query query;
+        nom=tuple.getCustomerName();
+        prenom=tuple.getCustomerFirstname();
+        login=tuple.getCustomerLogin();
+        categorie=tuple.getCustomerCategory();
+        balance=tuple.getCustomerBalance();
 
-    nom=std::get<0>(tuple);
-    prenom=std::get<1>(tuple);
-    categorie=std::get<2>(tuple);
-    balance=std::get<3>(tuple);
+        //Il faut transfomer les int et float en std::string
+        //std::string categorieString = static_cast<std::ostringstream*>( &(std::ostringstream() << categorie) )->str();
+        std::string balanceString = std::to_string(balance);
 
-    //Il faut transfomer les int et float en std::string
-    //std::string categorieString = static_cast<std::ostringstream*>( &(std::ostringstream() << categorie) )->str();
-    std::string balanceString = std::to_string(balance);
+        queryString+="INSERT INTO notes (nom,prenom,login,type,compte) VALUES (";
+        queryString+=nom;
+        queryString+=", ";
+        queryString+=prenom;
+        queryString+=", ";
+        queryString+=login;
+        queryString+=", ";
+        queryString+=categorie;
+        queryString+=", ";
+        queryString+=balanceString;
+        queryString+=");";
 
-    queryString+="INSERT INTO notes (nom,prenom,type,compte) VALUES (";
-    queryString+=nom;
-    queryString+=", ";
-    queryString+=prenom;
-    queryString+=", ";
-    queryString+=categorie;
-    queryString+=", ";
-    queryString+=balanceString;
-    queryString+=");";
+        query.setQuery(queryString);
+        query.setVerbose(1);
+        code=executeQuery(query);
 
-    query.setQuery(queryString);
-    query.setVerbose(1);
-    code=executeQuery(query);
+        return (code);
+    }
 
-    return (code);
-}
+    int Database::editCustomerAccount(db_customerTuple tuple)
+    {
+        int code;
 
-int Database::editCustomerAccount(type_customerdbTuple tuple)
-{
-    int code;
+        std::string categorie,nom,prenom,login;
+        unsigned id;
+        float balance;
+        std::string queryString="";
+        Query query;
 
-    std::string categorie,nom,prenom;
-    unsigned id;
-    float balance;
-    std::string queryString="";
-    Query query;
+        nom=tuple.getCustomerName();
+        prenom=tuple.getCustomerFirstname();
+        login=tuple.getCustomerLogin();
+        categorie=tuple.getCustomerCategory();
+        balance=tuple.getCustomerBalance();
+        id=tuple.getCustomerId();
 
-    nom=std::get<0>(tuple);
-    prenom=std::get<1>(tuple);
-    categorie=std::get<2>(tuple);
-    balance=std::get<3>(tuple);
-    id=std::get<4>(tuple);
+        //std::string categorieString = static_cast<std::ostringstream*>( &(std::ostringstream() << categorie) )->str();
+        std::string balanceString = std::to_string(balance);
+        std::string idString = std::to_string(id);
 
-    //std::string categorieString = static_cast<std::ostringstream*>( &(std::ostringstream() << categorie) )->str();
-    std::string balanceString = std::to_string(balance);
-    std::string idString = std::to_string(id);
+        queryString+="UPDATE notes";
+        queryString+="SET nom=";
+        queryString+=nom;
+        queryString+=", prenom=";
+        queryString+=prenom;
+        queryString+=", type=";
+        queryString+=categorie;
+        queryString+=", balance=";
+        queryString+=balanceString;
+        queryString+="WHERE client_id=";
+        queryString+=idString;
+        queryString+=";";
 
-    queryString+="UPDATE notes";
-    queryString+="SET nom=";
-    queryString+=nom;
-    queryString+=", prenom=";
-    queryString+=prenom;
-    queryString+=", type=";
-    queryString+=categorie;
-    queryString+=", balance=";
-    queryString+=balanceString;
-    queryString+="WHERE client_id=";
-    queryString+=idString;
-    queryString+=";";
+        query.setQuery(queryString);
+        query.setVerbose(1);
+        code=executeQuery(query);
 
-    query.setQuery(queryString);
-    query.setVerbose(1);
-    code=executeQuery(query);
+        return (code);
+    }
 
-    return (code);
-}
+    int Database::deleteCustomerAccount(int id)
+    {
+        int code;
+        Query query;
+        std::string queryString="";
+        std::string idString = std::to_string(id);
 
-int Database::deleteCustomerAccount(int id)
-{
-    int code;
-    Query query;
-    std::string queryString="";
-    std::string idString = std::to_string(id);
+        queryString+="DELETE FROM notes WHERE client_id=";
+        queryString+=idString;
+        queryString+=";";
 
-    queryString+="DELETE FROM notes WHERE client_id=";
-    queryString+=idString;
-    queryString+=";";
+        query.setQuery(queryString);
+        query.setVerbose(1);
+        code=executeQuery(query);
 
-    query.setQuery(queryString);
-    query.setVerbose(1);
-    code=executeQuery(query);
+        return (code);
+    }
 
-    return (code);
-}
+    int Database::createProduct(db_productTuple tuple)
+    {
+        std::string nom;
+        int code;
+        float prix;
+        int stock=0;
+        int categorie;
+        std::string queryString="";
+        Query query;
 
-int Database::createProduct(type_consodbTuple tuple)
-{
-    std::string nom;
-    int code;
-    float prix;
-    int stock=0;
-    int categorie;
-    std::string queryString="";
-    Query query;
+        nom=tuple.getProductName();
+        categorie=tuple.getProductCategory();
+        prix=tuple.getProductPrice();
+        stock=tuple.getProductStock();
 
-    nom=std::get<0>(tuple);
-    categorie=std::get<1>(tuple);
-    prix=std::get<2>(tuple);
+        //Il faut transfomer les int et float en std::string
+        std::string stockString = std::to_string(stock);
+        std::string categorieString = std::to_string(categorie);
+        std::string priceString = std::to_string(prix);
+
+        queryString+="INSERT INTO notes (nom,type,prix,stock) VALUES (";
+        queryString+=nom;
+        queryString+=", ";
+        queryString+=categorieString;
+        queryString+=", ";
+        queryString+=priceString;
+        queryString+=", ";
+        queryString+=stockString;
+        queryString+=");";
+
+        query.setQuery(queryString);
+        query.setVerbose(1);
+        code=executeQuery(query);
+
+        return (code);
+    }
+
+    int Database::editProduct(db_productTuple tuple)
+    {
+        std::string nom;
+        int code;
+        unsigned id;
+        int stock;
+        int categorie;
+        float price;
+        std::string queryString="";
+        Query query;
+
+        nom=tuple.getProductName();
+        categorie=tuple.getProductCategory();
+        price=tuple.getProductPrice();
+        stock=tuple.getProductStock();
+        id=tuple.getProductId();
+
+        std::string categorieString = std::to_string(categorie);
+        std::string stockString = std::to_string(stock);
+        std::string priceString = std::to_string(price);
+        std::string idString = std::to_string(id);
+
+        queryString+="UPDATE consos";
+        queryString+="SET nom=";
+        queryString+=nom;
+        queryString+=", type=";
+        queryString+=categorieString;
+        queryString+=", prix=";
+        queryString+=priceString;
+        queryString+=", stock=";
+        queryString+=stockString;
+        queryString+="WHERE conso_id=";
+        queryString+=idString;
+        queryString+=";";
+
+        query.setQuery(queryString);
+        query.setVerbose(1);
+        code=executeQuery(query);
+
+        return (code);
+    }
+
+    int Database::deleteProduct(int id)
+    {
+        int code;
+        Query query;
+        std::string queryString="";
+        std::string idString = std::to_string(id);
+
+        queryString+="DELETE FROM consos WHERE conso_id=";
+        queryString+=idString;
+        queryString+=";";
+
+        query.setQuery(queryString);
+        query.setVerbose(1);
+        code=executeQuery(query);
+
+        return (code);
+    }
+
+    int Database::createCategory(db_categoryTuple tuple)
+    {
+        std::string nom;
+        int code;
+
+        std::string queryString="";
+        Query query;
+
+        nom=tuple.getCategoryName();
+
+        //Il faut transfomer les int et float en std::string
 
 
-    //Il faut transfomer les int et float en std::string
-    std::string stockString = std::to_string(stock);
-    std::string categorieString = std::to_string(categorie);
-    std::string priceString = std::to_string(prix);
+        queryString+="INSERT INTO types_conso (nom_type) VALUES (";
+        queryString+=nom;
+        queryString+=");";
 
-    queryString+="INSERT INTO notes (nom,type,prix,stock) VALUES (";
-    queryString+=nom;
-    queryString+=", ";
-    queryString+=categorieString;
-    queryString+=", ";
+        query.setQuery(queryString);
+        query.setVerbose(1);
+        code=executeQuery(query);
 
-    queryString+=priceString;
-    queryString+=", ";
-    queryString+=stockString;
-    queryString+=");";
+        return (code);
+    }
 
-    query.setQuery(queryString);
-    query.setVerbose(1);
-    code=executeQuery(query);
+    int Database::deleteCategory(int id)
+    {
+        int code;
+        Query query;
+        std::string queryString="";
+        std::string idString = std::to_string(id);
 
-    return (code);
-}
+        queryString+="DELETE FROM type_consos WHERE conso_id=";
+        queryString+=idString;
+        queryString+=";";
 
-int Database::editProduct(type_consodbTuple tuple)
-{
-    std::string nom;
-    int code;
-    unsigned id;
-    int stock;
-    int categorie;
-    float price;
-    std::string queryString="";
-    Query query;
+        query.setQuery(queryString);
+        query.setVerbose(1);
+        code=executeQuery(query);
 
-    nom=std::get<0>(tuple);
-    categorie=std::get<1>(tuple);
-    price=std::get<2>(tuple);
-    stock=std::get<3>(tuple);
-    id=std::get<4>(tuple);
-
-    std::string categorieString = std::to_string(categorie);
-    std::string stockString = std::to_string(stock);
-    std::string priceString = std::to_string(price);
-    std::string idString = std::to_string(id);
-
-    queryString+="UPDATE consos";
-    queryString+="SET nom=";
-    queryString+=nom;
-    queryString+=", type=";
-    queryString+=categorieString;
-    queryString+=", prix=";
-    queryString+=priceString;
-    queryString+=", stock=";
-    queryString+=stockString;
-    queryString+="WHERE conso_id=";
-    queryString+=idString;
-    queryString+=";";
-
-    query.setQuery(queryString);
-    query.setVerbose(1);
-    code=executeQuery(query);
-
-    return (code);
-}
-
-int Database::deleteProduct(int id)
-{
-    int code;
-    Query query;
-    std::string queryString="";
-    std::string idString = std::to_string(id);
-
-    queryString+="DELETE FROM consos WHERE conso_id=";
-    queryString+=idString;
-    queryString+=";";
-
-    query.setQuery(queryString);
-    query.setVerbose(1);
-    code=executeQuery(query);
-
-    return (code);
-}
-
-int Database::createCategory(type_categorydbTuple tuple)
-{
-    std::string nom;
-    int id;
-    int code;
-
-    std::string queryString="";
-    Query query;
-
-    id=std::get<1>(tuple);
-    nom=std::get<0>(tuple);
-
-    //Il faut transfomer les int et float en std::string
-    std::string idString = std::to_string(id);
-
-    queryString+="INSERT INTO types_conso (type_conso_id,nom_type) VALUES (";
-    queryString+=idString;
-    queryString+=", ";
-    queryString+=nom;
-    queryString+=");";
-
-    query.setQuery(queryString);
-    query.setVerbose(1);
-    code=executeQuery(query);
-
-    return (code);
-}
-
-int Database::deleteCategory(int id)
-{
-    int code;
-    Query query;
-    std::string queryString="";
-    std::string idString = std::to_string(id);
-
-    queryString+="DELETE FROM type_consos WHERE conso_id=";
-    queryString+=idString;
-    queryString+=";";
-
-    query.setQuery(queryString);
-    query.setVerbose(1);
-    code=executeQuery(query);
-
-    return (code);
-}
+        return (code);
+    }

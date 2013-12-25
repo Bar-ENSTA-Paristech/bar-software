@@ -41,10 +41,10 @@ SearchResults::SearchResults(QWidget *parent) :
 
 }
 
-void SearchResults::setSearchResults(std::queue< std::tuple< QString, QString, QString, float, unsigned > > & queue)
+void SearchResults::setSearchResults(view_customerQueue & queue)
 {
     // TUPLE : QString name, QString firstName, QString categorie, float balance, unsigned id
-    std::tuple< QString, QString, QString, float, unsigned > tuple;
+    view_customerTuple tuple;
     table->setModel(NULL);
 
     // Inserting new results
@@ -59,17 +59,17 @@ void SearchResults::setSearchResults(std::queue< std::tuple< QString, QString, Q
     {
         tuple = queue.front();
         queue.pop();
-        balance = std::get<3>(tuple);
+        balance = tuple.getCustomerBalance();
         if(balance < 0)
             model->item(i,3)->setForeground(negativeSold);
         else
             model->item(i,3)->setForeground(positiveSold);
 
-        model->item(i,0)->setText(std::get<0>(tuple));
-        model->item(i,1)->setText(std::get<1>(tuple));
-        model->item(i,2)->setText(std::get<2>(tuple));
+        model->item(i,0)->setText(tuple.getCustomerName());
+        model->item(i,1)->setText(tuple.getCustomerFirstname());
+        model->item(i,2)->setText(QString::number(tuple.getCustomerCategory()));
         model->item(i,3)->setText(QString::number(balance));
-        model->item(i,4)->setText(QString::number(std::get<4>(tuple)));
+        model->item(i,4)->setText(QString::number(tuple.getCustomerId()));
     }
     qDebug() << "Fin setText" << 10000-timer.remainingTime() << "ms";
     //table->sortItems(0, Qt::AscendingOrder);

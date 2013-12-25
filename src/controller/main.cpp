@@ -21,16 +21,16 @@ QString GLOBAL_PATH;
 int main(int argc, char *argv[])
 {
     QDir currentDir(QDir::currentPath());
-    #ifdef Q_OS_LINUX //pour linux
+#ifdef Q_OS_LINUX //pour linux
     currentDir.cdUp();
     currentDir.cd("bar-software");
-    #endif
-    #ifdef Q_OS_MAC // Pour MAC
+#endif
+#ifdef Q_OS_MAC // Pour MAC
     currentDir.cd("../../../../bar-software");
-    #endif
-    #ifdef Q_OS_WIN32 // Pour Windows
+#endif
+#ifdef Q_OS_WIN32 // Pour Windows
     currentDir.cd("../bar-software");
-    #endif
+#endif
     GLOBAL_PATH = currentDir.absolutePath()+"/";
     qDebug() << "GLOBAL_PATH :" << GLOBAL_PATH;
 
@@ -57,9 +57,11 @@ int main(int argc, char *argv[])
     DB.getLastOperations();
     Plotting plot;
     plot.setDb(DB.getHandle());
-    db_dataarray Values = plot.customerConsumption(378,1,0);
-    Values = plot.totalConsumption(2,0);
-    DB.getAllProducts ();
+    db_dataarray Values_2 = plot.productStock(41,1);
+    db_dataarray Values = plot.productConsumption(41,1);
+
+    //DB.getAllProducts ();
+
 
 
     DB.closeDatabase();
@@ -71,14 +73,15 @@ int main(int argc, char *argv[])
     QApplication application(argc, argv);
     QFile css(GLOBAL_PATH + "include/view/mainDesign.css");
     if(css.open(QIODevice::ReadOnly)) {
-       application.setStyleSheet(css.readAll());
+        application.setStyleSheet(css.readAll());
     }
     MainWindow mainWindow;
     mainWindow.setController(controller);
     mainWindow.show();
 
-    // ########## TEST GRAPHE ############
+    // ########## TEST GRAPHS ############
     mainWindow.setGraph(Values, "xTitle", "yTitle", "Title de famille");
+    mainWindow.setGraph(Values_2, "xTitle", "yTitle", "Title de famille");
 
     return application.exec();
 }

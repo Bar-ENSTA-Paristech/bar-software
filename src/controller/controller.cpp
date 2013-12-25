@@ -44,18 +44,20 @@ void Controller::newText_Search(QString &viewSearch)
 {
     // Inputs and outputs
     std::string dbSearch;
-    type_customerdbTuple db_tmpCurstomerInfo;
     view_customerTuple view_tmpCustomerInfo;
-    type_customerdbQueue dbQueue;
-    std::queue< std::tuple< QString, QString, QString, float, unsigned > > viewQueue;
+    db_customerTuple db_tmpCustomerInfo;
+    db_customerQueue dbQueue;
+    view_customerQueue viewQueue;
 
 
-    QString view_tmpName;
+    /*
+     QString view_tmpName;
     QString view_tmpFirstName;
     QString view_tmpLogin;
     float view_tmpBalance;
     unsigned view_tmpId;
     QString view_tmpGroup;
+    */
 
     dbSearch = viewSearch.toStdString();
 
@@ -68,16 +70,9 @@ void Controller::newText_Search(QString &viewSearch)
 
         // Copy the dbQueue into the viewQueue
         while( !dbQueue.empty() ){
-            db_tmpCurstomerInfo = dbQueue.front();
+            db_tmpCustomerInfo = dbQueue.front();
 
-            view_tmpName=QString::fromStdString( std::get<0>(db_tmpCurstomerInfo) );
-            view_tmpFirstName=QString::fromStdString( std::get<1>(db_tmpCurstomerInfo) );
-            view_tmpGroup=QString::fromStdString( std::get<2>(db_tmpCurstomerInfo) );
-            view_tmpBalance = std::get<3>(db_tmpCurstomerInfo);
-            view_tmpId = std::get<4>(db_tmpCurstomerInfo);
-            //view_tmpLogin=QString::fromStdString( std::get<5>(db_tmpCurstomerInfo) );
-
-            view_tmpCustomerInfo = std::make_tuple( view_tmpName, view_tmpFirstName, view_tmpGroup, view_tmpBalance, view_tmpId /*,view_tmpLogin*/ );
+            view_tmpCustomerInfo=db_tmpCustomerInfo.transformIntoCustomerView();
 
             viewQueue.push(view_tmpCustomerInfo);
             dbQueue.pop();
@@ -85,7 +80,7 @@ void Controller::newText_Search(QString &viewSearch)
 
     }  
     // Sent result to view
-    viewSearchResults->setSearchResults( viewQueue );
+    viewSearchResults->setSearchResults(viewQueue );
 
     database.closeDatabase();
 }
@@ -97,26 +92,28 @@ void Controller::newClic_Customer(unsigned int customerId)
 //    string group;
 //    float money;
     database.openDatabase();
-    type_customerdbTuple tmpDBCurstomerInfo;
-    std::tuple<QString, QString, QString, QString, float> tmpViewCurstomerInfo;
+   db_customerTuple tmp_dbCustomerInfo;
+   view_customerTuple tmpViewCustomerInfo;
 
-    tmpDBCurstomerInfo = database.getCustomerFromId( customerId );
+    tmp_dbCustomerInfo = database.getCustomerFromId( customerId );
 
         /* Create the customer */
+    tmpViewCustomerInfo=tmp_dbCustomerInfo.transformIntoCustomerView();
 
-    curCustomer = new Customer( std::get<5>( tmpDBCurstomerInfo ).c_str(),
+  /*  curCustomer = new Customer( std::get<5>( tmpDBCurstomerInfo ).c_str(),
                                 std::get<0>( tmpDBCurstomerInfo ).c_str(),
                                 std::get<1>( tmpDBCurstomerInfo ).c_str(),
                                 std::get<2>( tmpDBCurstomerInfo ).c_str(),
                                 std::get<3>( tmpDBCurstomerInfo ) );
 
-    tmpViewCurstomerInfo = std::make_tuple( QString::fromStdString( curCustomer->getLogin() ),
+    tmpViewCustomerInfo = std::make_tuple( QString::fromStdString( curCustomer->getLogin() ),
                                             QString::fromStdString( curCustomer->getFirstName() ),
                                             QString::fromStdString( curCustomer->getFamilyName() ),
                                             QString::fromStdString( std::get<2>( tmpDBCurstomerInfo ) ),
                                             curCustomer->getBalance() );
+ */
 
-    viewCustomerPanel->setCustomer( tmpViewCurstomerInfo );
+    viewCustomerPanel->setCustomer( tmpViewCustomerInfo );
 
     database.closeDatabase();
 

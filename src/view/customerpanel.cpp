@@ -56,8 +56,8 @@ CustomerPanel::CustomerPanel(QWidget *parent) :
     infosFrame->setLayout(infosLayout);
 
     // ###### TEST #########
-    std::tuple<QString, QString, QString, QString, float> toto("Rousseau", "Woody", "wrousseau", "2015", -3.5);
-    setCustomer(toto);
+    //std::tuple<QString, QString, QString, QString, float> toto("Rousseau", "Woody", "wrousseau", "2015", -3.5);
+    //setCustomer(toto);
 }
 
 CustomerPanel::~CustomerPanel()
@@ -79,19 +79,19 @@ CustomerPanel::~CustomerPanel()
     delete balanceLabel;*/
 }
 
-void CustomerPanel::setCustomer(std::tuple< QString, QString, QString, QString, float> & tuple)
+void CustomerPanel::setCustomer(view_customerTuple & tuple)
 {
     // std::tuple<QString name, QString firstName, QString login, QString categorie, float balance>
-    name->setText(std::get<0>(tuple));
-    firstName->setText(std::get<1>(tuple));
-    categorie->setText(std::get<3>(tuple));
-    balance->setText(QString::number(std::get<4>(tuple)) + " €");
-    if(std::get<4>(tuple) < 0)
+    name->setText(tuple.getCustomerName());
+    firstName->setText(tuple.getCustomerFirstname());
+    categorie->setText(QString::number(tuple.getCustomerCategory()));
+    balance->setText(QString::number(tuple.getCustomerBalance()) + " €");
+    if(tuple.getCustomerBalance() < 0)
         balance->setStyleSheet("color: #FF0000;");
     else
         balance->setStyleSheet("color: black;");
-    if(QFile::exists(GLOBAL_PATH + "resources/photos/"+ std::get<2>(tuple).toLower() + ".jpg"))
-        photo->setPixmap(GLOBAL_PATH + "resources/photos/"+ std::get<2>(tuple).toLower() + ".jpg");
+    if(QFile::exists(GLOBAL_PATH + "resources/photos/"+ tuple.getCustomerLogin().toLower() + ".jpg"))
+        photo->setPixmap(GLOBAL_PATH + "resources/photos/"+ tuple.getCustomerLogin().toLower() + ".jpg");
     else
         photo->setPixmap(GLOBAL_PATH + "resources/photos/no_photo.jpg");
 
