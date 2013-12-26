@@ -18,8 +18,13 @@ ConsoLogos::ConsoLogos(QWidget *parent) :
         layout->addWidget(&logos[i], i, 0);
         layout->addWidget(&logosLabels[i], i, 1, 1, 2);
         logosLabels[i].setFont(font);
+        logosLabels[i].setFlat(true);
         QObject::connect(&logosLabels[i], SIGNAL(clicked()), this, SLOT(logoClicked()));
+        qDebug() << i << " " << &logosLabels[i];
     }
+    //logosLabels[0].se
+
+    //mdefaultStyle = logosLabels[0].st;
     layout->setSpacing(0);
     layout->setContentsMargins(0, 0, 0, 0);
 
@@ -31,12 +36,47 @@ ConsoLogos::ConsoLogos(QWidget *parent) :
     logosLabels[5].setText("Divers - Ctrl+D");
     this->setLayout(layout);
 
+
 }
 
-void ConsoLogos::logoClicked()
+void ConsoLogos::logoClicked(int shortcutId)
 {
-    QPushButton* sender = (QPushButton*) QObject::sender();
+    // If shortcutId is -1, it is a click on the button, otherwise it a shortcut hit and the id is defined in this value
 
+    // So we check if it is a shortcut hit, if yes we call controller and return.
+    if (shortcutId != -1)
+    {
+        newCategorieToController(shortcutId);
+        return;
+    }
+
+
+    unsigned long long sender = (unsigned long long) QObject::sender();
+    unsigned long long tabAdress = (unsigned long long) logosLabels;
+
+    // We search what index of logosLabel called the routine, (the adress &logoLabels[1] = logoLabels + 1*sizeof(QPushButton) )
+    for(int i =0 ; i < NUMBER_OF_CONSUMPTION_TYPES ; i++)
+    {
+        if(sender ==  tabAdress + i*sizeof(QPushButton))
+        {
+            newCategorieToController(i);
+            return;
+        }
+    }
+
+
+}
+
+void ConsoLogos::newCategorieToController(int id)
+{
+    for(int i = 0 ; i < NUMBER_OF_CONSUMPTION_TYPES ; i++)
+    {
+        if(i != id)
+            logosLabels[i].setStyleSheet("background : none;");
+    }
+    logosLabels[id].setStyleSheet("background : #ffff00;");
+    logosLabels[id].update();
+    controller->newClic_ProductTypes( (unsigned) id);
 }
 
 ConsoLogos::~ConsoLogos()

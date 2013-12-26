@@ -6,6 +6,7 @@
 #include <QLabel>
 #include <QFont>
 #include <QPushButton>
+#include <QStyle>
 #include "controller.h"
 
 #define NUMBER_OF_CONSUMPTION_TYPES 6
@@ -19,18 +20,20 @@ class ConsoLogos : public QFrame
 public:
     Controller* controller;
     explicit ConsoLogos(QWidget *parent = 0);
+    void newCategorieToController(int id);
     ~ConsoLogos();
 
 private:
     QGridLayout* layout;
     QLabel* logos;
     QPushButton* logosLabels;
+    QStyle* defaultStyle;
 
     
 signals:
     
 public slots:
-    void logoClicked();
+    void logoClicked(int shortcutId = -1);
     
 };
 

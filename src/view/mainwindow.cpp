@@ -118,8 +118,20 @@ void MainWindow::sendSearch()
 void MainWindow::shortcutRoutine()
 {
     QShortcut* sender = (QShortcut*) QObject::sender();
-    qDebug() << sender->key().toString();
-    this->updateSize();
+    if(sender->key().toString() == QString("Ctrl+B"))
+        consoLogos->newCategorieToController(0);
+    else if(sender->key().toString() == QString("Ctrl+P"))
+        consoLogos->newCategorieToController(1);
+    else if(sender->key().toString() == QString("Ctrl+W"))
+        consoLogos->newCategorieToController(2);
+    else if(sender->key().toString() == QString("Ctrl+Q"))
+        consoLogos->newCategorieToController(3);
+    else if(sender->key().toString() == QString("Ctrl+U"))
+        consoLogos->newCategorieToController(4);
+    else if(sender->key().toString() == QString("Ctrl+D"))
+        consoLogos->newCategorieToController(5);
+
+
 }
 
 void MainWindow::updateSize()

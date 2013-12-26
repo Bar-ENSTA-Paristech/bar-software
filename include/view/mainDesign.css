@@ -23,6 +23,23 @@ QLineEdit{
     background-color: #f9f9f9;
 }
 
+ConsoLogos QPushButton:focus {
+    border: none;
+    outline: none;
+}
+
+CategorieButton:focus {
+    border: none;
+    outline: none;
+}
+
+ConsoLogos QPushButton{
+    padding-top: 4px;
+    padding-bottom: 4px;
+}
+
+
+
 /*#menu{
     background: url("");;
 

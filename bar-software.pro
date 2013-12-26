@@ -81,6 +81,7 @@ LIBS +=  -mmacosx-version-min=10.7
   QMAKE_CXXFLAGS += -std=c++11
 }
 QMAKE_CXXFLAGS_RELEASE += -O3
+QMAKE_CXXFLAGS_DEBUG += -O0
 
 #LIBS += -lsqlite3
 

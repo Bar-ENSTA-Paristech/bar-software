@@ -78,10 +78,11 @@ int main(int argc, char *argv[])
     MainWindow mainWindow;
     mainWindow.setController(controller);
     mainWindow.show();
+    application.setWindowIcon(QIcon(GLOBAL_PATH + "resources/pictures/icon.jpg"));
 
     // ########## TEST GRAPHS ############
-    mainWindow.setGraph(Values, "xTitle", "yTitle", "Title de famille");
-    mainWindow.setGraph(Values_2, "xTitle", "yTitle", "Title de famille");
+    //mainWindow.setGraph(Values, "xTitle", "yTitle", "Title de famille");
+    //mainWindow.setGraph(Values_2, "xTitle", "yTitle", "Title de famille");
 
     return application.exec();
 }

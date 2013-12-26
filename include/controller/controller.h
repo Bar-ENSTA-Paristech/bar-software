@@ -45,7 +45,7 @@ public:
 
     void newClic_CustomerPanel(unsigned int buttonId);
     void newClic_Cart(unsigned int buttonId);
-    void newClic_ProductTypes(QString &view_productTypeName);
+    void newClic_ProductTypes(unsigned view_productTypeId);
     void newClic_Product(QString &view_productName);
     void setViewPointers(SearchResults* par1, CustomerPanel* par2, CartDisplay* par3, ProductsChoices* par4, History* par5);
 

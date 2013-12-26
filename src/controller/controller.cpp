@@ -127,6 +127,11 @@ void Controller::newClic_Customer(unsigned int customerId)
 //    }*/
 //}
 
+void Controller::newClic_ProductTypes(unsigned view_productTypeId)
+{
+    qDebug() << "Supposed to send only product of categorie" << view_productTypeId;
+}
+
 //void Controller::newClic_Product(QString &view_productName)
 //{
 
