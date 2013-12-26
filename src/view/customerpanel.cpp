@@ -33,6 +33,7 @@ CustomerPanel::CustomerPanel(QWidget *parent) :
     login = new QLabel(infosFrame);
     categorie = new QLabel(infosFrame);
     balance = new QLabel(infosFrame);
+    futurBalance = new QLabel(infosFrame);
     QFont bold, normal;
     bold.setBold(true);
     normal.setPixelSize(14);
@@ -42,6 +43,7 @@ CustomerPanel::CustomerPanel(QWidget *parent) :
     login->setFont(bold);
     categorie->setFont(bold);
     balance->setFont(bold);
+    futurBalance->setFont(bold);
     nameLabel->setFont(normal);
     firstNameLabel->setFont(normal);
     loginLabel->setFont(normal);
@@ -58,6 +60,7 @@ CustomerPanel::CustomerPanel(QWidget *parent) :
     infosLayout->addWidget(categorie, 3, 1);
     infosLayout->addWidget(balanceLabel, 4, 0);
     infosLayout->addWidget(balance, 4, 1);
+    infosLayout->addWidget(futurBalance, 5, 1);
     infosLayout->setContentsMargins(0, 30, 0, 0);
     infosFrame->setLayout(infosLayout);
 
@@ -101,6 +104,15 @@ void CustomerPanel::setCustomer(view_customerTuple & tuple)
         photo->setPixmap(GLOBAL_PATH + "resources/photos/"+ tuple.getCustomerLogin().toLower() + ".jpg");
     else
         photo->setPixmap(GLOBAL_PATH + "resources/photos/no_photo.jpg");
-
 }
+
+void CustomerPanel::setFuturBalance(float nextBalance)
+{
+    futurBalance->setText("-> " + QString::number(nextBalance) + " €");
+    if(nextBalance < 0)
+        futurBalance->setStyleSheet("color: #FF0000;");
+    else
+        futurBalance->setStyleSheet("color: black;");
+}
+
 

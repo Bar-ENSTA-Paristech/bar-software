@@ -28,6 +28,7 @@ public:
     explicit CustomerPanel(QWidget *parent = 0);
     ~CustomerPanel();
     void setCustomer(view_customerTuple &tuple);
+    void setFuturBalance(float nextBalance);
     
 private:
     QLabel *photo;
@@ -36,6 +37,7 @@ private:
     QLabel* login;
     QLabel* categorie;
     QLabel* balance;
+    QLabel* futurBalance;
     QFrame* photoFrame;
     QFrame* infosFrame;
     QFrame* optionsFrame;
