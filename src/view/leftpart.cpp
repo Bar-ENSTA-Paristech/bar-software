@@ -29,6 +29,7 @@ LeftPart::LeftPart(QWidget* parent)
     categories.push(QString("2016"));
     setCategories(categories);
     // ##### FIN TEST #####
+    clickOnCategorie(0);
     //QObject::connect(&categoriesLabels[1], SIGNAL(pressed()), this, SLOT(clickOnCategorie()));
     QObject::connect(&updateCategorieTimer, SIGNAL(timeout()), this, SLOT(unsetCategorieUpdate()));
 

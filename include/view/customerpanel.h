@@ -33,6 +33,7 @@ private:
     QLabel *photo;
     QLabel* name;
     QLabel* firstName;
+    QLabel* login;
     QLabel* categorie;
     QLabel* balance;
     QFrame* photoFrame;
@@ -43,6 +44,7 @@ private:
     QGridLayout* infosLayout;
     QLabel* nameLabel;
     QLabel* firstNameLabel;
+    QLabel* loginLabel;
     QLabel* categorieLabel;
     QLabel* balanceLabel;
 

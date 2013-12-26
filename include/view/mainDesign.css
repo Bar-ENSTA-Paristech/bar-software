@@ -36,6 +36,10 @@ CategorieButton:focus {
 ConsoLogos QPushButton{
     padding-top: 4px;
     padding-bottom: 4px;
+    padding-left: 2px;
+    padding-right: 2px;
+    border: 1px solid #666666;
+    border-radius: 7px;
 }
 
 

@@ -25,10 +25,12 @@ CustomerPanel::CustomerPanel(QWidget *parent) :
     infosLayout = new QGridLayout(infosFrame);
     nameLabel = new QLabel("Nom :", infosFrame);
     firstNameLabel = new QLabel("Prénom :", infosFrame);
+    loginLabel = new QLabel("Login :", infosFrame);
     categorieLabel = new QLabel("Catégorie :", infosFrame);
     balanceLabel = new QLabel("Solde :", infosFrame);
     name = new QLabel(infosFrame);
     firstName = new QLabel(infosFrame);
+    login = new QLabel(infosFrame);
     categorie = new QLabel(infosFrame);
     balance = new QLabel(infosFrame);
     QFont bold, normal;
@@ -37,10 +39,12 @@ CustomerPanel::CustomerPanel(QWidget *parent) :
     bold.setPixelSize(14);
     name->setFont(bold);
     firstName->setFont(bold);
+    login->setFont(bold);
     categorie->setFont(bold);
     balance->setFont(bold);
     nameLabel->setFont(normal);
     firstNameLabel->setFont(normal);
+    loginLabel->setFont(normal);
     categorieLabel->setFont(normal);
     balanceLabel->setFont(normal);
 
@@ -48,10 +52,12 @@ CustomerPanel::CustomerPanel(QWidget *parent) :
     infosLayout->addWidget(name, 0, 1);
     infosLayout->addWidget(firstNameLabel, 1, 0);
     infosLayout->addWidget(firstName, 1, 1);
-    infosLayout->addWidget(categorieLabel, 2, 0);
-    infosLayout->addWidget(categorie, 2, 1);
-    infosLayout->addWidget(balanceLabel, 3, 0);
-    infosLayout->addWidget(balance, 3, 1);
+    infosLayout->addWidget(loginLabel, 2, 0);
+    infosLayout->addWidget(login, 2, 1);
+    infosLayout->addWidget(categorieLabel, 3, 0);
+    infosLayout->addWidget(categorie, 3, 1);
+    infosLayout->addWidget(balanceLabel, 4, 0);
+    infosLayout->addWidget(balance, 4, 1);
     infosLayout->setContentsMargins(0, 30, 0, 0);
     infosFrame->setLayout(infosLayout);
 
@@ -84,6 +90,7 @@ void CustomerPanel::setCustomer(view_customerTuple & tuple)
     // std::tuple<QString name, QString firstName, QString login, QString categorie, float balance>
     name->setText(tuple.getCustomerName());
     firstName->setText(tuple.getCustomerFirstname());
+    login->setText(tuple.getCustomerLogin());
     categorie->setText(QString::number(tuple.getCustomerCategory()));
     balance->setText(QString::number(tuple.getCustomerBalance()) + " €");
     if(tuple.getCustomerBalance() < 0)
