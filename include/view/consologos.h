@@ -5,6 +5,7 @@
 #include <QGridLayout>
 #include <QLabel>
 #include <QFont>
+#include <QPushButton>
 #include "controller.h"
 
 #define NUMBER_OF_CONSUMPTION_TYPES 6
@@ -23,12 +24,13 @@ public:
 private:
     QGridLayout* layout;
     QLabel* logos;
-    QLabel* logosLabels;
+    QPushButton* logosLabels;
 
     
 signals:
     
 public slots:
+    void logoClicked();
     
 };
 

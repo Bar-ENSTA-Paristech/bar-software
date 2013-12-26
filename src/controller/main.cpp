@@ -78,7 +78,7 @@ int main(int argc, char *argv[])
     mainWindow.show();
 
     // ########## TEST GRAPHE ############
-    mainWindow.setGraph(Values, "xTitle", "yTitle", "Title de famille");
+    //mainWindow.setGraph(Values, "xTitle", "yTitle", "Title de famille");
 
     return application.exec();
 }

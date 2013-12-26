@@ -56,7 +56,6 @@ void LeftPart::setCategories(std::queue<QString> &categories)
     categoriesLabels = new CategorieButton[numberOfCategories];
     for(int i=0 ; i<numberOfCategories ; i++)
     {
-
         categoriesLabels[i].setParent(categoriesList);
         categoriesLabels[i].setText(categories.front());
         categoriesLabels[i].setFlat(true);
