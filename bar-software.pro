@@ -32,7 +32,8 @@ src/view/consologos.cpp \
 src/view/categoriebutton.cpp \
 resources/lib/qcustomplot.cpp \
 src/model/plotting.cpp \
-src/controller/stock.cpp
+src/controller/stock.cpp \
+    src/controller/structures.cpp
 
 
 INCLUDEPATH += include/controller \

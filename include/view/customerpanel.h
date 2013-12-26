@@ -11,6 +11,14 @@
 
 extern QString GLOBAL_PATH;
 
+class db_categoryTuple;
+class db_customerTuple;
+class db_histTuple;
+class db_productTuple;
+
+class view_customerTuple;
+class view_productTuple;
+
 class Controller;
 class CustomerPanel : public QFrame
 {
@@ -19,7 +27,7 @@ public:
     Controller* controller;
     explicit CustomerPanel(QWidget *parent = 0);
     ~CustomerPanel();
-    void setCustomer(std::tuple<QString, QString, QString, QString, float> &tuple);
+    void setCustomer(view_customerTuple &tuple);
     
 private:
     QLabel *photo;
