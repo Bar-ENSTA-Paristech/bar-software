@@ -7,6 +7,8 @@
 #include "productschoices.h"
 #include "consologos.h"
 #include "controller.h"
+#include "structures.h"
+extern ViewObjects VIEW;
 
 class Controller;
 class RightPart : public QFrame

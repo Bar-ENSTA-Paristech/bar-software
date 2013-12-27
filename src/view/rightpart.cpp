@@ -2,6 +2,7 @@
 
 RightPart::RightPart(QWidget* parent)
 {
+    VIEW.rightPart = this;
     setParent(parent);
     setObjectName("rightPart");
 

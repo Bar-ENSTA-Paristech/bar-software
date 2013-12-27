@@ -2,8 +2,11 @@
 #include "controller.h"
 #include <QDebug>
 
+ViewObjects VIEW;
+
 MainWindow::MainWindow()
 {
+    VIEW.mainWindow = this;
     // Setting up central widget of Mainwindow (actually the only part of MainWindow)
     centralWidget = new QWidget;
     this->setCentralWidget(centralWidget);
@@ -148,7 +151,8 @@ void MainWindow::resizeEvent(QResizeEvent *event)
 void MainWindow::setController(Controller *controllerParam)
 {
     controller = controllerParam;
-    controller->setViewPointers(searchResults, customerPanel, cartDisplay, productsChoices, history);
+    //controller->setViewPointers(searchResults, customerPanel, cartDisplay, productsChoices, history);
+    controller->setViewPointers(&   VIEW);
     //viewManager->controller = controllerParam;
     rightPart->setController(controller);
     leftPart->setController(controller);

@@ -11,6 +11,8 @@
 #include "multilist.h"
 #include <QDebug>
 #include "controller.h"
+#include "structures.h"
+extern ViewObjects VIEW;
 
 class Controller;
 class CartDisplayFrame : public MultiList

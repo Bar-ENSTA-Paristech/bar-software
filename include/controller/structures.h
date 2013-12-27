@@ -26,6 +26,8 @@
 //typedef std::queue<view_customerTuple> view_customerQueue;
 //typedef std::queue<view_productTuple> view_productQueue;
 
+typedef enum {INDIVIDUAL, GLOBAL, ROOT}LoginType;
+
 class view_customerTuple;
 class view_productTuple;
 
@@ -196,5 +198,33 @@ typedef std::queue<view_productTuple> view_productQueue;
 typedef std::queue<db_categoryTuple> db_categoryQueue;
 
 typedef std::pair< std::vector< double > , std::vector< double > > db_dataarray;
+
+class SearchResults;
+class Calculator;
+class CartDisplay;
+class CartDisplayFrame;
+class ConsoLogos;
+class CustomerPanel;
+class History;
+class LeftPart;
+class RightPart;
+class Login;
+class MainWindow;
+class ProductsChoices;
+
+typedef struct{
+    Calculator* calculator;
+    CartDisplay* cartDisplay;
+    CartDisplayFrame* cartDisplayFrame;
+    ConsoLogos* consoLogos;
+    CustomerPanel* customerPanel;
+    History* history;
+    LeftPart* leftPart;
+    RightPart* rightPart;
+    Login* login;
+    MainWindow* mainWindow;
+    ProductsChoices* productChoices;
+    SearchResults* searchResults;
+} ViewObjects;
 
 #endif // STRUCTURES_H

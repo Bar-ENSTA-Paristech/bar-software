@@ -10,6 +10,8 @@
 #include <QFile>
 #include "controller.h"
 #include "calculator.h"
+#include "structures.h"
+extern ViewObjects VIEW;
 
 extern QString GLOBAL_PATH;
 

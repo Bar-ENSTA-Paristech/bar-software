@@ -2,6 +2,7 @@
 
 History::History(QWidget *parent) : MultiList(parent, 6, 0, false)
 {
+    VIEW.history = this;
     this->setObjectName("history"); // for CSS
     // ##### Definition des légendes en haut de colonne ######
     headers[0]->setText("Nom");

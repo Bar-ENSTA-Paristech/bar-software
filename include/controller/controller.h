@@ -12,6 +12,7 @@
 #include "../view/cartdisplay.h"
 #include "../view/productschoices.h"
 #include "../view/history.h"
+#include "login.h"
 
 
 #include "customer.h"
@@ -27,6 +28,7 @@ class CustomerPanel;
 class CartDisplay;
 class ProductsChoices;
 class History;
+class Login;
 class Database;
 
 class Stock;
@@ -47,17 +49,21 @@ public:
     void newClic_Cart(unsigned int buttonId);
     void newClic_ProductTypes(unsigned view_productTypeId);
     void newClic_Product(QString &view_productName);
-    void setViewPointers(SearchResults* par1, CustomerPanel* par2, CartDisplay* par3, ProductsChoices* par4, History* par5);
+    void newClic_Calculator();
+    //void setViewPointers(SearchResults* par1, CustomerPanel* par2, CartDisplay* par3, ProductsChoices* par4, History* par5);
+    void setViewPointers(ViewObjects *viewObjects);
+    bool view_isLoginCorrect(QString login, QString passwd, LoginType loginType);
 
     void setDb(sqlite3*);
     sqlite3* getDb();
 
 private:
         /* View objects */
-    SearchResults * viewSearchResults;
+    /*SearchResults * viewSearchResults;
     CustomerPanel * viewCustomerPanel;
     CartDisplay * viewCartDisplay;
-    History * viewHistory;
+    History * viewHistory;*/
+    ViewObjects*  view;
 
         /* Controller objects */
     Stock * mp_stock;

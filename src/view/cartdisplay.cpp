@@ -3,6 +3,7 @@
 CartDisplay::CartDisplay(QWidget *parent) :
     QFrame(parent)
 {
+    VIEW.cartDisplay = this;
     setObjectName("cartDisplay");
     //QWidget* actionMenu = new QWidget(this);
     cartList = new CartDisplayFrame(this);
@@ -69,6 +70,7 @@ void CartDisplay::setTotalPrice(float price)
 CartDisplayFrame::CartDisplayFrame(QWidget *parent) :
     MultiList(parent, 3, 0, false)
 {
+    VIEW.cartDisplayFrame = this;
     this->setObjectName("cartDiplayFrame");
     headers[0]->setText("Consommation");
     headers[1]->setText("Qté");

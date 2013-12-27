@@ -3,6 +3,7 @@
 CustomerPanel::CustomerPanel(QWidget *parent) :
     QFrame(parent)
 {
+    VIEW.customerPanel = this;
     setObjectName("customerPanel");
     createCalculator();
 

@@ -3,6 +3,7 @@
 ConsoLogos::ConsoLogos(QWidget *parent) :
     QFrame(parent)
 {
+    VIEW.consoLogos = this;
     setObjectName("consoLogos");
     layout = new QGridLayout(this);
     QFont font;

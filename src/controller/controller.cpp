@@ -1,6 +1,7 @@
 #include "controller.h"
 #include "stock.h"
 #include "searchresults.h"
+#include "login.h"
 #include "../model/database.h"
 #include <QString>
 
@@ -20,14 +21,16 @@ sqlite3* Controller::getDb()
     return database.getHandle();
 }
 
-void Controller::setViewPointers(SearchResults* par1, CustomerPanel* par2, CartDisplay* par3, ProductsChoices* par4, History* par5)
+void Controller::setViewPointers(ViewObjects* viewObjects)
 {
-    viewSearchResults = par1;
+    /*viewSearchResults = par1;
     viewCustomerPanel = par2;
     viewCartDisplay = par3;
-    viewHistory = par5;
+    viewHistory = par5;*/
+    view = viewObjects;
 
-    mp_stock = new Stock( this, &database, par4 );
+    //mp_stock = new Stock( this, &database, par4 );
+    mp_stock = new Stock( this, &database, view->productChoices );
 }
 
 void Controller::mainController()
@@ -80,7 +83,7 @@ void Controller::newText_Search(QString &viewSearch)
 
     }  
     // Sent result to view
-    viewSearchResults->setSearchResults(viewQueue );
+    view->searchResults->setSearchResults(viewQueue );
 
     database.closeDatabase();
 }
@@ -113,7 +116,7 @@ void Controller::newClic_Customer(unsigned int customerId)
                                             curCustomer->getBalance() );
  */
 
-    viewCustomerPanel->setCustomer( tmpViewCustomerInfo );
+    view->customerPanel->setCustomer( tmpViewCustomerInfo );
 
     database.closeDatabase();
 
@@ -165,3 +168,14 @@ void Controller::newClic_ProductTypes(unsigned view_productTypeId)
 //    viewCartDisplay->setCart(view_Queue);
 //    viewCartDisplay->setTotalPrice(curCart->getPrice());
 //}
+
+bool Controller::view_isLoginCorrect(QString login, QString passwd, LoginType loginType)
+{
+    // ######### TO COMPLETE #######
+    return true;
+}
+
+void Controller::newClic_Calculator()
+{
+    view->calculator->show();
+}

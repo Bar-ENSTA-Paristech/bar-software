@@ -3,6 +3,7 @@
 ProductsChoices::ProductsChoices(QWidget *parent) :
     MultiList(parent, 4, 0)
 {
+    VIEW.productChoices = this;
     setObjectName("productChoices");
     headers[0]->setText("Consommation");
     headers[1]->setText("Volume");

@@ -12,6 +12,7 @@ void printItem(QStandardItemModel* model)
 SearchResults::SearchResults(QWidget *parent) :
     MultiList(parent, 5, 0)
 {
+    VIEW.searchResults = this;
     this->setObjectName("searchResults");
 
     headers[0]->setText("Nom");

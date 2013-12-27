@@ -12,6 +12,8 @@
 #include "customerpanel.h"
 #include "controller.h"
 #include "categoriebutton.h"
+#include "structures.h"
+extern ViewObjects VIEW;
 
 
 class Controller;

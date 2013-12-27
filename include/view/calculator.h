@@ -10,6 +10,8 @@
 #include <QRegExp>
 #include <QErrorMessage>
 #include "controller.h"
+#include "structures.h"
+extern ViewObjects VIEW;
 
 class Calculator : public QWidget
 {

@@ -3,6 +3,7 @@
 Calculator::Calculator(QWidget *parent) :
     QWidget(parent)
 {
+    VIEW.calculator = this;
     this->setFixedSize(250, 150);
     QGridLayout* layout = new QGridLayout(this);
     QLabel* label = new QLabel(this);

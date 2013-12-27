@@ -2,6 +2,7 @@
 
 LeftPart::LeftPart(QWidget* parent)
 {
+    VIEW.leftPart = this;
     setParent(parent);
     // for CSS
     this->setObjectName("leftPart");

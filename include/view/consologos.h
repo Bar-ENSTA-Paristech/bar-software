@@ -8,6 +8,8 @@
 #include <QPushButton>
 #include <QStyle>
 #include "controller.h"
+#include "structures.h"
+extern ViewObjects VIEW;
 
 #define NUMBER_OF_CONSUMPTION_TYPES 6
 

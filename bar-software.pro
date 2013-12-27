@@ -34,7 +34,8 @@ resources/lib/qcustomplot.cpp \
 src/model/plotting.cpp \
 src/controller/stock.cpp \
     src/controller/structures.cpp \
-    src/view/calculator.cpp
+    src/view/calculator.cpp \
+    src/view/login.cpp
 
 
 INCLUDEPATH += include/controller \
@@ -67,7 +68,8 @@ include/model/plotting.h \
 resources/lib/qcustomplot.h \
 include/controller/stock.h \
     include/controller/structures.h \
-    include/view/calculator.h
+    include/view/calculator.h \
+    include/view/login.h
 
 
 OTHER_FILES += \
