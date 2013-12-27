@@ -33,7 +33,8 @@ src/view/categoriebutton.cpp \
 resources/lib/qcustomplot.cpp \
 src/model/plotting.cpp \
 src/controller/stock.cpp \
-    src/controller/structures.cpp
+    src/controller/structures.cpp \
+    src/view/calculator.cpp
 
 
 INCLUDEPATH += include/controller \
@@ -65,7 +66,8 @@ resources/lib/gl2ps.h \
 include/model/plotting.h \
 resources/lib/qcustomplot.h \
 include/controller/stock.h \
-    include/controller/structures.h
+    include/controller/structures.h \
+    include/view/calculator.h
 
 
 OTHER_FILES += \

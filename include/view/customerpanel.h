@@ -4,10 +4,12 @@
 #include <QFrame>
 #include <QGridLayout>
 #include <QLabel>
+#include <QPushButton>
 #include <tuple>
 #include <QDebug>
 #include <QFile>
 #include "controller.h"
+#include "calculator.h"
 
 extern QString GLOBAL_PATH;
 
@@ -20,6 +22,7 @@ class view_customerTuple;
 class view_productTuple;
 
 class Controller;
+class Calculator;
 class CustomerPanel : public QFrame
 {
     Q_OBJECT
@@ -29,6 +32,7 @@ public:
     ~CustomerPanel();
     void setCustomer(view_customerTuple &tuple);
     void setFuturBalance(float nextBalance);
+    void setController(Controller* controllerPar);
     
 private:
     QLabel *photo;
@@ -44,15 +48,21 @@ private:
     QGridLayout* layout;
     QGridLayout* photoLayout;
     QGridLayout* infosLayout;
+    QGridLayout* optionsLayout;
     QLabel* nameLabel;
     QLabel* firstNameLabel;
     QLabel* loginLabel;
     QLabel* categorieLabel;
     QLabel* balanceLabel;
+    QPushButton* calculator;
+
+    Calculator* calculatorWindow;
+    void createCalculator();
 
 signals:
     
 public slots:
+    void launchCalculator();
     
 };
 

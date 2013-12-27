@@ -24,7 +24,6 @@ QLineEdit{
 }
 
 ConsoLogos QPushButton:focus {
-    border: none;
     outline: none;
 }
 
@@ -42,6 +41,14 @@ ConsoLogos QPushButton{
     border-radius: 7px;
 }
 
+ConsoLogos QPushButton:focus{
+    border: none;
+    outline: none;
+}
+
+/*CustomerPanel QPushButton:pressed {
+    border: none;
+}*/
 
 
 /*#menu{

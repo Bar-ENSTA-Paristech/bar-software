@@ -20,7 +20,6 @@ ConsoLogos::ConsoLogos(QWidget *parent) :
         logosLabels[i].setFont(font);
         //logosLabels[i].setFlat(true);
         QObject::connect(&logosLabels[i], SIGNAL(clicked()), this, SLOT(logoClicked()));
-        qDebug() << i << " " << &logosLabels[i];
     }
     //logosLabels[0].se
 
