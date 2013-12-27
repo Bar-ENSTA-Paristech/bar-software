@@ -64,6 +64,7 @@ private:
     CartDisplay * viewCartDisplay;
     History * viewHistory;*/
     ViewObjects*  view;
+    LoginObjects currentLoginRequest;
 
         /* Controller objects */
     Stock * mp_stock;

@@ -79,6 +79,9 @@ MainWindow::MainWindow()
     // DESIGN
     menu->setStyleSheet("background : url("+GLOBAL_PATH+"resources/pictures/menu_background.png);");
 
+    // Additionnal Windows
+    VIEW.login = new Login();
+
 }
 
 MainWindow::~MainWindow()
@@ -156,6 +159,7 @@ void MainWindow::setController(Controller *controllerParam)
     //viewManager->controller = controllerParam;
     rightPart->setController(controller);
     leftPart->setController(controller);
+    VIEW.login->setController(controllerParam);
 
     controller->mainController();
 }

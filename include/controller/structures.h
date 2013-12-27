@@ -26,7 +26,8 @@
 //typedef std::queue<view_customerTuple> view_customerQueue;
 //typedef std::queue<view_productTuple> view_productQueue;
 
-typedef enum {INDIVIDUAL, GLOBAL, ROOT}LoginType;
+typedef enum {INDIVIDUAL, GLOBAL, ROOT} LoginType;
+typedef enum {CALCULATOR} LoginObjects;
 
 class view_customerTuple;
 class view_productTuple;

@@ -172,10 +172,13 @@ void Controller::newClic_ProductTypes(unsigned view_productTypeId)
 bool Controller::view_isLoginCorrect(QString login, QString passwd, LoginType loginType)
 {
     // ######### TO COMPLETE #######
+    qDebug() << "toto1" << view->calculator;
+    view->calculator->show();qDebug() << "toto2";
     return true;
 }
 
 void Controller::newClic_Calculator()
 {
-    view->calculator->show();
+    view->login->checkGlobal();
+    currentLoginRequest = CALCULATOR;
 }

@@ -116,5 +116,5 @@ void LeftPart::setController(Controller* par)
     controller = par;
     searchResults->controller = par;
     history->controller = par;
-    customerPanel->controller = par;
+    customerPanel->setController(par);
 }

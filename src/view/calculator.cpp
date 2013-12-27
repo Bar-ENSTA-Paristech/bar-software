@@ -2,7 +2,7 @@
 
 Calculator::Calculator(QWidget *parent) :
     QWidget(parent)
-{
+{qDebug() << this;
     VIEW.calculator = this;
     this->setFixedSize(250, 150);
     QGridLayout* layout = new QGridLayout(this);

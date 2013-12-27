@@ -159,7 +159,7 @@ void CustomerPanel::createCalculator()
 
 void CustomerPanel::launchCalculator()
 {
-    calculatorWindow->show();
+    controller->newClic_Calculator();
 }
 
 
