@@ -11,6 +11,9 @@
 #include <QErrorMessage>
 #include "controller.h"
 #include "structures.h"
+
+#define CALCULATOR_BUTTONS 13
+
 extern ViewObjects VIEW;
 
 class Calculator : public QWidget
@@ -23,6 +26,9 @@ public:
 private:
     Controller* controller;
     QLineEdit* sum;
+    QFrame* buttonsFrame;
+    QPushButton** buttons;
+    QGridLayout*  buttonsLayout;
 
 
 signals:
