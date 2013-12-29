@@ -71,6 +71,7 @@ private:
     QShortcut **shortcuts;
     QGridLayout *menuLayout;
     QLabel *logo;
+    Calculator* calculatorWindow;
 
 
 };

@@ -58,8 +58,6 @@ private:
     QLabel* balanceLabel;
     QPushButton* calculator;
 
-    Calculator* calculatorWindow;
-    void createCalculator();
 
 signals:
     

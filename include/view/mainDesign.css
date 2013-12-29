@@ -46,6 +46,11 @@ ConsoLogos QPushButton:focus{
     outline: none;
 }
 
+CustomerPanel QPushButton:focus{
+    outline: none;
+    border:none;
+}
+
 /*CustomerPanel QPushButton:pressed {
     border: none;
 }*/

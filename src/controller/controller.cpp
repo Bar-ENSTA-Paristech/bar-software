@@ -9,6 +9,7 @@
 Controller::Controller()
 {
     /*Call here functions for the default display : allCustomers, history, productTypes ... */
+    negativeAllowed = true;
 }
 
 void Controller::setDb(sqlite3* handle)
@@ -172,8 +173,7 @@ void Controller::newClic_ProductTypes(unsigned view_productTypeId)
 bool Controller::view_isLoginCorrect(QString login, QString passwd, LoginType loginType)
 {
     // ######### TO COMPLETE #######
-    qDebug() << "toto1" << view->calculator;
-    view->calculator->show();qDebug() << "toto2";
+    view->calculator->launchCalculator();
     return true;
 }
 
@@ -181,4 +181,9 @@ void Controller::newClic_Calculator()
 {
     view->login->checkGlobal();
     currentLoginRequest = CALCULATOR;
+}
+
+bool Controller::isNegativeAllowed()
+{
+    return negativeAllowed;
 }

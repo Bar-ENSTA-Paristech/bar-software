@@ -2,8 +2,9 @@
 
 Calculator::Calculator(QWidget *parent) :
     QWidget(parent)
-{qDebug() << this;
+{
     VIEW.calculator = this;
+    this->setWindowFlags(Qt::Tool);
     this->setFixedSize(250, 300);
     QGridLayout* layout = new QGridLayout(this);
     QLabel* label = new QLabel(this);
@@ -35,24 +36,30 @@ Calculator::Calculator(QWidget *parent) :
     for( int i=0 ; i < 12 ; i++)
     {
         buttonsLayout->addWidget(buttons[i], i/3, i%3, 1, 1, Qt::AlignCenter);
+        QObject::connect(buttons[i], SIGNAL(clicked()), this, SLOT(buttonPushed()));
         if(i < 10)
             buttons[i]->setText(QString::number((i+1)%10));
         else if(i == 10)
             buttons[i]->setText(".");
         else if(i == 11)
             buttons[i]->setText("-");
-    }
+    }    
     buttonsLayout->addWidget(buttons[12], 3, 3, 1, 1, Qt::AlignCenter);// AC
-    /*buttonsLayout->addWidget(buttons[10], 1, 3, 1, 1, Qt::AlignCenter); // .
-    buttonsLayout->addWidget(buttons[11], 2, 3, 1, 1, Qt::AlignCenter); // 0
-    buttons[9]->setText("AC");
-    buttons[10]->setText(".");*/
+    QObject::connect(buttons[12], SIGNAL(clicked()), this, SLOT(buttonPushed()));
     buttons[12]->setText("AC");
     buttonsFrame->setLayout(buttonsLayout);
+}
 
-
-
-
+void Calculator::launchCalculator()
+{qDebug() << "toto";
+    // If negative balance not allowed, we disable "-" button
+    if(!controller->isNegativeAllowed())
+        buttons[11]->setEnabled(false);
+    else
+        buttons[11]->setEnabled(true);
+    qDebug() << "tutu";
+    this->show();
+    qDebug() << "titi";
 }
 
 void Calculator::validate()
@@ -85,4 +92,28 @@ void Calculator::cancel()
 void Calculator::setController(Controller* controller_par)
 {
     controller = controller_par;
+}
+
+void Calculator::buttonPushed()
+{
+    QPushButton* sender = (QPushButton*) QObject::sender();
+    bool isNumber;
+    QString valueToInsert = sender->text();
+    valueToInsert.toInt(&isNumber);
+    if(isNumber)
+    {
+        sum->setText(sum->text() +  valueToInsert);
+    }
+    else if( valueToInsert == "AC")
+        sum->clear();
+    else if( valueToInsert == ".")
+        sum->setText(sum->text() + ".");
+    else if( valueToInsert == "-")
+    {
+        // if the number in line edit is negative, we just remove the sign -
+        if(sum->text()[0] == '-')
+            sum->setText(sum->text().remove(0,1));
+        else // Else we add it
+            sum->setText( "-" + sum->text());
+    }
 }

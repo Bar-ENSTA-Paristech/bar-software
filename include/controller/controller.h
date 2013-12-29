@@ -53,6 +53,7 @@ public:
     //void setViewPointers(SearchResults* par1, CustomerPanel* par2, CartDisplay* par3, ProductsChoices* par4, History* par5);
     void setViewPointers(ViewObjects *viewObjects);
     bool view_isLoginCorrect(QString login, QString passwd, LoginType loginType);
+    bool isNegativeAllowed();
 
     void setDb(sqlite3*);
     sqlite3* getDb();
@@ -70,6 +71,7 @@ private:
     Stock * mp_stock;
     Customer * curCustomer;
     Cart * curCart; // Should the Cart be a member of Customer ?
+    bool negativeAllowed;
 
         /* Model objects */
     Database database;

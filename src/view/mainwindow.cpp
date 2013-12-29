@@ -80,7 +80,8 @@ MainWindow::MainWindow()
     menu->setStyleSheet("background : url("+GLOBAL_PATH+"resources/pictures/menu_background.png);");
 
     // Additionnal Windows
-    VIEW.login = new Login();
+    VIEW.login = new Login(centralWidget);
+    calculatorWindow = new Calculator(centralWidget);
 
 }
 
@@ -159,7 +160,8 @@ void MainWindow::setController(Controller *controllerParam)
     //viewManager->controller = controllerParam;
     rightPart->setController(controller);
     leftPart->setController(controller);
-    VIEW.login->setController(controllerParam);
+    VIEW.login->setController(controller);
+    calculatorWindow->setController(controller);
 
     controller->mainController();
 }

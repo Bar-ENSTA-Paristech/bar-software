@@ -5,6 +5,7 @@ Login::Login(QWidget *parent) :
     QWidget(parent)
 {
     VIEW.login = this;
+    this->setWindowFlags(Qt::Tool);
     this->setFixedSize(250, 150);
     QGridLayout* layout = new QGridLayout(this);
     label = new QLabel(this);

@@ -22,6 +22,7 @@ class Calculator : public QWidget
 public:
     explicit Calculator(QWidget *parent = 0);
     void setController(Controller* controller);
+    void launchCalculator();
 
 private:
     Controller* controller;
@@ -36,6 +37,7 @@ signals:
 public slots:
     void validate();
     void cancel();
+    void buttonPushed();
     
 };
 

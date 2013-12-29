@@ -5,7 +5,6 @@ CustomerPanel::CustomerPanel(QWidget *parent) :
 {
     VIEW.customerPanel = this;
     setObjectName("customerPanel");
-    createCalculator();
 
     photoFrame = new QFrame(this);
     infosFrame = new QFrame(this);
@@ -114,7 +113,6 @@ CustomerPanel::~CustomerPanel()
 void CustomerPanel::setController(Controller* controllerPar)
 {
     controller = controllerPar;
-    calculatorWindow->setController(controller);
 }
 
 void CustomerPanel::setCustomer(view_customerTuple & tuple)
@@ -150,12 +148,6 @@ void CustomerPanel::setFuturBalance(float nextBalance)
         futurBalance->setStyleSheet("color: black;");
 }
 
-
-void CustomerPanel::createCalculator()
-{
-    calculatorWindow = new Calculator();
-    calculatorWindow->hide();
-}
 
 void CustomerPanel::launchCalculator()
 {
