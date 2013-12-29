@@ -173,7 +173,10 @@ void Controller::newClic_ProductTypes(unsigned view_productTypeId)
 bool Controller::view_isLoginCorrect(QString login, QString passwd, LoginType loginType)
 {
     // ######### TO COMPLETE #######
-    view->calculator->launchCalculator();
+    if(currentLoginRequest == CALCULATOR)
+    {
+        view->calculator->launchCalculator();
+    }
     return true;
 }
 
@@ -181,6 +184,12 @@ void Controller::newClic_Calculator()
 {
     view->login->checkGlobal();
     currentLoginRequest = CALCULATOR;
+}
+
+void Controller::newClic_IndividualHistory()
+{
+    view_historyQueue toto;
+    view->individualHistory->launchIndividualHistory(toto);
 }
 
 bool Controller::isNegativeAllowed()

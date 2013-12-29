@@ -38,6 +38,8 @@ CustomerPanel::CustomerPanel(QWidget *parent) :
     balance = new QLabel(infosFrame);
     futurBalance = new QLabel(infosFrame);
     calculator = new QPushButton(optionsFrame);
+    history = new QPushButton(optionsFrame);
+
     QFont bold, normal;
     bold.setBold(true);
     normal.setPixelSize(14);
@@ -77,10 +79,14 @@ CustomerPanel::CustomerPanel(QWidget *parent) :
     calculator->setIcon(QIcon(GLOBAL_PATH + "resources/pictures/calculator.png"));
     calculator->setFlat(true);
     calculator->setIconSize(QSize(32,32));
+    history->setText("H");
+
     QObject::connect(calculator, SIGNAL(clicked()), this, SLOT(launchCalculator()));
+    QObject::connect(history, SIGNAL(clicked()), this, SLOT(launchIndividualHistory()));
 
     optionsLayout->addWidget(emptyButton, 0,0);
     optionsLayout->addWidget(calculator, 0,1);
+    optionsLayout->addWidget(history, 0,2);
     optionsLayout->setColumnStretch(0, 1);
     optionsLayout->setSpacing(0);
     optionsLayout->setContentsMargins(0,0,0,0);
@@ -152,6 +158,11 @@ void CustomerPanel::setFuturBalance(float nextBalance)
 void CustomerPanel::launchCalculator()
 {
     controller->newClic_Calculator();
+}
+
+void CustomerPanel::launchIndividualHistory()
+{
+    controller->newClic_IndividualHistory();
 }
 
 

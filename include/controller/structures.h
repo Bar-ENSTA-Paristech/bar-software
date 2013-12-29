@@ -191,12 +191,38 @@ private:
 
 };
 
+class view_historyTuple
+{
+public:
+    void setHistoryDate (QString _date);
+    void setHistoryName (QString _name);
+    void setHistoryPrice (float _price);
+    void setHistoryFirstName (QString firstName);
+    void setHistoryOperation (QString operation);
+
+    QString getHistoryDate ();
+    QString getHistoryName();
+    float getHistoryPrice();
+    QString getHistoryFirstName();
+    QString getHistoryOperation();
+
+    //db_historyTuple transformIntoHistoryDb();
+
+private:
+    QString date;
+    QString name;
+    float price;
+    QString firstName;
+    QString operation;
+};
+
 typedef std::queue<db_histTuple> db_histQueue;
 typedef std::queue<db_customerTuple> db_customerQueue;
 typedef std::queue<view_customerTuple> view_customerQueue;
 typedef std::queue<db_productTuple> db_productQueue;
 typedef std::queue<view_productTuple> view_productQueue;
 typedef std::queue<db_categoryTuple> db_categoryQueue;
+typedef std::queue<view_historyTuple> view_historyQueue;
 
 typedef std::pair< std::vector< double > , std::vector< double > > db_dataarray;
 
@@ -212,8 +238,10 @@ class RightPart;
 class Login;
 class MainWindow;
 class ProductsChoices;
+class IndividualHistory;
 
 typedef struct{
+    IndividualHistory* individualHistory;
     Calculator* calculator;
     CartDisplay* cartDisplay;
     CartDisplayFrame* cartDisplayFrame;

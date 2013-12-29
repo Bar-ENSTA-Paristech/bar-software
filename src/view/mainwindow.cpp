@@ -82,6 +82,9 @@ MainWindow::MainWindow()
     // Additionnal Windows
     VIEW.login = new Login(centralWidget);
     calculatorWindow = new Calculator(centralWidget);
+    QWidget* widget = new QWidget(centralWidget);
+    widget->setWindowFlags(Qt::Tool);
+    VIEW.individualHistory = new IndividualHistory(widget);widget->show();
 
 }
 
@@ -162,6 +165,7 @@ void MainWindow::setController(Controller *controllerParam)
     leftPart->setController(controller);
     VIEW.login->setController(controller);
     calculatorWindow->setController(controller);
+    VIEW.individualHistory->setController(controller);
 
     controller->mainController();
 }

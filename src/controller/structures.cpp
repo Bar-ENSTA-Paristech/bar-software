@@ -5,6 +5,9 @@
 #include"structures.h"
 
 
+// ##################################
+// DB_HISTTUPLE
+// ##################################
 db_histTuple::db_histTuple()
 {
 }
@@ -69,7 +72,9 @@ std::string db_histTuple::getHistProduct()
     return product;
 }
 
-// Fin de la classe db_histTuple
+// ##################################
+// DB_CUSTOMERTUPLE
+// ##################################
 
 db_customerTuple::db_customerTuple()
 {
@@ -149,8 +154,10 @@ view_customerTuple db_customerTuple::transformIntoCustomerView()
     return result;
 }
 
-//fin de la classe db_customerTuple
 
+// ##################################
+// VIEW_CUSTOMERTUPLE
+// ##################################
 view_customerTuple::view_customerTuple()
 {
 }
@@ -229,7 +236,10 @@ db_customerTuple view_customerTuple::transformIntoCustomerDb()
     return result;
 }
 
-//fin de la class view_customerTuple
+
+// ##################################
+// DB_PRODUCTTUPLE
+// ##################################
 
 db_productTuple::db_productTuple()
 {
@@ -299,7 +309,9 @@ view_productTuple db_productTuple::transformIntoProductView()
     return result;
 }
 
-//fin de la class db_productTuple
+// ##################################
+// DB_PRODUCTTUPLE
+// ##################################
 
 void view_productTuple::setProductId(unsigned _id)
 {
@@ -363,8 +375,11 @@ db_productTuple view_productTuple::transformIntoProductDb()
 
     return result;
 }
-//fin de la class view_producttuple
 
+
+// ##################################
+// DB_CATEGORYTUPLE
+// ##################################
 
 db_categoryTuple::db_categoryTuple()
 {
@@ -390,3 +405,57 @@ std::string db_categoryTuple::getCategoryName()
 {
     return name;
 }
+
+// ##################################
+// VIEW_HISTORYTUPLE
+// ##################################
+void view_historyTuple::setHistoryDate(QString _date)
+{
+    date=_date;
+}
+
+void view_historyTuple::setHistoryName(QString _name)
+{
+    name=_name;
+}
+
+void view_historyTuple::setHistoryPrice(float _price)
+{
+    price=_price;
+}
+
+void view_historyTuple::setHistoryFirstName(QString _firstName)
+{
+    firstName = _firstName;
+}
+
+void view_historyTuple::setHistoryOperation(QString _operation)
+{
+    operation = _operation;
+}
+
+QString view_historyTuple::getHistoryDate()
+{
+    return date;
+}
+
+QString view_historyTuple::getHistoryName()
+{
+    return name;
+}
+
+float view_historyTuple::getHistoryPrice()
+{
+    return price;
+}
+
+QString view_historyTuple::getHistoryFirstName()
+{
+    return firstName;
+}
+
+QString view_historyTuple::getHistoryOperation()
+{
+    return operation;
+}
+

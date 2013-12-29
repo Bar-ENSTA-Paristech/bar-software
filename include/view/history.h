@@ -14,7 +14,7 @@ public:
     explicit History(QWidget *parent = 0);
 
     // Revceive history from controller
-    void setHistory( std::queue < std::tuple < QString, QString, QString, float, QString > > & queue);
+    void setHistory(view_historyQueue queue);
     
 private:
 

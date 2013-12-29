@@ -57,12 +57,14 @@ private:
     QLabel* categorieLabel;
     QLabel* balanceLabel;
     QPushButton* calculator;
+    QPushButton* history;;
 
 
 signals:
     
 public slots:
     void launchCalculator();
+    void launchIndividualHistory();
     
 };
 

@@ -33,15 +33,17 @@ src/view/categoriebutton.cpp \
 resources/lib/qcustomplot.cpp \
 src/model/plotting.cpp \
 src/controller/stock.cpp \
-    src/controller/structures.cpp \
-    src/view/calculator.cpp \
-    src/view/login.cpp
+src/controller/structures.cpp \
+src/view/popup/calculator.cpp \
+src/view/popup/login.cpp \
+src/view/popup/individualhistory.cpp
 
 
 INCLUDEPATH += include/controller \
 include/model \
 include/view \
-resources/lib
+resources/lib \
+include/view/popup
 
 HEADERS += include/controller/cart.h \
 include/controller/controller.h \
@@ -67,9 +69,10 @@ resources/lib/gl2ps.h \
 include/model/plotting.h \
 resources/lib/qcustomplot.h \
 include/controller/stock.h \
-    include/controller/structures.h \
-    include/view/calculator.h \
-    include/view/login.h
+include/controller/structures.h \
+include/view/popup/calculator.h \
+include/view/popup/login.h \
+include/view/popup/individualhistory.h
 
 
 OTHER_FILES += \

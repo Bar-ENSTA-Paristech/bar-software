@@ -16,6 +16,7 @@
 #include "structures.h"
 #include "qcustomplot.h"
 #include "login.h"
+#include "individualhistory.h"
 #include "structures.h"
 extern ViewObjects VIEW;
 
