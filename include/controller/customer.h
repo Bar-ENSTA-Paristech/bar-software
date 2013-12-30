@@ -7,8 +7,8 @@
 class Customer
 {
 public:
-    Customer();
-    Customer(std::string login, std::pair<std::string,std::string> name, std::string groupe = "", float balance = 0);
+  Customer();
+  /*    Customer(std::string login, std::pair<std::string,std::string> name, std::string groupe = "", float balance = 0);
     Customer(std::string login, std::string firstName, std::string familyName, std::string groupe = "", float balance = 0);
     std::string getFirstName() const;
     std::string getFamilyName() const;
@@ -26,7 +26,7 @@ public:
     bool checkBalance() const;
     Customer& operator+=(int addedBalance);
     Customer& operator-=(int removedBalance);
-
+*/
 private:
     std::pair<std::string,std::string> name;
     std::string login;

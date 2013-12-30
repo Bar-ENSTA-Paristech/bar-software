@@ -53,16 +53,6 @@ void Controller::newText_Search(QString &viewSearch)
     db_customerQueue dbQueue;
     view_customerQueue viewQueue;
 
-
-    /*
-     QString view_tmpName;
-    QString view_tmpFirstName;
-    QString view_tmpLogin;
-    float view_tmpBalance;
-    unsigned view_tmpId;
-    QString view_tmpGroup;
-    */
-
     dbSearch = viewSearch.toStdString();
 
 
@@ -82,7 +72,7 @@ void Controller::newText_Search(QString &viewSearch)
             dbQueue.pop();
         }
 
-    }  
+    }
     // Sent result to view
     view->searchResults->setSearchResults(viewQueue );
 
@@ -91,32 +81,18 @@ void Controller::newText_Search(QString &viewSearch)
 
 void Controller::newClic_Customer(unsigned int customerId)
 {
-//    string firstName;
-//    string familyName;
-//    string group;
-//    float money;
+    //    string firstName;
+    //    string familyName;
+    //    string group;
+    //    float money;
     database.openDatabase();
-   db_customerTuple tmp_dbCustomerInfo;
-   view_customerTuple tmpViewCustomerInfo;
+    db_customerTuple tmp_dbCustomerInfo;
+    view_customerTuple tmpViewCustomerInfo;
 
     tmp_dbCustomerInfo = database.getCustomerFromId( customerId );
 
-        /* Create the customer */
+    /* Create the customer */
     tmpViewCustomerInfo=tmp_dbCustomerInfo.transformIntoCustomerView();
-
-  /*  curCustomer = new Customer( std::get<5>( tmpDBCurstomerInfo ).c_str(),
-                                std::get<0>( tmpDBCurstomerInfo ).c_str(),
-                                std::get<1>( tmpDBCurstomerInfo ).c_str(),
-                                std::get<2>( tmpDBCurstomerInfo ).c_str(),
-                                std::get<3>( tmpDBCurstomerInfo ) );
-
-    tmpViewCustomerInfo = std::make_tuple( QString::fromStdString( curCustomer->getLogin() ),
-                                            QString::fromStdString( curCustomer->getFirstName() ),
-                                            QString::fromStdString( curCustomer->getFamilyName() ),
-                                            QString::fromStdString( std::get<2>( tmpDBCurstomerInfo ) ),
-                                            curCustomer->getBalance() );
- */
-
     view->customerPanel->setCustomer( tmpViewCustomerInfo );
 
     database.closeDatabase();
@@ -134,6 +110,35 @@ void Controller::newClic_Customer(unsigned int customerId)
 void Controller::newClic_ProductTypes(unsigned view_productTypeId)
 {
     qDebug() << "Supposed to send only product of categorie" << view_productTypeId;
+
+    // Inputs and outputs
+
+    view_productTuple view_tmpproductInfo;
+    db_productTuple db_tmpproductInfo;
+    db_productQueue dbQueue;
+    view_productQueue viewQueue;
+
+    database.openDatabase();
+    dbQueue = database.getProductsFromCategory(view_productTypeId);        // Get product information corresponding to the search from model
+
+
+    if ( !dbQueue.empty() ){
+
+        // Copy the dbQueue into the viewQueue
+        while( !dbQueue.empty() ){
+            db_tmpproductInfo = dbQueue.front();
+
+            view_tmpproductInfo=db_tmpproductInfo.transformIntoProductView();
+
+            viewQueue.push(view_tmpproductInfo);
+            dbQueue.pop();
+        }
+
+    }
+    // Sent result to view
+    view->productChoices->setProductsChoices(viewQueue);
+
+    database.closeDatabase();
 }
 
 //void Controller::newClic_Product(QString &view_productName)

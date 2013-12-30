@@ -33,7 +33,7 @@ void Stock::displayStock()
         viewProductList.push(viewProductInfo);
     }
 
-    mep_viewProductChoices->setProductsChoices( viewProductList );
+    //mep_viewProductChoices->setProductsChoices( viewProductList );
 }
 
 void Stock::initializeInventory()

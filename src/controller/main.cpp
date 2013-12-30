@@ -35,10 +35,12 @@ int main(int argc, char *argv[])
     qDebug() << "GLOBAL_PATH :" << GLOBAL_PATH;
 
     std::pair<std::string,std::string> name = {"Woody","Rousseau"};
+    /*
     Customer cus("wrousseau",name,"2014");
     qDebug() << cus.getFirstName().c_str() << " " << cus.getFamilyName().c_str() << " has " << cus.getBalance() << "€ available.";
     cus.addToBalance(70);
     qDebug() << cus.getFirstName().c_str() << " " << cus.getFamilyName().c_str() << " has " << cus.getBalance() << "€ available.";
+    */
 
     // Test cart
     Product Duvel;
@@ -60,7 +62,7 @@ int main(int argc, char *argv[])
     db_dataarray Values_2 = plot.productStock(41,1);
     db_dataarray Values = plot.productConsumption(41,1);
 
-    //DB.getAllProducts ();
+    DB.getAllProducts ();
 
 
 

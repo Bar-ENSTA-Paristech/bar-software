@@ -17,7 +17,7 @@ public:
     explicit ProductsChoices(QWidget *parent = 0);
 
     // receive product choices from controller
-    void setProductsChoices(std::queue<std::tuple<QString, QString, float, unsigned> > &queue);
+    void setProductsChoices(view_productQueue queue);
 
 signals:
     
