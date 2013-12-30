@@ -82,9 +82,11 @@ MainWindow::MainWindow()
     // Additionnal Windows
     VIEW.login = new Login(centralWidget);
     calculatorWindow = new Calculator(centralWidget);
-    QWidget* widget = new QWidget(centralWidget);
-    widget->setWindowFlags(Qt::Tool);
-    VIEW.individualHistory = new IndividualHistory(widget);widget->show();
+    VIEW.individualHistory = new IndividualHistory();
+
+    //tmpLayout->addWidget(VIEW.individualHistory, 0,0);
+    //widget->setLayout(tmpLayout);
+    //VIEW.individualHistory->show();
 
 }
 

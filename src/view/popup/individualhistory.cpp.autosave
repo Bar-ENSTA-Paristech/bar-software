@@ -46,7 +46,7 @@ IndividualHistoryList::IndividualHistoryList(QWidget *parent) :
 
     stretchColumns = new int[1];
     stretchColumns[0]=0;
-    defaultHeaderWidth = 130;
+    defaultHeaderWidth = 120;
     hiddenColumn = -1;
     // ####### BUG ######
     updateHeadersSize(defaultHeaderWidth, stretchColumns, hiddenColumn);

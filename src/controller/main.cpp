@@ -78,7 +78,7 @@ int main(int argc, char *argv[])
     MainWindow mainWindow;
     mainWindow.setController(controller);
     mainWindow.show();
-    application.setWindowIcon(QIcon(GLOBAL_PATH + "resources/pictures/icon.jpg"));
+    application.setWindowIcon(QIcon(GLOBAL_PATH + "resources/pictures/icon.png"));
 
     // ########## TEST GRAPHS ############
     //mainWindow.setGraph(Values, "xTitle", "yTitle", "Title de famille");
