@@ -12,18 +12,31 @@ IndividualHistory::IndividualHistory(QWidget *parent) :
     this->setLayout(layout);
     this->setGeometry(200, 60, 500, 800);
 
-
-
-
-
-
 }
 
-void IndividualHistory::launchIndividualHistory(view_historyQueue &queue)
+void IndividualHistory::launchIndividualHistory(view_histQueue &queue)
 {
+    view_histTuple tuple;
+    // Inserting new results
+    unsigned numberOfElements = queue.size();
+    history->setRows(numberOfElements);
+
+    for(unsigned i=0;i<numberOfElements ; i++)
+    {
+        tuple = queue.front();
+        queue.pop();
+        history->model->item(i,0)->setText(tuple.getHistOperation());
+        history->model->item(i,1)->setText(tuple.getHistDate());
+        history->model->item(i,2)->setText(QString::number(tuple.getHistPrice()));
+    }
+    history->table->sortByColumn(1, Qt::DescendingOrder);
+    history->table->setModel(history->model);
+    history->updateHeadersSize(history->defaultHeaderWidth, history->stretchColumns, history->hiddenColumn);
+
     history->updateSize();
-    this->show();
-}
+        this->show();
+    return;
+    }
 
 void IndividualHistory::setController(Controller* _controller)
 {
@@ -38,17 +51,20 @@ void IndividualHistory::resizeEvent(QResizeEvent *event)
 // ############## LIST ############
 
 IndividualHistoryList::IndividualHistoryList(QWidget *parent) :
-    MultiList(parent, 3, 0)
+    MultiList(parent, 4, 0)
 {
     headers[0]->setText("Opération");
-    headers[1]->setText("Montant");
-    headers[2]->setText("Date");
+    headers[1]->setText("Date");
+    headers[2]->setText("Montant");
+    headers[3]->setText("Void");
 
-    stretchColumns = new int[1];
+    stretchColumns = new int[2];
     stretchColumns[0]=0;
-    defaultHeaderWidth = 130;
-    hiddenColumn = -1;
+    stretchColumns[1]=-1;
+    defaultHeaderWidth = 120;
+    hiddenColumn = 3;
     // ####### BUG ######
-    updateHeadersSize(defaultHeaderWidth, stretchColumns, hiddenColumn);
+updateHeadersSize(defaultHeaderWidth, stretchColumns, hiddenColumn);
     this->updateSize();
+
 }

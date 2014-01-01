@@ -14,7 +14,7 @@ public:
     explicit History(QWidget *parent = 0);
 
     // Revceive history from controller
-    void setHistory(view_historyQueue queue);
+    void setHistory(view_histQueue queue);
     
 private:
 

@@ -49,14 +49,14 @@ int main(int argc, char *argv[])
     monPanier.clearCart();
 
     Controller * controller = new Controller;
-
+/*
     Database DB;
     DB.openDatabase();
     DB.initializeDatabaseForm();
     //DB.getCustomerFromId(152);
     DB.getProductsFromCategory(5);
     DB.getProductFromId(1);
-    DB.getLastOperations();
+    DB.getLastOperations(30);
     Plotting plot;
     plot.setDb(DB.getHandle());
     db_dataarray Values_2 = plot.productStock(41,1);
@@ -67,7 +67,7 @@ int main(int argc, char *argv[])
 
 
     DB.closeDatabase();
-
+*/
     //Test graph
 
 
@@ -85,6 +85,7 @@ int main(int argc, char *argv[])
     // ########## TEST GRAPHS ############
     //mainWindow.setGraph(Values, "xTitle", "yTitle", "Title de famille");
     //mainWindow.setGraph(Values_2, "xTitle", "yTitle", "Title de famille");
+
 
     return application.exec();
 }

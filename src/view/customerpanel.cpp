@@ -124,6 +124,7 @@ void CustomerPanel::setController(Controller* controllerPar)
 void CustomerPanel::setCustomer(view_customerTuple & tuple)
 {
     // std::tuple<QString name, QString firstName, QString login, QString categorie, float balance>
+    ID = tuple.getCustomerId();
     name->setText(tuple.getCustomerName());
     firstName->setText(tuple.getCustomerFirstname());
     login->setText(tuple.getCustomerLogin());
@@ -162,7 +163,7 @@ void CustomerPanel::launchCalculator()
 
 void CustomerPanel::launchIndividualHistory()
 {
-    controller->newClic_IndividualHistory();
+    controller->newClic_IndividualHistory(ID);
 }
 
 

@@ -43,6 +43,7 @@ private:
 private slots:
     void searchChanged(const QString &text); //something written in searchbar
     void sendSearch(); // to controller
+    void sendHist();
     void shortcutRoutine();
     void updateSize(); // after resize of window e.g
 

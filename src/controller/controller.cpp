@@ -28,6 +28,7 @@ void Controller::setViewPointers(ViewObjects* viewObjects)
     viewCustomerPanel = par2;
     viewCartDisplay = par3;
     viewHistory = par5;*/
+
     view = viewObjects;
 
     //mp_stock = new Stock( this, &database, par4 );
@@ -77,6 +78,37 @@ void Controller::newText_Search(QString &viewSearch)
     view->searchResults->setSearchResults(viewQueue );
 
     database.closeDatabase();
+}
+
+void Controller::newGlobal_Hist()
+{
+    view_histQueue HistoryQueue;
+    view_histTuple HistoryTuple;
+
+    db_histQueue dbHistoryQueue;
+    db_histTuple dbHistoryTuple;
+
+    database.openDatabase();
+    dbHistoryQueue = database.getLastOperations(30);
+
+    if ( !dbHistoryQueue.empty() ){
+
+        // Copy the dbQueue into the viewQueue
+        while( !dbHistoryQueue.empty() ){
+            dbHistoryTuple = dbHistoryQueue.front();
+
+            HistoryTuple=dbHistoryTuple.transformIntoHistView();
+
+            HistoryQueue.push(HistoryTuple);
+            dbHistoryQueue.pop();
+        }
+
+    }
+    // Sent result to view
+    view->history->setHistory(HistoryQueue);
+
+    database.closeDatabase();
+
 }
 
 void Controller::newClic_Customer(unsigned int customerId)
@@ -191,10 +223,36 @@ void Controller::newClic_Calculator()
     currentLoginRequest = CALCULATOR;
 }
 
-void Controller::newClic_IndividualHistory()
+void Controller::newClic_IndividualHistory(unsigned id)
 {
-    view_historyQueue toto;
-    view->individualHistory->launchIndividualHistory(toto);
+    view_histQueue CustomerHist;
+    view_histTuple CustomerHistTuple;
+
+    db_histQueue dbCustomerHist;
+    db_histTuple dbCustomerHistTuple;
+
+    database.openDatabase();
+    dbCustomerHist = database.getCustomerHist(id);
+
+    if ( !dbCustomerHist.empty() ){
+
+        // Copy the dbQueue into the viewQueue
+        while( !dbCustomerHist.empty() ){
+            dbCustomerHistTuple = dbCustomerHist.front();
+
+            CustomerHistTuple=dbCustomerHistTuple.transformIntoHistView();
+
+            CustomerHist.push(CustomerHistTuple);
+            dbCustomerHist.pop();
+        }
+
+    }
+    // Send result to view
+
+    view->individualHistory->launchIndividualHistory(CustomerHist);
+    database.closeDatabase();
+
+
 }
 
 bool Controller::isNegativeAllowed()

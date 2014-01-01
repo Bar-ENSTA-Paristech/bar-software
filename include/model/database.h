@@ -43,7 +43,7 @@ public:
     db_productTuple getProductFromId(unsigned id);//Méthode recevant l'id d'une conso et renvoyant le tuple de ses infos
     //OK (Fonctionne - a tester plus en profondeur)
 
-    db_histQueue getLastOperations(); //Méthode qui récupère les 15 dernières opérations effectuées
+    db_histQueue getLastOperations(int x); //Méthode qui récupère les x dernières opérations effectuées
     //OK (Fonctionne - a tester plus en profondeur)
 
     db_categoryQueue getCategories(); //Implémentée / Non testée

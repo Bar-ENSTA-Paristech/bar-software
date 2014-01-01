@@ -37,6 +37,7 @@ public:
     void setController(Controller* controllerPar);
     
 private:
+
     QLabel *photo;
     QLabel* name;
     QLabel* firstName;
@@ -57,8 +58,9 @@ private:
     QLabel* categorieLabel;
     QLabel* balanceLabel;
     QPushButton* calculator;
-    QPushButton* history;;
+    QPushButton* history;
 
+    unsigned ID;
 
 signals:
     

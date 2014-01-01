@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "controller.h"
 #include <QDebug>
+#include <QStyleFactory>
 
 ViewObjects VIEW;
 
@@ -13,6 +14,7 @@ MainWindow::MainWindow()
     this->setGeometry(20, 40, 1000, 800);
     this->setWindowTitle("RAB WareSoft");
     this->setMinimumSize(800, 600);
+    this->setStyle(QStyleFactory::create("fusion"));
 
     // Creating main widgets (menu at top and the remaining
     mainWindowLayout = new QGridLayout(centralWidget);
@@ -76,6 +78,10 @@ MainWindow::MainWindow()
     QObject::connect(timerSearch, SIGNAL(timeout()), this, SLOT(sendSearch()));
     QObject::connect(timerAtStart, SIGNAL(timeout()), this, SLOT(updateSize()));
 
+    //Permet l'initialisation de l'Historique au lancement(Probablement à revoir)
+    QObject::connect(timerAtStart, SIGNAL(timeout()), this, SLOT(sendHist()));
+
+
     // DESIGN
     menu->setStyleSheet("background : url("+GLOBAL_PATH+"resources/pictures/menu_background.png);");
 
@@ -87,7 +93,6 @@ MainWindow::MainWindow()
     //tmpLayout->addWidget(VIEW.individualHistory, 0,0);
     //widget->setLayout(tmpLayout);
     //VIEW.individualHistory->show();
-
 }
 
 MainWindow::~MainWindow()
@@ -125,6 +130,11 @@ void MainWindow::searchChanged(const QString & text)
 void MainWindow::sendSearch()
 {
     controller->newText_Search(search);
+}
+
+void MainWindow::sendHist()
+{
+    controller->newGlobal_Hist();
 }
 
 void MainWindow::shortcutRoutine()

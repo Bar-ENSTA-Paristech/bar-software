@@ -6,73 +6,6 @@
 
 
 // ##################################
-// DB_HISTTUPLE
-// ##################################
-db_histTuple::db_histTuple()
-{
-}
-
-void db_histTuple::setHistId(unsigned _id)
-{
-    id=_id;
-}
-
-void db_histTuple::setHistName(std::string _name)
-{
-    name=_name;
-}
-
-void db_histTuple::setHistFirstname(std::string _firstname)
-{
-    firstname=_firstname;
-}
-
-void db_histTuple::setHistDatetime(std::string _datetime)
-{
-    datetime=_datetime;
-}
-
-void db_histTuple::setHistPrice(float _price)
-{
-    price=_price;
-}
-
-void db_histTuple::setHistProduct(std::string _product)
-{
-    product=_product;
-}
-
-unsigned db_histTuple::getHistId()
-{
-    return id;
-}
-
-std::string db_histTuple::getHistName()
-{
-    return name;
-}
-
-std::string db_histTuple::getHistFirstname()
-{
-    return firstname;
-}
-
-std::string db_histTuple::getHistDatetime()
-{
-    return datetime;
-}
-
-float db_histTuple::getHistPrice()
-{
-    return price;
-}
-
-std::string db_histTuple::getHistProduct()
-{
-    return product;
-}
-
-// ##################################
 // DB_CUSTOMERTUPLE
 // ##################################
 
@@ -407,55 +340,155 @@ std::string db_categoryTuple::getCategoryName()
 }
 
 // ##################################
-// VIEW_HISTORYTUPLE
+// VIEW_HISTTUPLE
 // ##################################
-void view_historyTuple::setHistoryDate(QString _date)
+
+void view_histTuple::setHistId(unsigned _id)
+{
+    id=_id;
+}
+
+void view_histTuple::setHistDate(QString _date)
 {
     date=_date;
 }
 
-void view_historyTuple::setHistoryName(QString _name)
+void view_histTuple::setHistName(QString _name)
 {
     name=_name;
 }
 
-void view_historyTuple::setHistoryPrice(float _price)
+void view_histTuple::setHistPrice(float _price)
 {
     price=_price;
 }
 
-void view_historyTuple::setHistoryFirstName(QString _firstName)
+void view_histTuple::setHistFirstName(QString _firstName)
 {
     firstName = _firstName;
 }
 
-void view_historyTuple::setHistoryOperation(QString _operation)
+void view_histTuple::setHistOperation(QString _operation)
 {
     operation = _operation;
 }
 
-QString view_historyTuple::getHistoryDate()
+unsigned view_histTuple::getHistId()
+{
+    return id;
+}
+
+QString view_histTuple::getHistDate()
 {
     return date;
 }
 
-QString view_historyTuple::getHistoryName()
+QString view_histTuple::getHistName()
 {
     return name;
 }
 
-float view_historyTuple::getHistoryPrice()
+float view_histTuple::getHistPrice()
 {
     return price;
 }
 
-QString view_historyTuple::getHistoryFirstName()
+QString view_histTuple::getHistFirstName()
 {
     return firstName;
 }
 
-QString view_historyTuple::getHistoryOperation()
+QString view_histTuple::getHistOperation()
 {
     return operation;
 }
 
+db_histTuple view_histTuple::transformIntoHistDb()
+{
+    db_histTuple result;
+    result.setHistId(id);
+    result.setHistName(name.QString::toStdString());
+    result.setHistFirstName(firstName.QString::toStdString());
+    result.setHistDate(date.QString::toStdString());
+    result.setHistOperation(operation.QString::toStdString());
+    result.setHistPrice(price);
+
+    return result;
+}
+
+// ##################################
+// DB_HISTTUPLE
+// ##################################
+
+void db_histTuple::setHistId(unsigned _id)
+{
+    id=_id;
+}
+
+void db_histTuple::setHistDate(std::string _date)
+{
+    date=_date;
+}
+
+void db_histTuple::setHistName(std::string _name)
+{
+    name=_name;
+}
+
+void db_histTuple::setHistPrice(float _price)
+{
+    price=_price;
+}
+
+void db_histTuple::setHistFirstName(std::string _firstName)
+{
+    firstName = _firstName;
+}
+
+void db_histTuple::setHistOperation(std::string _operation)
+{
+    operation = _operation;
+}
+
+int db_histTuple::getHistId()
+{
+    return id;
+}
+
+std::string db_histTuple::getHistDate()
+{
+    return date;
+}
+
+std::string db_histTuple::getHistName()
+{
+    return name;
+}
+
+float db_histTuple::getHistPrice()
+{
+    return price;
+}
+
+std::string db_histTuple::getHistFirstName()
+{
+    return firstName;
+}
+
+std::string db_histTuple::getHistOperation()
+{
+    return operation;
+}
+
+view_histTuple db_histTuple::transformIntoHistView()
+{
+    view_histTuple result;
+    result.setHistId(id);
+    result.setHistName(QString::fromStdString(name));
+    result.setHistFirstName(QString::fromStdString(firstName));
+    result.setHistDate(QString::fromStdString(date));
+    result.setHistOperation(QString::fromStdString(operation));
+    result.setHistPrice(price);
+
+    return result;
+}

@@ -22,15 +22,6 @@ public:
     MultiList(QWidget* parent = NULL, int column=0, int row=0, bool _isSortable=true);
     ~MultiList();
     void updateSize();
-
-private slots:
-    void sortItems(int index);
-
-protected:
-    int rows;
-    int columns;
-    int sortColumn;
-    int rowsAllocated;
     int defaultHeaderWidth;
     int hiddenColumn;
     int *stretchColumns;
@@ -47,6 +38,16 @@ protected:
 
     QFont font;
     void setRows(int numberOfRows);
+
+private slots:
+    void sortItems(int index);
+
+protected:
+    int rows;
+    int columns;
+    int sortColumn;
+    int rowsAllocated;
+
 
 };
 

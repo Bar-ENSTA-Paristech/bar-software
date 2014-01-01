@@ -136,6 +136,11 @@ return;
 void MultiList::updateHeadersSize(int defaultWidth, int* stretchColumns, int hiddenColumn)
 {
     table->horizontalHeader()->setDefaultSectionSize(defaultWidth);
+    table->horizontalHeader()->setHighlightSections(false);
+
+    table->verticalHeader()->setVisible(false);
+
+
     if(hiddenColumn >= 0)
         table->setColumnHidden(hiddenColumn, true);
     for(int i = 0 ; stretchColumns!=NULL && stretchColumns[i] >= 0 ; i++)

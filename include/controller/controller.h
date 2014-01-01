@@ -51,7 +51,8 @@ public:
     void newClic_ProductTypes(unsigned view_productTypeId);
     void newClic_Product(QString &view_productName);
     void newClic_Calculator();
-    void newClic_IndividualHistory();
+    void newClic_IndividualHistory(unsigned customerId);
+    void newGlobal_Hist();
     //void setViewPointers(SearchResults* par1, CustomerPanel* par2, CartDisplay* par3, ProductsChoices* par4, History* par5);
     void setViewPointers(ViewObjects *viewObjects);
     bool view_isLoginCorrect(QString login, QString passwd, LoginType loginType);
