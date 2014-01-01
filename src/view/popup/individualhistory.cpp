@@ -12,6 +12,7 @@ IndividualHistory::IndividualHistory(QWidget *parent) :
     this->setLayout(layout);
     this->setGeometry(200, 60, 500, 800);
 
+
 }
 
 void IndividualHistory::launchIndividualHistory(view_histQueue &queue)
@@ -34,7 +35,7 @@ void IndividualHistory::launchIndividualHistory(view_histQueue &queue)
     history->updateHeadersSize(history->defaultHeaderWidth, history->stretchColumns, history->hiddenColumn);
 
     history->updateSize();
-        this->show();
+    this->show();
     return;
     }
 

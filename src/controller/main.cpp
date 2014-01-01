@@ -33,14 +33,14 @@ int main(int argc, char *argv[])
 #endif
     GLOBAL_PATH = currentDir.absolutePath()+"/";
     qDebug() << "GLOBAL_PATH :" << GLOBAL_PATH;
-
+/*
     std::pair<std::string,std::string> name = {"Woody","Rousseau"};
-    /*
+
     Customer cus("wrousseau",name,"2014");
     qDebug() << cus.getFirstName().c_str() << " " << cus.getFamilyName().c_str() << " has " << cus.getBalance() << "€ available.";
     cus.addToBalance(70);
     qDebug() << cus.getFirstName().c_str() << " " << cus.getFamilyName().c_str() << " has " << cus.getBalance() << "€ available.";
-    */
+
 
     // Test cart
     Product Duvel;
@@ -48,7 +48,7 @@ int main(int argc, char *argv[])
     monPanier.removeProductFromCart( std::make_shared<Product>(Duvel) );
     monPanier.clearCart();
 
-    Controller * controller = new Controller;
+
 /*
     Database DB;
     DB.openDatabase();
@@ -61,17 +61,11 @@ int main(int argc, char *argv[])
     plot.setDb(DB.getHandle());
     db_dataarray Values_2 = plot.productStock(41,1);
     db_dataarray Values = plot.productConsumption(41,1);
-
     DB.getAllProducts ();
-
-
-
     DB.closeDatabase();
 */
     //Test graph
-
-
-
+Controller * controller = new Controller;
     QApplication application(argc, argv);
     QFile css(GLOBAL_PATH + "include/view/mainDesign.css");
     if(css.open(QIODevice::ReadOnly)) {

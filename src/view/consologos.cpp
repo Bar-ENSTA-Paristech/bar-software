@@ -73,11 +73,13 @@ void ConsoLogos::newCategorieToController(int id)
     for(int i = 0 ; i < NUMBER_OF_CONSUMPTION_TYPES ; i++)
     {
         if(i != id)
-            logosLabels[i].setStyleSheet("background : #d7d7f4;  border: 1px solid #666666; border-radius: 7px;");
-    }
+        {
+            //logosLabels[i].setStyleSheet("background : #d7d7f4;  border: 1px solid #666666; border-radius: 7px;");
+}
+        }
     if(id < 0 || id >= NUMBER_OF_CONSUMPTION_TYPES)
         return;
-    logosLabels[id].setStyleSheet("background : #ffff00;");
+    //logosLabels[id].setStyleSheet("background : #ffff00;");
     controller->newClic_ProductTypes( (unsigned) id);
 }
 

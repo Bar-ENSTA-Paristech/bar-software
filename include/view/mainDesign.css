@@ -1,104 +1,145 @@
 QLineEdit{
-    color: #222;
-    font-size: 14px;
-    font-weight: bold;
-    border-radius: 7px;
-    border-width: 1.5px;
-    border-style: solid;
-    border-color: #aaa;
-    background-color: #ffff00;
-    padding: 0px;
+color: #222;
+font-family: Gisha ;
+font-size: 16px;
+font-weight: bold;
+border-radius: 7px;
+border-width: 1.5px;
+border-style: solid;
+border-color: #aaa;
+background-color: grey;
+color : white;
+padding: 0px;
 }
 
 #categoriesList{
-    background-color: #b0b0b0;
-    border-radius: 4px;
+background-color: #b0b0b0;
+border-radius: 4px;
+}
+
+QTableView {
+font-family : Gisha;
+}
+
+QTableView *{
+background-color: grey;
+font-family: Gisha;
+font-weight: bold;
+color : white;
 }
 
 #customerPanel{
-    border-radius: 10px;
-    border-width: 2px;
-    border-style: solid;
-    border-color: #666;
-    background-color: #f9f9f9;
+border-radius: 10px;
+border-width: 2px;
+border-style: solid;
+border-color: #666;
+background-color: #f9f9f9;
 }
 
-ConsoLogos QPushButton:focus {
-    outline: none;
+#customerPanel *{
+font-family :Gisha;
 }
 
-CategorieButton:focus {
-    border: none;
-    outline: none;
+CustomerPanel QPushButton{
+padding : 1em;
+margin-right : 0.5em
+}
+
+#consoLogos *{
+font-family: Gisha;
 }
 
 ConsoLogos QPushButton{
-    padding-top: 4px;
-    padding-bottom: 4px;
-    padding-left: 2px;
-    padding-right: 2px;
-    border: 1px solid #666666;
-    border-radius: 7px;
+padding-top: 4px;
+padding-bottom: 4px;
+padding-left: 2px;
+padding-right: 2px;
+border: 1px solid black;
+border-radius: 7px;
 }
 
-ConsoLogos QPushButton:focus{
-    border: none;
-    outline: none;
+ConsoLogos QPushButton:focus {
+outline: none;
+color: #f9f9f9;
+background-color: grey;
 }
 
-CustomerPanel QPushButton:focus{
-    outline: none;
-    border:none;
+ConsoLogos QPushButton:hover{
+border: 3px solid black;
+font-size:110%;
+outline: none;
 }
+
+#categorieButton *{
+font-family: Gisha black;
+}
+
+CategorieButton:focus {
+border: none;
+outline: none;
+}
+
+#menu{
+padding-left : 10%;
+padding-right : 15%;
+}
+
+#leftPart{
+margin-top:6%;
+margin-bottom:6%;
+margin-left: 12%;
+margin-right : 6%;
+}
+
+
+#rightPart{
+margin-top:6%;
+margin-bottom:6%;
+margin-left: 6%;
+margin-right : 12%;
+}
+
 
 /*CustomerPanel QPushButton:pressed {
-    border: none;
+border: none;
 }*/
 
 
 /*#menu{
-    background: url("");;
+background: url("");;
 
 }
 
 
-#leftPart{
-    background-color: blue;
-}
 
-#rightPart{
-    background-color: purple;
-}
 
-#searchResults{
-    background-color: black;
-}
+
 
 
 
 #history{
-    background-color: #f71;/*orange
+background-color: #f71;/*orange
 }
 
 
 
 #consoLogos{
-    background-color: #C18CFF;/*mauve clair
+background-color: #C18CFF;/*mauve clair
 }
 
 #cartDisplay{
-    background-color: #3FE8FF;/*turquoise
+background-color: #3FE8FF;/*turquoise
 }
 
 #productChoices{
-    background-color: #89FF66;/*vert clair
+background-color: #89FF66;/*vert clair
 }
 
 /*#searchResultsTable{
-    color: yellow;
+color: yellow;
 }*/
 
 /*QMainWindow{
-    padding: 0px;
-    background-color: green;
+padding: 0px;
+background-color: green;
 }*/
