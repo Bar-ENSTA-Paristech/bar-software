@@ -2,6 +2,7 @@
 #define INDIVIDUALHISTORY_H
 
 #include <QWidget>
+#include <QLabel>
 #include "multilist.h"
 #include "controller.h"
 #include "structures.h"
@@ -23,6 +24,9 @@ private:
     IndividualHistoryList* history;
     QGridLayout* layout;
     Controller* controller;
+    QLabel* title;
+    QLabel* totalConsummedLabel;
+    QLabel* totalConsummed;
 
     
 signals:
@@ -38,6 +42,7 @@ class IndividualHistoryList : public MultiList
     Q_OBJECT
 public:
     explicit IndividualHistoryList(QWidget *parent = 0);
+    void launchIndividualHistory(view_historyQueue& queue);
 
 
 private:

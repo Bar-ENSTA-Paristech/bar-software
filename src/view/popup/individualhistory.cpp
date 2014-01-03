@@ -8,19 +8,18 @@ IndividualHistory::IndividualHistory(QWidget *parent) :
     this->setWindowFlags(Qt::WindowStaysOnTopHint);
     history = new IndividualHistoryList(this);
     layout = new QGridLayout(this);
+    title = new QLabel(this);
+    totalConsummedLabel = new QLabel("Total Consommé : ", this);
+    totalConsummed = new QLabel(this);
     layout->addWidget(history, 0, 0);
     this->setLayout(layout);
     this->setGeometry(200, 60, 500, 800);
-
-
-
-
-
 
 }
 
 void IndividualHistory::launchIndividualHistory(view_historyQueue &queue)
 {
+    history->launchIndividualHistory(queue);
     history->updateSize();
     this->show();
 }
@@ -46,9 +45,14 @@ IndividualHistoryList::IndividualHistoryList(QWidget *parent) :
 
     stretchColumns = new int[1];
     stretchColumns[0]=0;
-    defaultHeaderWidth = 130;
+    defaultHeaderWidth = 120;
     hiddenColumn = -1;
     // ####### BUG ######
     updateHeadersSize(defaultHeaderWidth, stretchColumns, hiddenColumn);
     this->updateSize();
+}
+
+void IndividualHistoryList::launchIndividualHistory(view_historyQueue &queue)
+{
+
 }
