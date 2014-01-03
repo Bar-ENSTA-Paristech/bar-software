@@ -492,3 +492,57 @@ view_histTuple db_histTuple::transformIntoHistView()
 
     return result;
 }
+
+// ##################################
+// VIEW_CARTTUPLE
+// ##################################
+
+void view_cartTuple::setCartCustomerId(unsigned _id)
+{
+    customer_id=_id;
+}
+
+void view_cartTuple::setCartPrice(float _price)
+{
+    price=_price;
+}
+
+void view_cartTuple::setCartProdId(unsigned _id)
+{
+    product_id=_id;
+}
+
+void view_cartTuple::setCartProdName(QString _string)
+{
+    conso_name=_string;
+}
+
+void view_cartTuple::setCartQuantity(unsigned _qty)
+{
+    quantity=_qty;
+}
+
+unsigned view_cartTuple::getCarProdId()
+{
+    return product_id;
+}
+
+unsigned view_cartTuple::getCartCustomerId()
+{
+    return customer_id;
+}
+
+unsigned view_cartTuple::getCartQuantity()
+{
+    return quantity;
+}
+
+float view_cartTuple::getCartPrice()
+{
+    return price;
+}
+
+QString view_cartTuple::getCartProdName()
+{
+    return conso_name;
+}

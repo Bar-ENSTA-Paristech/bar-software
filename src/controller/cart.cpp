@@ -1,93 +1,101 @@
 #include "cart.h"
 
-using namespace std;
-
 Cart::Cart()
 {
-    numberOfProducts = 0;
-    price = 0.0;
-}
-Cart::Cart(Product& product) : Cart()
-{
-    auto productPtr = make_shared<Product>(product);
-    addProductToCart(productPtr);
+    sizeOfCart = 0;
+    totalPrice = 0.0;
+    customerId =0;
 }
 
-void Cart::addProductToCart(shared_ptr<Product> product, unsigned quantity)
+void Cart::addProductToCart(unsigned product, unsigned quantity)
 {
-    // We might need to check if there is enough stock available ?
-    auto ret = products.insert(make_pair(product,quantity)); // We try to insert the product in the map
-    if (ret.second == false) // insert returns a std::pair, whose .second is false if key already existed
-        products[product] += quantity; // In which case, we just add to the quantity
-    numberOfProducts += quantity;
-    price += product->getPrice()*quantity;
-    refreshPrice();
-    cout << "Ajout du produit " << product->getName() << "au panier : succes" << endl;
+    // We check if there is enough stock available in a controller method, this is just an update of the cart
+    bool added_flag=false;
+    std::pair<int,int> new_prod;
+    new_prod.first=product;
+    new_prod.second=quantity;
+
+    for(int i=0;i<cartContent.size();i++)
+    {
+        if (cartContent[i].first==product)
+        {
+            cartContent[i].second+=quantity;
+            added_flag=true;
+        }
+    }
+
+    if (added_flag==false)
+    {
+        cartContent.push_back(new_prod);
+        sizeOfCart++;
+    }
+
+    return;
 }
 
-void Cart::removeProductFromCart(shared_ptr<Product> product, unsigned quantity)
+void Cart::removeProductFromCart(unsigned product, unsigned quantity)
 {
-    unsigned remoQuantity;
-    // We might want to check if the product is already in the cart ?
-    if(quantity < products[product]){ // If we remove less than the quantity in the cart
-        products[product] -= quantity;  // Just decrease the number of that product in the cart
-        remoQuantity = quantity;
+    bool removed_flag=false;
+    std::pair<int,int> new_prod;
+    new_prod.first=product;
+    new_prod.second=quantity;
+
+    for(int i=0;i<cartContent.size();i++)
+    {
+        if (cartContent[i].first==product)
+        {
+            cartContent[i].second-=quantity;
+            removed_flag=true;
+            if (cartContent[i].second==0)
+            {
+                cartContent.move(i,0);
+                cartContent.pop_front();
+                sizeOfCart--;
+            }
+        }
     }
-    else{
-        remoQuantity = products[product];
-        products.erase(products.find(product)); // If we remove more than there is in the cart, just erase the product
-        cout << "Suppresion du produit " << product->getName() << "depuis le panier : succes" << endl;
+
+    if (removed_flag==false)
+    {
+        std::cout<<"Problème : le produit d'id "<<product<<"nest pas dans le panier : impossible de le supprimer";
     }
-    numberOfProducts -= remoQuantity;
-    price -= product->getPrice()*remoQuantity;
-    refreshPrice();
+    return;
 }
 
 void Cart::clearCart()
 {
-    price = 0.0;
-    numberOfProducts = 0;
-    products.clear();
+    customerId = 0;
+    totalPrice = 0.0;
+    sizeOfCart = 0;
+    cartContent.clear();
 }
 
-bool Cart::saveCart()
+void Cart::editPrice(float modification)
 {
-    // Do all needed queries
-    clearCart();
-    return true;
+    totalPrice+=modification;
 }
 
-void Cart::refreshPrice()
+void Cart::setCustomerID(unsigned _id)
 {
-    price = 0;
-    for (auto product : products )
-    {
-        price += product.first->getPrice()*product.second;
-    }
+    customerId=_id;
 }
 
 float Cart::getPrice() const
 {
-    return price;
+    return totalPrice;
 }
 
-unsigned int Cart::getNumberOfProducts() const
+unsigned int Cart::getSizeOfCart() const
 {
-    return numberOfProducts;
+    return sizeOfCart;
 }
 
-void Cart::getList( std::queue< std::tuple < QString, float, unsigned > > &queue)
+unsigned Cart::getCustomerID()
 {
-    typedef tuple<QString, float, unsigned > view_productTuple;
+    return customerId;
+}
 
-    view_productTuple view_tmpProductInfo;
-
-    for (auto product : products )
-    {
-        get<0>(view_tmpProductInfo).fromStdString( product.first->getName() );
-        get<1>(view_tmpProductInfo) = product.first->getPrice();
-        get<2>(view_tmpProductInfo) = product.second;
-
-        queue.push(view_tmpProductInfo);
-    }
+QList<cartProduct> Cart::getList()
+{
+    return cartContent;
 }

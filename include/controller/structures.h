@@ -219,6 +219,29 @@ private:
     QString operation;
 };
 
+class view_cartTuple
+{
+public:
+    void setCartProdId (unsigned _id);
+    void setCartCustomerId (unsigned _id);
+    void setCartProdName (QString _string);
+    void setCartQuantity (unsigned _qty);
+    void setCartPrice (float _price);
+
+    unsigned getCarProdId();
+    unsigned getCartCustomerId();
+    unsigned getCartQuantity();
+    float getCartPrice();
+    QString getCartProdName();
+
+private:
+    unsigned product_id;
+    unsigned customer_id;
+    QString conso_name;
+    unsigned quantity;
+    float price;
+};
+
 typedef std::queue<db_histTuple> db_histQueue;
 typedef std::queue<db_customerTuple> db_customerQueue;
 typedef std::queue<view_customerTuple> view_customerQueue;
@@ -227,6 +250,7 @@ typedef std::queue<view_productTuple> view_productQueue;
 typedef std::queue<db_categoryTuple> db_categoryQueue;
 typedef std::queue<view_histTuple> view_histQueue;
 typedef std::queue<db_histTuple> db_histQueue;
+typedef std::queue<view_cartTuple> view_cartQueue;
 
 typedef std::pair< std::vector< double > , std::vector< double > > db_dataarray;
 

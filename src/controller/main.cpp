@@ -49,7 +49,6 @@ int main(int argc, char *argv[])
     monPanier.clearCart();
 
 
-/*
     Database DB;
     DB.openDatabase();
     DB.initializeDatabaseForm();

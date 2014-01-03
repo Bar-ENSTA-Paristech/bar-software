@@ -17,24 +17,17 @@ ProductsChoices::ProductsChoices(QWidget *parent) :
     hiddenColumn = 3;
     updateHeadersSize(defaultHeaderWidth, stretchColumns, hiddenColumn);
 
-    // ####### TEST #######
-   /*
-    std::queue< std::tuple< QString, QString, float, unsigned > > toto;
-    std::tuple< QString, QString, float, unsigned > titi("Duvel", "0.33L", 1.9, 1);
-    std::tuple< QString, QString, float, unsigned > titi2("Super Bock", "0.25L", 0.9, 2);
-    toto.push(titi);
-    toto.push(titi2);
-    this->setProductsChoices(toto);
-*/
-    // ####### FIN TEST #######
+    QObject::connect(table, SIGNAL(clicked(QModelIndex)), this, SLOT(lineClicked(QModelIndex)));
+
 }
 
 void ProductsChoices::setProductsChoices(view_productQueue queue)
 {
+    //On vide l'index précédemment établi
+    model->removeRows(0,rows);
+
     // TUPLE : QString conso, QString Volume, float price, unsigned id
     view_productTuple tuple;
-
-
     // Inserting new results
     unsigned numberOfElements = queue.size();
     setRows(numberOfElements);
@@ -42,11 +35,12 @@ void ProductsChoices::setProductsChoices(view_productQueue queue)
     for(unsigned i=0;i<numberOfElements ; i++)
     {
         tuple = queue.front();
-        queue.pop();
+
         model->item(i,0)->setText(tuple.getProductName());
         model->item(i,1)->setText(QString::number(tuple.getProductStock()));
         model->item(i,2)->setText(QString::number(tuple.getProductPrice()));
         model->item(i,3)->setText(QString::number(tuple.getProductId()));
+        queue.pop();
     }
     table->sortByColumn(0, Qt::AscendingOrder);
     table->setModel(model);
@@ -54,7 +48,9 @@ void ProductsChoices::setProductsChoices(view_productQueue queue)
     return;
 }
 
-void ProductsChoices::lineClicked(int row, int column)
+void ProductsChoices::lineClicked(QModelIndex index)
 {
-    //controller->newClic_Customer((unsigned) itemList[row][3].text().toInt());
+    unsigned int clickedProductId =(unsigned) model->item(index.row(),3)->text().toInt();
+    controller->newClic_Product(clickedProductId );
+    //controller->newClic_Customer((unsigned) model->item(index.row(),3)->text().toInt());
 }

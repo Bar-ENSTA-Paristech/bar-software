@@ -49,7 +49,7 @@ public:
     void newClic_CustomerPanel(unsigned int buttonId);
     void newClic_Cart(unsigned int buttonId);
     void newClic_ProductTypes(unsigned view_productTypeId);
-    void newClic_Product(QString &view_productName);
+    void newClic_Product(unsigned &view_productId);
     void newClic_Calculator();
     void newClic_IndividualHistory(unsigned customerId);
     void newGlobal_Hist();
