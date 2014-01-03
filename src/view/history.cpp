@@ -33,7 +33,7 @@ History::History(QWidget *parent) : MultiList(parent, 6, 0, false)
     toto.push(titi);
     toto.push(titi2);
     toto.push(titi3);
-    this->setHistory(toto);*/
+    this->setHistory(toto);
     view_historyTuple titi;
     view_historyQueue toto;
     titi.setHistoryName("Chat");titi.setHistoryFirstName("Mehdi");titi.setHistoryOperation("DEBIT");titi.setHistoryPrice(-1000);titi.setHistoryDate("17h45 24-09-2013");
@@ -42,15 +42,17 @@ History::History(QWidget *parent) : MultiList(parent, 6, 0, false)
     toto.push(titi);
     titi.setHistoryName("Manchoul");titi.setHistoryFirstName("Simon");titi.setHistoryOperation("Duvel 33cL");titi.setHistoryPrice(1.9);titi.setHistoryDate("17h41 24-09-2013");
     toto.push(titi);
-    this->setHistory(toto);
+
+
+    this->setHistory(toto);*/
     // ####### FIN TEST #######*/
 
 }
 
-void History::setHistory(view_historyQueue queue)
+void History::setHistory(view_histQueue queue)
 {
     // OBSOLETE!  TUPLE : QString name, QString firstName, QString operation, float value, QString date(hh-mm JJ-MM-YYYY)
-    view_historyTuple tuple;
+    view_histTuple tuple;
     QFont historyFont;
     historyFont.setPixelSize(11);
 
@@ -59,19 +61,19 @@ void History::setHistory(view_historyQueue queue)
     unsigned numberOfElements = queue.size();
     setRows(numberOfElements);
 
-    for(int i=0; i < numberOfElements ; i++)
+    for(unsigned i=0; i < numberOfElements ; i++)
     {
         tuple = queue.front();
         queue.pop();
-        model->item(i,0)->setText(tuple.getHistoryName());
-        model->item(i,1)->setText(tuple.getHistoryFirstName());
-        model->item(i,2)->setText(tuple.getHistoryOperation());
-        model->item(i,3)->setText(QString::number(tuple.getHistoryPrice()));
-        model->item(i,4)->setText(tuple.getHistoryDate());
+        model->item(i,0)->setText(tuple.getHistName());
+        model->item(i,1)->setText(tuple.getHistFirstName());
+        model->item(i,2)->setText(tuple.getHistOperation());
+        model->item(i,3)->setText(QString::number(tuple.getHistPrice()));
+        model->item(i,4)->setText(tuple.getHistDate());
         model->item(i,5)->setText(QString::number(i));
-        if(tuple.getHistoryOperation() == "DEBIT")
+        if(tuple.getHistOperation() == "DEBIT")
             color.setColor(Qt::red);
-        else if(tuple.getHistoryOperation() == "CREDIT")
+        else if(tuple.getHistOperation() == "CREDIT")
             color.setColor("#008800");
         else
             color.setColor(Qt::black);

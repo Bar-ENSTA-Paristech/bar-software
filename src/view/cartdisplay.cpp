@@ -25,18 +25,6 @@ CartDisplay::CartDisplay(QWidget *parent) :
     totalPrice->setText("- €");
     totalPrice->setFont(bold);
     totalPrice->setAlignment(Qt::AlignCenter);
-
-    // ####### TEST #######
-    std::queue< std::tuple< QString, float, unsigned > > toto;
-    std::tuple< QString, float, unsigned > titi("Bières-Guiness 0.5L", 5.4, 2);
-    std::tuple< QString, float, unsigned > titi2("Vin-Quessard 0.75L", 5.0, 1);
-    std::tuple< QString, float, unsigned > titi3("Pression-Kronembourg 0.5L", 2.4*3, 3);
-    toto.push(titi);
-    toto.push(titi2);
-    toto.push(titi3);
-    this->setCart(toto);
-    this->setTotalPrice(5.4+5+2.4*3);
-    // ####### FIN TEST #######
 }
 
 CartDisplay::~CartDisplay()
@@ -48,7 +36,7 @@ CartDisplay::~CartDisplay()
     delete layout;*/
 }
 
-void CartDisplay::setCart(std::queue< std::tuple<QString, float, unsigned int> > & queue)
+void CartDisplay::setCart(view_cartQueue &queue)
 {
     // TUPLE : QString consumption, float price, unsigned int number of these products
 
@@ -83,13 +71,18 @@ CartDisplayFrame::CartDisplayFrame(QWidget *parent) :
     defaultHeaderWidth = 40;
     hiddenColumn = -1;
     updateHeadersSize(defaultHeaderWidth, stretchColumns, hiddenColumn);
+
 }
 
 
-void CartDisplayFrame::setCart(std::queue< std::tuple<QString, float, unsigned int> > & queue)
+void CartDisplayFrame::setCart(view_cartQueue & queue)
 {
     // TUPLE : QString consumption, float price, unsigned int number of these products
-    std::tuple<QString, float, unsigned int> tuple;
+    view_cartTuple tuple;
+
+    //On vide l'index précédemment établi
+    model->removeRows(0,rows);
+
 
     // Inserting new results
     unsigned numberOfElements = queue.size();
@@ -99,12 +92,13 @@ void CartDisplayFrame::setCart(std::queue< std::tuple<QString, float, unsigned i
     {
         tuple = queue.front();
         queue.pop();
-        model->item(i,0)->setText(std::get<0>(tuple));
-        model->item(i,1)->setText(QString::number(std::get<1>(tuple)));
-        model->item(i,2)->setText(QString::number(std::get<2>(tuple)));
+        model->item(i,0)->setText(tuple.getCartProdName());
+        model->item(i,1)->setText(QString::number(tuple.getCartQuantity()));
+        model->item(i,2)->setText(QString::number(tuple.getCartPrice()));
     }
-    //table->sortItems(2, Qt::AscendingOrder);
+    table->sortByColumn(0, Qt::AscendingOrder);
+    table->setModel(model);
+    updateHeadersSize(defaultHeaderWidth, stretchColumns, hiddenColumn);
+    return;
 }
-
-
 

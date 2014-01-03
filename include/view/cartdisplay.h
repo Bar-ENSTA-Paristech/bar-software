@@ -12,6 +12,8 @@
 #include <QDebug>
 #include "controller.h"
 #include "structures.h"
+#include "productschoices.h"
+
 extern ViewObjects VIEW;
 
 class Controller;
@@ -20,7 +22,7 @@ class CartDisplayFrame : public MultiList
     Q_OBJECT
 public:
     explicit CartDisplayFrame(QWidget *parent = 0);
-    void setCart(std::queue< std::tuple<QString, float, unsigned int> > & queue);
+    void setCart(view_cartQueue & queue);
 };
 
 
@@ -31,7 +33,7 @@ public:
     Controller* controller;
     explicit CartDisplay(QWidget *parent = 0);
     ~CartDisplay();
-    void setCart(std::queue< std::tuple<QString, float, unsigned int> > & queue);
+    void setCart(view_cartQueue & queue);
     void setTotalPrice(float price);
     void updateSize(){cartList->updateSize();}
 

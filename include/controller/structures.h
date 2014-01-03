@@ -31,35 +31,7 @@ typedef enum {CALCULATOR} LoginObjects;
 
 class view_customerTuple;
 class view_productTuple;
-
-class db_histTuple
-{
-public:
-    db_histTuple();
-
-    void setHistId (unsigned _id);
-    void setHistName (std::string _name);
-    void setHistFirstname (std::string _firstname);
-    void setHistProduct (std::string _product);
-    void setHistDatetime (std::string _datetime);
-    void setHistPrice (float _price);
-
-    unsigned getHistId ();
-    std::string getHistName();
-    std::string getHistFirstname();
-    std::string getHistProduct();
-    std::string getHistDatetime();
-    float getHistPrice();
-
-private:
-    unsigned id;
-    std::string name;
-    std::string firstname;
-    std::string product;
-    std::string datetime;
-    float price;
-
-};
+class view_histTuple;
 
 class db_customerTuple
 {
@@ -191,29 +163,83 @@ private:
 
 };
 
-class view_historyTuple
+class db_histTuple
 {
 public:
-    void setHistoryDate (QString _date);
-    void setHistoryName (QString _name);
-    void setHistoryPrice (float _price);
-    void setHistoryFirstName (QString firstName);
-    void setHistoryOperation (QString operation);
+    void setHistId (unsigned _id);
+    void setHistDate (std::string _date);
+    void setHistName (std::string _name);
+    void setHistPrice (float _price);
+    void setHistFirstName (std::string firstName);
+    void setHistOperation (std::string operation);
 
-    QString getHistoryDate ();
-    QString getHistoryName();
-    float getHistoryPrice();
-    QString getHistoryFirstName();
-    QString getHistoryOperation();
+    int getHistId();
+    std::string getHistDate ();
+    std::string getHistName();
+    float getHistPrice();
+    std::string getHistFirstName();
+    std::string getHistOperation();
 
-    //db_historyTuple transformIntoHistoryDb();
+    view_histTuple transformIntoHistView();
 
 private:
+    unsigned id;
+    std::string date;
+    std::string name;
+    float price;
+    std::string firstName;
+    std::string operation;
+};
+
+class view_histTuple
+{
+public:
+    void setHistId (unsigned _id);
+    void setHistDate (QString _date);
+    void setHistName (QString _name);
+    void setHistPrice (float _price);
+    void setHistFirstName (QString firstName);
+    void setHistOperation (QString operation);
+
+    unsigned getHistId();
+    QString getHistDate ();
+    QString getHistName();
+    float getHistPrice();
+    QString getHistFirstName();
+    QString getHistOperation();
+
+    db_histTuple transformIntoHistDb();
+
+private:
+    unsigned id;
     QString date;
     QString name;
     float price;
     QString firstName;
     QString operation;
+};
+
+class view_cartTuple
+{
+public:
+    void setCartProdId (unsigned _id);
+    void setCartCustomerId (unsigned _id);
+    void setCartProdName (QString _string);
+    void setCartQuantity (unsigned _qty);
+    void setCartPrice (float _price);
+
+    unsigned getCarProdId();
+    unsigned getCartCustomerId();
+    unsigned getCartQuantity();
+    float getCartPrice();
+    QString getCartProdName();
+
+private:
+    unsigned product_id;
+    unsigned customer_id;
+    QString conso_name;
+    unsigned quantity;
+    float price;
 };
 
 typedef std::queue<db_histTuple> db_histQueue;
@@ -222,7 +248,9 @@ typedef std::queue<view_customerTuple> view_customerQueue;
 typedef std::queue<db_productTuple> db_productQueue;
 typedef std::queue<view_productTuple> view_productQueue;
 typedef std::queue<db_categoryTuple> db_categoryQueue;
-typedef std::queue<view_historyTuple> view_historyQueue;
+typedef std::queue<view_histTuple> view_histQueue;
+typedef std::queue<db_histTuple> db_histQueue;
+typedef std::queue<view_cartTuple> view_cartQueue;
 
 typedef std::pair< std::vector< double > , std::vector< double > > db_dataarray;
 
@@ -239,8 +267,10 @@ class Login;
 class MainWindow;
 class ProductsChoices;
 class IndividualHistory;
+class IndividualHistoryList;
 
 typedef struct{
+    IndividualHistoryList* individualHistoryList;
     IndividualHistory* individualHistory;
     Calculator* calculator;
     CartDisplay* cartDisplay;

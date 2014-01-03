@@ -13,7 +13,6 @@ TEMPLATE = app
 
 SOURCES += src/controller/cart.cpp \
 src/controller/controller.cpp \
-src/controller/customer.cpp \
 src/controller/main.cpp \
 src/controller/product.cpp \
 src/model/database.cpp \
@@ -47,7 +46,6 @@ include/view/popup
 
 HEADERS += include/controller/cart.h \
 include/controller/controller.h \
-include/controller/customer.h \
 include/controller/main.h \
 include/controller/product.h \
 include/model/database.h \

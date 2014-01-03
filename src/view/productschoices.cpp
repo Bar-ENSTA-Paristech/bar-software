@@ -17,39 +17,40 @@ ProductsChoices::ProductsChoices(QWidget *parent) :
     hiddenColumn = 3;
     updateHeadersSize(defaultHeaderWidth, stretchColumns, hiddenColumn);
 
-    // ####### TEST #######
-    std::queue< std::tuple< QString, QString, float, unsigned > > toto;
-    std::tuple< QString, QString, float, unsigned > titi("Duvel", "0.33L", 1.9, 1);
-    std::tuple< QString, QString, float, unsigned > titi2("Super Bock", "0.25L", 0.9, 2);
-    toto.push(titi);
-    toto.push(titi2);
-    this->setProductsChoices(toto);
-    // ####### FIN TEST #######
+    QObject::connect(table, SIGNAL(clicked(QModelIndex)), this, SLOT(lineClicked(QModelIndex)));
+
 }
 
-void ProductsChoices::setProductsChoices(std::queue< std::tuple< QString, QString, float, unsigned > > & queue)
+void ProductsChoices::setProductsChoices(view_productQueue queue)
 {
-    // TUPLE : QString conso, QString Volume, float price, unsigned id
-    std::tuple< QString, QString, float, unsigned > tuple;
+    //On vide l'index précédemment établi
+    model->removeRows(0,rows);
 
+    // TUPLE : QString conso, QString Volume, float price, unsigned id
+    view_productTuple tuple;
     // Inserting new results
     unsigned numberOfElements = queue.size();
     setRows(numberOfElements);
 
-    for(unsigned i=0 ; i<numberOfElements ; i++)
+    for(unsigned i=0;i<numberOfElements ; i++)
     {
         tuple = queue.front();
+
+        model->item(i,0)->setText(tuple.getProductName());
+        model->item(i,1)->setText(QString::number(tuple.getProductStock()));
+        model->item(i,2)->setText(QString::number(tuple.getProductPrice()));
+        model->item(i,3)->setText(QString::number(tuple.getProductId()));
         queue.pop();
-        model->item(i,0)->setText(std::get<0>(tuple));
-        model->item(i,1)->setText(std::get<1>(tuple));
-        model->item(i,2)->setText(QString::number(std::get<2>(tuple)));
-        model->item(i,3)->setText(QString::number(std::get<3>(tuple)));
     }
-    //table->sortItems(0, Qt::AscendingOrder);
+    table->sortByColumn(0, Qt::AscendingOrder);
+    table->setModel(model);
+    updateHeadersSize(defaultHeaderWidth, stretchColumns, hiddenColumn);
     return;
 }
 
-void ProductsChoices::lineClicked(int row, int column)
+void ProductsChoices::lineClicked(QModelIndex index)
 {
-    //controller->newClic_Customer((unsigned) itemList[row][3].text().toInt());
+    unsigned int clickedProductId =(unsigned) model->item(index.row(),3)->text().toInt();
+    controller->newClic_Product(clickedProductId );
+    //controller->newClic_Customer((unsigned) model->item(index.row(),3)->text().toInt());
 }

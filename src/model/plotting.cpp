@@ -39,7 +39,7 @@ db_dataarray Plotting::customerConsumption(int id,int scale,int type)
     {
         customer_operation=customer_hist.front();
         customer_hist.pop();
-        std::string operation_time=customer_operation.getHistDatetime();
+        std::string operation_time=customer_operation.getHistDate();
         QString qoperation_time=QString::fromStdString(operation_time);
 
         if (scale==0)
@@ -114,7 +114,7 @@ db_dataarray Plotting::customerBalance(int id, int scale)
     {
         customer_operation=customer_hist.front();
         customer_hist.pop();
-        std::string operation_time=customer_operation.getHistDatetime();
+        std::string operation_time=customer_operation.getHistDate();
         QString qoperation_time=QString::fromStdString(operation_time);
 
         if (scale==0)
@@ -191,7 +191,7 @@ for (unsigned j=0; j<product_hist.size();j++)
 {
     product_operation=product_hist.front();
     product_hist.pop();
-    std::string operation_time=product_operation.getHistDatetime();
+    std::string operation_time=product_operation.getHistDate();
     QString qoperation_time=QString::fromStdString(operation_time);
 
     if (scale==0)
@@ -262,7 +262,7 @@ db_dataarray Plotting::productStock(int id, int scale)
     {
         product_operation=product_hist.front();
         product_hist.pop();
-        std::string operation_time=product_operation.getHistDatetime();
+        std::string operation_time=product_operation.getHistDate();
         QString qoperation_time=QString::fromStdString(operation_time);
 
         if (scale==0)
@@ -338,7 +338,7 @@ db_dataarray Plotting::totalConsumption(int scale,int type)
     {
         operation=hist.front();
         hist.pop();
-        std::string operation_time=operation.getHistDatetime();
+        std::string operation_time=operation.getHistDate();
         QString qoperation_time=QString::fromStdString(operation_time);
 
         if (scale==0)

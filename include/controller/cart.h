@@ -5,34 +5,31 @@
 #include <map>
 #include <memory>
 #include <iostream>
-#include <queue>
-#include <QString>
+#include <QList>
 
-
-struct CartMapCompare {
-  bool operator() (const std::shared_ptr<Product>& lhs, const std::shared_ptr<Product>& rhs) const
-  {return lhs->getName()<rhs->getName();}
-};
+typedef std::pair<unsigned, unsigned> cartProduct;
 
 class Cart
 {
 public:
     Cart();
-    Cart(Product& product);
-    void addProductToCart(std::shared_ptr<Product> product, unsigned quantity = 1);
-    void removeProductFromCart(std::shared_ptr<Product> product, unsigned quantity = 1);
+    //Cart(Product& product);
+    void addProductToCart(unsigned product, unsigned quantity = 1);
+    void removeProductFromCart(unsigned product, unsigned quantity = 1);
     void clearCart();
-    bool saveCart(); //Return True if sucessful otherwise False
-    void refreshPrice();
+    void editPrice(float modification);
     float getPrice() const;
-    unsigned int getNumberOfProducts() const;
-    void sortProducts();
-    void getList( std::queue< std::tuple < QString, float, unsigned > > &queue);
+    void setCustomerID(unsigned _id);
+    unsigned int getSizeOfCart() const;
+    unsigned getCustomerID();
+    QList<cartProduct> getList();
+
 
 private:
-    std::map<std::shared_ptr<Product>, unsigned, CartMapCompare> products;
+    QList<cartProduct> cartContent;
     unsigned int numberOfProducts;
-    float price;
+    unsigned customerId;
+    float totalPrice;
     unsigned int sizeOfCart; //usefull to set a bigger table for products
 
 };

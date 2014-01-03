@@ -15,9 +15,11 @@ class IndividualHistory : public QWidget
     Q_OBJECT
 public:
     explicit IndividualHistory(QWidget *parent = 0);
-    void launchIndividualHistory(view_historyQueue& queue);
+    void launchIndividualHistory(view_histQueue& queue);
     void setController(Controller* controller);
     void resizeEvent(QResizeEvent *event);
+    void setTitle(QString text);
+    void setTotalConsummed(QString total);
 
 
 private:
@@ -42,7 +44,7 @@ class IndividualHistoryList : public MultiList
     Q_OBJECT
 public:
     explicit IndividualHistoryList(QWidget *parent = 0);
-    void launchIndividualHistory(view_historyQueue& queue);
+    void launchIndividualHistory(view_histQueue& queue);
 
 
 private:

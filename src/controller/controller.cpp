@@ -28,6 +28,7 @@ void Controller::setViewPointers(ViewObjects* viewObjects)
     viewCustomerPanel = par2;
     viewCartDisplay = par3;
     viewHistory = par5;*/
+
     view = viewObjects;
 
     //mp_stock = new Stock( this, &database, par4 );
@@ -53,16 +54,6 @@ void Controller::newText_Search(QString &viewSearch)
     db_customerQueue dbQueue;
     view_customerQueue viewQueue;
 
-
-    /*
-     QString view_tmpName;
-    QString view_tmpFirstName;
-    QString view_tmpLogin;
-    float view_tmpBalance;
-    unsigned view_tmpId;
-    QString view_tmpGroup;
-    */
-
     dbSearch = viewSearch.toStdString();
 
 
@@ -82,41 +73,55 @@ void Controller::newText_Search(QString &viewSearch)
             dbQueue.pop();
         }
 
-    }  
+    }
     // Sent result to view
     view->searchResults->setSearchResults(viewQueue );
 
     database.closeDatabase();
 }
 
+void Controller::newGlobal_Hist()
+{
+    view_histQueue HistoryQueue;
+    view_histTuple HistoryTuple;
+
+    db_histQueue dbHistoryQueue;
+    db_histTuple dbHistoryTuple;
+
+    database.openDatabase();
+    dbHistoryQueue = database.getLastOperations(30);
+
+    if ( !dbHistoryQueue.empty() ){
+
+        // Copy the dbQueue into the viewQueue
+        while( !dbHistoryQueue.empty() )
+        {
+            dbHistoryTuple = dbHistoryQueue.front();
+
+            HistoryTuple=dbHistoryTuple.transformIntoHistView();
+
+            HistoryQueue.push(HistoryTuple);
+            dbHistoryQueue.pop();
+        }
+
+    }
+    // Sent result to view
+    view->history->setHistory(HistoryQueue);
+
+    database.closeDatabase();
+
+}
+
 void Controller::newClic_Customer(unsigned int customerId)
 {
-//    string firstName;
-//    string familyName;
-//    string group;
-//    float money;
     database.openDatabase();
-   db_customerTuple tmp_dbCustomerInfo;
-   view_customerTuple tmpViewCustomerInfo;
+    db_customerTuple tmp_dbCustomerInfo;
+    view_customerTuple tmpViewCustomerInfo;
 
     tmp_dbCustomerInfo = database.getCustomerFromId( customerId );
 
-        /* Create the customer */
+    /* Create the customer */
     tmpViewCustomerInfo=tmp_dbCustomerInfo.transformIntoCustomerView();
-
-  /*  curCustomer = new Customer( std::get<5>( tmpDBCurstomerInfo ).c_str(),
-                                std::get<0>( tmpDBCurstomerInfo ).c_str(),
-                                std::get<1>( tmpDBCurstomerInfo ).c_str(),
-                                std::get<2>( tmpDBCurstomerInfo ).c_str(),
-                                std::get<3>( tmpDBCurstomerInfo ) );
-
-    tmpViewCustomerInfo = std::make_tuple( QString::fromStdString( curCustomer->getLogin() ),
-                                            QString::fromStdString( curCustomer->getFirstName() ),
-                                            QString::fromStdString( curCustomer->getFamilyName() ),
-                                            QString::fromStdString( std::get<2>( tmpDBCurstomerInfo ) ),
-                                            curCustomer->getBalance() );
- */
-
     view->customerPanel->setCustomer( tmpViewCustomerInfo );
 
     database.closeDatabase();
@@ -134,41 +139,93 @@ void Controller::newClic_Customer(unsigned int customerId)
 void Controller::newClic_ProductTypes(unsigned view_productTypeId)
 {
     qDebug() << "Supposed to send only product of categorie" << view_productTypeId;
+
+    // Inputs and outputs
+    view_productTuple view_tmpproductInfo;
+    db_productTuple db_tmpproductInfo;
+
+    db_productQueue *dbQueue(0);
+    dbQueue=new db_productQueue;
+
+    view_productQueue *viewQueue(0);
+    viewQueue=new view_productQueue;
+
+    database.openDatabase();
+    *dbQueue = database.getProductsFromCategory(view_productTypeId);        // Get product information corresponding to the search from model
+
+    if ( !dbQueue->empty() ){
+
+        // Copy the dbQueue into the viewQueue
+        while( !dbQueue->empty() ){
+            db_tmpproductInfo = dbQueue->front();
+
+            view_tmpproductInfo=db_tmpproductInfo.transformIntoProductView();
+
+            viewQueue->push(view_tmpproductInfo);
+            dbQueue->pop();
+        }
+
+    }
+    // Sent result to view
+    view->productChoices->setProductsChoices(*viewQueue);
+    database.closeDatabase();
+
+    //Emptying the view queue
+    return;
 }
 
-//void Controller::newClic_Product(QString &view_productName)
-//{
+void Controller::newClic_Product(unsigned &view_productId)
+{
+    qDebug() << "Supposed to send only product n°" << view_productId;
 
+    QList<cartProduct> currentCartController;
 
-//    string db_productName;
-//    pair < float, unsigned > db_Product_Info;
-//    Product newProduct;
-//    view_productTuple view_tmpProductInfo;
-//    queue< view_productTuple > view_Queue;
+    view_cartQueue displayCart;
+    view_cartTuple displayProd;
 
+    db_productTuple db_productInfo;
 
-//        // Get product information from DB
-//    db_productName = view_productName.toStdString();
-//    /* SQL request : Get product information for product with name : db_productName as a std::pair
-//     * float price
-//     * unsigned stock
-//    */
+    // Get product information from DB
+    unsigned id=10;
 
-//        // Create Product
-//    newProduct = Product( db_productName, db_Product_Info.first, db_Product_Info.second );
-//    auto productPtr = make_shared<Product>(newProduct);
+    database.openDatabase();
+    db_productInfo=database.getProductFromId(view_productId);
 
-//        // Add it to the cart
-//    curCart->addProductToCart( productPtr );
+    //10 is a standard value while waiting Customer to be OK.
+    //curCart->setCustomerID(10);
 
+    //Check if there is enough stock or id selled (the = is for the debug)
+    if (true==true)
+        //(db_productInfo.getProductStock()>0)
+    {
+        // Add it to the cart
+        curCart->addProductToCart( view_productId );
+        //Edit price
+        curCart->editPrice(db_productInfo.getProductPrice());
+    }
+    //else : Display Warning
 
-//        // Set cart information
-//    curCart->getList(view_Queue);
+    // Get cart information
+    currentCartController = curCart->getList();
 
-//        // Send to view
-//    viewCartDisplay->setCart(view_Queue);
-//    viewCartDisplay->setTotalPrice(curCart->getPrice());
-//}
+    //Tranform cart into Displaycart
+    //Which contains : customerId,product_id,p
+    for (int i=0; i<currentCartController.size();i++)
+    {
+        db_productInfo=database.getProductFromId(currentCartController[i].first);
+        displayProd.setCartCustomerId(10);
+        displayProd.setCartPrice(db_productInfo.getProductPrice());
+        displayProd.setCartProdId(currentCartController[i].first);
+        displayProd.setCartProdName(QString::fromStdString(db_productInfo.getProductName()));
+        displayProd.setCartQuantity(currentCartController[i].second);
+
+        displayCart.push(displayProd);
+    }
+    database.closeDatabase();
+    // Send to view
+    view->cartDisplay->setTotalPrice(curCart->getPrice());
+    view->cartDisplay->setCart(displayCart);
+}
 
 bool Controller::view_isLoginCorrect(QString login, QString passwd, LoginType loginType)
 {
@@ -186,10 +243,34 @@ void Controller::newClic_Calculator()
     currentLoginRequest = CALCULATOR;
 }
 
-void Controller::newClic_IndividualHistory()
+void Controller::newClic_IndividualHistory(unsigned id)
 {
-    view_historyQueue toto;
-    view->individualHistory->launchIndividualHistory(toto);
+    view_histQueue CustomerHist;
+    view_histTuple CustomerHistTuple;
+
+    db_histQueue dbCustomerHist;
+    db_histTuple dbCustomerHistTuple;
+
+    database.openDatabase();
+    dbCustomerHist = database.getCustomerHist(id);
+
+    if ( !dbCustomerHist.empty() ){
+
+        // Copy the dbQueue into the viewQueue
+        while( !dbCustomerHist.empty() ){
+            dbCustomerHistTuple = dbCustomerHist.front();
+
+            CustomerHistTuple=dbCustomerHistTuple.transformIntoHistView();
+
+            CustomerHist.push(CustomerHistTuple);
+            dbCustomerHist.pop();
+        }
+
+    }
+    // Send result to view
+
+    view->individualHistory->launchIndividualHistory(CustomerHist);
+    database.closeDatabase();
 }
 
 bool Controller::isNegativeAllowed()
