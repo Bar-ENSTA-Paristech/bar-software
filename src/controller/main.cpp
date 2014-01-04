@@ -15,7 +15,6 @@
 #include "cart.h"
 #include "product.h"
 
-unsigned Customer::numberOfCustomers = 0;
 QString GLOBAL_PATH;
 
 int main(int argc, char *argv[])

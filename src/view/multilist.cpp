@@ -67,7 +67,7 @@ void MultiList::sortItems(int index)
         model->sort(index, Qt::AscendingOrder);
     else
         //table->sortItems(index, Qt::DescendingOrder);
-        model->sort(index, Qt::DescendingOrder);
+        model->sort(index, Qt::AscendingOrder);
 
 }
 

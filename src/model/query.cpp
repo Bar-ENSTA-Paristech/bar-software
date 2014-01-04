@@ -5,7 +5,7 @@ Query::Query(): query(""),status(1),verbose(false)
 {
 }
 
-std::string Query::getQuery()
+ const char* Query::getQuery()
 {
         return query;
 }
@@ -18,7 +18,7 @@ bool Query::getVerbose()
 void Query::setQuery(std::string _query)
 {
 
-    query=_query;
+    query=_query.data();
     return;
 }
 

@@ -8,6 +8,7 @@
 #include <tuple>
 #include <QDebug>
 #include <QFile>
+#include <QString>
 #include "controller.h"
 #include "calculator.h"
 #include "structures.h"

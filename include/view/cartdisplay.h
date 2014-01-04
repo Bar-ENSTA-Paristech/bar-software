@@ -49,6 +49,8 @@ private:
 signals:
     
 public slots:
+    void validateCart();
+    void cancelCart();
     
 };
 

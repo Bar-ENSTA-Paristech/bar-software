@@ -450,6 +450,16 @@ void db_histTuple::setHistOperation(std::string _operation)
     operation = _operation;
 }
 
+void db_histTuple::setHistCustomerId(unsigned _id)
+{
+    customer_id = _id;
+}
+
+void db_histTuple::setHistProductId(unsigned _id)
+{
+    product_id = _id;
+}
+
 int db_histTuple::getHistId()
 {
     return id;
@@ -478,6 +488,16 @@ std::string db_histTuple::getHistFirstName()
 std::string db_histTuple::getHistOperation()
 {
     return operation;
+}
+
+unsigned db_histTuple::getHistCustomerId()
+{
+    return customer_id;
+}
+
+unsigned db_histTuple::getHistProduct_Id()
+{
+    return product_id;
 }
 
 view_histTuple db_histTuple::transformIntoHistView()

@@ -123,6 +123,9 @@ void CustomerPanel::setController(Controller* controllerPar)
 
 void CustomerPanel::setCustomer(view_customerTuple & tuple)
 {
+    //We put such information in the curCoustomer of the controller
+   controller->setCurCustomer(tuple);
+
     // std::tuple<QString name, QString firstName, QString login, QString categorie, float balance>
     ID = tuple.getCustomerId();
     name->setText(tuple.getCustomerName());
@@ -130,6 +133,8 @@ void CustomerPanel::setCustomer(view_customerTuple & tuple)
     login->setText(tuple.getCustomerLogin());
     categorie->setText(QString::number(tuple.getCustomerCategory()));
     balance->setText(QString::number(tuple.getCustomerBalance()) + " €");
+
+
     if(tuple.getCustomerBalance() < 0)
         balance->setStyleSheet("color: #FF0000;");
     else

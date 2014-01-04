@@ -8,19 +8,21 @@ class Customer
 {
 public:
   Customer();
-  /*    Customer(std::string login, std::pair<std::string,std::string> name, std::string groupe = "", float balance = 0);
-    Customer(std::string login, std::string firstName, std::string familyName, std::string groupe = "", float balance = 0);
+
     std::string getFirstName() const;
-    std::string getFamilyName() const;
+    std::string getName() const;
     std::string getLogin() const;
     float getBalance() const;
-    void setName(const std::string &firstName, const std::string &familyName);
-    void setName(std::pair<std::string,std::string> name);
+    unsigned getCustomerId() ;
+    int getCategory();
+
     void setFirstName(const std::string &firstName);
-    void setFamilyName(const std::string &familyName);
+    void setName(const std::string &familyName);
     void setLogin(const std::string &login);
     void setBalance(float balance);
-    void setId (int id);
+    void setCustomerId (unsigned _id);
+    void setCategory (int _cat);
+    /*
     void addToBalance(float addedBalance);
     void removeToBalance(float removedBalance);
     bool checkBalance() const;
@@ -28,13 +30,12 @@ public:
     Customer& operator-=(int removedBalance);
 */
 private:
-    std::pair<std::string,std::string> name;
+    std::string name;
+    std::string firstname;
     std::string login;
-    std::string group;
+    int category;
     float balance;
-    unsigned int id;
-    static unsigned numberOfCustomers;
-
+    unsigned customerid;
  };
 
 #endif // CUSTOMER_H

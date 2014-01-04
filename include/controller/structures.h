@@ -172,6 +172,8 @@ public:
     void setHistPrice (float _price);
     void setHistFirstName (std::string firstName);
     void setHistOperation (std::string operation);
+    void setHistCustomerId (unsigned _id);
+    void setHistProductId (unsigned _id);
 
     int getHistId();
     std::string getHistDate ();
@@ -179,6 +181,8 @@ public:
     float getHistPrice();
     std::string getHistFirstName();
     std::string getHistOperation();
+    unsigned getHistCustomerId();
+    unsigned getHistProduct_Id();
 
     view_histTuple transformIntoHistView();
 
@@ -189,6 +193,8 @@ private:
     float price;
     std::string firstName;
     std::string operation;
+    unsigned customer_id;
+    unsigned product_id;
 };
 
 class view_histTuple

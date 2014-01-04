@@ -25,6 +25,10 @@ CartDisplay::CartDisplay(QWidget *parent) :
     totalPrice->setText("- €");
     totalPrice->setFont(bold);
     totalPrice->setAlignment(Qt::AlignCenter);
+
+    QObject::connect(validateButton, SIGNAL(clicked()),this,SLOT(validateCart()));
+    QObject::connect(cancelButton, SIGNAL(clicked()),this,SLOT(cancelCart()));
+
 }
 
 CartDisplay::~CartDisplay()
@@ -102,3 +106,12 @@ void CartDisplayFrame::setCart(view_cartQueue & queue)
     return;
 }
 
+void CartDisplay::validateCart()
+{
+    controller->newClic_ValidateCart();
+}
+
+void CartDisplay::cancelCart()
+{
+    controller->newClic_CancelCart();
+}
