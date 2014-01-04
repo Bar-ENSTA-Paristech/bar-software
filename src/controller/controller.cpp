@@ -40,6 +40,7 @@ void Controller::mainController()
     QString emptyString;
     // Initialize view fields
     newText_Search( emptyString );
+    newGlobal_Hist();
 }
 
 

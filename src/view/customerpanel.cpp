@@ -74,7 +74,7 @@ CustomerPanel::CustomerPanel(QWidget *parent) :
 
     // an empty button is created to take the empty place generated with different photos, and let the option icon to be always at the same place
     QPushButton* emptyButton = new QPushButton(optionsFrame);
-    emptyButton->setFlat(true);
+    //emptyButton->setFlat(true);
     emptyButton->setUpdatesEnabled(false);
     calculator->setIcon(QIcon(GLOBAL_PATH + "resources/pictures/calculator.png"));
     calculator->setFlat(true);

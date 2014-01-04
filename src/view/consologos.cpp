@@ -70,17 +70,26 @@ void ConsoLogos::logoClicked(int shortcutId)
 
 void ConsoLogos::newCategorieToController(int id)
 {
+    if(id < 0 || id >= NUMBER_OF_CONSUMPTION_TYPES)
+        return;
+
     for(int i = 0 ; i < NUMBER_OF_CONSUMPTION_TYPES ; i++)
     {
         if(i != id)
         {
-            //logosLabels[i].setStyleSheet("background : #d7d7f4;  border: 1px solid #666666; border-radius: 7px;");
-}
+            //logosLabels[i].setStyleSheet("ConsoLogos QPushButton{padding-top: 4px; padding-bottom: 4px; padding-left: 2px; padding-right: 2px; border: 1px solid black; border-radius: 7px;}");
+            logosLabels[i].setObjectName("");
         }
-    if(id < 0 || id >= NUMBER_OF_CONSUMPTION_TYPES)
-        return;
-    //logosLabels[id].setStyleSheet("background : #ffff00;");
+    }
+
+    //logosLabels[id].setStyleSheet("ConsoLogos QPushButton{outline: none; color: #f9f9f9; background-color: grey;}");
+    logosLabels[id].setObjectName("activeTypeOfProduct");
+    QFile css(GLOBAL_PATH + "include/view/mainDesign.css");
+    if(css.open(QIODevice::ReadOnly)) {
+        this->setStyleSheet(css.readAll());
+    }
     controller->newClic_ProductTypes( (unsigned) id);
+
 }
 
 ConsoLogos::~ConsoLogos()

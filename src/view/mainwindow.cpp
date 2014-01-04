@@ -78,9 +78,6 @@ MainWindow::MainWindow()
     QObject::connect(timerSearch, SIGNAL(timeout()), this, SLOT(sendSearch()));
     QObject::connect(timerAtStart, SIGNAL(timeout()), this, SLOT(updateSize()));
 
-    //Permet l'initialisation de l'Historique au lancement(Probablement à revoir)
-    QObject::connect(timerAtStart, SIGNAL(timeout()), this, SLOT(sendHist()));
-
 
     // DESIGN
     menu->setStyleSheet("background : url("+GLOBAL_PATH+"resources/pictures/menu_background.png);");
@@ -130,11 +127,6 @@ void MainWindow::searchChanged(const QString & text)
 void MainWindow::sendSearch()
 {
     controller->newText_Search(search);
-}
-
-void MainWindow::sendHist()
-{
-    controller->newGlobal_Hist();
 }
 
 void MainWindow::shortcutRoutine()

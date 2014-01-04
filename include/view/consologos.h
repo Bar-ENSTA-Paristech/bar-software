@@ -7,9 +7,11 @@
 #include <QFont>
 #include <QPushButton>
 #include <QStyle>
+#include <QFile>
 #include "controller.h"
 #include "structures.h"
 extern ViewObjects VIEW;
+extern QString GLOBAL_PATH;
 
 #define NUMBER_OF_CONSUMPTION_TYPES 6
 

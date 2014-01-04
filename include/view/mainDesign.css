@@ -41,8 +41,8 @@ font-family :Gisha;
 }
 
 CustomerPanel QPushButton{
-padding : 1em;
-margin-right : 0.5em
+padding : 0.5em;
+margin-right : 0.5em;
 }
 
 #consoLogos *{
@@ -58,11 +58,23 @@ border: 1px solid black;
 border-radius: 7px;
 }
 
-ConsoLogos QPushButton:focus {
+#activeTypeOfProduct{
+padding-top: 4px;
+padding-bottom: 4px;
+padding-left: 2px;
+padding-right: 2px;
+border: 1px solid black;
+border-radius: 7px;
 outline: none;
 color: #f9f9f9;
 background-color: grey;
 }
+
+/*ConsoLogos QPushButton:focus {
+outline: none;
+color: #f9f9f9;
+background-color: grey;
+}*/
 
 ConsoLogos QPushButton:hover{
 border: 3px solid black;

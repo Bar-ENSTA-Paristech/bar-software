@@ -17,7 +17,7 @@ ProductsChoices::ProductsChoices(QWidget *parent) :
     hiddenColumn = 3;
     updateHeadersSize(defaultHeaderWidth, stretchColumns, hiddenColumn);
 
-    QObject::connect(table, SIGNAL(clicked(QModelIndex)), this, SLOT(lineClicked(QModelIndex)));
+    QObject::connect(table, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(lineClicked(QModelIndex)));
 
 }
 

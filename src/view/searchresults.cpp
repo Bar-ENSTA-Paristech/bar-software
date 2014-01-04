@@ -17,7 +17,7 @@ SearchResults::SearchResults(QWidget *parent) :
 
     headers[0]->setText("Nom");
     headers[1]->setText("Prénom");
-    headers[2]->setText("Catégorie");
+    headers[2]->setText("Cat.");
     headers[3]->setText("Solde");
     headers[4]->setText("Id");
 
