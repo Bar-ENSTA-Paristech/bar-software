@@ -23,6 +23,9 @@ ProductsChoices::ProductsChoices(QWidget *parent) :
 
 void ProductsChoices::setProductsChoices(view_productQueue queue)
 {
+    //déconnexion du modèle et de la vue (optimisation)
+    table->setModel(NULL);
+
     //On vide l'index précédemment établi
     model->removeRows(0,rows);
 

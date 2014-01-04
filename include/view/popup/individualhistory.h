@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <QLabel>
+#include <QStyleFactory>
 #include "multilist.h"
 #include "controller.h"
 #include "structures.h"

@@ -55,6 +55,7 @@ void History::setHistory(view_histQueue queue)
     view_histTuple tuple;
     QFont historyFont;
     historyFont.setPixelSize(11);
+    table->setModel(NULL);
 
     // Inserting new results
     QBrush color;
@@ -84,6 +85,8 @@ void History::setHistory(view_histQueue queue)
             model->item(i,j)->setForeground(color);
         }
     }
+    table->setModel(model);
+    updateHeadersSize(defaultHeaderWidth, stretchColumns, hiddenColumn);
 
     // Ascending or Descending depends on order of queue
     //table->sortItems(5, Qt::AscendingOrder);

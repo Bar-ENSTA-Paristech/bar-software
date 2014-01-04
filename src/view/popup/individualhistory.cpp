@@ -6,6 +6,7 @@ IndividualHistory::IndividualHistory(QWidget *parent) :
     VIEW.individualHistory = this;
     //this->setWindowFlags(Qt::Tool);
     this->setWindowFlags(Qt::WindowStaysOnTopHint);
+    this->setStyle(QStyleFactory::create("fusion"));
     history = new IndividualHistoryList(this);
     layout = new QGridLayout(this);
     title = new QLabel(this);
