@@ -12,6 +12,7 @@ Controller::Controller()
     negativeAllowed = true;
     curCart = new Cart;
     curCustomer = new Customer;
+    view_curCustomer = new view_customerTuple;
 }
 
 void Controller::setDb(sqlite3* handle)
@@ -126,8 +127,10 @@ void Controller::newClic_Customer(unsigned int customerId)
 
     /* Create the customer */
     tmpViewCustomerInfo=tmp_dbCustomerInfo.transformIntoCustomerView();
+    setCurCustomer(tmpViewCustomerInfo);
     view->customerPanel->setCustomer( tmpViewCustomerInfo );
-    view->customerPanel->setFuturBalance(tmpViewCustomerInfo.getCustomerBalance());
+    //view->customerPanel->setFuturBalance(tmpViewCustomerInfo.getCustomerBalance()); Ca sert à rien d'afficher deux fois la meme somme ...
+    view->customerPanel->setFuturBalance(0,false); // on l'efface pour le nouveau client (reset)
 
     database.closeDatabase();
 
@@ -197,6 +200,8 @@ void Controller::newClic_ValidateCart()
     view->cartDisplay->setCart(displayCart);
 
     view->customerPanel->setCustomer(editedCustomer);
+    // On efface la prévision du solde
+    view->customerPanel->setFuturBalance(0, false);
 
     //Updating l'hist global
     newGlobal_Hist();
@@ -214,6 +219,8 @@ void Controller::newClic_CancelCart()
     curCart->clearCart();
     view->cartDisplay->setTotalPrice(curCart->getPrice());
     view->cartDisplay->setCart(displayCart);
+    // On efface la prévision du solde
+    view->customerPanel->setFuturBalance(0, false);
     qDebug()<<"cancelled cart";
     return;
 }
@@ -319,6 +326,13 @@ bool Controller::view_isLoginCorrect(QString login, QString passwd, LoginType lo
     {
         view->calculator->launchCalculator();
     }
+    if(currentLoginRequest == EDIT_CUSTOMER)
+    {
+        // ###### vector des categories à aller chercher dans bdd ou ailleurs ...
+        std::vector<QString> categories;
+        categories.push_back("BAR");categories.push_back("2014");categories.push_back("2015");
+        view->editCustomer->launchEditCustomer(*view_curCustomer, categories);
+    }
     return true;
 }
 
@@ -367,8 +381,30 @@ void Controller::setCurCustomer(view_customerTuple &tuple)
 {
     curCustomer->setCustomerId((tuple.getCustomerId()));
     curCustomer->setBalance(tuple.getCustomerBalance());
-    curCustomer->setFirstName(tuple.getCustomerFirstname().QString::toStdString());
+    curCustomer->setFirstName(tuple.getCustomerFirstName().QString::toStdString());
     curCustomer->setCategory(tuple.getCustomerCategory());
-    curCustomer->setName(tuple.getCustomerFirstname().QString::toStdString());
+    curCustomer->setName(tuple.getCustomerFirstName().QString::toStdString());
     curCustomer->setLogin(tuple.getCustomerLogin().QString::toStdString());
+    view_curCustomer->setCustomerId((tuple.getCustomerId()));
+    view_curCustomer->setCustomerBalance(tuple.getCustomerBalance());
+    view_curCustomer->setCustomerFirstName(tuple.getCustomerFirstName());
+    view_curCustomer->setCustomerCategory(tuple.getCustomerCategory());
+    view_curCustomer->setCustomerName(tuple.getCustomerName());
+    view_curCustomer->setCustomerLogin(tuple.getCustomerLogin());
+}
+
+void Controller::newClic_EditCustomer()
+{
+    view->login->checkGlobal();
+    currentLoginRequest = EDIT_CUSTOMER;
+}
+
+void Controller::receiveCalculatorEntry(float price)
+{
+    // TO DEFINE
+}
+
+void Controller::receiveEditCustomerEntry(view_customerTuple& customer)
+{
+    // TO DEFINE
 }

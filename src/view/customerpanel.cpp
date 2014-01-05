@@ -26,11 +26,11 @@ CustomerPanel::CustomerPanel(QWidget *parent) :
 
     //###### INFOS ########
     infosLayout = new QGridLayout(infosFrame);
-    nameLabel = new QLabel("Nom :", infosFrame);
-    firstNameLabel = new QLabel("Prénom :", infosFrame);
-    loginLabel = new QLabel("Login :", infosFrame);
-    categorieLabel = new QLabel("Catégorie :", infosFrame);
-    balanceLabel = new QLabel("Solde :", infosFrame);
+    nameLabel = new QLabel("Nom ", infosFrame);
+    firstNameLabel = new QLabel("Prénom ", infosFrame);
+    loginLabel = new QLabel("Login ", infosFrame);
+    categorieLabel = new QLabel("Cat. ", infosFrame);
+    balanceLabel = new QLabel("Solde ", infosFrame);
     name = new QLabel(infosFrame);
     firstName = new QLabel(infosFrame);
     login = new QLabel(infosFrame);
@@ -39,6 +39,7 @@ CustomerPanel::CustomerPanel(QWidget *parent) :
     futurBalance = new QLabel(infosFrame);
     calculator = new QPushButton(optionsFrame);
     history = new QPushButton(optionsFrame);
+    editCustomer = new QPushButton(optionsFrame);
 
     QFont bold, normal;
     bold.setBold(true);
@@ -56,18 +57,19 @@ CustomerPanel::CustomerPanel(QWidget *parent) :
     categorieLabel->setFont(normal);
     balanceLabel->setFont(normal);
     photo->setPixmap(GLOBAL_PATH + "resources/photos/no_photo.jpg");
+    photo->setMaximumSize(150, 220);
 
     infosLayout->addWidget(nameLabel, 0, 0);
-    infosLayout->addWidget(name, 0, 1);
+    infosLayout->addWidget(name, 0, 1, 1, 1, Qt::AlignLeft);
     infosLayout->addWidget(firstNameLabel, 1, 0);
-    infosLayout->addWidget(firstName, 1, 1);
+    infosLayout->addWidget(firstName, 1, 1, 1, 1, Qt::AlignLeft);
     infosLayout->addWidget(loginLabel, 2, 0);
-    infosLayout->addWidget(login, 2, 1);
+    infosLayout->addWidget(login, 2, 1, 1, 1, Qt::AlignLeft);
     infosLayout->addWidget(categorieLabel, 3, 0);
-    infosLayout->addWidget(categorie, 3, 1);
+    infosLayout->addWidget(categorie, 3, 1, 1, 1, Qt::AlignLeft);
     infosLayout->addWidget(balanceLabel, 4, 0);
-    infosLayout->addWidget(balance, 4, 1);
-    infosLayout->addWidget(futurBalance, 5, 1);
+    infosLayout->addWidget(balance, 4, 1, 1, 1, Qt::AlignLeft);
+    infosLayout->addWidget(futurBalance, 5, 1, 1, 1, Qt::AlignLeft);
     infosLayout->setContentsMargins(0, 30, 0, 0);
     infosFrame->setLayout(infosLayout);
 
@@ -80,13 +82,16 @@ CustomerPanel::CustomerPanel(QWidget *parent) :
     calculator->setFlat(true);
     calculator->setIconSize(QSize(32,32));
     history->setText("H");
+    editCustomer->setText("edit");
 
     QObject::connect(calculator, SIGNAL(clicked()), this, SLOT(launchCalculator()));
     QObject::connect(history, SIGNAL(clicked()), this, SLOT(launchIndividualHistory()));
+    QObject::connect(editCustomer, SIGNAL(clicked()), this, SLOT(launchEditCustomer()));
 
     optionsLayout->addWidget(emptyButton, 0,0);
     optionsLayout->addWidget(calculator, 0,1);
     optionsLayout->addWidget(history, 0,2);
+    optionsLayout->addWidget(editCustomer, 0, 3);
     optionsLayout->setColumnStretch(0, 1);
     optionsLayout->setSpacing(0);
     optionsLayout->setContentsMargins(0,0,0,0);
@@ -129,7 +134,7 @@ void CustomerPanel::setCustomer(view_customerTuple & tuple)
     // std::tuple<QString name, QString firstName, QString login, QString categorie, float balance>
     ID = tuple.getCustomerId();
     name->setText(tuple.getCustomerName());
-    firstName->setText(tuple.getCustomerFirstname());
+    firstName->setText(tuple.getCustomerFirstName());
     login->setText(tuple.getCustomerLogin());
     categorie->setText(QString::number(tuple.getCustomerCategory()));
     balance->setText(QString::number(tuple.getCustomerBalance()) + " €");
@@ -151,8 +156,13 @@ void CustomerPanel::setCustomer(view_customerTuple & tuple)
         photo->setPixmap(GLOBAL_PATH + "resources/photos/no_photo.jpg");
 }
 
-void CustomerPanel::setFuturBalance(float nextBalance)
+void CustomerPanel::setFuturBalance(float nextBalance, bool on)
 {
+    if(!on)
+    {
+        futurBalance->clear();
+        return;
+    }
     futurBalance->setText("-> " + QString::number(nextBalance) + " €");
     if(nextBalance < 0)
         futurBalance->setStyleSheet("color: #FF0000;");
@@ -171,4 +181,7 @@ void CustomerPanel::launchIndividualHistory()
     controller->newClic_IndividualHistory(ID);
 }
 
-
+void CustomerPanel::launchEditCustomer()
+{
+    controller->newClic_EditCustomer();
+}

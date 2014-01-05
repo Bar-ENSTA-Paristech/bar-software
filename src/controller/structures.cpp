@@ -79,7 +79,7 @@ view_customerTuple db_customerTuple::transformIntoCustomerView()
 
     result.setCustomerBalance(balance);
     result.setCustomerCategory(category);
-    result.setCustomerFirstname(QString::fromStdString(firstname));
+    result.setCustomerFirstName(QString::fromStdString(firstname));
     result.setCustomerId(id);
     result.setCustomerLogin(QString::fromStdString(login));
     result.setCustomerName(QString::fromStdString(name));
@@ -105,9 +105,9 @@ void view_customerTuple::setCustomerName(QString _name)
     name=_name;
 }
 
-void view_customerTuple::setCustomerFirstname(QString _firstname)
+void view_customerTuple::setCustomerFirstName(QString _firstname)
 {
-    firstname=_firstname;
+    firstName=_firstname;
 }
 
 void view_customerTuple::setCustomerLogin(QString _login)
@@ -135,9 +135,9 @@ QString view_customerTuple::getCustomerName()
     return name;
 }
 
-QString view_customerTuple::getCustomerFirstname()
+QString view_customerTuple::getCustomerFirstName()
 {
-    return firstname;
+    return firstName;
 }
 
 QString view_customerTuple::getCustomerLogin()
@@ -161,7 +161,7 @@ db_customerTuple view_customerTuple::transformIntoCustomerDb()
 
     result.setCustomerBalance(balance);
     result.setCustomerCategory(category);
-    result.setCustomerFirstname(firstname.QString::toStdString());
+    result.setCustomerFirstname(firstName.QString::toStdString());
     result.setCustomerId(id);
     result.setCustomerLogin(login.QString::toStdString());
     result.setCustomerName(name.QString::toStdString());

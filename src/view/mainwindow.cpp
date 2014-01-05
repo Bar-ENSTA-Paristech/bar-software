@@ -86,6 +86,7 @@ MainWindow::MainWindow()
     VIEW.login = new Login(centralWidget);
     calculatorWindow = new Calculator(centralWidget);
     VIEW.individualHistory = new IndividualHistory();
+    VIEW.editCustomer = new EditCustomer(centralWidget);
 
     //tmpLayout->addWidget(VIEW.individualHistory, 0,0);
     //widget->setLayout(tmpLayout);
@@ -170,6 +171,7 @@ void MainWindow::setController(Controller *controllerParam)
     VIEW.login->setController(controller);
     calculatorWindow->setController(controller);
     VIEW.individualHistory->setController(controller);
+    VIEW.editCustomer->setController(controller);
 
     controller->mainController();
 }

@@ -14,6 +14,7 @@
 #include "../view/history.h"
 #include "login.h"
 #include "individualhistory.h"
+#include "editcustomer.h"
 
 
 #include "customer.h"
@@ -53,7 +54,10 @@ public:
     void newClic_Product(unsigned &view_productId);
     void newClic_Calculator();
     void newClic_IndividualHistory(unsigned customerId);
+    void newClic_EditCustomer();
     void newGlobal_Hist();
+    void receiveCalculatorEntry(float price);
+    void receiveEditCustomerEntry(view_customerTuple& customer);
     //void setViewPointers(SearchResults* par1, CustomerPanel* par2, CartDisplay* par3, ProductsChoices* par4, History* par5);
     void setViewPointers(ViewObjects *viewObjects);
     void setCurCustomer(view_customerTuple &tuple);
@@ -71,6 +75,7 @@ private:
     History * viewHistory;*/
     ViewObjects*  view;
     LoginObjects currentLoginRequest;
+    view_customerTuple *view_curCustomer;
 
         /* Controller objects */
     Stock * mp_stock;

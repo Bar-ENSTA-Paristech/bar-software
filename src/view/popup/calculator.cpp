@@ -72,7 +72,7 @@ void Calculator::validate()
     {
         float floatValue = value.toFloat();
         // ###### APPEL AU CONTROLLEUR POUR TRANSACTION #####
-
+        controller->receiveCalculatorEntry(floatValue);
         this->hide();
     }
     else

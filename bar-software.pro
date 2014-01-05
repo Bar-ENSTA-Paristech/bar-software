@@ -37,6 +37,7 @@ src/controller/structures.cpp \
 src/view/popup/calculator.cpp \
 src/view/popup/login.cpp \
 src/view/popup/individualhistory.cpp \
+    src/view/popup/editcustomer.cpp
 
 
 
@@ -74,6 +75,7 @@ include/controller/structures.h \
 include/view/popup/calculator.h \
 include/view/popup/login.h \
 include/view/popup/individualhistory.h \
+include/view/popup/editcustomer.h
 
 
 

@@ -27,7 +27,7 @@
 //typedef std::queue<view_productTuple> view_productQueue;
 
 typedef enum {INDIVIDUAL, GLOBAL, ROOT} LoginType;
-typedef enum {CALCULATOR} LoginObjects;
+typedef enum {CALCULATOR, EDIT_CUSTOMER} LoginObjects;
 
 class view_customerTuple;
 class view_productTuple;
@@ -71,14 +71,14 @@ public :
 
     void setCustomerId (unsigned _id);
     void setCustomerName (QString _name);
-    void setCustomerFirstname (QString _firstname);
+    void setCustomerFirstName (QString _firstName);
     void setCustomerLogin (QString _login);
     void setCustomerCategory (unsigned _category);
     void setCustomerBalance (float _balance);
 
     unsigned getCustomerId ();
     QString getCustomerName();
-    QString getCustomerFirstname();
+    QString getCustomerFirstName();
     QString getCustomerLogin();
     unsigned getCustomerCategory();
     float getCustomerBalance();
@@ -88,7 +88,7 @@ public :
 private:
     unsigned id;
     QString name;
-    QString firstname;
+    QString firstName;
     QString login;
     unsigned category;
     float balance;
@@ -266,6 +266,7 @@ class CartDisplay;
 class CartDisplayFrame;
 class ConsoLogos;
 class CustomerPanel;
+class EditCustomer;
 class History;
 class LeftPart;
 class RightPart;
@@ -283,6 +284,7 @@ typedef struct{
     CartDisplayFrame* cartDisplayFrame;
     ConsoLogos* consoLogos;
     CustomerPanel* customerPanel;
+    EditCustomer* editCustomer;
     History* history;
     LeftPart* leftPart;
     RightPart* rightPart;

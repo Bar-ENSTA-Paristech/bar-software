@@ -67,7 +67,7 @@ void SearchResults::setSearchResults(view_customerQueue & queue)
             model->item(i,3)->setForeground(positiveSold);
 
         model->item(i,0)->setText(tuple.getCustomerName());
-        model->item(i,1)->setText(tuple.getCustomerFirstname());
+        model->item(i,1)->setText(tuple.getCustomerFirstName());
         model->item(i,2)->setText(QString::number(tuple.getCustomerCategory()));
         model->item(i,3)->setText(QString::number(balance));
         model->item(i,4)->setText(QString::number(tuple.getCustomerId()));

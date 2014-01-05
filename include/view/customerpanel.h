@@ -34,7 +34,7 @@ public:
     explicit CustomerPanel(QWidget *parent = 0);
     ~CustomerPanel();
     void setCustomer(view_customerTuple &tuple);
-    void setFuturBalance(float nextBalance);
+    void setFuturBalance(float nextBalance, bool on=true);
     void setController(Controller* controllerPar);
     
 private:
@@ -60,6 +60,7 @@ private:
     QLabel* balanceLabel;
     QPushButton* calculator;
     QPushButton* history;
+    QPushButton* editCustomer;
 
     unsigned ID;
 
@@ -68,6 +69,7 @@ signals:
 public slots:
     void launchCalculator();
     void launchIndividualHistory();
+    void launchEditCustomer();
     
 };
 
