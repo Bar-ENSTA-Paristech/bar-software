@@ -425,3 +425,11 @@ void Controller::newClic_DeleteCustomer()
     view->login->checkRoot();
     currentLoginRequest = DELETE_CUSTOMER;
 }
+
+void Controller::newClic_GlobalHistory()
+{
+    // CALL TO DB TO DEFINE
+
+    view_histQueue queue;
+    view->globalHistory->launchGlobalHistory(queue);
+}

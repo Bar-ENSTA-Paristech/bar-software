@@ -80,14 +80,15 @@ void MultiList::setRows(int numberOfRows)
 {
     if(numberOfRows == rows)
         return;
-    bool test = true;
+    bool newRows = false;
 
     int old_rows = rows;
     rows = numberOfRows;
 
     // If we need more rows than we have already created, we launch an other salve of 500 rows to create
-    if(numberOfRows > rowsAllocated)
+    while(numberOfRows > rowsAllocated)
     {
+        newRows = true;
         //table->setRowCount(rowsAllocated+500);
         model->setRowCount(rowsAllocated+500);
         //QTableWidgetItem** rowItems = new QTableWidgetItem*[columns];
@@ -120,7 +121,7 @@ void MultiList::setRows(int numberOfRows)
 
         delete[] rowItems;
     }
-    else
+    if(!newRows)
     {// ############## FACTORING
         for(int i=0 ; i < numberOfRows ; i++)
             table->setRowHidden(i, false);

@@ -65,7 +65,7 @@ int main(int argc, char *argv[])
     //Test graph
 Controller * controller = new Controller;
     QApplication application(argc, argv);
-    QFile css(GLOBAL_PATH + "include/view/mainDesign.css");
+    QFile css(GLOBAL_PATH + "resources/design/mainDesign.css");
     if(css.open(QIODevice::ReadOnly)) {
         application.setStyleSheet(css.readAll());
     }

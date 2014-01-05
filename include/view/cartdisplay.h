@@ -8,6 +8,7 @@
 #include <QLabel>
 #include <QPushButton>
 #include <QGridLayout>
+#include <QCheckBox>
 #include "multilist.h"
 #include <QDebug>
 #include "controller.h"
@@ -44,6 +45,7 @@ private:
     QPushButton* cancelButton;
     QFont bold;
     QGridLayout* layout;
+    QCheckBox *cash;
 
     
 signals:

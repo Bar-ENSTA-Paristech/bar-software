@@ -37,8 +37,9 @@ src/controller/structures.cpp \
 src/view/popup/calculator.cpp \
 src/view/popup/login.cpp \
 src/view/popup/individualhistory.cpp \
-    src/view/popup/editcustomer.cpp \
-    src/view/popup/deletecustomer.cpp
+src/view/popup/editcustomer.cpp \
+src/view/popup/deletecustomer.cpp \
+src/view/popup/globalhistory.cpp
 
 
 
@@ -77,13 +78,14 @@ include/view/popup/calculator.h \
 include/view/popup/login.h \
 include/view/popup/individualhistory.h \
 include/view/popup/editcustomer.h \
-include/view/popup/deletecustomer.h
+include/view/popup/deletecustomer.h \
+include/view/popup/globalhistory.h
 
 
 
 OTHER_FILES += \
     ui/view/mainDesign.css \
-    include/view/mainDesign.css \
+    resources/design/mainDesign.css \
 
 macx {
 #QMAKE_CXXFLAGS += -std=c++11 -stdlib=libc++ -mmacosx-version-min=10.7

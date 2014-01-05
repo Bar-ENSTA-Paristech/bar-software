@@ -32,15 +32,19 @@ MainWindow::MainWindow()
 
     // Adding content of the top menu (searchbar and configuration buttons)
     searchBar = new QFrame(menu);
+    menuButtons = new QFrame(menu);
     logo = new QLabel(menu);
     logo->setPixmap(QPixmap(GLOBAL_PATH + "resources/pictures/logo.png"));
     menuLayout = new QGridLayout(menu);
     menuLayout->addWidget(searchBar, 0, 0);
-    menuLayout->addWidget(logo, 0, 2);
+    menuLayout->addWidget(menuButtons, 0, 2);
+    menuLayout->addWidget(logo, 0, 4);
     menu->setLayout(menuLayout);
     menuLayout->setContentsMargins(0,0,0,0);
     menuLayout->setColumnStretch(1,1);
+    menuLayout->setColumnStretch(3,1);
 
+    // SEARCH PART
     searchIcon = new QLabel(searchBar);
     searchIcon->setPixmap(QPixmap(GLOBAL_PATH + "resources/pictures/search.png"));
     searchIcon->setStyleSheet("background: none");
@@ -50,6 +54,13 @@ MainWindow::MainWindow()
     searchBarLayout->addWidget(searchIcon);
     searchBarLayout->addWidget(searchText);
     searchBar->setLayout(searchBarLayout);
+
+    // MENU BUTTONS
+    buttonsLayout = new QGridLayout(menuButtons);
+    globalHistory = new QPushButton("Global H", menuButtons);
+    buttonsLayout->addWidget(globalHistory,0,0);
+    buttonsLayout->setContentsMargins(0,0,0,0);
+    menuButtons->setLayout(buttonsLayout);
 
     // Adding the left and right frames
     rightPart = new RightPart(mainPart);
@@ -74,20 +85,22 @@ MainWindow::MainWindow()
     // ShortCuts
     setShortcut();
 
-    QObject::connect(searchText, SIGNAL(textEdited(const QString &)), this, SLOT(searchChanged(const QString &)));
-    QObject::connect(timerSearch, SIGNAL(timeout()), this, SLOT(sendSearch()));
-    QObject::connect(timerAtStart, SIGNAL(timeout()), this, SLOT(updateSize()));
-
-
-    // DESIGN
-    menu->setStyleSheet("background : url("+GLOBAL_PATH+"resources/pictures/menu_background.png);");
-
     // Additionnal Windows
     VIEW.login = new Login(centralWidget);
     calculatorWindow = new Calculator(centralWidget);
     VIEW.individualHistory = new IndividualHistory();
     VIEW.editCustomer = new EditCustomer(centralWidget);
     VIEW.deleteCustomer = new DeleteCustomer(centralWidget);
+    VIEW.globalHistory = new GlobalHistory();
+
+    QObject::connect(searchText, SIGNAL(textEdited(const QString &)), this, SLOT(searchChanged(const QString &)));
+    QObject::connect(timerSearch, SIGNAL(timeout()), this, SLOT(sendSearch()));
+    QObject::connect(timerAtStart, SIGNAL(timeout()), this, SLOT(updateSize()));
+    QObject::connect(globalHistory, SIGNAL(clicked()), this, SLOT(launchGlobalHistory()));
+
+
+    // DESIGN
+    menu->setStyleSheet("background : url("+GLOBAL_PATH+"resources/pictures/menu_background.png);");
 
     //tmpLayout->addWidget(VIEW.individualHistory, 0,0);
     //widget->setLayout(tmpLayout);
@@ -246,3 +259,7 @@ void MainWindow::setGraph(db_dataarray& data, QString xTitle, QString yTitle, QS
     customPlot->show();
 }
 
+void MainWindow::launchGlobalHistory()
+{
+    controller->newClic_GlobalHistory();
+}

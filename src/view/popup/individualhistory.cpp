@@ -53,7 +53,7 @@ void IndividualHistory::setTotalConsummed(QString total)
 // ############## LIST ############
 
 IndividualHistoryList::IndividualHistoryList(QWidget *parent) :
-    MultiList(parent, 4, 0)
+    MultiList(parent, 4, 0, false)
 {
     headers[0]->setText("Opération");
     headers[1]->setText("Date");

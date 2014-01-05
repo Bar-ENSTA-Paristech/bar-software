@@ -84,7 +84,7 @@ void ConsoLogos::newCategorieToController(int id)
 
     //logosLabels[id].setStyleSheet("ConsoLogos QPushButton{outline: none; color: #f9f9f9; background-color: grey;}");
     logosLabels[id].setObjectName("activeTypeOfProduct");
-    QFile css(GLOBAL_PATH + "include/view/mainDesign.css");
+    QFile css(GLOBAL_PATH + "resources/design/mainDesign.css");
     if(css.open(QIODevice::ReadOnly)) {
         this->setStyleSheet(css.readAll());
     }

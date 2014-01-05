@@ -17,6 +17,7 @@
 #include "qcustomplot.h"
 #include "login.h"
 #include "individualhistory.h"
+#include "globalhistory.h"
 #include "structures.h"
 extern ViewObjects VIEW;
 
@@ -45,6 +46,7 @@ private slots:
     void sendSearch(); // to controller
     void shortcutRoutine();
     void updateSize(); // after resize of window e.g
+    void launchGlobalHistory();
 
 
 private:
@@ -63,6 +65,7 @@ private:
     QWidget *centralWidget;
     QGridLayout *mainWindowLayout;
     QFrame *menu;
+    QFrame *menuButtons;
     QFrame *mainPart;
     QFrame *searchBar;
     QLabel *searchIcon;
@@ -74,7 +77,8 @@ private:
     QLabel *logo;
     Calculator* calculatorWindow;
 
-
+    QGridLayout *buttonsLayout;
+    QPushButton* globalHistory;
 };
 
 #endif // MAINWINDOW_H

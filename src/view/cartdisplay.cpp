@@ -8,13 +8,15 @@ CartDisplay::CartDisplay(QWidget *parent) :
     //QWidget* actionMenu = new QWidget(this);
     cartList = new CartDisplayFrame(this);
     totalPrice = new QLabel(this);
+    cash = new QCheckBox("Cash", this);
     validateButton = new QPushButton(this);
     cancelButton = new QPushButton(this);
     layout = new QGridLayout(this);
     layout->addWidget(cartList, 0, 0, 1, 3);
-    layout->addWidget(totalPrice, 1, 0);
-    layout->addWidget(validateButton, 1,1);
-    layout->addWidget(cancelButton, 1,2);
+    layout->addWidget(cash, 1,0, 1,1, Qt::AlignCenter);
+    layout->addWidget(totalPrice, 2, 0);
+    layout->addWidget(validateButton, 2,1);
+    layout->addWidget(cancelButton, 2,2);
     layout->setContentsMargins(0,0,0,0);
     this->setLayout(layout);
 
