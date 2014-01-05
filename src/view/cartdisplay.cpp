@@ -13,11 +13,12 @@ CartDisplay::CartDisplay(QWidget *parent) :
     cancelButton = new QPushButton(this);
     layout = new QGridLayout(this);
     layout->addWidget(cartList, 0, 0, 1, 3);
-    layout->addWidget(cash, 1,0, 1,1, Qt::AlignCenter);
+    layout->addWidget(cash, 1,0,1,1, Qt::AlignHCenter);
     layout->addWidget(totalPrice, 2, 0);
     layout->addWidget(validateButton, 2,1);
     layout->addWidget(cancelButton, 2,2);
     layout->setContentsMargins(0,0,0,0);
+    //layout->setRowStretch(0, 1);
     this->setLayout(layout);
 
     bold.setBold(true);

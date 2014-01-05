@@ -51,15 +51,13 @@ Calculator::Calculator(QWidget *parent) :
 }
 
 void Calculator::launchCalculator()
-{qDebug() << "toto";
+{
     // If negative balance not allowed, we disable "-" button
     if(!controller->isNegativeAllowed())
         buttons[11]->setEnabled(false);
     else
         buttons[11]->setEnabled(true);
-    qDebug() << "tutu";
     this->show();
-    qDebug() << "titi";
 }
 
 void Calculator::validate()
