@@ -61,6 +61,7 @@ private:
     QPushButton* calculator;
     QPushButton* history;
     QPushButton* editCustomer;
+    QPushButton* deleteCustomer;
 
     unsigned ID;
 
@@ -70,6 +71,7 @@ public slots:
     void launchCalculator();
     void launchIndividualHistory();
     void launchEditCustomer();
+    void launchDeleteCustomer();
     
 };
 

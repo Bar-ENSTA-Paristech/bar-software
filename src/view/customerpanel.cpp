@@ -40,6 +40,7 @@ CustomerPanel::CustomerPanel(QWidget *parent) :
     calculator = new QPushButton(optionsFrame);
     history = new QPushButton(optionsFrame);
     editCustomer = new QPushButton(optionsFrame);
+    deleteCustomer = new QPushButton(optionsFrame);
 
     QFont bold, normal;
     bold.setBold(true);
@@ -75,23 +76,26 @@ CustomerPanel::CustomerPanel(QWidget *parent) :
 
 
     // an empty button is created to take the empty place generated with different photos, and let the option icon to be always at the same place
-    QPushButton* emptyButton = new QPushButton(optionsFrame);
+    //QLabel* emptyButton = new Q(optionsFrame);
     //emptyButton->setFlat(true);
-    emptyButton->setUpdatesEnabled(false);
+    //emptyButton->setUpdatesEnabled(false);
     calculator->setIcon(QIcon(GLOBAL_PATH + "resources/pictures/calculator.png"));
     calculator->setFlat(true);
     calculator->setIconSize(QSize(32,32));
     history->setText("H");
     editCustomer->setText("edit");
+    deleteCustomer->setText("suppr");
 
     QObject::connect(calculator, SIGNAL(clicked()), this, SLOT(launchCalculator()));
     QObject::connect(history, SIGNAL(clicked()), this, SLOT(launchIndividualHistory()));
     QObject::connect(editCustomer, SIGNAL(clicked()), this, SLOT(launchEditCustomer()));
+    QObject::connect(deleteCustomer, SIGNAL(clicked()), this, SLOT(launchDeleteCustomer()));
 
-    optionsLayout->addWidget(emptyButton, 0,0);
+    //optionsLayout->addWidget(emptyButton, 0,0);
     optionsLayout->addWidget(calculator, 0,1);
     optionsLayout->addWidget(history, 0,2);
     optionsLayout->addWidget(editCustomer, 0, 3);
+    optionsLayout->addWidget(deleteCustomer, 0, 4);
     optionsLayout->setColumnStretch(0, 1);
     optionsLayout->setSpacing(0);
     optionsLayout->setContentsMargins(0,0,0,0);
@@ -184,4 +188,9 @@ void CustomerPanel::launchIndividualHistory()
 void CustomerPanel::launchEditCustomer()
 {
     controller->newClic_EditCustomer();
+}
+
+void CustomerPanel::launchDeleteCustomer()
+{
+    controller->newClic_DeleteCustomer();
 }

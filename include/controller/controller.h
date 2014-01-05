@@ -15,6 +15,7 @@
 #include "login.h"
 #include "individualhistory.h"
 #include "editcustomer.h"
+#include "deletecustomer.h"
 
 
 #include "customer.h"
@@ -55,6 +56,7 @@ public:
     void newClic_Calculator();
     void newClic_IndividualHistory(unsigned customerId);
     void newClic_EditCustomer();
+    void newClic_DeleteCustomer();
     void newGlobal_Hist();
     void receiveCalculatorEntry(float price);
     void receiveEditCustomerEntry(view_customerTuple& customer);

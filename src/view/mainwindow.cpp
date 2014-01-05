@@ -87,6 +87,7 @@ MainWindow::MainWindow()
     calculatorWindow = new Calculator(centralWidget);
     VIEW.individualHistory = new IndividualHistory();
     VIEW.editCustomer = new EditCustomer(centralWidget);
+    VIEW.deleteCustomer = new DeleteCustomer(centralWidget);
 
     //tmpLayout->addWidget(VIEW.individualHistory, 0,0);
     //widget->setLayout(tmpLayout);
