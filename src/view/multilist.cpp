@@ -45,6 +45,7 @@ MultiList::MultiList(QWidget *parent, int column, int row, bool _isSortable)
     sortColumn = 0;
     //table->sortItems(0, Qt::AscendingOrder);
     model->sort(0, Qt::AscendingOrder);
+    table->setAlternatingRowColors(true);
 
     //QObject::connect(table->horizontalHeader(), SIGNAL(sectionClicked(int)), this, SLOT(sortItems(int)));
 }

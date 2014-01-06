@@ -22,7 +22,7 @@ font-family : Gisha;
 }
 
 QTableView *{
-background-color: grey;
+background-color: #d87c00;
 font-family: Gisha;
 font-weight: bold;
 color : white;
