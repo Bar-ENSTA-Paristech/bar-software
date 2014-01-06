@@ -6,7 +6,7 @@ ProductsChoices::ProductsChoices(QWidget *parent) :
     VIEW.productChoices = this;
     setObjectName("productChoices");
     headers[0]->setText("Consommation");
-    headers[1]->setText("Volume");
+    headers[1]->setText("Stock");
     headers[2]->setText("Prix");
     headers[3]->setText("Id");
 
@@ -39,6 +39,13 @@ void ProductsChoices::setProductsChoices(view_productQueue queue)
     {
         tuple = queue.front();
 
+        if(tuple.getProductStock() == 0) {
+            QBrush greyBrush(QColor(128,128,128));
+            for(int j=0; j<4; ++j){
+                model->item(i,j)->setForeground(greyBrush);
+                model->item(i,j)->setEnabled(false);
+            }
+        }
         model->item(i,0)->setText(tuple.getProductName());
         model->item(i,1)->setText(QString::number(tuple.getProductStock()));
         model->item(i,2)->setText(QString::number(tuple.getProductPrice()));
