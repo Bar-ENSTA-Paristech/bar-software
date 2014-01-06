@@ -39,8 +39,14 @@ void ProductsChoices::setProductsChoices(view_productQueue queue)
     {
         tuple = queue.front();
 
+        if(tuple.getProductStock() <= 0) {
+            QBrush greyBrush(QColor(128,128,128));
+            for(int j=0; j<4; ++j){
+                model->item(i,j)->setForeground(greyBrush);
+            }
+        }
         model->item(i,0)->setText(tuple.getProductName());
-        model->item(i,1)->setText(QString::number(tuple.getProductStock()));
+        model->item(i,1)->setText(QString::number(tuple.getProductStock()));    // Confusion between the stock (given) and the volume (expected)
         model->item(i,2)->setText(QString::number(tuple.getProductPrice()));
         model->item(i,3)->setText(QString::number(tuple.getProductId()));
         queue.pop();

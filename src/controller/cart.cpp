@@ -57,7 +57,7 @@ void Cart::removeProductFromCart(unsigned product, unsigned quantity)
 
     if (removed_flag==false)
     {
-        std::cout<<"Problème : le produit d'id "<<product<<"nest pas dans le panier : impossible de le supprimer";
+        std::cout<<"Problème : le produit d'id "<<product<<"n'est pas dans le panier : impossible de le supprimer";
     }
     return;
 }

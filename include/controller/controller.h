@@ -84,7 +84,7 @@ private:
         /* Controller objects */
     Stock * mp_stock;
     Customer * curCustomer;
-    Cart * curCart; // Should the Cart be a member of Customer ?
+    Cart * curCart;
     QString curSearch;
     bool negativeAllowed;
 
