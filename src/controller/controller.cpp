@@ -321,28 +321,38 @@ void Controller::newClic_Product(unsigned &view_productId)
 
 bool Controller::view_isLoginCorrect(QString login, QString passwd, LoginType loginType)
 {
+    db_categoryQueue dbQueue;
+    db_categoryTuple dbTuple;
+    std::vector<QString> categories;
+
     // ######### TO COMPLETE #######
     bool isLoginCorrect;
     /*if(!isLoginCorrect)
         return false;*/
 
-    if(currentLoginRequest == NONE)
-        return false;
-    else if(currentLoginRequest == CALCULATOR)
-    {
-        view->calculator->launchCalculator();
-    }
-    else if(currentLoginRequest == EDIT_CUSTOMER)
-    {
-        // ###### vector des categories à aller chercher dans bdd ou ailleurs ...
-        std::vector<QString> categories;
-        categories.push_back("BAR");categories.push_back("2014");categories.push_back("2015");
-        view->editCustomer->launchEditCustomer(*view_curCustomer, categories);
-    }
-    else if(currentLoginRequest == DELETE_CUSTOMER)
-    {
-        view->deleteCustomer->printDelete(*view_curCustomer);
-        newText_Search(curSearch);
+    switch(currentLoginRequest) {
+        case CALCULATOR :
+            view->calculator->launchCalculator();
+            break;
+        case EDIT_CUSTOMER :
+            database.openDatabase();
+            dbQueue = database.getCategories();
+            while(!dbQueue.empty()){
+                dbTuple = dbQueue.front();
+                categories.push_back( QString::fromStdString( dbTuple.getCategoryName() ) );
+                dbQueue.pop();
+            }
+            //categories.push_back("BAR");categories.push_back("2014");categories.push_back("2015");
+            view->editCustomer->launchEditCustomer(*view_curCustomer, categories);
+
+            database.closeDatabase();
+            break;
+        case DELETE_CUSTOMER :
+            view->deleteCustomer->printDelete(*view_curCustomer);
+            newText_Search(curSearch);
+            break;
+        default :
+            return false;
     }
     return true;
 }

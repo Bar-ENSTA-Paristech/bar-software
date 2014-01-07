@@ -279,8 +279,6 @@ class IndividualHistory;
 class IndividualHistoryList;
 
 typedef struct{
-    IndividualHistoryList* individualHistoryList;
-    IndividualHistory* individualHistory;
     Calculator* calculator;
     CartDisplay* cartDisplay;
     CartDisplayFrame* cartDisplayFrame;
@@ -290,6 +288,8 @@ typedef struct{
     EditCustomer* editCustomer;
     GlobalHistory* globalHistory;
     History* history;
+    IndividualHistoryList* individualHistoryList;
+    IndividualHistory* individualHistory;
     LeftPart* leftPart;
     RightPart* rightPart;
     Login* login;
