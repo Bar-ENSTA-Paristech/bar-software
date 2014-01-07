@@ -22,7 +22,7 @@ font-family : Gisha;
 }
 
 QTableView *{
-background-color: #d87c00;
+background-color: #bd6d00;
 font-family: Gisha;
 font-weight: bold;
 color : white;
@@ -111,7 +111,6 @@ margin-left: 6%;
 margin-right : 3%;
 }
 
-
 /*CustomerPanel QPushButton:pressed {
 border: none;
 }*/
@@ -152,6 +151,5 @@ color: yellow;
 }*/
 
 /*QMainWindow{
-padding: 0px;
-background-color: green;
+background-color: black;
 }*/

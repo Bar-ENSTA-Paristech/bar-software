@@ -101,6 +101,8 @@ MainWindow::MainWindow()
 
     // DESIGN
     menu->setStyleSheet("background : url("+GLOBAL_PATH+"resources/pictures/menu_background.png);");
+    //this->setStyleSheet("background-color: black;");
+
 
     //tmpLayout->addWidget(VIEW.individualHistory, 0,0);
     //widget->setLayout(tmpLayout);

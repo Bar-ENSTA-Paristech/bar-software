@@ -26,9 +26,6 @@ void ProductsChoices::setProductsChoices(view_productQueue queue)
     //déconnexion du modèle et de la vue (optimisation)
     table->setModel(NULL);
 
-    //On vide l'index précédemment établi
-    model->removeRows(0,rows);
-
     // TUPLE : QString conso, QString Volume, float price, unsigned id
     view_productTuple tuple;
     // Inserting new results
@@ -38,7 +35,6 @@ void ProductsChoices::setProductsChoices(view_productQueue queue)
     for(unsigned i=0;i<numberOfElements ; i++)
     {
         tuple = queue.front();
-
         if(tuple.getProductStock() <= 0) {
             QBrush greyBrush(QColor(128,128,128));
             for(int j=0; j<4; ++j){
