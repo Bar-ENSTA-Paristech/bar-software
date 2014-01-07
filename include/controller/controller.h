@@ -60,7 +60,7 @@ public:
     void newClic_DeleteCustomer();
     void newClic_GlobalHistory();
     void newGlobal_Hist();
-    void receiveCalculatorEntry(float price);
+    void receiveCalculatorEntry(float amount);
     void receiveEditCustomerEntry(view_customerTuple& customer);
     //void setViewPointers(SearchResults* par1, CustomerPanel* par2, CartDisplay* par3, ProductsChoices* par4, History* par5);
     void setViewPointers(ViewObjects *viewObjects);

@@ -22,6 +22,8 @@ public:
     void setBalance(float balance);
     void setCustomerId (unsigned _id);
     void setCategory (int _cat);
+
+    void saveCustomer();
     /*
     void addToBalance(float addedBalance);
     void removeToBalance(float removedBalance);

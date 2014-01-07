@@ -420,9 +420,26 @@ void Controller::newClic_EditCustomer()
     currentLoginRequest = EDIT_CUSTOMER;
 }
 
-void Controller::receiveCalculatorEntry(float price)
+void Controller::receiveCalculatorEntry(float amount)
 {
-    // TO DEFINE
+    db_customerTuple dbTuple;
+    database.openDatabase();
+
+    curCustomer->setBalance( curCustomer->getBalance() + amount);
+
+    dbTuple.setCustomerId(curCustomer->getCustomerId());
+    dbTuple.setCustomerLogin(curCustomer->getLogin());
+    dbTuple.setCustomerFirstname(curCustomer->getFirstName());
+    dbTuple.setCustomerName(curCustomer->getName());
+    dbTuple.setCustomerCategory(curCustomer->getCategory());
+    dbTuple.setCustomerBalance(curCustomer->getBalance());
+
+    database.editCustomerAccount(dbTuple);
+
+    database.closeDatabase();
+
+    /*TODO*/
+    //Send updated information to view so it can display the new customer info
 }
 
 void Controller::receiveEditCustomerEntry(view_customerTuple& customer)

@@ -79,6 +79,7 @@ void Customer::setCategory(int _cat)
     category=_cat;
 }
 
+
 void Customer::setBalance(float _balance)
 {
     if (_balance > balance)
