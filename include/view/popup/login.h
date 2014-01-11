@@ -11,11 +11,12 @@
 #include <QErrorMessage>
 #include "controller.h"
 #include "structures.h"
+#include "popup.h"
 extern ViewObjects VIEW;
 
 class Controller;
 
-class Login : public QWidget
+class Login : public Popup
 {
     Q_OBJECT
 public:

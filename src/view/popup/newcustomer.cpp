@@ -1,19 +1,21 @@
-#include "editcustomer.h"
+#include "newcustomer.h"
 
-EditCustomer::EditCustomer(QWidget *parent) :
+NewCustomer::NewCustomer(QWidget *parent) :
     Popup(parent)
 {
-    VIEW.editCustomer = this;
+    VIEW.newCustomer = this;
     //this->setWindowFlags(Qt::Tool);
     this->setFixedSize(250, 300);
     nameLabel = new QLabel("Nom : ", this);
     firstNameLabel = new QLabel("Prénom : ",this);
     categorieLabel = new QLabel("Categorie : ", this);
     loginLabel = new QLabel("Login : ", this);
+    balanceLabel = new QLabel("Solde : ", this);
     name = new QLineEdit(this);
     firstName = new QLineEdit(this);
     login = new QLineEdit(this);
     categorie = new QComboBox(this);
+    balance = new QLineEdit(this);
     validateButton = new QPushButton("Valider", this);
     cancelButton = new QPushButton("Annuler", this);
 
@@ -22,44 +24,50 @@ EditCustomer::EditCustomer(QWidget *parent) :
     layout->addWidget(firstNameLabel,1,0);
     layout->addWidget(loginLabel,2,0);
     layout->addWidget(categorieLabel, 3, 0);
+    layout->addWidget(balanceLabel, 4, 0);
     layout->addWidget(name,0,1);
     layout->addWidget(firstName, 1,1);
     layout->addWidget(login, 2,1);
     layout->addWidget(categorie,3,1);
-    layout->addWidget(validateButton, 4,0);
-    layout->addWidget(cancelButton, 4,1);
+    layout->addWidget(balance, 4,1);
+    layout->addWidget(validateButton, 5,0);
+    layout->addWidget(cancelButton, 5,1);
     this->setLayout(layout);
 
     QObject::connect(validateButton, SIGNAL(clicked()), this, SLOT(validate()));
     QObject::connect(cancelButton, SIGNAL(clicked()), this, SLOT(cancel()));
 }
 
-void EditCustomer::setController(Controller* controller_par)
+void NewCustomer::setController(Controller* controller_par)
 {
     controller = controller_par;
 }
 
-void EditCustomer::launchEditCustomer(view_customerTuple& customer, std::vector<QString> categories)
+void NewCustomer::launchNewCustomer(std::vector<QString> categories)
 {
-    name->setText(customer.getCustomerName());
-    firstName->setText(customer.getCustomerFirstName());
-    login->setText(customer.getCustomerLogin());
-    categorie->clear();
-    for(int i = 0 ; i < categories.size() ; i++)
+    for(unsigned i = 0 ; i < categories.size() ; i++)
         categorie->addItem(categories[i]);
 
-    tmpCustomer = customer;
-
     this->show();
+    //this->setFocus();
 }
 
-void EditCustomer::validate()
+void NewCustomer::validate()
 {
-    controller->receiveEditCustomerEntry(tmpCustomer);
+    if(!isBalanceCorrect(balance->text()))
+        return;
+
+    tmpCustomer.setCustomerName(name->text());
+    tmpCustomer.setCustomerFirstName(firstName->text());
+    tmpCustomer.setCustomerLogin(login->text());
+    // #### CATEGORIES EN UNSIGNED ? A REGLER ###################
+    tmpCustomer.setCustomerCategory(0);
+    tmpCustomer.setCustomerBalance(name->text().toFloat());
+    controller->receiveNewCustomerEntry(tmpCustomer);
     this->hide();
 }
 
-void EditCustomer::cancel()
+void NewCustomer::cancel()
 {
     this->hide();
 }

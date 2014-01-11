@@ -39,7 +39,9 @@ src/view/popup/login.cpp \
 src/view/popup/individualhistory.cpp \
 src/view/popup/editcustomer.cpp \
 src/view/popup/deletecustomer.cpp \
-src/view/popup/globalhistory.cpp
+src/view/popup/globalhistory.cpp \
+src/view/popup/newcustomer.cpp \
+    src/view/popup/popup.cpp
 
 
 
@@ -79,7 +81,9 @@ include/view/popup/login.h \
 include/view/popup/individualhistory.h \
 include/view/popup/editcustomer.h \
 include/view/popup/deletecustomer.h \
-include/view/popup/globalhistory.h
+include/view/popup/globalhistory.h \
+include/view/popup/newcustomer.h \
+include/view/popup/popup.h
 
 
 

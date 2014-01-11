@@ -144,8 +144,10 @@ void Controller::newClic_Customer(unsigned int customerId)
 //    }*/
 //}
 
-void Controller::newClic_ValidateCart()
+void Controller::newClic_ValidateCart(bool isCash)
 {
+    // ###################### TO COMPLETE : isCash #######################
+
     qDebug()<<"Received click to validate cart";
 
     //Inputs and outputs
@@ -332,9 +334,11 @@ bool Controller::view_isLoginCorrect(QString login, QString passwd, LoginType lo
 
     switch(currentLoginRequest) {
         case CALCULATOR :
+            view->currentPopup = view->calculator;
             view->calculator->launchCalculator();
             break;
         case EDIT_CUSTOMER :
+            view->currentPopup = view->editCustomer;
             database.openDatabase();
             dbQueue = database.getCategories();
             while(!dbQueue.empty()){
@@ -348,9 +352,20 @@ bool Controller::view_isLoginCorrect(QString login, QString passwd, LoginType lo
             database.closeDatabase();
             break;
         case DELETE_CUSTOMER :
+            view->currentPopup = view->deleteCustomer;
             view->deleteCustomer->printDelete(*view_curCustomer);
             newText_Search(curSearch);
             break;
+        case NEW_CUSTOMER :
+            view->currentPopup = view->newCustomer;
+            database.openDatabase();
+            dbQueue = database.getCategories();
+            while(!dbQueue.empty()){
+                dbTuple = dbQueue.front();
+                categories.push_back( QString::fromStdString( dbTuple.getCategoryName() ) );
+                dbQueue.pop();
+            }
+            view->newCustomer->launchNewCustomer(categories);
         default :
             return false;
     }
@@ -359,12 +374,14 @@ bool Controller::view_isLoginCorrect(QString login, QString passwd, LoginType lo
 
 void Controller::newClic_Calculator()
 {
+    view->currentPopup = view->login;
     view->login->checkGlobal();
     currentLoginRequest = CALCULATOR;
 }
 
 void Controller::newClic_IndividualHistory(unsigned id)
 {
+    view->currentPopup = view->individualHistory;
     view_histQueue CustomerHist;
     view_histTuple CustomerHistTuple;
 
@@ -416,6 +433,7 @@ void Controller::setCurCustomer(view_customerTuple &tuple)
 
 void Controller::newClic_EditCustomer()
 {
+    view->currentPopup = view->login;
     view->login->checkGlobal();
     currentLoginRequest = EDIT_CUSTOMER;
 }
@@ -449,14 +467,28 @@ void Controller::receiveEditCustomerEntry(view_customerTuple& customer)
 
 void Controller::newClic_DeleteCustomer()
 {
+    view->currentPopup = view->login;
     view->login->checkRoot();
     currentLoginRequest = DELETE_CUSTOMER;
 }
 
 void Controller::newClic_GlobalHistory()
 {
+    view->currentPopup = view->globalHistory;
     // CALL TO DB TO DEFINE
 
     view_histQueue queue;
     view->globalHistory->launchGlobalHistory(queue);
+}
+
+void Controller::newClic_NewCustomer()
+{
+    view->currentPopup = view->login;
+    view->login->checkIndividual();
+    currentLoginRequest = NEW_CUSTOMER;
+}
+
+void Controller::receiveNewCustomerEntry(view_customerTuple& customer)
+{
+    // TO COMPLETE
 }

@@ -1,10 +1,10 @@
 #include "deletecustomer.h"
 
 DeleteCustomer::DeleteCustomer(QWidget *parent) :
-    QWidget(parent)
+    Popup(parent)
 {
     VIEW.deleteCustomer = this;
-    this->setWindowFlags(Qt::Tool);
+    //this->setWindowFlags(Qt::Tool);
     this->setFixedSize(400, 100);
     QGridLayout* layout = new QGridLayout(this);
     text = new QLabel(this);

@@ -58,7 +58,9 @@ MainWindow::MainWindow()
     // MENU BUTTONS
     buttonsLayout = new QGridLayout(menuButtons);
     globalHistory = new QPushButton("Global H", menuButtons);
+    newCustomer = new QPushButton("newCust", menuButtons);
     buttonsLayout->addWidget(globalHistory,0,0);
+    buttonsLayout->addWidget(newCustomer, 0,1);
     buttonsLayout->setContentsMargins(0,0,0,0);
     menuButtons->setLayout(buttonsLayout);
 
@@ -86,17 +88,19 @@ MainWindow::MainWindow()
     setShortcut();
 
     // Additionnal Windows
-    VIEW.login = new Login(centralWidget);
-    calculatorWindow = new Calculator(centralWidget);
+    VIEW.login = new Login();
+    calculatorWindow = new Calculator();
     VIEW.individualHistory = new IndividualHistory();
-    VIEW.editCustomer = new EditCustomer(centralWidget);
-    VIEW.deleteCustomer = new DeleteCustomer(centralWidget);
+    VIEW.editCustomer = new EditCustomer();
+    VIEW.deleteCustomer = new DeleteCustomer();
     VIEW.globalHistory = new GlobalHistory();
+    VIEW.newCustomer = new NewCustomer();
 
     QObject::connect(searchText, SIGNAL(textEdited(const QString &)), this, SLOT(searchChanged(const QString &)));
     QObject::connect(timerSearch, SIGNAL(timeout()), this, SLOT(sendSearch()));
     QObject::connect(timerAtStart, SIGNAL(timeout()), this, SLOT(updateSize()));
     QObject::connect(globalHistory, SIGNAL(clicked()), this, SLOT(launchGlobalHistory()));
+    QObject::connect(newCustomer, SIGNAL(clicked()), this, SLOT(launchNewCustomer()));
 
 
     // DESIGN
@@ -161,6 +165,8 @@ void MainWindow::shortcutRoutine()
         consoLogos->newCategorieToController(4);
     else if(sender->key().toString() == QString("Ctrl+D"))
         consoLogos->newCategorieToController(5);
+    else if(sender->key().toString() == QString("Enter") || sender->key().toString() == QString("Return"))
+        VIEW.cartDisplay->validateCart();
 
 
 }
@@ -264,4 +270,9 @@ void MainWindow::setGraph(db_dataarray& data, QString xTitle, QString yTitle, QS
 void MainWindow::launchGlobalHistory()
 {
     controller->newClic_GlobalHistory();
+}
+
+void MainWindow::launchNewCustomer()
+{
+    controller->newClic_NewCustomer();
 }

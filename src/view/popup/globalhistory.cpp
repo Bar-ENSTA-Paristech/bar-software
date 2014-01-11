@@ -1,11 +1,11 @@
 #include "globalhistory.h"
 
 GlobalHistory::GlobalHistory(QWidget *parent) :
-    QWidget(parent)
+    Popup(parent)
 {
     VIEW.globalHistory = this;
     //this->setWindowFlags(Qt::Tool);
-    this->setWindowFlags(Qt::WindowStaysOnTopHint);
+    //this->setWindowFlags(Qt::WindowStaysOnTopHint);
     this->setStyle(QStyleFactory::create("fusion"));
     history = new GlobalHistoryList(this);
     layout = new QGridLayout(this);

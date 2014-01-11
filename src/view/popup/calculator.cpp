@@ -1,10 +1,10 @@
 #include "calculator.h"
 
 Calculator::Calculator(QWidget *parent) :
-    QWidget(parent)
+    Popup(parent)
 {
     VIEW.calculator = this;
-    this->setWindowFlags(Qt::Tool);
+
     this->setFixedSize(250, 300);
     QGridLayout* layout = new QGridLayout(this);
     QLabel* label = new QLabel(this);
@@ -64,19 +64,12 @@ void Calculator::validate()
 {
     QString value = sum->text();
     sum->clear();
-    // use of regex to check if it is a correct number
-    const QRegExp regex ("^-?[0-9]+(.[0-9]?)?$");
-    if(value.contains(regex))
+    if(isBalanceCorrect(value))
     {
         float floatValue = value.toFloat();
         // ###### APPEL AU CONTROLLEUR POUR TRANSACTION #####
         controller->receiveCalculatorEntry(floatValue);
         this->hide();
-    }
-    else
-    {
-        QErrorMessage* error = new QErrorMessage(this);
-        error->showMessage("Cette quantité d'argent n'est pas valide ! La virgule doit être représentée par un point et la partie décimale ne dépasse pas le dixième. Si la somme est négative, coller la virgule à la partie entière. Ne pas mettre le symbole €. Exemple : -15.5");
     }
 
 }

@@ -5,9 +5,10 @@
 #include <QGridLayout>
 #include <QLabel>
 #include "structures.h"
+#include "popup.h"
 extern ViewObjects VIEW;
 
-class DeleteCustomer : public QWidget
+class DeleteCustomer : public Popup
 {
     Q_OBJECT
 public:

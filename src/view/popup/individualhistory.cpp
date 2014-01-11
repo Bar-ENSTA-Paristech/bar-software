@@ -1,11 +1,11 @@
 #include "individualhistory.h"
 
 IndividualHistory::IndividualHistory(QWidget *parent) :
-    QWidget(parent)
+    Popup(parent)
 {
     VIEW.individualHistory = this;
     //this->setWindowFlags(Qt::Tool);
-    this->setWindowFlags(Qt::WindowStaysOnTopHint);
+    //this->setWindowFlags(Qt::WindowStaysOnTopHint);
     this->setStyle(QStyleFactory::create("fusion"));
     history = new IndividualHistoryList(this);
     layout = new QGridLayout(this);

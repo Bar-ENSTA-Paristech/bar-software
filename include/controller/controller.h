@@ -17,6 +17,7 @@
 #include "editcustomer.h"
 #include "deletecustomer.h"
 #include "globalhistory.h"
+#include "newcustomer.h"
 
 
 #include "customer.h"
@@ -50,7 +51,7 @@ public:
     void newClic_Customer(unsigned int customerId);
 
     void newClic_CustomerPanel(unsigned int buttonId);
-    void newClic_ValidateCart();
+    void newClic_ValidateCart(bool isCash);
     void newClic_CancelCart ();
     void newClic_ProductTypes(unsigned view_productTypeId);
     void newClic_Product(unsigned &view_productId);
@@ -59,9 +60,11 @@ public:
     void newClic_EditCustomer();
     void newClic_DeleteCustomer();
     void newClic_GlobalHistory();
+    void newClic_NewCustomer();
     void newGlobal_Hist();
     void receiveCalculatorEntry(float amount);
     void receiveEditCustomerEntry(view_customerTuple& customer);
+    void receiveNewCustomerEntry(view_customerTuple& customer);
     //void setViewPointers(SearchResults* par1, CustomerPanel* par2, CartDisplay* par3, ProductsChoices* par4, History* par5);
     void setViewPointers(ViewObjects *viewObjects);
     void setCurCustomer(view_customerTuple &tuple);

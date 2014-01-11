@@ -1,5 +1,5 @@
-#ifndef EDITCUSTOMER_H
-#define EDITCUSTOMER_H
+#ifndef NEWCUSTOMER_H
+#define NEWCUSTOMER_H
 
 #include <QWidget>
 #include <QLabel>
@@ -12,12 +12,12 @@
 #include "popup.h"
 extern ViewObjects VIEW;
 
-class EditCustomer : public Popup
+class NewCustomer : public Popup
 {
     Q_OBJECT
 public:
-    explicit EditCustomer(QWidget *parent = 0);
-    void launchEditCustomer(view_customerTuple& customer, std::vector<QString> categories);
+    explicit NewCustomer(QWidget *parent = 0);
+    void launchNewCustomer(std::vector<QString> categories);
     void setController(Controller* controller);
     
 signals:
@@ -27,9 +27,11 @@ private:
     QLabel* firstNameLabel;
     QLabel* loginLabel;
     QLabel* categorieLabel;
+    QLabel* balanceLabel;
     QLineEdit* name;
     QLineEdit* firstName;
     QLineEdit* login;
+    QLineEdit* balance;
     QComboBox* categorie;
     QGridLayout* layout;
     QPushButton* validateButton;
@@ -45,4 +47,4 @@ public slots:
     
 };
 
-#endif // EDITCUSTOMER_H
+#endif // NEWCUSTOMER_H

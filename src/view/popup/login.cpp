@@ -2,10 +2,10 @@
 #include "login.h"
 
 Login::Login(QWidget *parent) :
-    QWidget(parent)
+    Popup(parent)
 {
     VIEW.login = this;
-    this->setWindowFlags(Qt::Tool);
+    //this->setWindowFlags(Qt::Dialog);
     this->setFixedSize(250, 150);
     QGridLayout* layout = new QGridLayout(this);
     label = new QLabel(this);
@@ -76,6 +76,7 @@ void Login::checkIndividual()
     loginLabel->show();
     login->show();
     this->show();
+    login->setFocus();
 }
 
 void Login::checkGlobal()

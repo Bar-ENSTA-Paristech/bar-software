@@ -7,11 +7,12 @@
 #include "multilist.h"
 #include "controller.h"
 #include "structures.h"
+#include "popup.h"
 
 extern ViewObjects VIEW;
 class IndividualHistoryList;
 
-class IndividualHistory : public QWidget
+class IndividualHistory : public Popup
 {
     Q_OBJECT
 public:

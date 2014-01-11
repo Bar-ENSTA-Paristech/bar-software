@@ -10,13 +10,14 @@
 #include <QRegExp>
 #include <QErrorMessage>
 #include "controller.h"
+#include "popup.h"
 #include "structures.h"
 
 #define CALCULATOR_BUTTONS 13
 
 extern ViewObjects VIEW;
 
-class Calculator : public QWidget
+class Calculator : public Popup
 {
     Q_OBJECT
 public:

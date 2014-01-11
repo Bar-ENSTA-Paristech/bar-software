@@ -58,7 +58,16 @@ void CartDisplay::setTotalPrice(float price)
         totalPrice->setText("- €");
 }
 
+void CartDisplay::validateCart()
+{
+    controller->newClic_ValidateCart(cash->isChecked());
+    cash->setChecked(false);
+}
 
+void CartDisplay::cancelCart()
+{
+    controller->newClic_CancelCart();
+}
 
 // ################### CART_DISPLAY_FRAME #######################
 
@@ -109,12 +118,4 @@ void CartDisplayFrame::setCart(view_cartQueue & queue)
     return;
 }
 
-void CartDisplay::validateCart()
-{
-    controller->newClic_ValidateCart();
-}
 
-void CartDisplay::cancelCart()
-{
-    controller->newClic_CancelCart();
-}
