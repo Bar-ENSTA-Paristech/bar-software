@@ -61,10 +61,12 @@ MainWindow::MainWindow()
     newCustomer = new QPushButton("newCust", menuButtons);
     addStock = new QPushButton("addStock", menuButtons);
     addProduct = new QPushButton("addProd", menuButtons);
+    editProduct = new QPushButton("editProd", menuButtons);
     buttonsLayout->addWidget(globalHistory,0,0);
     buttonsLayout->addWidget(newCustomer, 0,1);
     buttonsLayout->addWidget(addStock, 0,2);
     buttonsLayout->addWidget(addProduct, 0,3);
+    buttonsLayout->addWidget(editProduct, 0,4);
     buttonsLayout->setContentsMargins(0,0,0,0);
     menuButtons->setLayout(buttonsLayout);
 
@@ -101,6 +103,7 @@ MainWindow::MainWindow()
     VIEW.newCustomer = new NewCustomer();
     VIEW.addStock = new AddStock();
     VIEW.addProduct = new AddProduct();
+    VIEW.editProduct = new EditProduct();
 
     QObject::connect(searchText, SIGNAL(textEdited(const QString &)), this, SLOT(searchChanged(const QString &)));
     QObject::connect(timerSearch, SIGNAL(timeout()), this, SLOT(sendSearch()));
@@ -109,6 +112,7 @@ MainWindow::MainWindow()
     QObject::connect(newCustomer, SIGNAL(clicked()), this, SLOT(launchNewCustomer()));
     QObject::connect(addStock, SIGNAL(clicked()), this, SLOT(launchAddStock()));
     QObject::connect(addProduct, SIGNAL(clicked()), this, SLOT(launchAddProduct()));
+    QObject::connect(editProduct, SIGNAL(clicked()), this, SLOT(launchEditProduct()));
 
 
     // DESIGN
@@ -204,6 +208,7 @@ void MainWindow::setController(Controller *controllerParam)
     VIEW.editCustomer->setController(controller);
     VIEW.addStock->setController(controller);
     VIEW.addProduct->setController(controller);
+    VIEW.editProduct->setController(controller);
 
     controller->mainController();
 }
@@ -295,4 +300,9 @@ void MainWindow::launchAddStock()
 void MainWindow::launchAddProduct()
 {
     controller->newClic_AddProduct();
+}
+
+void MainWindow::launchEditProduct()
+{
+    controller->newClic_EditProduct();
 }

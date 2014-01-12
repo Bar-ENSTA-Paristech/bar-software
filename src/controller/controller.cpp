@@ -381,6 +381,8 @@ bool Controller::view_isLoginCorrect(QString login, QString passwd, LoginType lo
         case ADD_PRODUCT :
             view->addProduct->launchAddProduct();
             break;
+        case EDIT_PRODUCT :
+            view->editProduct->launchEditProduct();
         default :
             return false;
     }
@@ -530,4 +532,16 @@ void Controller::newClic_AddProduct()
 void Controller::receiveNewProduct(view_productTuple& product)
 {
     // TO COMPLETE
+}
+
+void Controller::newClic_EditProduct()
+{
+    view->currentPopup = view->login;
+    view->login->checkIndividual();
+    currentLoginRequest = EDIT_PRODUCT;
+}
+
+void Controller::receiveEditProduct(view_productTuple& product)
+{
+    // TO COMPLETE (the ID in the tuple is the one used in DB)
 }

@@ -20,6 +20,7 @@
 #include "newcustomer.h"
 #include "addstock.h"
 #include "addproduct.h"
+#include "editproduct.h"
 
 
 #include "customer.h"
@@ -65,12 +66,14 @@ public:
     void newClic_NewCustomer();
     void newClic_AddStock();
     void newClic_AddProduct();
+    void newClic_EditProduct();
     void newGlobal_Hist();
     void receiveCalculatorEntry(float amount);
     void receiveEditCustomerEntry(view_customerTuple& customer);
     void receiveNewCustomerEntry(view_customerTuple& customer);
     void receiveNewStocks(view_productQueue& products);
     void receiveNewProduct(view_productTuple& product);
+    void receiveEditProduct(view_productTuple& product);
     //void setViewPointers(SearchResults* par1, CustomerPanel* par2, CartDisplay* par3, ProductsChoices* par4, History* par5);
     void setViewPointers(ViewObjects *viewObjects);
     void setCurCustomer(view_customerTuple &tuple);

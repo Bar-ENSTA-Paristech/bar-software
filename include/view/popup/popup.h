@@ -13,6 +13,7 @@ public:
     explicit Popup(QWidget *parent = 0);
     bool isBalanceCorrect(QString value);
     bool isUInteger(QString value);
+    bool isInteger(QString value);
     
 signals:
     

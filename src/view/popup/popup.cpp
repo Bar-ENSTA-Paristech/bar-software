@@ -41,3 +41,14 @@ bool Popup::isUInteger(QString value)
     }
     return true;
 }
+
+bool Popup::isInteger(QString value)
+{
+    QRegExp regex("^-?[0-9]+$");
+    if(!value.contains(regex))
+    {
+        error->showMessage("Ce nombre ("+ value + ") n'est pas valide. Ce doit être un entier relatif.");
+        return false;
+    }
+    return true;
+}

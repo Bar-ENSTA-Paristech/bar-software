@@ -3,6 +3,7 @@
 AddProduct::AddProduct(QWidget *parent) :
     Popup(parent)
 {
+    VIEW.addProduct = this;
     this->setFixedSize(300,300);
 
     categorieLabel = new QLabel("Categorie :", this);
