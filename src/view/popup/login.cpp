@@ -76,7 +76,6 @@ void Login::checkIndividual()
     loginLabel->show();
     login->show();
     this->show();
-    login->setFocus();
 }
 
 void Login::checkGlobal()

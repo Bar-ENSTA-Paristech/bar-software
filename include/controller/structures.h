@@ -27,7 +27,7 @@
 //typedef std::queue<view_productTuple> view_productQueue;
 
 typedef enum {INDIVIDUAL, GLOBAL, ROOT} LoginType;
-typedef enum {NONE, CALCULATOR, EDIT_CUSTOMER, DELETE_CUSTOMER, NEW_CUSTOMER} LoginObjects;
+typedef enum {NONE, CALCULATOR, EDIT_CUSTOMER, DELETE_CUSTOMER, NEW_CUSTOMER, ADD_STOCK} LoginObjects;
 
 class view_customerTuple;
 class view_productTuple;
@@ -261,6 +261,7 @@ typedef std::queue<view_cartTuple> view_cartQueue;
 typedef std::pair< std::vector< double > , std::vector< double > > db_dataarray;
 
 class SearchResults;
+class AddStock;
 class Calculator;
 class CartDisplay;
 class CartDisplayFrame;
@@ -281,6 +282,7 @@ class IndividualHistory;
 class IndividualHistoryList;
 
 typedef struct{
+    AddStock* addStock;
     Calculator* calculator;
     CartDisplay* cartDisplay;
     CartDisplayFrame* cartDisplayFrame;

@@ -59,8 +59,10 @@ MainWindow::MainWindow()
     buttonsLayout = new QGridLayout(menuButtons);
     globalHistory = new QPushButton("Global H", menuButtons);
     newCustomer = new QPushButton("newCust", menuButtons);
+    addStock = new QPushButton("addStock", menuButtons);
     buttonsLayout->addWidget(globalHistory,0,0);
     buttonsLayout->addWidget(newCustomer, 0,1);
+    buttonsLayout->addWidget(addStock, 0,2);
     buttonsLayout->setContentsMargins(0,0,0,0);
     menuButtons->setLayout(buttonsLayout);
 
@@ -87,7 +89,7 @@ MainWindow::MainWindow()
     // ShortCuts
     setShortcut();
 
-    // Additionnal Windows
+    // Popup Windows
     VIEW.login = new Login();
     calculatorWindow = new Calculator();
     VIEW.individualHistory = new IndividualHistory();
@@ -95,12 +97,14 @@ MainWindow::MainWindow()
     VIEW.deleteCustomer = new DeleteCustomer();
     VIEW.globalHistory = new GlobalHistory();
     VIEW.newCustomer = new NewCustomer();
+    VIEW.addStock = new AddStock();
 
     QObject::connect(searchText, SIGNAL(textEdited(const QString &)), this, SLOT(searchChanged(const QString &)));
     QObject::connect(timerSearch, SIGNAL(timeout()), this, SLOT(sendSearch()));
     QObject::connect(timerAtStart, SIGNAL(timeout()), this, SLOT(updateSize()));
     QObject::connect(globalHistory, SIGNAL(clicked()), this, SLOT(launchGlobalHistory()));
     QObject::connect(newCustomer, SIGNAL(clicked()), this, SLOT(launchNewCustomer()));
+    QObject::connect(addStock, SIGNAL(clicked()), this, SLOT(launchAddStock()));
 
 
     // DESIGN
@@ -194,6 +198,7 @@ void MainWindow::setController(Controller *controllerParam)
     calculatorWindow->setController(controller);
     VIEW.individualHistory->setController(controller);
     VIEW.editCustomer->setController(controller);
+    VIEW.addStock->setController(controller);
 
     controller->mainController();
 }
@@ -275,4 +280,9 @@ void MainWindow::launchGlobalHistory()
 void MainWindow::launchNewCustomer()
 {
     controller->newClic_NewCustomer();
+}
+
+void MainWindow::launchAddStock()
+{
+    controller->newClic_AddStock();
 }

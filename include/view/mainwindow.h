@@ -19,6 +19,7 @@
 #include "individualhistory.h"
 #include "globalhistory.h"
 #include "newcustomer.h"
+#include "addstock.h"
 #include "structures.h"
 extern ViewObjects VIEW;
 
@@ -49,6 +50,7 @@ private slots:
     void updateSize(); // after resize of window e.g
     void launchGlobalHistory();
     void launchNewCustomer();
+    void launchAddStock();
 
 
 private:
@@ -82,6 +84,7 @@ private:
     QGridLayout *buttonsLayout;
     QPushButton* globalHistory;
     QPushButton* newCustomer;
+    QPushButton* addStock;
 };
 
 #endif // MAINWINDOW_H

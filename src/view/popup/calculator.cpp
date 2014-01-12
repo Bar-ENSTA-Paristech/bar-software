@@ -32,7 +32,7 @@ Calculator::Calculator(QWidget *parent) :
     QObject::connect(validate, SIGNAL(clicked()), this, SLOT(validate()));
     QObject::connect(cancel, SIGNAL(clicked()), this, SLOT(cancel()));
 
-    // ####### BUTTONS OF CALCULTOR #######
+    // ####### BUTTONS OF CALCULATOR #######
     for( int i=0 ; i < 12 ; i++)
     {
         buttonsLayout->addWidget(buttons[i], i/3, i%3, 1, 1, Qt::AlignCenter);

@@ -18,6 +18,7 @@
 #include "deletecustomer.h"
 #include "globalhistory.h"
 #include "newcustomer.h"
+#include "addstock.h"
 
 
 #include "customer.h"
@@ -61,6 +62,7 @@ public:
     void newClic_DeleteCustomer();
     void newClic_GlobalHistory();
     void newClic_NewCustomer();
+    void newClic_AddStock();
     void newGlobal_Hist();
     void receiveCalculatorEntry(float amount);
     void receiveEditCustomerEntry(view_customerTuple& customer);

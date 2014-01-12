@@ -366,6 +366,11 @@ bool Controller::view_isLoginCorrect(QString login, QString passwd, LoginType lo
                 dbQueue.pop();
             }
             view->newCustomer->launchNewCustomer(categories);
+            break;
+        case ADD_STOCK :
+            // ###### TO COMPLETE #######
+            view->addStock->launchAddStock();
+            break;
         default :
             return false;
     }
@@ -491,4 +496,11 @@ void Controller::newClic_NewCustomer()
 void Controller::receiveNewCustomerEntry(view_customerTuple& customer)
 {
     // TO COMPLETE
+}
+
+void Controller::newClic_AddStock()
+{
+    view->currentPopup = view->addStock;
+    view->login->checkIndividual();
+    currentLoginRequest = ADD_STOCK;
 }
