@@ -140,7 +140,7 @@ void AddStock::validate()
     }
     controller->receiveNewStocks(queue);
     this->reset();
-    //this->hide();
+    this->hide();
 
 }
 

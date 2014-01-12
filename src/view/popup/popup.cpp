@@ -30,3 +30,14 @@ bool Popup::isBalanceCorrect(QString value)
         return false;
     }
 }
+
+bool Popup::isUInteger(QString value)
+{
+    QRegExp regex("^[0-9]+$");
+    if(!value.contains(regex))
+    {
+        error->showMessage("Ce nombre ("+ value + ") n'est pas valide. Ce doit être un entier positif.");
+        return false;
+    }
+    return true;
+}

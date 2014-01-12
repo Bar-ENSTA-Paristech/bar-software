@@ -376,8 +376,10 @@ bool Controller::view_isLoginCorrect(QString login, QString passwd, LoginType lo
             view->newCustomer->launchNewCustomer(categories);
             break;
         case ADD_STOCK :
-            // ###### TO COMPLETE #######
             view->addStock->launchAddStock();
+            break;
+        case ADD_PRODUCT :
+            view->addProduct->launchAddProduct();
             break;
         default :
             return false;
@@ -514,6 +516,18 @@ void Controller::newClic_AddStock()
 }
 
 void Controller::receiveNewStocks(view_productQueue& products)
+{
+    // TO COMPLETE (additionnal stock is in stock attribute of the tuple)
+}
+
+void Controller::newClic_AddProduct()
+{
+    view->currentPopup = view->login;
+    view->login->checkIndividual();
+    currentLoginRequest = ADD_PRODUCT;
+}
+
+void Controller::receiveNewProduct(view_productTuple& product)
 {
     // TO COMPLETE
 }

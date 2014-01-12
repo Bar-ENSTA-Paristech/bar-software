@@ -20,6 +20,7 @@
 #include "globalhistory.h"
 #include "newcustomer.h"
 #include "addstock.h"
+#include "addproduct.h"
 #include "structures.h"
 extern ViewObjects VIEW;
 
@@ -51,6 +52,7 @@ private slots:
     void launchGlobalHistory();
     void launchNewCustomer();
     void launchAddStock();
+    void launchAddProduct();
 
 
 private:
@@ -85,6 +87,7 @@ private:
     QPushButton* globalHistory;
     QPushButton* newCustomer;
     QPushButton* addStock;
+    QPushButton* addProduct;
 };
 
 #endif // MAINWINDOW_H

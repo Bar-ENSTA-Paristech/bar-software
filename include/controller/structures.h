@@ -27,7 +27,7 @@
 //typedef std::queue<view_productTuple> view_productQueue;
 
 typedef enum {INDIVIDUAL, GLOBAL, ROOT} LoginType;
-typedef enum {NONE, CALCULATOR, EDIT_CUSTOMER, DELETE_CUSTOMER, NEW_CUSTOMER, ADD_STOCK} LoginObjects;
+typedef enum {NONE, CALCULATOR, EDIT_CUSTOMER, DELETE_CUSTOMER, NEW_CUSTOMER, ADD_STOCK, ADD_PRODUCT, EDIT_PRODUCT} LoginObjects;
 
 class view_customerTuple;
 class view_productTuple;
@@ -127,14 +127,16 @@ public:
     void setProductId (unsigned _id);
     void setProductName (QString _name);
     void setProductPrice (float _price);
-    void setProductStock (unsigned stock);
+    void setProductStock (int stock);
     void setProductCategory (unsigned category);
+    void setProductVolume(unsigned _volume);
 
     unsigned getProductId ();
     QString getProductName();
     float getProductPrice();
-    unsigned getProductStock();
+    int getProductStock();
     unsigned getProductCategory();
+    unsigned getProductVolume();
 
     db_productTuple transformIntoProductDb();
 
@@ -142,7 +144,8 @@ private:
     unsigned id;
     QString name;
     float price;
-    unsigned stock;
+    int stock;
+    unsigned volume;
     unsigned category;
 };
 
@@ -261,6 +264,7 @@ typedef std::queue<view_cartTuple> view_cartQueue;
 typedef std::pair< std::vector< double > , std::vector< double > > db_dataarray;
 
 class SearchResults;
+class AddProduct;
 class AddStock;
 class Calculator;
 class CartDisplay;
@@ -282,6 +286,7 @@ class IndividualHistory;
 class IndividualHistoryList;
 
 typedef struct{
+    AddProduct* addProduct;
     AddStock* addStock;
     Calculator* calculator;
     CartDisplay* cartDisplay;

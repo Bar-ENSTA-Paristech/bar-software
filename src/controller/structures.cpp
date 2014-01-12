@@ -261,7 +261,7 @@ void view_productTuple::setProductPrice(float _price)
     price=_price;
 }
 
-void view_productTuple::setProductStock(unsigned _stock)
+void view_productTuple::setProductStock(int _stock)
 {
     stock=_stock;
 }
@@ -269,6 +269,11 @@ void view_productTuple::setProductStock(unsigned _stock)
 void view_productTuple::setProductCategory(unsigned _category)
 {
     category=_category;
+}
+
+void view_productTuple::setProductVolume(unsigned _volume)
+{
+    volume = _volume;
 }
 
 unsigned view_productTuple::getProductId()
@@ -286,7 +291,7 @@ float view_productTuple::getProductPrice()
     return price;
 }
 
-unsigned view_productTuple::getProductStock()
+int view_productTuple::getProductStock()
 {
     return stock;
 }
@@ -294,6 +299,11 @@ unsigned view_productTuple::getProductStock()
 unsigned view_productTuple::getProductCategory()
 {
     return category;
+}
+
+unsigned view_productTuple::getProductVolume()
+{
+    return volume;
 }
 
 db_productTuple view_productTuple::transformIntoProductDb()
