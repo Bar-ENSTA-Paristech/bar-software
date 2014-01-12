@@ -2,8 +2,10 @@
 #define ADDSTOCK_H
 
 #include <QScrollArea>
+#include <QRegExp>
 #include "popup.h"
 #include "controller.h"
+#include "structures.h"
 
 typedef struct{
     QLabel consoTypeLabel;
@@ -12,6 +14,7 @@ typedef struct{
     QComboBox product;
     QLabel quantityLabel;
     QLineEdit quantity;
+    unsigned productID;
 }ConsoLine;
 
 class AddStock : public Popup
@@ -30,6 +33,7 @@ private:
     QPushButton* addLineButton;
     QPushButton* validateButton;
     QPushButton* cancelButton;
+    QPushButton* resetButton;
     QGridLayout* layout;
     QGridLayout* frameLayout;
     QScrollArea* scrollArea;
@@ -39,6 +43,10 @@ private:
     
 public slots:
     void addLine();
+    void consoTypeChanged(int index);
+    void validate();
+    void cancel();
+    void reset();
 };
 
 #endif // ADDSTOCK_H

@@ -15,7 +15,7 @@ public:
     
 signals:
     
-private:
+protected:
     QShortcut *Enter;
     QShortcut *Return;
     QShortcut *Escape;
@@ -24,7 +24,7 @@ private:
 
 public slots:
     virtual void validate(){};
-    virtual void cancel(){};
+    virtual void cancel(){this->hide();};
     
 };
 

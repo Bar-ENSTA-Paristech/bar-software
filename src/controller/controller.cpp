@@ -233,38 +233,46 @@ void Controller::newClic_ProductTypes(unsigned view_productTypeId)
 {
     qDebug() << "Supposed to send only product of categorie" << view_productTypeId;
 
+    view_productQueue viewQueue = getProductsOfCategorie(view_productTypeId);
+
+    // Sent result to view
+    view->productChoices->setProductsChoices(viewQueue);
+
+
+    //Emptying the view queue
+    return;
+}
+
+view_productQueue Controller::getProductsOfCategorie(unsigned view_productTypeId)
+{
     // Inputs and outputs
     view_productTuple view_tmpproductInfo;
     db_productTuple db_tmpproductInfo;
 
-    db_productQueue *dbQueue(0);
-    dbQueue=new db_productQueue;
+    db_productQueue dbQueue;
+    //dbQueue=new db_productQueue;
 
-    view_productQueue *viewQueue(0);
-    viewQueue=new view_productQueue;
+    view_productQueue viewQueue;
+    //viewQueue=new view_productQueue;
 
     database.openDatabase();
-    *dbQueue = database.getProductsFromCategory(view_productTypeId);        // Get product information corresponding to the search from model
+    dbQueue = database.getProductsFromCategory(view_productTypeId);        // Get product information corresponding to the search from model
 
-    if ( !dbQueue->empty() ){
+    if ( !dbQueue.empty() ){
 
         // Copy the dbQueue into the viewQueue
-        while( !dbQueue->empty() ){
-            db_tmpproductInfo = dbQueue->front();
+        while( !dbQueue.empty() ){
+            db_tmpproductInfo = dbQueue.front();
 
             view_tmpproductInfo=db_tmpproductInfo.transformIntoProductView();
 
-            viewQueue->push(view_tmpproductInfo);
-            dbQueue->pop();
+            viewQueue.push(view_tmpproductInfo);
+            dbQueue.pop();
         }
 
     }
-    // Sent result to view
-    view->productChoices->setProductsChoices(*viewQueue);
     database.closeDatabase();
-
-    //Emptying the view queue
-    return;
+    return viewQueue;
 }
 
 void Controller::newClic_Product(unsigned &view_productId)
@@ -503,4 +511,9 @@ void Controller::newClic_AddStock()
     view->currentPopup = view->addStock;
     view->login->checkIndividual();
     currentLoginRequest = ADD_STOCK;
+}
+
+void Controller::receiveNewStocks(view_productQueue& products)
+{
+    // TO COMPLETE
 }

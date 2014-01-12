@@ -67,11 +67,14 @@ public:
     void receiveCalculatorEntry(float amount);
     void receiveEditCustomerEntry(view_customerTuple& customer);
     void receiveNewCustomerEntry(view_customerTuple& customer);
+    void receiveNewStocks(view_productQueue& products);
     //void setViewPointers(SearchResults* par1, CustomerPanel* par2, CartDisplay* par3, ProductsChoices* par4, History* par5);
     void setViewPointers(ViewObjects *viewObjects);
     void setCurCustomer(view_customerTuple &tuple);
     bool view_isLoginCorrect(QString login, QString passwd, LoginType loginType);
     bool isNegativeAllowed();
+
+    view_productQueue getProductsOfCategorie(unsigned view_productTypeId);
 
     void setDb(sqlite3*);
     sqlite3* getDb();
