@@ -5,15 +5,19 @@ CartDisplay::CartDisplay(QWidget *parent) :
 {
     VIEW.cartDisplay = this;
     setObjectName("cartDisplay");
-    //QWidget* actionMenu = new QWidget(this);
+    font.setPixelSize(14);
     cartList = new CartDisplayFrame(this);
     totalPrice = new QLabel(this);
+    lastCart = new QLabel(this);
+    lastCart->setAlignment(Qt::AlignCenter);
+    lastCart->setFont(font);
     cash = new QCheckBox("Cash", this);
     validateButton = new QPushButton(this);
     cancelButton = new QPushButton(this);
     layout = new QGridLayout(this);
     layout->addWidget(cartList, 0, 0, 1, 3);
     layout->addWidget(cash, 1,0,1,1, Qt::AlignHCenter);
+    layout->addWidget(lastCart,1,1,1,2);
     layout->addWidget(totalPrice, 2, 0);
     layout->addWidget(validateButton, 2,1);
     layout->addWidget(cancelButton, 2,2);
@@ -29,8 +33,12 @@ CartDisplay::CartDisplay(QWidget *parent) :
     totalPrice->setFont(bold);
     totalPrice->setAlignment(Qt::AlignCenter);
 
+    timer = new QTimer(this);
+    timer->setTimerType(Qt::VeryCoarseTimer); // we don't need accuracy at all here
+
     QObject::connect(validateButton, SIGNAL(clicked()),this,SLOT(validateCart()));
     QObject::connect(cancelButton, SIGNAL(clicked()),this,SLOT(cancelCart()));
+    QObject::connect(timer, SIGNAL(timeout()), this, SLOT(timerTimeout()));
 
 }
 
@@ -67,6 +75,19 @@ void CartDisplay::validateCart()
 void CartDisplay::cancelCart()
 {
     controller->newClic_CancelCart();
+}
+
+void CartDisplay::setLastCart(QString name, float price)
+{
+    timer->start(4000);
+    lastCart->setText(name + " : " + QString::number(price) + "€ Validé");
+    lastCart->setStyleSheet("background: #55ff55;");
+}
+
+void CartDisplay::timerTimeout()
+{
+    lastCart->clear();
+    lastCart->setStyleSheet("background: none;");
 }
 
 // ################### CART_DISPLAY_FRAME #######################

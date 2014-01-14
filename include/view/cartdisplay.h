@@ -9,6 +9,7 @@
 #include <QPushButton>
 #include <QGridLayout>
 #include <QCheckBox>
+#include <QTimer>
 #include "multilist.h"
 #include <QDebug>
 #include "controller.h"
@@ -37,15 +38,19 @@ public:
     void setCart(view_cartQueue & queue);
     void setTotalPrice(float price);
     void updateSize(){cartList->updateSize();}
+    void setLastCart(QString name, float price);
 
 private:
     CartDisplayFrame* cartList;
     QLabel* totalPrice;
+    QLabel* lastCart;
     QPushButton* validateButton;
     QPushButton* cancelButton;
     QFont bold;
     QGridLayout* layout;
     QCheckBox *cash;
+    QTimer* timer;
+    QFont font;
 
     
 signals:
@@ -53,6 +58,7 @@ signals:
 public slots:
     void validateCart();
     void cancelCart();
+    void timerTimeout();
     
 };
 

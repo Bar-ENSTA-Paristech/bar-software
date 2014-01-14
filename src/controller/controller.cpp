@@ -194,7 +194,9 @@ void Controller::newClic_ValidateCart(bool isCash)
     database.closeDatabase();
     qDebug()<<"Validated cart";
 
-    //Affichage d'un popup ?
+    //Affichage d'un popup ? -> non juste un Qlabel au dessus des boutons : plus léger et plus rapide
+    // Et on affiche la validation dans la partie dédiée du cart
+    view->cartDisplay->setLastCart(view_curCustomer->getCustomerName(), curCart->getPrice());
 
     //On efface ensuite les infos du cart
     curCart->clearCart();
@@ -204,6 +206,7 @@ void Controller::newClic_ValidateCart(bool isCash)
     view->customerPanel->setCustomer(editedCustomer);
     // On efface la prévision du solde
     view->customerPanel->setFuturBalance(0, false);
+
 
     //Updating l'hist global
     newGlobal_Hist();
