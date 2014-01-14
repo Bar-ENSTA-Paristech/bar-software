@@ -71,8 +71,8 @@ void EditProduct::validate()
     tmpProduct.setProductPrice(price->text().toFloat());
     tmpProduct.setProductStock(stock->text().toInt());
     //tuple.setProductID()
-    tuple.setProductVolume(volume->text().toUInt());
-    //controller->receiveNewProduct(tuple);
+    tmpProduct.setProductVolume(volume->text().toUInt());
+    controller->receiveNewProduct(tmpProduct);
 
     this->reset();
     this->hide();

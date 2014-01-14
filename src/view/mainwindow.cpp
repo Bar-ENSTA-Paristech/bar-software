@@ -58,10 +58,15 @@ MainWindow::MainWindow()
     // MENU BUTTONS
     buttonsLayout = new QGridLayout(menuButtons);
     globalHistory = new QPushButton("Global H", menuButtons);
+    globalHistory->setToolTip("Historique Global");
     newCustomer = new QPushButton("newCust", menuButtons);
+    newCustomer->setToolTip("Ajouter un nouveau client");
     addStock = new QPushButton("addStock", menuButtons);
+    addStock->setToolTip("Ajouter/retirer du stock");
     addProduct = new QPushButton("addProd", menuButtons);
+    addProduct->setToolTip("Ajouter une nouvelle consommation");
     editProduct = new QPushButton("editProd", menuButtons);
+    editProduct->setToolTip("Editer une consommation particulière");
     buttonsLayout->addWidget(globalHistory,0,0);
     buttonsLayout->addWidget(newCustomer, 0,1);
     buttonsLayout->addWidget(addStock, 0,2);

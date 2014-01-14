@@ -82,9 +82,13 @@ CustomerPanel::CustomerPanel(QWidget *parent) :
     calculator->setIcon(QIcon(GLOBAL_PATH + "resources/pictures/calculator.png"));
     calculator->setFlat(true);
     calculator->setIconSize(QSize(32,32));
+    calculator->setToolTip("Calculatrice (donner ou retirer de l'argent à un client)");
     history->setText("H");
+    history->setToolTip("Historique du client");
     editCustomer->setText("edit");
+    editCustomer->setToolTip("Editer les informations du client");
     deleteCustomer->setText("suppr");
+    deleteCustomer->setToolTip("Supprimer ce client");
 
     QObject::connect(calculator, SIGNAL(clicked()), this, SLOT(launchCalculator()));
     QObject::connect(history, SIGNAL(clicked()), this, SLOT(launchIndividualHistory()));

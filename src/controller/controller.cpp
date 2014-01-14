@@ -383,6 +383,7 @@ bool Controller::view_isLoginCorrect(QString login, QString passwd, LoginType lo
             break;
         case EDIT_PRODUCT :
             view->editProduct->launchEditProduct();
+            break;
         default :
             return false;
     }
