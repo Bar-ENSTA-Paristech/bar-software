@@ -22,6 +22,7 @@
 #include "addstock.h"
 #include "addproduct.h"
 #include "editproduct.h"
+#include "editlogin.h"
 #include "structures.h"
 extern ViewObjects VIEW;
 
@@ -91,6 +92,7 @@ private:
     QPushButton* addStock;
     QPushButton* addProduct;
     QPushButton* editProduct;
+    QPushButton* editLogin;
 };
 
 #endif // MAINWINDOW_H

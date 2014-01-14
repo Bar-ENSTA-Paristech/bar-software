@@ -549,3 +549,31 @@ void Controller::receiveEditProduct(view_productTuple& product)
 {
     // TO COMPLETE (the ID in the tuple is the one used in DB)
 }
+
+
+bool Controller::newIndividualPassword(QString login, QString rootPasswd, QString passwd1, QString passwd2)
+{
+    if(passwd1 != passwd2 || passwd1.isEmpty() || rootPasswd.isEmpty() || login.isEmpty())
+        return false;
+    // ############ TO COMPLETE ##############
+
+    return true;
+}
+
+bool Controller::newGlobalPassword(QString globalPasswd, QString passwd1, QString passwd2)
+{
+    if(passwd1 != passwd2 || passwd1.isEmpty() || globalPasswd.isEmpty())
+        return false;
+    // ############ TO COMPLETE ##############
+
+    return true;
+}
+
+bool Controller::newRootPassword(QString rootPasswd, QString passwd1, QString passwd2)
+{
+    if(passwd1 != passwd2 || passwd1.isEmpty() || rootPasswd.isEmpty())
+        return false;
+    // ############ TO COMPLETE ##############
+
+    return true;
+}

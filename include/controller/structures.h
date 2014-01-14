@@ -273,6 +273,7 @@ class ConsoLogos;
 class CustomerPanel;
 class DeleteCustomer;
 class EditCustomer;
+class EditLogin;
 class EditProduct;
 class GlobalHistory;
 class History;
@@ -296,6 +297,7 @@ typedef struct{
     CustomerPanel* customerPanel;
     DeleteCustomer* deleteCustomer;
     EditCustomer* editCustomer;
+    EditLogin* editLogin;
     EditProduct* editProduct;
     GlobalHistory* globalHistory;
     History* history;

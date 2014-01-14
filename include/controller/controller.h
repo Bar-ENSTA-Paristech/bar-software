@@ -81,6 +81,10 @@ public:
     bool isNegativeAllowed();
 
     view_productQueue getProductsOfCategorie(unsigned view_productTypeId);
+    // for these newPassword functions, they return false if an error occurs (eg new passwords different, bad rootPassword or globalPassord)
+    bool newIndividualPassword(QString login, QString rootPasswd, QString passwd1, QString passwd2);
+    bool newGlobalPassword(QString globalPasswd, QString passwd1, QString passwd2);
+    bool newRootPassword(QString rootPasswd, QString passwd1, QString passwd2);
 
     void setDb(sqlite3*);
     sqlite3* getDb();

@@ -44,7 +44,8 @@ src/view/popup/newcustomer.cpp \
     src/view/popup/popup.cpp \
     src/view/popup/addstock.cpp \
     src/view/popup/addproduct.cpp \
-    src/view/popup/editproduct.cpp
+    src/view/popup/editproduct.cpp \
+    src/view/popup/editlogin.cpp
 
 
 
@@ -89,7 +90,8 @@ include/view/popup/newcustomer.h \
 include/view/popup/popup.h \
     include/view/popup/addstock.h \
     include/view/popup/addproduct.h \
-    include/view/popup/editproduct.h
+    include/view/popup/editproduct.h \
+    include/view/popup/editlogin.h
 
 
 

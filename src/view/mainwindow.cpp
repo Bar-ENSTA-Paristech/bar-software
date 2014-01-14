@@ -67,11 +67,14 @@ MainWindow::MainWindow()
     addProduct->setToolTip("Ajouter une nouvelle consommation");
     editProduct = new QPushButton("editProd", menuButtons);
     editProduct->setToolTip("Editer une consommation particulière");
+    editLogin = new QPushButton("editLogin", menuButtons);
+    editLogin->setToolTip("Organiser les mots de passe du logiciel");
     buttonsLayout->addWidget(globalHistory,0,0);
     buttonsLayout->addWidget(newCustomer, 0,1);
     buttonsLayout->addWidget(addStock, 0,2);
     buttonsLayout->addWidget(addProduct, 0,3);
     buttonsLayout->addWidget(editProduct, 0,4);
+    buttonsLayout->addWidget(editLogin, 0,5);
     buttonsLayout->setContentsMargins(0,0,0,0);
     menuButtons->setLayout(buttonsLayout);
 
@@ -109,6 +112,7 @@ MainWindow::MainWindow()
     VIEW.addStock = new AddStock();
     VIEW.addProduct = new AddProduct();
     VIEW.editProduct = new EditProduct();
+    VIEW.editLogin = new EditLogin();
 
     QObject::connect(searchText, SIGNAL(textEdited(const QString &)), this, SLOT(searchChanged(const QString &)));
     QObject::connect(timerSearch, SIGNAL(timeout()), this, SLOT(sendSearch()));
@@ -118,6 +122,7 @@ MainWindow::MainWindow()
     QObject::connect(addStock, SIGNAL(clicked()), this, SLOT(launchAddStock()));
     QObject::connect(addProduct, SIGNAL(clicked()), this, SLOT(launchAddProduct()));
     QObject::connect(editProduct, SIGNAL(clicked()), this, SLOT(launchEditProduct()));
+    QObject::connect(editLogin, SIGNAL(clicked()), VIEW.editLogin, SLOT(launchEditLogin()));
 
 
     // DESIGN
@@ -214,6 +219,7 @@ void MainWindow::setController(Controller *controllerParam)
     VIEW.addStock->setController(controller);
     VIEW.addProduct->setController(controller);
     VIEW.editProduct->setController(controller);
+    VIEW.editLogin->setController(controller);
 
     controller->mainController();
 }
