@@ -88,6 +88,7 @@ void LeftPart::clickOnCategorie(int id)
     categoriesLabels[id].setStyleSheet("background : url("+GLOBAL_PATH+"resources/pictures/activeCategorie.png) ; color:white");
     //updateCategorieTimer.start(500);
 
+    controller->newClic_Category((unsigned) id);
 }
 
 void LeftPart::unsetCategorieUpdate()

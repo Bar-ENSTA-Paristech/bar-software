@@ -71,6 +71,7 @@ public:
     void newClic_EditProduct();
     void newClic_Stats();
     void newClic_Admin();
+    void newClic_Category(unsigned id); // 0 for no filter (category TOUS), else id is the category id
     void newGlobal_Hist();
     void receiveCalculatorEntry(float amount);
     void receiveEditCustomerEntry(view_customerTuple& customer);

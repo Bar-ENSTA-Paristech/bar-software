@@ -605,3 +605,8 @@ void Controller::receiveAdminInfos(AdminTuple tuple)
 {
     // TO COMPLETE
 }
+
+void Controller::newClic_Category(unsigned id)
+{
+    // TO COMPLETE (0 for no filter, else categoryID e.g. 1 for bar, 0 for 2014, etc)
+}
