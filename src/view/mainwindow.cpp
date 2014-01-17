@@ -71,6 +71,8 @@ MainWindow::MainWindow()
     editLogin->setToolTip("Organiser les mots de passe du logiciel");
     stats = new QPushButton("stats", menuButtons);
     stats->setToolTip("Visualisez toutes les stats du bar ici !");
+    admin = new QPushButton("admin", menuButtons);
+    admin->setToolTip("Panneau d'administration");
     buttonsLayout->addWidget(globalHistory,0,0);
     buttonsLayout->addWidget(newCustomer, 0,1);
     buttonsLayout->addWidget(addStock, 0,2);
@@ -78,6 +80,7 @@ MainWindow::MainWindow()
     buttonsLayout->addWidget(editProduct, 0,4);
     buttonsLayout->addWidget(editLogin, 0,5);
     buttonsLayout->addWidget(stats, 0,6);
+    buttonsLayout->addWidget(admin, 0,7);
     buttonsLayout->setContentsMargins(0,0,0,0);
     menuButtons->setLayout(buttonsLayout);
 
@@ -117,6 +120,7 @@ MainWindow::MainWindow()
     VIEW.editProduct = new EditProduct();
     VIEW.editLogin = new EditLogin();
     VIEW.stats = new Stats();
+    VIEW.admin = new Admin();
 
     QObject::connect(searchText, SIGNAL(textEdited(const QString &)), this, SLOT(searchChanged(const QString &)));
     QObject::connect(timerSearch, SIGNAL(timeout()), this, SLOT(sendSearch()));
@@ -128,6 +132,7 @@ MainWindow::MainWindow()
     QObject::connect(editProduct, SIGNAL(clicked()), this, SLOT(launchEditProduct()));
     QObject::connect(editLogin, SIGNAL(clicked()), VIEW.editLogin, SLOT(launchEditLogin()));
     QObject::connect(stats, SIGNAL(clicked()), this, SLOT(launchStats()));
+    QObject::connect(admin, SIGNAL(clicked()), this, SLOT(launchAdmin()));
 
 
     // DESIGN
@@ -225,6 +230,7 @@ void MainWindow::setController(Controller *controllerParam)
     VIEW.addProduct->setController(controller);
     VIEW.editProduct->setController(controller);
     VIEW.editLogin->setController(controller);
+    VIEW.admin->setController(controller);
 
     controller->mainController();
 }
@@ -326,4 +332,9 @@ void MainWindow::launchEditProduct()
 void MainWindow::launchStats()
 {
     controller->newClic_Stats();
+}
+
+void MainWindow::launchAdmin()
+{
+    controller->newClic_Admin();
 }

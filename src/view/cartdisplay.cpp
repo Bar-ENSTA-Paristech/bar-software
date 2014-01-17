@@ -75,6 +75,7 @@ void CartDisplay::validateCart()
 void CartDisplay::cancelCart()
 {
     controller->newClic_CancelCart();
+    cash->setChecked(false);
 }
 
 void CartDisplay::setLastCart(QString name, float price)

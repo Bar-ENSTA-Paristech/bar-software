@@ -28,7 +28,7 @@
 #define NUMBER_OF_CATEGORIES 6
 
 typedef enum {INDIVIDUAL, GLOBAL, ROOT} LoginType;
-typedef enum {NONE, CALCULATOR, EDIT_CUSTOMER, DELETE_CUSTOMER, NEW_CUSTOMER, ADD_STOCK, ADD_PRODUCT, EDIT_PRODUCT} LoginObjects;
+typedef enum {NONE, CALCULATOR, EDIT_CUSTOMER, DELETE_CUSTOMER, NEW_CUSTOMER, ADD_STOCK, ADD_PRODUCT, EDIT_PRODUCT, ADMIN} LoginObjects;
 
 class view_customerTuple;
 class view_productTuple;
@@ -278,6 +278,7 @@ typedef std::queue<view_cartTuple> view_cartQueue;
 typedef std::pair< std::vector< double > , std::vector< double > > db_dataarray;
 
 class SearchResults;
+class Admin;
 class AddProduct;
 class AddStock;
 class Calculator;
@@ -303,6 +304,7 @@ class IndividualHistory;
 class IndividualHistoryList;
 
 typedef struct{
+    Admin* admin;
     AddProduct* addProduct;
     AddStock* addStock;
     Calculator* calculator;
@@ -328,5 +330,10 @@ typedef struct{
     SearchResults* searchResults;
     Stats* stats;
 } ViewObjects;
+
+typedef struct{
+    bool isNegativeAllowed;
+
+}AdminTuple;
 
 #endif // STRUCTURES_H

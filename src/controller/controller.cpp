@@ -387,6 +387,10 @@ bool Controller::view_isLoginCorrect(QString login, QString passwd, LoginType lo
         case EDIT_PRODUCT :
             view->editProduct->launchEditProduct();
             break;
+        case ADMIN :
+            AdminTuple tuple;
+            view->admin->launchAdmin(tuple);
+            break;
         default :
             return false;
     }
@@ -588,4 +592,16 @@ void Controller::newClic_Stats()
 
     view->stats->launchStats(statsTuple, queues[0], queues[1], queues[2], queues[3], queues[4], queues[5]);
 
+}
+
+void Controller::newClic_Admin()
+{
+    view->currentPopup = view->admin;
+    view->login->checkIndividual();
+    currentLoginRequest = ADMIN;
+}
+
+void Controller::receiveAdminInfos(AdminTuple tuple)
+{
+    // TO COMPLETE
 }

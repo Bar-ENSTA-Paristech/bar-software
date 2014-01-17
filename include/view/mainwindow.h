@@ -24,6 +24,7 @@
 #include "editproduct.h"
 #include "editlogin.h"
 #include "stats.h"
+#include "admin.h"
 #include "structures.h"
 extern ViewObjects VIEW;
 
@@ -58,6 +59,7 @@ private slots:
     void launchAddProduct();
     void launchEditProduct();
     void launchStats();
+    void launchAdmin();
 
 
 private:
@@ -96,6 +98,7 @@ private:
     QPushButton* editProduct;
     QPushButton* editLogin;
     QPushButton* stats;
+    QPushButton* admin;
 };
 
 #endif // MAINWINDOW_H
