@@ -25,6 +25,7 @@
 //typedef std::queue<db_histTuple> db_histQueue;
 //typedef std::queue<view_customerTuple> view_customerQueue;
 //typedef std::queue<view_productTuple> view_productQueue;
+#define NUMBER_OF_CATEGORIES 6
 
 typedef enum {INDIVIDUAL, GLOBAL, ROOT} LoginType;
 typedef enum {NONE, CALCULATOR, EDIT_CUSTOMER, DELETE_CUSTOMER, NEW_CUSTOMER, ADD_STOCK, ADD_PRODUCT, EDIT_PRODUCT} LoginObjects;
@@ -251,6 +252,19 @@ private:
     float price;
 };
 
+class view_statsTuple
+{
+public:
+    float accountsTotal;
+    float moneyInCashRegister;
+    float moneyGivenThisYear;
+    float moneyGivenLastYear;
+    float totalSoldThisYear;
+    float totalSoldLastYear;
+    unsigned numberOfCustomers;
+    unsigned numberOfProducts;
+};
+
 typedef std::queue<db_histTuple> db_histQueue;
 typedef std::queue<db_customerTuple> db_customerQueue;
 typedef std::queue<view_customerTuple> view_customerQueue;
@@ -284,6 +298,7 @@ class MainWindow;
 class NewCustomer;
 class Popup;
 class ProductsChoices;
+class Stats;
 class IndividualHistory;
 class IndividualHistoryList;
 
@@ -311,6 +326,7 @@ typedef struct{
     Popup* currentPopup;
     ProductsChoices* productChoices;
     SearchResults* searchResults;
+    Stats* stats;
 } ViewObjects;
 
 #endif // STRUCTURES_H

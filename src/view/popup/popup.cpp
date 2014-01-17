@@ -52,3 +52,8 @@ bool Popup::isInteger(QString value)
     }
     return true;
 }
+
+void Popup::setController(Controller* _controller)
+{
+    controller = _controller;
+}

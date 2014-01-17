@@ -10,8 +10,9 @@
 #include <QRegExp>
 #include <QErrorMessage>
 #include "controller.h"
-#include "structures.h"
 #include "popup.h"
+#include "structures.h"
+
 extern ViewObjects VIEW;
 
 class Controller;

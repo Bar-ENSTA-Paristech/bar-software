@@ -577,3 +577,15 @@ bool Controller::newRootPassword(QString rootPasswd, QString passwd1, QString pa
 
     return true;
 }
+
+void Controller::newClic_Stats()
+{
+    // Besoin de mettre un login ?
+    view_statsTuple statsTuple;
+    view_productQueue queues[NUMBER_OF_CATEGORIES];
+    for(int i=0 ; i<NUMBER_OF_CATEGORIES ; i++)
+        queues[i] = this->getProductsOfCategorie((unsigned)i);
+
+    view->stats->launchStats(statsTuple, queues[0], queues[1], queues[2], queues[3], queues[4], queues[5]);
+
+}

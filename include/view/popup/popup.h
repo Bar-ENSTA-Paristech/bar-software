@@ -5,6 +5,9 @@
 #include <QShortcut>
 #include <QRegExp>
 #include <QErrorMessage>
+//#include "controller.h"
+
+class Controller;
 
 class Popup : public QWidget
 {
@@ -14,6 +17,7 @@ public:
     bool isBalanceCorrect(QString value);
     bool isUInteger(QString value);
     bool isInteger(QString value);
+    void setController(Controller* controller);
     
 signals:
     
@@ -23,6 +27,8 @@ protected:
     QShortcut *Escape;
 
     QErrorMessage* error;
+
+    Controller* controller;
 
 public slots:
     virtual void validate(){};

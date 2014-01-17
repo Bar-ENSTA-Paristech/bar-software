@@ -21,6 +21,7 @@
 #include "addstock.h"
 #include "addproduct.h"
 #include "editproduct.h"
+#include "stats.h"
 
 
 #include "customer.h"
@@ -67,6 +68,7 @@ public:
     void newClic_AddStock();
     void newClic_AddProduct();
     void newClic_EditProduct();
+    void newClic_Stats();
     void newGlobal_Hist();
     void receiveCalculatorEntry(float amount);
     void receiveEditCustomerEntry(view_customerTuple& customer);
