@@ -446,7 +446,7 @@ void Controller::setCurCustomer(view_customerTuple &tuple)
     curCustomer->setBalance(tuple.getCustomerBalance());
     curCustomer->setFirstName(tuple.getCustomerFirstName().QString::toStdString());
     curCustomer->setCategory(tuple.getCustomerCategory());
-    curCustomer->setName(tuple.getCustomerFirstName().QString::toStdString());
+    curCustomer->setName(tuple.getCustomerName().QString::toStdString());
     curCustomer->setLogin(tuple.getCustomerLogin().QString::toStdString());
     view_curCustomer->setCustomerId((tuple.getCustomerId()));
     view_curCustomer->setCustomerBalance(tuple.getCustomerBalance());
@@ -479,10 +479,13 @@ void Controller::receiveCalculatorEntry(float amount)
 
     database.editCustomerAccount(dbTuple);
 
-    database.closeDatabase();
-
-    /*TODO*/
     //Send updated information to view so it can display the new customer info
+    newText_Search(curSearch);
+    curCustomer->setBalance(curCustomer->getBalance() + amount);
+    view_curCustomer->setCustomerBalance(view_curCustomer->getCustomerBalance() + amount);
+    view->customerPanel->setCustomer(*view_curCustomer);
+
+    database.closeDatabase();
 }
 
 void Controller::receiveEditCustomerEntry(view_customerTuple& customer)
