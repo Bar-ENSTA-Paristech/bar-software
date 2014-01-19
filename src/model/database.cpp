@@ -34,7 +34,10 @@ int Database::openDatabase()
 
     std::cout<<"Tentative d'ouverture de db"<<std::endl;
     sqlite3* DB;
-    char DBfilename[]="file:bar.db";
+    QString Path;
+    Path=GLOBAL_PATH+"resources/BDD/bar.db";
+    const char *DBfilename = Path.toLocal8Bit().data();
+    std::cout<<DBfilename<<std::endl;
     int coderesult=sqlite3_open(DBfilename //Database filename
                                 ,&DB);//adresse mémoire de la BDD
 

@@ -48,7 +48,6 @@ void Controller::mainController()
 
 
 
-
 void Controller::newText_Search(QString &viewSearch)
 {
     // Inputs and outputs

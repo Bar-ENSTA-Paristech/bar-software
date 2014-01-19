@@ -7,6 +7,9 @@
 #include "queue"
 #include "tuple"
 #include "structures.h"
+#include <QString>
+
+extern QString GLOBAL_PATH;
 
 class Plotting;
 class db_categoryTuple;
