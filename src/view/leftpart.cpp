@@ -23,6 +23,7 @@ LeftPart::LeftPart(QWidget* parent)
 
     //##### TEST ####
     std::queue<QString> categories;
+    //categories = controller->newCustCategoryList();    PB: le controlleur n'est pas encore correctement instancié à l'init
     categories.push(QString("Tous"));
     categories.push(QString("RAB"));
     categories.push(QString("2014"));

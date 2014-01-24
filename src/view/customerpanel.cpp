@@ -195,7 +195,7 @@ void CustomerPanel::launchCalculator()
 
 void CustomerPanel::launchIndividualHistory()
 {
-    controller->newClic_IndividualHistory(ID);
+    controller->newClic_IndividualHistory();
 }
 
 void CustomerPanel::launchEditCustomer()

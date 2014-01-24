@@ -61,7 +61,7 @@ public:
     void newClic_ProductTypes(unsigned view_productTypeId);
     void newClic_Product(unsigned &view_productId);
     void newClic_Calculator();
-    void newClic_IndividualHistory(unsigned customerId);
+    void newClic_IndividualHistory();
     void newClic_EditCustomer();
     void newClic_DeleteCustomer();
     void newClic_GlobalHistory();
@@ -73,6 +73,7 @@ public:
     void newClic_Admin();
     void newClic_Category(unsigned id); // 0 for no filter (category TOUS), else id is the category id
     void newGlobal_Hist();
+    std::queue<QString> newCustCategoryList();
     void receiveCalculatorEntry(float amount);
     void receiveEditCustomerEntry(view_customerTuple& customer);
     void receiveNewCustomerEntry(view_customerTuple& customer);

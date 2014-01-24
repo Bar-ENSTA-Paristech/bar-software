@@ -33,6 +33,7 @@ CartDisplay::CartDisplay(QWidget *parent) :
     totalPrice->setFont(bold);
     totalPrice->setAlignment(Qt::AlignCenter);
 
+
     timer = new QTimer(this);
     timer->setTimerType(Qt::VeryCoarseTimer); // we don't need accuracy at all here
 
@@ -49,6 +50,11 @@ CartDisplay::~CartDisplay()
     delete validateButton;
     delete cancelButton;
     delete layout;*/
+}
+
+bool CartDisplay::getCash()
+{
+    return cash;
 }
 
 void CartDisplay::setCart(view_cartQueue &queue)

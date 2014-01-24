@@ -37,7 +37,7 @@ private:
     std::string login;
     int category;
     float balance;
-    unsigned customerid;
+    int customerid;
  };
 
 #endif // CUSTOMER_H
