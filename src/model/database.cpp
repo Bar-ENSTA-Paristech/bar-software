@@ -51,8 +51,9 @@ int Database::openDatabase()
 
     if (coderesult!=SQLITE_OK)
         std::cout<<sqlite3_errmsg(DB)<<std::endl;
-    else
+    else{
         handle=DB;
+    }
     std::cout<<"OK"<<std::endl;
 
     return coderesult;

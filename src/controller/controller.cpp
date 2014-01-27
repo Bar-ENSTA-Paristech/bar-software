@@ -245,7 +245,6 @@ void Controller::newClic_ValidateCart(bool isCash)
     //reloading les comptes
     newText_Search(curSearch);
 
-
     return;
 }
 
@@ -653,7 +652,12 @@ void Controller::newClic_NewCustomer()
 
 void Controller::receiveNewCustomerEntry(view_customerTuple& customer)
 {
-    // TO COMPLETE
+    db_customerTuple dbTuple;
+
+    database.openDatabase();
+    dbTuple = customer.transformIntoCustomerDb();
+    qDebug() << database.createCustomerAccount( dbTuple );
+    database.closeDatabase();
 }
 
 void Controller::newClic_AddStock()
