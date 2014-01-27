@@ -164,7 +164,7 @@ void Controller::newClic_ValidateCart(bool isCash)
     // ###################### TO COMPLETE : cashModification #######################
     //
     //
-    qDebug()<<"Received click to validate cart";
+    qDebug()<<"Received click to validate cart. Cash : " << isCash;
 
     //Inputs and outputs
 
@@ -535,6 +535,7 @@ std::queue<QString> Controller::newCustCategoryList()
     DbCatList=database.getCustCategories();
     database.closeDatabase();
     std::queue<QString> result;
+    result.push(QString("Tous")); // always present : Id -1
 
     if( !DbCatList.empty())
     {
@@ -741,7 +742,39 @@ void Controller::receiveAdminInfos(AdminTuple tuple)
     // TO COMPLETE
 }
 
-void Controller::newClic_Category(unsigned id)
+void Controller::newClic_Category(int id)
 {
-    // TO COMPLETE (0 for no filter, else categoryID e.g. 1 for bar, 0 for 2014, etc)
+    QString emptyString;qDebug() << id;
+    switch (id) {
+    case -1: // for all
+        newText_Search(emptyString);
+        break;
+    default:
+        // Inputs and outputs
+        std::string dbSearch;
+        view_customerTuple view_tmpCustomerInfo;
+        db_customerTuple db_tmpCustomerInfo;
+        db_customerQueue dbQueue;
+        view_customerQueue viewQueue;
+
+        database.openDatabase();
+        dbQueue = database.getCustomerFromCategory((unsigned) id);        // Get customer information corresponding to the search from model
+
+        if ( !dbQueue.empty() ){
+
+            // Copy the dbQueue into the viewQueue
+            while( !dbQueue.empty() ){
+                db_tmpCustomerInfo = dbQueue.front();
+                view_tmpCustomerInfo=db_tmpCustomerInfo.transformIntoCustomerView();
+                viewQueue.push(view_tmpCustomerInfo);
+                dbQueue.pop();
+            }
+
+        }
+        // Sent result to view
+        view->searchResults->setSearchResults(viewQueue );
+
+        database.closeDatabase();
+        break;
+    }
 }

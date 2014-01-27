@@ -73,9 +73,9 @@ void History::setHistory(view_histQueue queue)
         model->item(i,4)->setText(tuple.getHistDate());
         model->item(i,5)->setText(QString::number(i));
         if(tuple.getHistOperation() == "DEBIT")
-            color.setColor(Qt::red);
+            color.setColor("#f2dede"); // light red
         else if(tuple.getHistOperation() == "CREDIT")
-            color.setColor("#008800");
+            color.setColor("#dfd008"); // light green
         else
             color.setColor(Qt::black);
 

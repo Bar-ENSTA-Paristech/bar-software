@@ -75,13 +75,15 @@ void CartDisplay::setTotalPrice(float price)
 void CartDisplay::validateCart()
 {
     controller->newClic_ValidateCart(cash->isChecked());
-    cash->setChecked(false);
+    if(cash->isEnabled())
+        cash->setChecked(false);
 }
 
 void CartDisplay::cancelCart()
 {
     controller->newClic_CancelCart();
-    cash->setChecked(false);
+    if(cash->isEnabled())
+        cash->setChecked(false);
 }
 
 void CartDisplay::setLastCart(QString name, float price)
@@ -95,6 +97,20 @@ void CartDisplay::timerTimeout()
 {
     lastCart->clear();
     lastCart->setStyleSheet("background: none;");
+}
+
+void CartDisplay::setCashChoice(bool isCashForced)
+{
+    if(isCashForced)
+    {
+        cash->setChecked(true);
+        cash->setEnabled(false);
+    }
+    else
+    {
+        cash->setChecked(false);
+        cash->setEnabled(true);
+    }
 }
 
 // ################### CART_DISPLAY_FRAME #######################

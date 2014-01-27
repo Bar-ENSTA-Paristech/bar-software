@@ -36,9 +36,9 @@ void ProductsChoices::setProductsChoices(view_productQueue queue)
     {
         tuple = queue.front();
         if(tuple.getProductStock() <= 0) {
-            QBrush greyBrush(QColor(128,128,128));
+            QBrush negativeStock(QColor(242,222,222)); // light red
             for(int j=0; j<4; ++j){
-                model->item(i,j)->setForeground(greyBrush);
+                model->item(i,j)->setBackground(negativeStock);
             }
         }
         model->item(i,0)->setText(tuple.getProductName());
