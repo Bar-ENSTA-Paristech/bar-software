@@ -32,7 +32,7 @@ public:
     sqlite3* getHandle();
     void setHandle(sqlite3*);
 
-    db_customerQueue searchCustomer(std::string &string);//Méthode qui renvoie une queue de tuple correspondant aux infos des consommateurs dont le nom correspond à la recherche
+    db_customerQueue searchCustomer(std::string &string,int cat=0);//Méthode qui renvoie une queue de tuple correspondant aux infos des consommateurs dont le nom correspond à la recherche
     //OK (Fonctionne - a tester plus en profondeur)
 
     db_customerTuple getCustomerFromId(unsigned id);//Méthode recevant l'id d'un client et renvoyant le tuple de ses infos
@@ -49,7 +49,9 @@ public:
     db_histQueue getLastOperations(int x); //Méthode qui récupère les x dernières opérations effectuées
     //OK (Fonctionne - a tester plus en profondeur)
 
-    db_categoryQueue getCategories(); //Implémentée / Non testée
+    db_categoryQueue getProdCategories(); //Implémentée / Non testée
+
+    db_categoryQueue getCustCategories();
 
     db_histQueue getFullHist();
 
@@ -57,6 +59,8 @@ public:
 
     db_histQueue getCustomerHist(unsigned);//Renvoie l'historique d'un client en ayant recu son id
     //OK (Fonctionne - a tester plus en profondeur)
+
+    std::string getPassword (std::string &login);//Retourne le password correspondant au login recherché
 
     int editCustomerAccount (db_customerTuple); //Méthode générique qui met à jour TOUTES les informations du client
     //Implémentée / Non testée
@@ -80,7 +84,11 @@ public:
 
     int deleteCategory (int id);
 
-    int addHist (db_histTuple);
+    int addHist (db_histTuple,bool to_old=false);
+
+    int addToBar (std::pair<std::string,std::string>);
+
+    int autoDumpHist();
 
 private:
     sqlite3* handle; //Pointeur vers la BDD

@@ -13,6 +13,7 @@ Controller::Controller()
     curCart = new Cart;
     curCustomer = new Customer;
     view_curCustomer = new view_customerTuple;
+
 }
 
 void Controller::setDb(sqlite3* handle)
@@ -42,8 +43,15 @@ void Controller::mainController()
 {
     QString emptyString;
     // Initialize view fields
+
+    //TEST : Autodump de la BDD
+    database.openDatabase();
+    database.autoDumpHist();
+    database.closeDatabase();
+
     newText_Search( emptyString );
     newGlobal_Hist();
+
 }
 
 
@@ -70,11 +78,18 @@ void Controller::newText_Search(QString &viewSearch)
         // Copy the dbQueue into the viewQueue
         while( !dbQueue.empty() ){
             db_tmpCustomerInfo = dbQueue.front();
-
-            view_tmpCustomerInfo=db_tmpCustomerInfo.transformIntoCustomerView();
-
-            viewQueue.push(view_tmpCustomerInfo);
-            dbQueue.pop();
+            //TEST sur l'id : NE PAS ENVOYER "VISITEUR/VISITEUR" A LA VUE
+            int id=db_tmpCustomerInfo.getCustomerId();
+            switch(id) {
+            case 0:
+                dbQueue.pop();
+                break;
+            default:
+                view_tmpCustomerInfo=db_tmpCustomerInfo.transformIntoCustomerView();
+                viewQueue.push(view_tmpCustomerInfo);
+                dbQueue.pop();
+                break;
+            }
         }
 
     }
@@ -82,6 +97,7 @@ void Controller::newText_Search(QString &viewSearch)
     view->searchResults->setSearchResults(viewQueue );
 
     database.closeDatabase();
+
 }
 
 void Controller::newGlobal_Hist()
@@ -145,8 +161,9 @@ void Controller::newClic_Customer(unsigned int customerId)
 
 void Controller::newClic_ValidateCart(bool isCash)
 {
-    // ###################### TO COMPLETE : isCash #######################
-
+    // ###################### TO COMPLETE : cashModification #######################
+    //
+    //
     qDebug()<<"Received click to validate cart";
 
     //Inputs and outputs
@@ -159,29 +176,43 @@ void Controller::newClic_ValidateCart(bool isCash)
     db_customerTuple customerToBeEdited;
     view_customerTuple editedCustomer;
     db_productTuple productToBeEdited;
+    bool cashTrans=isCash;
     //Validation demandée :
 
     //-Getting informations
 
+
     currentCartController = curCart->getList();
     database.openDatabase();
+    if (curCustomer->getCustomerId()==0)
+    {
+        cashTrans=1;
+    }
+    else
+    {}
 
     for (int i=0; i<currentCartController.size();i++)
     {
         db_productInfo=database.getProductFromId(currentCartController[i].first);
 
-        qDebug()<<"Creating a histTuple to insert into the database";
+        for (int j=0;j<currentCartController.first().second;j++)
+        {
+            qDebug()<<"Creating a histTuple to insert into the database";
 
-        histToBeInserted.setHistCustomerId(curCustomer->getCustomerId());
-        histToBeInserted.setHistProductId(db_productInfo.getProductId());
-        histToBeInserted.setHistPrice(db_productInfo.getProductPrice());
-        qDebug()<<"Modifde l'hist";
-        database.addHist(histToBeInserted);
+            histToBeInserted.setHistCustomerId(curCustomer->getCustomerId());
+            histToBeInserted.setHistProductId(db_productInfo.getProductId());
+            histToBeInserted.setHistPrice(db_productInfo.getProductPrice());
+            qDebug()<<"Modifde l'hist";
+            database.addHist(histToBeInserted);
+        }
 
-        qDebug()<<"Modification du compte débité";
-        customerToBeEdited = database.getCustomerFromId(curCustomer->getCustomerId());
-        customerToBeEdited.setCustomerBalance(curCustomer->getBalance()-curCart->getPrice());
-        database.editCustomerAccount(customerToBeEdited);
+        if (!cashTrans)
+        {
+            qDebug()<<"Modification du compte débité";
+            customerToBeEdited = database.getCustomerFromId(curCustomer->getCustomerId());
+            customerToBeEdited.setCustomerBalance(curCustomer->getBalance()-curCart->getPrice());
+            database.editCustomerAccount(customerToBeEdited);
+        }
 
         qDebug()<<"Modification des stocks";
         productToBeEdited = db_productInfo;
@@ -189,6 +220,7 @@ void Controller::newClic_ValidateCart(bool isCash)
         database.editProduct(productToBeEdited);
 
     }
+
     editedCustomer = database.getCustomerFromId(curCustomer->getCustomerId()).transformIntoCustomerView();
     database.closeDatabase();
     qDebug()<<"Validated cart";
@@ -212,6 +244,8 @@ void Controller::newClic_ValidateCart(bool isCash)
 
     //reloading les comptes
     newText_Search(curSearch);
+
+
     return;
 }
 
@@ -288,47 +322,56 @@ void Controller::newClic_Product(unsigned &view_productId)
 
     db_productTuple db_productInfo;
 
-    // Get product information from DB
-    //unsigned id=10;
+    int id=curCustomer->getCustomerId();
 
-    database.openDatabase();
-    db_productInfo=database.getProductFromId(view_productId);
-
-    //10 is a standard value while waiting Customer to be OK.
-    //curCart->setCustomerID(10);
-
-    //Check if there is enough stock or id selled (the = is for the debug)
-    if (true==true)
-        //(db_productInfo.getProductStock()>0)
+    if (id==-1)
     {
-        // Add it to the cart
-        curCart->addProductToCart( view_productId );
-        //Edit price
-        curCart->editPrice(db_productInfo.getProductPrice());
+        return ;
     }
-    //else : Display Warning
-
-    // Get cart information
-    currentCartController = curCart->getList();
-
-    //Tranform cart into Displaycart
-    //Which contains : customerId,product_id,p
-    for (int i=0; i<currentCartController.size();i++)
+    else
     {
-        db_productInfo=database.getProductFromId(currentCartController[i].first);
-        displayProd.setCartCustomerId(curCustomer->getCustomerId());
-        displayProd.setCartPrice(db_productInfo.getProductPrice());
-        displayProd.setCartProdId(currentCartController[i].first);
-        displayProd.setCartProdName(QString::fromStdString(db_productInfo.getProductName()));
-        displayProd.setCartQuantity(currentCartController[i].second);
+        database.openDatabase();
+        db_productInfo=database.getProductFromId(view_productId);
 
-        displayCart.push(displayProd);
+        //10 is a standard value while waiting Customer to be OK.
+        //curCart->setCustomerID(10);
+
+        //Check if there is enough stock or id selled (the = is for the debug)
+        if (true==true)
+            //(db_productInfo.getProductStock()>0)
+        {
+            // Add it to the cart
+            curCart->addProductToCart( view_productId );
+            //Edit price
+            curCart->editPrice(db_productInfo.getProductPrice());
+        }
+        //else : Display Warning
+
+        // Get cart information
+        currentCartController = curCart->getList();
+
+        //Tranform cart into Displaycart
+        //Which contains : customerId,product_id,p
+        for (int i=0; i<currentCartController.size();i++)
+        {
+            db_productInfo=database.getProductFromId(currentCartController[i].first);
+            displayProd.setCartCustomerId(curCustomer->getCustomerId());
+            displayProd.setCartPrice(db_productInfo.getProductPrice());
+            displayProd.setCartProdId(currentCartController[i].first);
+            displayProd.setCartProdName(QString::fromStdString(db_productInfo.getProductName()));
+            displayProd.setCartQuantity(currentCartController[i].second);
+
+            displayCart.push(displayProd);
+        }
+        database.closeDatabase();
+        // Send to view
+        view->cartDisplay->setTotalPrice(curCart->getPrice());
+        view->cartDisplay->setCart(displayCart);
+        if(!VIEW.cartDisplay->getCash())
+        {
+            VIEW.customerPanel->setFuturBalance(curCustomer->getBalance()-curCart->getPrice());
+        }
     }
-    database.closeDatabase();
-    // Send to view
-    view->cartDisplay->setTotalPrice(curCart->getPrice());
-    view->cartDisplay->setCart(displayCart);
-    VIEW.customerPanel->setFuturBalance(curCustomer->getBalance()-curCart->getPrice());
 }
 
 bool Controller::view_isLoginCorrect(QString login, QString passwd, LoginType loginType)
@@ -337,12 +380,37 @@ bool Controller::view_isLoginCorrect(QString login, QString passwd, LoginType lo
     db_categoryTuple dbTuple;
     std::vector<QString> categories;
 
+    std::string _login;
+    std::string _truepass;
     // ######### TO COMPLETE #######
-    bool isLoginCorrect;
-    /*if(!isLoginCorrect)
-        return false;*/
+    int isLoginCorrect;
 
-    switch(currentLoginRequest) {
+    database.openDatabase();
+
+    switch (loginType){
+    case GLOBAL:
+        _login="global";
+        break;
+    case ROOT:
+        _login="root";
+        break;
+    case INDIVIDUAL:
+        _login=login.toStdString();
+        break;
+    }
+    _truepass= database.getPassword(_login);
+
+
+    isLoginCorrect= _truepass.compare(passwd.toStdString());
+
+    if(isLoginCorrect!=0)
+    {
+        return false;
+    }
+
+    else
+    {
+        switch(currentLoginRequest) {
         case CALCULATOR :
             view->currentPopup = view->calculator;
             view->calculator->launchCalculator();
@@ -350,7 +418,8 @@ bool Controller::view_isLoginCorrect(QString login, QString passwd, LoginType lo
         case EDIT_CUSTOMER :
             view->currentPopup = view->editCustomer;
             database.openDatabase();
-            dbQueue = database.getCategories();
+            dbQueue = database.getCustCategories();
+            database.closeDatabase();
             while(!dbQueue.empty()){
                 dbTuple = dbQueue.front();
                 categories.push_back( QString::fromStdString( dbTuple.getCategoryName() ) );
@@ -359,7 +428,7 @@ bool Controller::view_isLoginCorrect(QString login, QString passwd, LoginType lo
             //categories.push_back("BAR");categories.push_back("2014");categories.push_back("2015");
             view->editCustomer->launchEditCustomer(*view_curCustomer, categories);
 
-            database.closeDatabase();
+
             break;
         case DELETE_CUSTOMER :
             view->currentPopup = view->deleteCustomer;
@@ -369,13 +438,15 @@ bool Controller::view_isLoginCorrect(QString login, QString passwd, LoginType lo
         case NEW_CUSTOMER :
             view->currentPopup = view->newCustomer;
             database.openDatabase();
-            dbQueue = database.getCategories();
+            dbQueue = database.getCustCategories();
+            database.closeDatabase();
             while(!dbQueue.empty()){
                 dbTuple = dbQueue.front();
                 categories.push_back( QString::fromStdString( dbTuple.getCategoryName() ) );
                 dbQueue.pop();
             }
             view->newCustomer->launchNewCustomer(categories);
+
             break;
         case ADD_STOCK :
             view->addStock->launchAddStock();
@@ -392,46 +463,90 @@ bool Controller::view_isLoginCorrect(QString login, QString passwd, LoginType lo
             break;
         default :
             return false;
+        }
+        return true;
     }
-    return true;
 }
 
 void Controller::newClic_Calculator()
 {
-    view->currentPopup = view->login;
-    view->login->checkGlobal();
-    currentLoginRequest = CALCULATOR;
+    int id=curCustomer->getCustomerId();
+
+    if (id==-1) //A l'init, pas de curcustomer
+    {
+        return ;
+    }
+    else
+    {
+        view->currentPopup = view->login;
+        view->login->checkGlobal();
+        currentLoginRequest = CALCULATOR;
+    }
 }
 
-void Controller::newClic_IndividualHistory(unsigned id)
+void Controller::newClic_IndividualHistory()
 {
-    view->currentPopup = view->individualHistory;
-    view_histQueue CustomerHist;
-    view_histTuple CustomerHistTuple;
+    //
+    int id=curCustomer->getCustomerId();
 
-    db_histQueue dbCustomerHist;
-    db_histTuple dbCustomerHistTuple;
-
-    database.openDatabase();
-    dbCustomerHist = database.getCustomerHist(id);
-
-    if ( !dbCustomerHist.empty() ){
-
-        // Copy the dbQueue into the viewQueue
-        while( !dbCustomerHist.empty() ){
-            dbCustomerHistTuple = dbCustomerHist.front();
-
-            CustomerHistTuple=dbCustomerHistTuple.transformIntoHistView();
-
-            CustomerHist.push(CustomerHistTuple);
-            dbCustomerHist.pop();
-        }
-
+    if (id==-1)
+    {
+        return ;
     }
-    // Send result to view
+    else
+    {
+        //
+        view->currentPopup = view->individualHistory;
+        view_histQueue CustomerHist;
+        view_histTuple CustomerHistTuple;
 
-    view->individualHistory->launchIndividualHistory(CustomerHist);
+        db_histQueue dbCustomerHist;
+        db_histTuple dbCustomerHistTuple;
+
+        database.openDatabase();
+        dbCustomerHist = database.getCustomerHist(id);
+
+        if ( !dbCustomerHist.empty() ){
+
+            // Copy the dbQueue into the viewQueue
+            while( !dbCustomerHist.empty() ){
+                dbCustomerHistTuple = dbCustomerHist.front();
+
+                CustomerHistTuple=dbCustomerHistTuple.transformIntoHistView();
+
+                CustomerHist.push(CustomerHistTuple);
+                dbCustomerHist.pop();
+            }
+
+        }
+        // Send result to view
+
+        view->individualHistory->launchIndividualHistory(CustomerHist);
+        database.closeDatabase();
+    }
+}
+
+std::queue<QString> Controller::newCustCategoryList()
+{
+    db_categoryQueue DbCatList;
+    db_categoryTuple DbCat;
+    QString cat;
+    database.openDatabase();
+    DbCatList=database.getCustCategories();
     database.closeDatabase();
+    std::queue<QString> result;
+
+    if( !DbCatList.empty())
+    {
+        while( !DbCatList.empty() )
+        {
+            DbCat = DbCatList.front();
+            cat=QString::fromStdString(DbCat.getCategoryName());
+            result.push(cat);
+            DbCatList.pop();
+        }
+    }
+    return result;
 }
 
 bool Controller::isNegativeAllowed()
@@ -457,9 +572,18 @@ void Controller::setCurCustomer(view_customerTuple &tuple)
 
 void Controller::newClic_EditCustomer()
 {
-    view->currentPopup = view->login;
-    view->login->checkGlobal();
-    currentLoginRequest = EDIT_CUSTOMER;
+    int id=curCustomer->getCustomerId();
+
+    if (id==-1)
+    {
+        return ;
+    }
+    else
+    {
+        view->currentPopup = view->login;
+        view->login->checkGlobal();
+        currentLoginRequest = EDIT_CUSTOMER;
+    }
 }
 
 void Controller::receiveCalculatorEntry(float amount)
@@ -494,9 +618,18 @@ void Controller::receiveEditCustomerEntry(view_customerTuple& customer)
 
 void Controller::newClic_DeleteCustomer()
 {
-    view->currentPopup = view->login;
-    view->login->checkRoot();
-    currentLoginRequest = DELETE_CUSTOMER;
+    int id=curCustomer->getCustomerId();
+
+    if (id==-1)
+    {
+        return ;
+    }
+    else
+    {
+        view->currentPopup = view->login;
+        view->login->checkRoot();
+        currentLoginRequest = DELETE_CUSTOMER;
+    }
 }
 
 void Controller::newClic_GlobalHistory()

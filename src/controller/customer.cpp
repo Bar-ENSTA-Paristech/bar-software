@@ -9,7 +9,7 @@ Customer::Customer()
     name="";
     firstname="";
     login="";
-    customerid=0;
+    customerid=-1;
     balance=0;
 }
 

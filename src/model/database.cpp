@@ -33,10 +33,16 @@ int Database::openDatabase()
     sqlite3_config(SQLITE_CONFIG_URI,1);
 
     std::cout<<"Tentative d'ouverture de db"<<std::endl;
+    int i=0;
     sqlite3* DB;
     QString Path;
     Path=GLOBAL_PATH+"resources/BDD/bar.db";
-    const char *DBfilename = Path.toLocal8Bit().data();
+    char DBfilename[100];
+    for (i;i<Path.size();i++)
+    {
+        DBfilename[i]=Path.at(i).toLatin1();
+    }
+    DBfilename[i]='\0';
     std::cout<<DBfilename<<std::endl;
     int coderesult=sqlite3_open(DBfilename //Database filename
                                 ,&DB);//adresse mémoire de la BDD
@@ -179,8 +185,9 @@ Elles ne seront donc pas commentées aussi précisément
 que la méthode qui suit.
 ---------------------------------------------------*/
 
-db_customerQueue Database::searchCustomer(std::string &string)
+db_customerQueue Database::searchCustomer(std::string &string,int cat)
 {
+    std::string catstring=std::to_string(cat);
     std::string searchString=string;
     std::string queryString="";   //Initialisation du string qui contiendra la requête SQL
 
@@ -207,13 +214,26 @@ db_customerQueue Database::searchCustomer(std::string &string)
 
     //Formation du string de query adapté
 
-    queryString+=" SELECT * FROM notes WHERE nom LIKE '";
-    queryString+=searchString;
-    queryString+="%";
-    queryString+="' OR prenom LIKE '";
-    queryString+=searchString;
-    queryString+="%";
-    queryString+="' ORDER BY nom ASC;";
+    if (cat==0)
+    {
+        queryString+=" SELECT * FROM notes WHERE nom LIKE '";
+        queryString+=searchString;
+        queryString+="%";
+        queryString+="' OR prenom LIKE '";
+        queryString+=searchString;
+        queryString+="%";
+        queryString+="' ORDER BY nom ASC;";
+    }
+    else
+    {
+        queryString+=" SELECT * FROM notes WHERE cat='";
+        queryString+=catstring;
+        queryString+="' AND (nom LIKE '";
+        queryString+=searchString;
+        queryString+="%' OR prenom LIKE '";
+        queryString+=searchString;
+        queryString+="%') ORDER BY nom ASC;";
+    }
 
     //Implémentation de la query et execution de celle ci
     query.setQuery(queryString);
@@ -266,7 +286,9 @@ db_customerQueue Database::searchCustomer(std::string &string)
         }
     }
     clear(queue); // queue étant défini en dehors de la fonction, par précaution on la vide à la fin de l'appel
+    delete queryResultFunction;
     return *result;
+
 }
 
 db_productQueue Database::getAllProducts()
@@ -333,11 +355,13 @@ db_productQueue Database::getAllProducts()
 
         }
     }
+    delete conso;
+    delete queryResultFunction;
     clear(queue);
     return *result;
 }
 
-db_categoryQueue Database::getCategories()
+db_categoryQueue Database::getProdCategories()
 {
     Query query;
 
@@ -354,8 +378,8 @@ db_categoryQueue Database::getCategories()
 
     std::vector<std::string> vectorFromQueue;
 
-    std::string queryString =" SELECT * FROM type_consos";
-    queryString+=" ORDER BY type_conso_id ASC;";
+    std::string queryString =" SELECT * FROM categ_consos";
+    queryString+=" ORDER BY id ASC;";
 
 
     query.setQuery(queryString);
@@ -390,9 +414,64 @@ db_categoryQueue Database::getCategories()
         }
     }
     clear(queue);
+    delete queryResultFunction;
     return *result;
 }
 
+db_categoryQueue Database::getCustCategories()
+{
+    Query query;
+
+    db_categoryTuple *cat(0);
+    cat=new db_categoryTuple;
+
+    unsigned i;
+    unsigned j=0;
+    db_categoryQueue *result(0);
+    result=new db_categoryQueue;
+
+    std::queue<std::string> *queryResultFunction(0);
+    queryResultFunction = new std::queue<std::string> ;
+
+    std::vector<std::string> vectorFromQueue;
+
+    std::string queryString =" SELECT * FROM categ_cust";
+    queryString+=" ORDER BY id ASC;";
+
+
+    query.setQuery(queryString);
+    query.setVerbose(1);
+    executeQuery(query);
+
+    *queryResultFunction=*queryResult;
+
+    for (i=0;i<=queryResultFunction->size();i++)
+    {
+        while(!queryResultFunction->empty())
+        {
+            while (queryResultFunction->front()!= "\n"&&!queryResultFunction->empty())
+            {
+                vectorFromQueue.push_back(queryResultFunction->front());
+                queryResultFunction->pop();
+            }
+            unsigned recuperatedId;
+
+            std::istringstream(vectorFromQueue[0]) >> recuperatedId;
+
+            cat->setCategoryId(recuperatedId);
+            cat->setCategoryName(vectorFromQueue[1]);
+
+            queryResultFunction->pop();
+            result->push(*cat);
+
+            j++;
+            vectorFromQueue.clear();
+        }
+    }
+    clear(queue);
+    delete queryResultFunction;
+    return *result;
+}
 
 db_productQueue Database::getProductsFromCategory(unsigned categorie)
 {
@@ -462,6 +541,7 @@ db_productQueue Database::getProductsFromCategory(unsigned categorie)
         }
     }
     clear(queue);
+    delete queryResultFunction;
     return *result;
 }
 
@@ -523,6 +603,7 @@ db_productTuple Database::getProductFromId(unsigned id)
     {
     }
     clear(queue);
+    delete queryResultFunction;
     vectorFromQueue.clear();
     return *conso;
 
@@ -548,7 +629,7 @@ db_histQueue Database::getFullHist()
     //Utiliser des jointures
     // From client_id -> nom + prénom
     // From conso_id -> conso + prix
-    std::string queryString="SELECT historique.his_id, notes.nom, notes.prenom,consos.nom, historique.conso_price, historique.date_conso ";
+    std::string queryString="SELECT historique.his_id, notes.nom, notes.prenom,consos.nom, historique.conso_price, historique.date_conso, historique.client_id,historique.conso_id ";
     queryString+="FROM historique ";
     queryString+="LEFT JOIN consos ";
     queryString+="ON consos.conso_id = historique.conso_id ";
@@ -575,9 +656,13 @@ db_histQueue Database::getFullHist()
 
             float recuperatedPrice;
             unsigned recuperatedId;
+            unsigned recuperatedClientId;
+            unsigned recuperatedProductId;
 
             std::istringstream(vectorFromQueue[4]) >> recuperatedPrice;
             std::istringstream(vectorFromQueue[0]) >> recuperatedId;
+            std::istringstream(vectorFromQueue[6]) >> recuperatedClientId;
+            std::istringstream(vectorFromQueue[7]) >> recuperatedProductId;
 
             //*hist = std::make_tuple (vectorFromQueue[1],vectorFromQueue[2],vectorFromQueue[3],vectorFromQueue[5],recuperatedPrice,recuperatedId);
             hist->setHistId(recuperatedId);
@@ -586,6 +671,8 @@ db_histQueue Database::getFullHist()
             hist->setHistDate(vectorFromQueue[5]);
             hist->setHistPrice(recuperatedPrice);
             hist->setHistOperation(vectorFromQueue[3]);
+            hist->setHistCustomerId(recuperatedClientId);
+            hist->setHistProductId(recuperatedProductId);
 
             result->push(*hist);
             queryResultFunction->pop();
@@ -594,6 +681,7 @@ db_histQueue Database::getFullHist()
         }
     }
     clear(queue);
+    delete queryResultFunction;
     return *result;
 }
 
@@ -664,10 +752,12 @@ db_histQueue Database::getLastOperations(int limit)
         }
     }
     clear(queue);
+    delete queryResultFunction;
     return *result;
 
 }
 // hist.conso_price n'est pas dans la db actuellement, il faudra faire avec conso.price
+//en réalité, on utilisera conso.price pour hist_older=avant la maj
 db_histQueue Database::getCustomerHist(unsigned id)
 {
     Query query;
@@ -736,7 +826,7 @@ db_histQueue Database::getCustomerHist(unsigned id)
         }
     }
     clear(queue);
-
+    delete queryResultFunction;
     return *result;
 
 }
@@ -809,7 +899,7 @@ db_histQueue Database::getProductHist(unsigned id)
         }
     }
     clear(queue);
-
+    delete queryResultFunction;
     return *result;
 }
 
@@ -870,10 +960,37 @@ db_customerTuple Database::getCustomerFromId(unsigned customerId)
         queryResultFunction->pop();
     }
     vectorFromQueue.clear();
-
+    delete queryResultFunction;
     clear(queue);
     return *customer;
 }
+
+
+std::string Database::getPassword (std::string &login)
+{
+    std::string queryString,result;
+    Query query;
+    std::queue<std::string> *queryResultFunction(0);  //
+    queryResultFunction = new std::queue<std::string> ;
+
+    queryString+=" SELECT password FROM passwords WHERE login LIKE '";
+    queryString+=login;
+    queryString+="'";
+
+    query.setQuery(queryString);
+    query.setVerbose(1);
+    executeQuery(query);
+
+    *queryResultFunction=*queryResult;
+    result=queryResultFunction->front();
+    queryResultFunction->pop();
+    delete queryResultFunction;
+    clear(queue);
+    return result;
+}
+
+
+
 
 int Database::createCustomerAccount(db_customerTuple tuple)
 {
@@ -950,7 +1067,7 @@ int Database::editCustomerAccount(db_customerTuple tuple)
     queryString+=";";
 
     query.setQuery(queryString);
-            std::cout<<queryString<<std::endl;
+    std::cout<<queryString<<std::endl;
     query.setVerbose(1);
     code=executeQuery(query);
 
@@ -1119,7 +1236,7 @@ int Database::deleteCategory(int id)
     return (code);
 }
 
-int Database::addHist(db_histTuple tuple)
+int Database::addHist(db_histTuple tuple,bool to_old)
 {
 
     std::string timestamp;
@@ -1132,11 +1249,10 @@ int Database::addHist(db_histTuple tuple)
     std::string queryString="";
     Query query;
 
-    QString format="yyyy-MM-dd hh:mm:ss\0";
+    QString const format="yyyy-MM-dd hh:mm:ss\0";
 
 
     price=tuple.getHistPrice();
-    timestamp = QString::number(QDateTime::currentDateTime().toMSecsSinceEpoch()).toStdString();
     client_id = tuple.getHistCustomerId();
     product_id = tuple.getHistProduct_Id();
 
@@ -1146,15 +1262,52 @@ int Database::addHist(db_histTuple tuple)
     std::string clientIdString = std::to_string(client_id);
 
     //
+    if (to_old ==false)
+    {
+        queryString+="INSERT INTO historique (client_id,conso_id,conso_price,date_conso) VALUES (";
+        queryString+=clientIdString;
+        queryString+=", ";
+        queryString+=productIdString;
+        queryString+=", ";
+        queryString+=priceString;
+        queryString+=", ";
+        queryString+="CURRENT_TIMESTAMP";
+        queryString+=");";
+    }
+    else
+    {
+        QDateTime DateTime=QDateTime::fromString(QString::fromStdString(tuple.getHistDate()),format);
 
-    queryString+="INSERT INTO historique (client_id,conso_id,conso_price,date_conso) VALUES (";
-    queryString+=clientIdString;
+        timestamp = QString::number(DateTime.toTime_t()).toStdString();
+
+        queryString+="INSERT INTO historique_save (client_id,conso_id,conso_price,date_conso) VALUES (";
+        queryString+=clientIdString;
+        queryString+=", ";
+        queryString+=productIdString;
+        queryString+=", ";
+        queryString+=priceString;
+        queryString+=", datetime(";
+        queryString+=timestamp;
+        queryString+=", 'unixepoch', 'localtime'));";
+    }
+
+    query.setQuery(queryString);
+    query.setVerbose(1);
+    code=executeQuery(query);
+
+    return (code);
+}
+
+int Database::addToBar(std::pair<std::string,std::string> datas)
+{
+    std::string queryString="";
+    int code;
+    Query query;
+
+    queryString+="INSERT INTO passwords (login,password) VALUES (";
+    queryString+=datas.first;
     queryString+=", ";
-    queryString+=productIdString;
-    queryString+=", ";
-    queryString+=priceString;
-    queryString+=", ";
-    queryString+="CURRENT_TIMESTAMP";
+    queryString+=datas.second;
     queryString+=");";
 
     query.setQuery(queryString);
@@ -1162,4 +1315,62 @@ int Database::addHist(db_histTuple tuple)
     code=executeQuery(query);
 
     return (code);
+}
+
+int Database::autoDumpHist()
+{
+    int code;
+
+    db_histQueue hist=this->getFullHist();
+    db_histTuple tuple;
+    db_histQueue toDump;
+
+    int size=hist.size();
+    int cur_hist_id;
+    std::string idstring;
+
+    if (size>=1000)
+    {
+        for(int i=0;i<size;i++)
+        {
+            if(i<1000)
+            {
+                hist.pop();
+            }
+            else
+            {
+                if(i==1000)
+                {
+                    hist.pop();
+                    tuple=hist.front();
+                    cur_hist_id=tuple.getHistId();
+                    idstring=std::to_string(cur_hist_id);
+                    toDump.push(tuple);
+                }
+                else
+                {
+                    tuple=hist.front();
+                    this->addHist(tuple,true);
+                    hist.pop();
+                }
+            }
+        }
+
+        //Do the SQL statement
+
+        //1: Add the tuples
+
+        //Delete old rows
+        Query query;
+        std::string queryString="";
+        queryString+="DELETE FROM historique WHERE his_id<";
+        queryString+=idstring;
+        queryString+=";";
+
+        query.setQuery(queryString);
+        query.setVerbose(1);
+        code=executeQuery(query);
+    }
+
+    return code;
 }

@@ -39,6 +39,8 @@ public:
     void setTotalPrice(float price);
     void updateSize(){cartList->updateSize();}
     void setLastCart(QString name, float price);
+    bool getCash();
+
 
 private:
     CartDisplayFrame* cartList;
