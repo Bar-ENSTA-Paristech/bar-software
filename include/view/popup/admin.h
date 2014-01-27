@@ -24,6 +24,8 @@ private:
     QPushButton* validateButton;
     QPushButton* cancelButton;
     QCheckBox* negativeAllowed;
+    QLabel* cashTransferLabel;
+    QLineEdit* cashTransfer;
 
     
 public slots:

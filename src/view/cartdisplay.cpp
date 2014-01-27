@@ -54,7 +54,7 @@ CartDisplay::~CartDisplay()
 
 bool CartDisplay::getCash()
 {
-    return cash;
+    return cash->isChecked();
 }
 
 void CartDisplay::setCart(view_cartQueue &queue)

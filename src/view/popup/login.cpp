@@ -76,6 +76,7 @@ void Login::checkIndividual()
     loginType = INDIVIDUAL;
     loginLabel->show();
     login->show();
+    login->setFocus();
     this->show();
 }
 
@@ -85,6 +86,7 @@ void Login::checkGlobal()
     loginType = GLOBAL;
     loginLabel->hide();
     login->hide();
+    passwd->setFocus();
     this->show();
 }
 
@@ -94,5 +96,6 @@ void Login::checkRoot()
     loginType = ROOT;
     loginLabel->hide();
     login->hide();
+    passwd->setFocus();
     this->show();
 }

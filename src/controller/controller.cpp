@@ -371,6 +371,8 @@ void Controller::newClic_Product(unsigned &view_productId)
         {
             VIEW.customerPanel->setFuturBalance(curCustomer->getBalance()-curCart->getPrice());
         }
+        else
+            VIEW.customerPanel->setFuturBalance(0,false);
     }
 }
 

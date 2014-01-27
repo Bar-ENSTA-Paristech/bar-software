@@ -8,12 +8,15 @@ Admin::Admin(QWidget *parent) :
 
     layout = new QGridLayout(this);
     negativeAllowed = new QCheckBox("Négatif autorisé", this);
-
+    cashTransferLabel = new QLabel("Argent transféré au BDE (€): ", this);
+    cashTransfer = new QLineEdit("0", this);
 
     validateButton = new QPushButton("Valider", this);
     cancelButton = new QPushButton("Annuler", this);
 
     layout->addWidget(negativeAllowed, 0,0);
+    layout->addWidget(cashTransferLabel, 1,0);
+    layout->addWidget(cashTransfer, 1,1);
     layout->addWidget(validateButton, 20,0);
     layout->addWidget(cancelButton, 20,1);
 
@@ -30,8 +33,11 @@ void Admin::launchAdmin(AdminTuple tuple)
 
 void Admin::validate()
 {
+    if(!isBalanceCorrect(cashTransfer->text()))
+        return;
     AdminTuple tuple;
     tuple.isNegativeAllowed = negativeAllowed->isChecked();
+    tuple.cashTransfered = cashTransfer->text().toFloat();
     controller->receiveAdminInfos(tuple);
     this->hide();
 }
