@@ -333,6 +333,7 @@ typedef struct{
 
 typedef struct{
     bool isNegativeAllowed;
+    float cashTransfered;
 
 }AdminTuple;
 

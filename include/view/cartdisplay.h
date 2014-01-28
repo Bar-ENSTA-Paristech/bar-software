@@ -40,6 +40,7 @@ public:
     void updateSize(){cartList->updateSize();}
     void setLastCart(QString name, float price);
     bool getCash();
+    void setCashChoice(bool isCashForced);
 
 
 private:

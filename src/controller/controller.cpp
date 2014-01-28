@@ -164,7 +164,7 @@ void Controller::newClic_ValidateCart(bool isCash)
     // ###################### TO COMPLETE : cashModification #######################
     //
     //
-    qDebug()<<"Received click to validate cart";
+    qDebug()<<"Received click to validate cart. Cash : " << isCash;
 
     //Inputs and outputs
 
@@ -244,7 +244,6 @@ void Controller::newClic_ValidateCart(bool isCash)
 
     //reloading les comptes
     newText_Search(curSearch);
-
 
     return;
 }
@@ -371,6 +370,8 @@ void Controller::newClic_Product(unsigned &view_productId)
         {
             VIEW.customerPanel->setFuturBalance(curCustomer->getBalance()-curCart->getPrice());
         }
+        else
+            VIEW.customerPanel->setFuturBalance(0,false);
     }
 }
 
@@ -535,6 +536,7 @@ std::queue<QString> Controller::newCustCategoryList()
     DbCatList=database.getCustCategories();
     database.closeDatabase();
     std::queue<QString> result;
+    result.push(QString("Tous")); // always present : Id -1
 
     if( !DbCatList.empty())
     {
@@ -560,7 +562,7 @@ void Controller::setCurCustomer(view_customerTuple &tuple)
     curCustomer->setBalance(tuple.getCustomerBalance());
     curCustomer->setFirstName(tuple.getCustomerFirstName().QString::toStdString());
     curCustomer->setCategory(tuple.getCustomerCategory());
-    curCustomer->setName(tuple.getCustomerFirstName().QString::toStdString());
+    curCustomer->setName(tuple.getCustomerName().QString::toStdString());
     curCustomer->setLogin(tuple.getCustomerLogin().QString::toStdString());
     view_curCustomer->setCustomerId((tuple.getCustomerId()));
     view_curCustomer->setCustomerBalance(tuple.getCustomerBalance());
@@ -602,10 +604,13 @@ void Controller::receiveCalculatorEntry(float amount)
 
     database.editCustomerAccount(dbTuple);
 
-    database.closeDatabase();
-
-    /*TODO*/
     //Send updated information to view so it can display the new customer info
+    newText_Search(curSearch);
+    curCustomer->setBalance(curCustomer->getBalance() + amount);
+    view_curCustomer->setCustomerBalance(view_curCustomer->getCustomerBalance() + amount);
+    view->customerPanel->setCustomer(*view_curCustomer);
+
+    database.closeDatabase();
 }
 
 void Controller::receiveEditCustomerEntry(view_customerTuple& customer)
@@ -662,7 +667,12 @@ void Controller::newClic_NewCustomer()
 
 void Controller::receiveNewCustomerEntry(view_customerTuple& customer)
 {
-    // TO COMPLETE
+    db_customerTuple dbTuple;
+
+    database.openDatabase();
+    dbTuple = customer.transformIntoCustomerDb();
+    qDebug() << database.createCustomerAccount( dbTuple );
+    database.closeDatabase();
 }
 
 void Controller::newClic_AddStock()
@@ -753,7 +763,39 @@ void Controller::receiveAdminInfos(AdminTuple tuple)
     // TO COMPLETE
 }
 
-void Controller::newClic_Category(unsigned id)
+void Controller::newClic_Category(int id)
 {
-    // TO COMPLETE (0 for no filter, else categoryID e.g. 1 for bar, 0 for 2014, etc)
+    QString emptyString;qDebug() << id;
+    switch (id) {
+    case -1: // for all
+        newText_Search(emptyString);
+        break;
+    default:
+        // Inputs and outputs
+        std::string dbSearch;
+        view_customerTuple view_tmpCustomerInfo;
+        db_customerTuple db_tmpCustomerInfo;
+        db_customerQueue dbQueue;
+        view_customerQueue viewQueue;
+
+        database.openDatabase();
+        dbQueue = database.getCustomerFromCategory((unsigned) id);        // Get customer information corresponding to the search from model
+
+        if ( !dbQueue.empty() ){
+
+            // Copy the dbQueue into the viewQueue
+            while( !dbQueue.empty() ){
+                db_tmpCustomerInfo = dbQueue.front();
+                view_tmpCustomerInfo=db_tmpCustomerInfo.transformIntoCustomerView();
+                viewQueue.push(view_tmpCustomerInfo);
+                dbQueue.pop();
+            }
+
+        }
+        // Sent result to view
+        view->searchResults->setSearchResults(viewQueue );
+
+        database.closeDatabase();
+        break;
+    }
 }

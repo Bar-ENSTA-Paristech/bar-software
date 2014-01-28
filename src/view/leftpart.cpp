@@ -22,16 +22,16 @@ LeftPart::LeftPart(QWidget* parent)
     layout->setContentsMargins(0, 0, 0, 0);
 
     //##### TEST ####
-    std::queue<QString> categories;
+    /*std::queue<QString> categories;
     //categories = controller->newCustCategoryList();    PB: le controlleur n'est pas encore correctement instancié à l'init
     categories.push(QString("Tous"));
     categories.push(QString("RAB"));
     categories.push(QString("2014"));
     categories.push(QString("2015"));
     categories.push(QString("2016"));
-    setCategories(categories);
+    setCategories(categories);*/
     // ##### FIN TEST #####
-    clickOnCategorie(0);
+    //clickOnCategorie(0);
     //QObject::connect(&categoriesLabels[1], SIGNAL(pressed()), this, SLOT(clickOnCategorie()));
     QObject::connect(&updateCategorieTimer, SIGNAL(timeout()), this, SLOT(unsetCategorieUpdate()));
 
@@ -89,7 +89,10 @@ void LeftPart::clickOnCategorie(int id)
     categoriesLabels[id].setStyleSheet("background : url("+GLOBAL_PATH+"resources/pictures/activeCategorie.png) ; color:white");
     //updateCategorieTimer.start(500);
 
-    controller->newClic_Category((unsigned) id);
+    controller->newClic_Category(id - 1);
+
+    if(id == 1) // Visiteur
+        controller->newClic_Customer(0);
 }
 
 void LeftPart::unsetCategorieUpdate()
@@ -119,4 +122,9 @@ void LeftPart::setController(Controller* par)
     searchResults->controller = par;
     history->controller = par;
     customerPanel->setController(par);
+
+    std::queue<QString> categories;
+    categories = controller->newCustCategoryList();
+    setCategories(categories);
+    clickOnCategorie(0);
 }

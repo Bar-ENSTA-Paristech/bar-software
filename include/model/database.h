@@ -38,6 +38,9 @@ public:
     db_customerTuple getCustomerFromId(unsigned id);//Méthode recevant l'id d'un client et renvoyant le tuple de ses infos
     //OK (Fonctionne - a tester plus en profondeur)
 
+    db_customerQueue getCustomerFromCategory(unsigned id){db_customerQueue dbQueue;return dbQueue;} // Méthode renvoyant les clients d'une certaine catégorie
+    //  ######### A IMPLEMENTER ########
+
     db_productQueue getProductsFromCategory(unsigned cat);//Méthode recevant un unsigned correspondant à une catégorie de conso et renvoie toutes les consos correspondates
     //OK (Fonctionne - a tester plus en profondeur
 

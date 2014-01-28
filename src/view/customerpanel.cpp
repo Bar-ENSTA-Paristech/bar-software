@@ -83,21 +83,31 @@ CustomerPanel::CustomerPanel(QWidget *parent) :
     calculator->setFlat(true);
     calculator->setIconSize(QSize(32,32));
     calculator->setToolTip("Calculatrice (donner ou retirer de l'argent à un client)");
+    calculator->setCursor(Qt::PointingHandCursor);
     //history->setText("H");
     history->setIcon(QIcon(GLOBAL_PATH + "resources/pictures/history_individual.png"));
     history->setFlat(true);
     history->setIconSize(QSize(32,32));
     history->setToolTip("Historique du client");
+    history->setCursor(Qt::PointingHandCursor);
     //editCustomer->setText("edit");
     editCustomer->setIcon(QIcon(GLOBAL_PATH + "resources/pictures/editCust.png"));
     editCustomer->setFlat(true);
     editCustomer->setIconSize(QSize(32,32));
     editCustomer->setToolTip("Editer les informations du client");
+    editCustomer->setCursor(Qt::PointingHandCursor);
     //deleteCustomer->setText("suppr");
     deleteCustomer->setIcon(QIcon(GLOBAL_PATH + "resources/pictures/deleteCust.png"));
     deleteCustomer->setFlat(true);
     deleteCustomer->setIconSize(QSize(32,32));
     deleteCustomer->setToolTip("Supprimer ce client");
+    deleteCustomer->setCursor(Qt::PointingHandCursor);
+
+    // Buttons are desactivated at start
+    calculator->setEnabled(false);
+    history->setEnabled(false);
+    editCustomer->setEnabled(false);
+    deleteCustomer->setEnabled(false);
 
     QObject::connect(calculator, SIGNAL(clicked()), this, SLOT(launchCalculator()));
     QObject::connect(history, SIGNAL(clicked()), this, SLOT(launchIndividualHistory()));
@@ -145,6 +155,24 @@ void CustomerPanel::setController(Controller* controllerPar)
 
 void CustomerPanel::setCustomer(view_customerTuple & tuple)
 {
+    // activations of buttons if not a guest
+    if(tuple.getCustomerId() == 0)
+    {
+        calculator->setEnabled(false);
+        history->setEnabled(false);
+        editCustomer->setEnabled(false);
+        deleteCustomer->setEnabled(false);
+        VIEW.cartDisplay->setCashChoice(true);
+    }
+    else
+    {
+        calculator->setEnabled(true);
+        history->setEnabled(true);
+        editCustomer->setEnabled(true);
+        deleteCustomer->setEnabled(true);
+        VIEW.cartDisplay->setCashChoice(false);
+    }
+
     //We put such information in the curCoustomer of the controller
    controller->setCurCustomer(tuple);
 
