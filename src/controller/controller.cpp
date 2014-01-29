@@ -696,7 +696,12 @@ void Controller::newClic_AddProduct()
 
 void Controller::receiveNewProduct(view_productTuple& product)
 {
-    // TO COMPLETE
+    db_productTuple dbTuple;
+    database.openDatabase();
+    dbTuple = product.transformIntoProductDb();
+    database.createProduct( dbTuple );
+    // Should a confirmation popup be set by the view here, to inform the user of the success of the insertion ?
+    database.closeDatabase();
 }
 
 void Controller::newClic_EditProduct()

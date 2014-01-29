@@ -1197,7 +1197,7 @@ int Database::createProduct(db_productTuple tuple)
     std::string categorieString = std::to_string(categorie);
     std::string priceString = std::to_string(prix);
 
-    queryString+="INSERT INTO notes (nom,type,prix,stock) VALUES (";
+    queryString+="INSERT INTO consos (nom,type,prix,stock) VALUES (";
     queryString+="'";
     queryString+=nom;
     queryString+="'";
