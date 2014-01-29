@@ -227,7 +227,7 @@ db_customerQueue Database::searchCustomer(std::string &string,int cat)
     }
     else
     {
-        queryString+=" SELECT * FROM notes WHERE cat='";
+        queryString+=" SELECT * FROM notes WHERE type='";
         queryString+=catstring;
         queryString+="' AND (nom LIKE '";
         queryString+=searchString;
@@ -472,6 +472,90 @@ db_categoryQueue Database::getCustCategories()
     clear(queue);
     delete queryResultFunction;
     return *result;
+}
+
+
+db_customerQueue Database::getCustomerFromCategory(unsigned id)
+{
+    std::string idstring=std::to_string(id);
+
+    std::string queryString="";
+    Query query; //Initialisation de la requête
+
+    std::queue<std::string> *queryResultFunction(0);  //
+    queryResultFunction = new std::queue<std::string> ;
+
+    queryResult = new std::queue<std::string> ;
+
+    unsigned i;
+    unsigned j=0;
+    db_customerQueue *result(0); //On initialise la queue de tuple qui sera retournée à la fin au controlleur
+    result=new db_customerQueue;
+
+    //On initialise aussi le tuple correspondant
+    db_customerTuple customer;
+
+    //Formation du string de query adapté
+
+        queryString+=" SELECT * FROM notes WHERE type='";
+        queryString+=idstring;
+        queryString+="' ORDER BY nom ASC;";
+
+    //Implémentation de la query et execution de celle ci
+    query.setQuery(queryString);
+    query.setVerbose(1);
+    executeQuery(query);
+
+    *queryResultFunction=*queryResult;    //Récupération des données renvoyées par la db que l'on met dans une queue<string>
+
+    /*Il faut désormais caster le queue <string> dans un queue<tuple< // >> que l'on va return
+    Pour cela on utilise un vector de string */
+
+    std::vector<std::string> vectorFromQueue;
+
+    if (queryResultFunction->size()!=0) //Boucle sur tout le resultat
+    {
+        for (i=0;i<=queryResultFunction->size();i++)
+        {
+            while(!queryResultFunction->empty())
+            {
+                //Remplissage de Result
+                while (queryResultFunction->front()!= "\n"&& !queryResultFunction->empty())
+                {
+                    vectorFromQueue.push_back(queryResultFunction->front()); // Pour chaque individu, on récupère les informations dans le vector vectorFromQueue
+                    queryResultFunction->pop();      //On supprime l'élément qui vient d'être extrait.
+                }
+
+                //On transforme les std::string en float et unsigned pour les champs Balance et Id
+                float recuperatedBalance;
+                int recuperatedId;
+                unsigned recuperatedCategory;
+
+                std::istringstream(vectorFromQueue[4]) >> recuperatedCategory;
+                std::istringstream(vectorFromQueue[5]) >> recuperatedBalance;
+                std::istringstream(vectorFromQueue[0]) >> recuperatedId;
+
+                //*customer = std::make_tuple (vectorFromQueue[1],vectorFromQueue[2],vectorFromQueue[4],recuperatedBalance,recuperatedId,vectorFromQueue[3]);
+                customer.setCustomerId(recuperatedId);
+                customer.setCustomerName(vectorFromQueue[1]);
+                customer.setCustomerFirstname(vectorFromQueue[2]);
+                customer.setCustomerLogin(vectorFromQueue[3]);
+                customer.setCustomerCategory(recuperatedCategory);
+                customer.setCustomerBalance(recuperatedBalance);
+
+                queryResultFunction->pop();      //On supprime le dernier element du résultat unique , le parser '\n'
+
+                result->push(customer);
+                j++; // L'int j correspond à l'index dans la queue , il est incrémenté a chaque boucle sur une personne
+                vectorFromQueue.clear(); // Ne pas oublier de vider le vecteur à chaque individu
+            }
+        }
+    }
+    clear(queue); // queue étant défini en dehors de la fonction, par précaution on la vide à la fin de l'appel
+    delete queryResultFunction;
+    return *result;
+
+
 }
 
 db_productQueue Database::getProductsFromCategory(unsigned categorie)
