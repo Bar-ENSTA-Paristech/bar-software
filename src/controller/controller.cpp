@@ -615,7 +615,19 @@ void Controller::receiveCalculatorEntry(float amount)
 
 void Controller::receiveEditCustomerEntry(view_customerTuple& customer)
 {
-    // TO DEFINE
+    curCustomer->setCategory(customer.getCustomerCategory());
+    curCustomer->setFirstName(customer.getCustomerFirstName().toStdString());
+    curCustomer->setLogin(customer.getCustomerLogin().toStdString());
+    curCustomer->setName(customer.getCustomerName().toStdString());
+    *view_curCustomer = curCustomer->getViewCustomer();
+
+    db_customerTuple editedCustomer = curCustomer->getDbCustomer();
+    database.openDatabase();
+    database.editCustomerAccount(editedCustomer);
+    database.closeDatabase();
+    // GUI Update
+    newText_Search(curSearch);
+    view->customerPanel->setCustomer(*view_curCustomer);
 }
 
 void Controller::newClic_DeleteCustomer()
@@ -767,7 +779,7 @@ bool Controller::newRootPassword(QString rootPasswd, QString passwd1, QString pa
 
 void Controller::newClic_Stats()
 {
-    // Besoin de mettre un login ?
+    // Besoin de mettre un login ? => Non, Pourquoi ? C'est juste un accès en lecture et le bar n'est pas une secte.
     view_statsTuple statsTuple;
     view_productQueue queues[NUMBER_OF_CATEGORIES];
     for(int i=0 ; i<NUMBER_OF_CATEGORIES ; i++)

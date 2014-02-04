@@ -1119,8 +1119,8 @@ int Database::editCustomerAccount(db_customerTuple tuple)
 {
     int code;
 
-    std::string categorie,nom,prenom,login;
-    unsigned id;
+    std::string nom,prenom,login;
+    unsigned id, categorie;
     float balance;
     std::string queryString="";
     Query query;
@@ -1135,6 +1135,7 @@ int Database::editCustomerAccount(db_customerTuple tuple)
     //std::string categorieString = static_cast<std::ostringstream*>( &(std::ostringstream() << categorie) )->str();
     std::string balanceString = std::to_string(balance);
     std::string idString = std::to_string(id);
+    std::string categorieString = std::to_string(categorie);
 
     queryString+="UPDATE notes ";
     queryString+="SET nom=";
@@ -1144,6 +1145,14 @@ int Database::editCustomerAccount(db_customerTuple tuple)
     queryString+=", prenom=";
     queryString+="'";
     queryString+=prenom;
+    queryString+="'";
+    queryString+=", login=";
+    queryString+="'";
+    queryString+=login;
+    queryString+="'";
+    queryString+=", type=";
+    queryString+="'";
+    queryString+=categorieString;
     queryString+="'";
     queryString+=", compte=";
     queryString+=balanceString;

@@ -89,6 +89,31 @@ void Customer::setBalance(float _balance)
     //checkBalance();
     balance = _balance;
 }
+
+db_customerTuple Customer::getDbCustomer()
+{
+    db_customerTuple dbCustomer;
+    dbCustomer.setCustomerBalance(balance);
+    dbCustomer.setCustomerCategory((unsigned)category);
+    dbCustomer.setCustomerFirstname(firstname);
+    dbCustomer.setCustomerId((unsigned) customerid);
+    dbCustomer.setCustomerLogin(login);
+    dbCustomer.setCustomerName(name);
+    return dbCustomer;
+}
+
+view_customerTuple Customer::getViewCustomer()
+{
+    view_customerTuple viewCustomer;
+    viewCustomer.setCustomerBalance(balance);
+    viewCustomer.setCustomerCategory((unsigned)category);
+    viewCustomer.setCustomerFirstName(QString::fromStdString(firstname));
+    viewCustomer.setCustomerId((unsigned) customerid);
+    viewCustomer.setCustomerLogin(QString::fromStdString(login));
+    viewCustomer.setCustomerName(QString::fromStdString(name));
+    return viewCustomer;
+}
+
 /*
 void Customer::addToBalance(float addedBalance)
 {

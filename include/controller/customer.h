@@ -3,6 +3,7 @@
 
 #include <string>
 #include <utility>
+#include "structures.h"
 
 class Customer
 {
@@ -24,6 +25,9 @@ public:
     void setCategory (int _cat);
 
     void saveCustomer();
+    db_customerTuple getDbCustomer();
+    view_customerTuple getViewCustomer();
+
     /*
     void addToBalance(float addedBalance);
     void removeToBalance(float removedBalance);

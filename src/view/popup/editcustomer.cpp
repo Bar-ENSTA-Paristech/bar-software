@@ -45,8 +45,9 @@ void EditCustomer::launchEditCustomer(view_customerTuple& customer, std::vector<
     firstName->setText(customer.getCustomerFirstName());
     login->setText(customer.getCustomerLogin());
     categorie->clear();
-    for(int i = 0 ; i < categories.size() ; i++)
+    for(int i = 1 ; i < categories.size() ; i++) // Début à 1 car à 0 on a "Visiteur"
         categorie->addItem(categories[i]);
+
 
     tmpCustomer = customer;
 
@@ -55,6 +56,10 @@ void EditCustomer::launchEditCustomer(view_customerTuple& customer, std::vector<
 
 void EditCustomer::validate()
 {
+    tmpCustomer.setCustomerCategory((unsigned)categorie->currentIndex()+1);
+    tmpCustomer.setCustomerFirstName(firstName->text());
+    tmpCustomer.setCustomerLogin(login->text());
+    tmpCustomer.setCustomerName(name->text());
     controller->receiveEditCustomerEntry(tmpCustomer);
     this->hide();
 }
