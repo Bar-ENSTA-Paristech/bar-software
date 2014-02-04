@@ -721,8 +721,15 @@ bool Controller::newIndividualPassword(QString login, QString rootPasswd, QStrin
 {
     if(passwd1 != passwd2 || passwd1.isEmpty() || rootPasswd.isEmpty() || login.isEmpty())
         return false;
-    // ############ TO COMPLETE ##############
 
+    database.openDatabase();
+    std::string _login = "root";
+    std::string currentRootPasswd = database.getPassword(_login);
+    if(currentRootPasswd != rootPasswd.toStdString()) // Source de bug : A Hacher ?
+        return false;
+
+    database.setPassword(login.toStdString(), passwd1.toStdString());
+    database.closeDatabase();
     return true;
 }
 
@@ -730,8 +737,15 @@ bool Controller::newGlobalPassword(QString globalPasswd, QString passwd1, QStrin
 {
     if(passwd1 != passwd2 || passwd1.isEmpty() || globalPasswd.isEmpty())
         return false;
-    // ############ TO COMPLETE ##############
 
+    database.openDatabase();
+    std::string _login = "global";
+    std::string currentGlobalPasswd = database.getPassword(_login);
+    if(currentGlobalPasswd != globalPasswd.toStdString()) // Source de bug : A Hacher ?
+        return false;
+
+    database.setPassword(_login, passwd1.toStdString());
+    database.closeDatabase();
     return true;
 }
 
@@ -739,8 +753,15 @@ bool Controller::newRootPassword(QString rootPasswd, QString passwd1, QString pa
 {
     if(passwd1 != passwd2 || passwd1.isEmpty() || rootPasswd.isEmpty())
         return false;
-    // ############ TO COMPLETE ##############
 
+    database.openDatabase();
+    std::string _login = "root";
+    std::string currentRootPasswd = database.getPassword(_login);
+    if(currentRootPasswd != rootPasswd.toStdString()) // Source de bug : A Hacher ?
+        return false;
+
+    database.setPassword(_login, passwd1.toStdString());
+    database.closeDatabase();
     return true;
 }
 
