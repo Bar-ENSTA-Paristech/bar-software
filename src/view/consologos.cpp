@@ -31,8 +31,8 @@ ConsoLogos::ConsoLogos(QWidget *parent) :
     logosLabels[0].setText("Bières - Ctrl+B");
     logosLabels[1].setText("Pression - Ctrl+P");
     logosLabels[2].setText("Vin - Ctrl+W");
-    logosLabels[3].setText("Bouffe salée - Ctrl+Q");
-    logosLabels[4].setText("Bouffe sucrée - Ctrl+U");
+    logosLabels[3].setText("Salé - Ctrl+Q");
+    logosLabels[4].setText("Sucré - Ctrl+U");
     logosLabels[5].setText("Divers - Ctrl+D");
     newCategorieToController(-1);
     this->setLayout(layout);

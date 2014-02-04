@@ -193,7 +193,7 @@ void db_productTuple::setProductPrice(float _price)
     price=_price;
 }
 
-void db_productTuple::setProductStock(unsigned _stock)
+void db_productTuple::setProductStock(int _stock)
 {
     stock=_stock;
 }
@@ -219,7 +219,7 @@ float db_productTuple::getProductPrice()
     return price;
 }
 
-unsigned db_productTuple::getProductStock()
+int db_productTuple::getProductStock()
 {
     return stock;
 }

@@ -56,8 +56,8 @@ void AddStock::addLine()
     line->consoType.addItem("Bières");
     line->consoType.addItem("Pression");
     line->consoType.addItem("Vin");
-    line->consoType.addItem("Bouffe Salée");
-    line->consoType.addItem("Bouffe Sucrée");
+    line->consoType.addItem("Salé");
+    line->consoType.addItem("Sucré");
     line->consoType.addItem("Divers");
     QObject::connect(&line->consoType, SIGNAL(currentIndexChanged(int)), this, SLOT(consoTypeChanged(int)));
     lines.push_back(line);
@@ -103,13 +103,14 @@ void AddStock::consoTypeChanged(int index)
         line = numberOfLines - 1;
     // Now we remove all previous item in combobox product, then we put new ones
     lines[line]->product.clear();
+    lines[line]->productID = new unsigned[queueSize];
     for(i = 0 ; i < queueSize ; i++)
     {
         tuple = queue.front();
         lines[line]->product.addItem(tuple.getProductName());
-        lines[line]->productID = tuple.getProductId();
+        lines[line]->productID[i] = tuple.getProductId();
         queue.pop();
-    }
+    }qDebug() << lines[0]->productID;
 }
 
 void AddStock::validate()
@@ -133,10 +134,11 @@ void AddStock::validate()
     for (unsigned i =0 ; i <numberOfLines ; i++)
     {
         tuple.setProductCategory(lines[i]->consoType.currentIndex());
-        tuple.setProductId(lines[i]->productID);
+        tuple.setProductId(lines[i]->productID[lines[i]->product.currentIndex()]);
         tuple.setProductName(lines[i]->product.currentText());
-        tuple.setProductStock(lines[i]->quantity.text().toUInt());
+        tuple.setProductStock(lines[i]->quantity.text().toInt());
         queue.push(tuple);
+        delete[] lines[i]->productID;
     }
     controller->receiveNewStocks(queue);
     this->reset();

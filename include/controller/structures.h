@@ -103,13 +103,13 @@ public:
     void setProductId (unsigned _id);
     void setProductName (std::string _name);
     void setProductPrice (float _price);
-    void setProductStock (unsigned stock);
+    void setProductStock (int stock);
     void setProductCategory (unsigned category);
 
     unsigned getProductId ();
     std::string getProductName();
     float getProductPrice();
-    unsigned getProductStock();
+    int getProductStock();
     unsigned getProductCategory();
 
     view_productTuple transformIntoProductView();
@@ -118,7 +118,7 @@ private:
     unsigned id;
     std::string name;
     float price;
-    unsigned stock;
+    int stock;
     unsigned category;
 };
 

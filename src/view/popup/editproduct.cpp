@@ -25,8 +25,8 @@ EditProduct::EditProduct(QWidget *parent) :
     categorie->addItem("Bières");
     categorie->addItem("Pression");
     categorie->addItem("Vin");
-    categorie->addItem("Bouffe salée");
-    categorie->addItem("Bouffe sucrée");
+    categorie->addItem("Salé");
+    categorie->addItem("Sucré");
     categorie->addItem("Divers");
 
     layout->addWidget(categorieLabel, 0, 0);

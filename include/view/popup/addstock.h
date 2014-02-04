@@ -14,7 +14,7 @@ typedef struct{
     QComboBox product;
     QLabel quantityLabel;
     QLineEdit quantity;
-    unsigned productID;
+    unsigned* productID;
 }ConsoLine;
 
 class AddStock : public Popup

@@ -697,6 +697,20 @@ void Controller::newClic_AddStock()
 void Controller::receiveNewStocks(view_productQueue& products)
 {
     // TO COMPLETE (additionnal stock is in stock attribute of the tuple)
+    view_productTuple view_tuple;
+    db_productTuple db_tuple;
+    unsigned n = products.size();
+
+    database.openDatabase();
+    for(unsigned i = 0 ; i < n ; i++)
+    {
+        view_tuple = products.front();
+        products.pop();
+        db_tuple = database.getProductFromId(view_tuple.getProductId());
+        db_tuple.setProductStock(db_tuple.getProductStock() + view_tuple.getProductStock());
+        database.editProduct(db_tuple);
+    }
+    database.closeDatabase();
 }
 
 void Controller::newClic_AddProduct()

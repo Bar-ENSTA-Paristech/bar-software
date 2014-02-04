@@ -36,8 +36,8 @@ Stats::Stats(QWidget *parent) :
     stocks0Label = new QLabel("Stocks de la catégorie Bières : ", frame);
 	stocks1Label = new QLabel("Stocks de la catégorie Pression : ", frame);
 	stocks2Label = new QLabel("Stocks de la catégorie Vin : ", frame);
-	stocks3Label = new QLabel("Stocks de la catégorie Bouffe salée : ", frame);
-	stocks4Label = new QLabel("Stocks de la catégorie Bouffe sucrée : ", frame);
+    stocks3Label = new QLabel("Stocks de la catégorie Salé : ", frame);
+    stocks4Label = new QLabel("Stocks de la catégorie Sucré : ", frame);
 	stocks5Label = new QLabel("Stocks de la catégorie Divers : ", frame);
 
 	stocks0Label->setFont(titleFont);
