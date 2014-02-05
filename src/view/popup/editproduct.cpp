@@ -70,9 +70,9 @@ void EditProduct::validate()
     tmpProduct.setProductName(newName->text());
     tmpProduct.setProductPrice(price->text().toFloat());
     tmpProduct.setProductStock(stock->text().toInt());
-    //tuple.setProductID()
+    tmpProduct.setProductId(ID);
     tmpProduct.setProductVolume(volume->text().toUInt());
-    controller->receiveNewProduct(tmpProduct);
+    controller->receiveEditProduct(tmpProduct, deleteProduct->isChecked());
 
     this->reset();
     this->hide();
@@ -126,6 +126,7 @@ void EditProduct::productSelected(int index)
     price->setText(QString::number(tmpProduct.getProductPrice()));
     volume->setText(QString::number(tmpProduct.getProductVolume()));
     stock->setText(QString::number(tmpProduct.getProductStock()));
+    ID = tmpProduct.getProductId();
     deleteProduct->setChecked(false);
 }
 

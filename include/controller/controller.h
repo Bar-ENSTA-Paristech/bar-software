@@ -79,13 +79,14 @@ public:
     void receiveNewCustomerEntry(view_customerTuple& customer);
     void receiveNewStocks(view_productQueue& products);
     void receiveNewProduct(view_productTuple& product);
-    void receiveEditProduct(view_productTuple& product);
+    void receiveEditProduct(view_productTuple& product, bool deleteProduct = false);
     void receiveAdminInfos(AdminTuple tuple);
     //void setViewPointers(SearchResults* par1, CustomerPanel* par2, CartDisplay* par3, ProductsChoices* par4, History* par5);
     void setViewPointers(ViewObjects *viewObjects);
     void setCurCustomer(view_customerTuple &tuple);
     bool view_isLoginCorrect(QString login, QString passwd, LoginType loginType);
     bool isNegativeAllowed();
+    std::vector<QString> getConsoTypes();
 
     view_productQueue getProductsOfCategorie(unsigned view_productTypeId);
     // for these newPassword functions, they return false if an error occurs (eg new passwords different, bad rootPassword or globalPassord)

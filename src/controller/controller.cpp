@@ -384,7 +384,7 @@ bool Controller::view_isLoginCorrect(QString login, QString passwd, LoginType lo
     std::string _login;
     std::string _truepass;
     // ######### TO COMPLETE #######
-    int isLoginCorrect;
+    int isLoginIncorrect;
 
     database.openDatabase();
 
@@ -400,11 +400,11 @@ bool Controller::view_isLoginCorrect(QString login, QString passwd, LoginType lo
         break;
     }
     _truepass= database.getPassword(_login);
+    database.closeDatabase();
 
+    isLoginIncorrect= _truepass.compare(passwd.toStdString());
 
-    isLoginCorrect= _truepass.compare(passwd.toStdString());
-
-    if(isLoginCorrect!=0)
+    if(isLoginIncorrect)
     {
         return false;
     }
@@ -696,7 +696,6 @@ void Controller::newClic_AddStock()
 
 void Controller::receiveNewStocks(view_productQueue& products)
 {
-    // TO COMPLETE (additionnal stock is in stock attribute of the tuple)
     view_productTuple view_tuple;
     db_productTuple db_tuple;
     unsigned n = products.size();
@@ -726,8 +725,9 @@ void Controller::receiveNewProduct(view_productTuple& product)
     database.openDatabase();
     dbTuple = product.transformIntoProductDb();
     database.createProduct( dbTuple );
-    // Should a confirmation popup be set by the view here, to inform the user of the success of the insertion ?
+    // Should a confirmation popup be set by the view here, to inform the user of the success of the insertion ? => la flemme et le gars va surement vérifier de suite
     database.closeDatabase();
+    // Par contre un refresh des produits serait pas mal du coup
 }
 
 void Controller::newClic_EditProduct()
@@ -737,9 +737,21 @@ void Controller::newClic_EditProduct()
     currentLoginRequest = EDIT_PRODUCT;
 }
 
-void Controller::receiveEditProduct(view_productTuple& product)
+void Controller::receiveEditProduct(view_productTuple& product, bool deleteProduct)
 {
     // TO COMPLETE (the ID in the tuple is the one used in DB)
+    db_productTuple db_tuple;
+
+    database.openDatabase();
+    if(deleteProduct)
+    {
+        database.deleteProduct(product.getProductId());
+        database.closeDatabase();
+        return;
+    }
+    db_tuple = product.transformIntoProductDb();
+    database.editProduct(db_tuple);
+    database.closeDatabase();
 }
 
 
@@ -850,4 +862,17 @@ void Controller::newClic_Category(int id)
         database.closeDatabase();
         break;
     }
+}
+
+std::vector<QString> Controller::getConsoTypes()
+{
+    database.openDatabase();
+    std::vector<std::string> db_consotypes = database.getConsoTypes();
+    database.closeDatabase();
+    std::vector<QString> view_consotypes;
+    for(unsigned i = 0; i < db_consotypes.size() ; i++)
+    {
+        view_consotypes.push_back(QString::fromStdString(db_consotypes[i]));
+    }
+    return view_consotypes;
 }

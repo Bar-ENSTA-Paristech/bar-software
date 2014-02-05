@@ -65,11 +65,11 @@ public:
 
     std::string getPassword (std::string &login);//Retourne le password correspondant au login recherché
 
-    void setPassword(std::string login, std::string password){}; // edit le mdp ou le crée si le login est inconnu
+    void setPassword(std::string login, std::string password){} // edit le mdp ou le crée si le login est inconnu
     // ############# A IMPLEMENTER #############
 
     int editCustomerAccount (db_customerTuple); //Méthode générique qui met à jour TOUTES les informations du client
-    //Implémentée / Non testée
+    //Implémentée / fonctionne
 
     int createCustomerAccount (db_customerTuple);// Méthode créant un nouveau champ dans la Table 'notes' de la BDD/ Par défaut l'id envoyé vaut -1
     //Implémentée / Non testée
@@ -93,6 +93,9 @@ public:
     int addHist (db_histTuple,bool to_old=false);
 
     int addToBar (std::pair<std::string,std::string>);
+
+    std::vector< std::string > getConsoTypes(){} // Renvoie les différents types de consommations (Bières, Pression, etc)
+    // ########## A IMPLEMENTER ###########
 
     int autoDumpHist();
 

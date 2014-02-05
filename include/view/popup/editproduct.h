@@ -40,6 +40,7 @@ private:
     QPushButton* cancelButton;
     QCheckBox* deleteProduct;
 
+    unsigned ID;
     view_productTuple tmpProduct;
     std::vector<view_productTuple> tmpProductVector;
 
