@@ -23,7 +23,7 @@ std::queue<std::string> queue;
 
 Database::Database()
 {
-
+    queryResult = new std::queue<std::string> ;
 }
 
 int Database::openDatabase()
@@ -196,7 +196,7 @@ db_customerQueue Database::searchCustomer(std::string &string,int cat)
 
     std::queue<std::string> *queryResultFunction(0);  //
     queryResultFunction = new std::queue<std::string> ;
-
+    delete queryResult;
     queryResult = new std::queue<std::string> ;   //queryResult n'est alloué que dans les fonctions l'utilisant
 
     /*
@@ -207,8 +207,7 @@ db_customerQueue Database::searchCustomer(std::string &string,int cat)
     */
     unsigned i;
     unsigned j=0;
-    db_customerQueue *result(0); //On initialise la queue de tuple qui sera retournée à la fin au controlleur
-    result=new db_customerQueue;
+    db_customerQueue result; //On initialise la queue de tuple qui sera retournée à la fin au controlleur
 
     //On initialise aussi le tuple correspondant
     db_customerTuple customer;
@@ -280,7 +279,7 @@ db_customerQueue Database::searchCustomer(std::string &string,int cat)
 
                 queryResultFunction->pop();      //On supprime le dernier element du résultat unique , le parser '\n'
 
-                result->push(customer);
+                result.push(customer);
                 j++; // L'int j correspond à l'index dans la queue , il est incrémenté a chaque boucle sur une personne
                 vectorFromQueue.clear(); // Ne pas oublier de vider le vecteur à chaque individu
             }
@@ -288,7 +287,7 @@ db_customerQueue Database::searchCustomer(std::string &string,int cat)
     }
     clear(queue); // queue étant défini en dehors de la fonction, par précaution on la vide à la fin de l'appel
     delete queryResultFunction;
-    return *result;
+    return result;
 
 }
 
@@ -297,8 +296,7 @@ db_productQueue Database::getAllProducts()
     std::string queryString;
     Query query;
 
-    db_productQueue *result(0);
-    result=new db_productQueue;
+    db_productQueue result;
 
     db_productTuple *conso(0);
     conso=new db_productTuple;
@@ -306,6 +304,7 @@ db_productQueue Database::getAllProducts()
     std::queue<std::string> *queryResultFunction(0);
     queryResultFunction = new std::queue<std::string> ;
 
+    delete queryResult;
     queryResult = new std::queue<std::string> ;
 
     unsigned i;
@@ -349,7 +348,7 @@ db_productQueue Database::getAllProducts()
             conso->setProductStock(recuperatedStock);
             conso->setProductCategory(recuperatedCategory);
 
-            result->push(*conso);
+            result.push(*conso);
             queryResultFunction->pop();
             j++;
             vectorFromQueue.clear();
@@ -359,7 +358,7 @@ db_productQueue Database::getAllProducts()
     delete conso;
     delete queryResultFunction;
     clear(queue);
-    return *result;
+    return result;
 }
 
 db_categoryQueue Database::getProdCategories()
@@ -371,8 +370,7 @@ db_categoryQueue Database::getProdCategories()
 
     unsigned i;
     unsigned j=0;
-    db_categoryQueue *result(0);
-    result=new db_categoryQueue;
+    db_categoryQueue result;
 
     std::queue<std::string> *queryResultFunction(0);
     queryResultFunction = new std::queue<std::string> ;
@@ -408,15 +406,16 @@ db_categoryQueue Database::getProdCategories()
             cat->setCategoryName(vectorFromQueue[1]);
 
             queryResultFunction->pop();
-            result->push(*cat);
+            result.push(*cat);
 
             j++;
             vectorFromQueue.clear();
         }
     }
     clear(queue);
+    delete cat;
     delete queryResultFunction;
-    return *result;
+    return result;
 }
 
 db_categoryQueue Database::getCustCategories()
@@ -428,8 +427,7 @@ db_categoryQueue Database::getCustCategories()
 
     unsigned i;
     unsigned j=0;
-    db_categoryQueue *result(0);
-    result=new db_categoryQueue;
+    db_categoryQueue result;
 
     std::queue<std::string> *queryResultFunction(0);
     queryResultFunction = new std::queue<std::string> ;
@@ -463,15 +461,16 @@ db_categoryQueue Database::getCustCategories()
             cat->setCategoryName(vectorFromQueue[1]);
 
             queryResultFunction->pop();
-            result->push(*cat);
+            result.push(*cat);
 
             j++;
             vectorFromQueue.clear();
         }
     }
     clear(queue);
+    delete cat;
     delete queryResultFunction;
-    return *result;
+    return result;
 }
 
 
@@ -485,12 +484,12 @@ db_customerQueue Database::getCustomerFromCategory(unsigned id)
     std::queue<std::string> *queryResultFunction(0);  //
     queryResultFunction = new std::queue<std::string> ;
 
+    delete queryResult;
     queryResult = new std::queue<std::string> ;
 
     unsigned i;
     unsigned j=0;
-    db_customerQueue *result(0); //On initialise la queue de tuple qui sera retournée à la fin au controlleur
-    result=new db_customerQueue;
+    db_customerQueue result; //On initialise la queue de tuple qui sera retournée à la fin au controlleur
 
     //On initialise aussi le tuple correspondant
     db_customerTuple customer;
@@ -545,7 +544,7 @@ db_customerQueue Database::getCustomerFromCategory(unsigned id)
 
                 queryResultFunction->pop();      //On supprime le dernier element du résultat unique , le parser '\n'
 
-                result->push(customer);
+                result.push(customer);
                 j++; // L'int j correspond à l'index dans la queue , il est incrémenté a chaque boucle sur une personne
                 vectorFromQueue.clear(); // Ne pas oublier de vider le vecteur à chaque individu
             }
@@ -553,7 +552,7 @@ db_customerQueue Database::getCustomerFromCategory(unsigned id)
     }
     clear(queue); // queue étant défini en dehors de la fonction, par précaution on la vide à la fin de l'appel
     delete queryResultFunction;
-    return *result;
+    return result;
 
 
 }
@@ -565,8 +564,7 @@ db_productQueue Database::getProductsFromCategory(unsigned categorie)
     std::string queryString;
     Query query;
 
-    db_productQueue *result(0);
-    result=new db_productQueue;
+    db_productQueue result;
 
     db_productTuple *conso(0);
     conso=new db_productTuple;
@@ -574,6 +572,7 @@ db_productQueue Database::getProductsFromCategory(unsigned categorie)
     std::queue<std::string> *queryResultFunction(0);
     queryResultFunction = new std::queue<std::string> ;
 
+    delete queryResult;
     queryResult = new std::queue<std::string> ;
 
     unsigned i;
@@ -619,15 +618,16 @@ db_productQueue Database::getProductsFromCategory(unsigned categorie)
             conso->setProductCategory(recuperatedCategory);
 
             queryResultFunction->pop();
-            result->push(*conso);
+            result.push(*conso);
             j++;
             vectorFromQueue.clear();
 
         }
     }
     clear(queue);
+    delete conso;
     delete queryResultFunction;
-    return *result;
+    return result;
 }
 
 db_productTuple Database::getProductFromId(unsigned id)
@@ -637,12 +637,12 @@ db_productTuple Database::getProductFromId(unsigned id)
     std::string queryString;
     Query query;
 
-    db_productTuple *conso(0);
-    conso=new db_productTuple;
+    db_productTuple conso;
 
     std::queue<std::string> *queryResultFunction(0);
     queryResultFunction = new std::queue<std::string> ;
 
+    delete queryResult;
     queryResult = new std::queue<std::string> ;
 
     queryString+=" SELECT * FROM consos WHERE conso_id=";
@@ -676,11 +676,11 @@ db_productTuple Database::getProductFromId(unsigned id)
         std::istringstream(vectorFromQueue[2]) >> recuperatedCategory;
 
         //*conso = std::make_tuple (vectorFromQueue[1],recuperatedCategory,recuperatedPrice,recuperatedStock,recuperatedId);
-        conso->setProductId(recuperatedId);
-        conso->setProductName(vectorFromQueue[1]);
-        conso->setProductPrice(recuperatedPrice);
-        conso->setProductStock(recuperatedStock);
-        conso->setProductCategory(recuperatedCategory);
+        conso.setProductId(recuperatedId);
+        conso.setProductName(vectorFromQueue[1]);
+        conso.setProductPrice(recuperatedPrice);
+        conso.setProductStock(recuperatedStock);
+        conso.setProductCategory(recuperatedCategory);
 
         queryResultFunction->pop();
     }
@@ -690,7 +690,7 @@ db_productTuple Database::getProductFromId(unsigned id)
     clear(queue);
     delete queryResultFunction;
     vectorFromQueue.clear();
-    return *conso;
+    return conso;
 
 }
 
@@ -703,8 +703,7 @@ db_histQueue Database::getFullHist()
 
     unsigned i;
     unsigned j=0;
-    db_histQueue *result(0);
-    result=new db_histQueue;
+    db_histQueue result;
 
     std::queue<std::string> *queryResultFunction(0);
     queryResultFunction = new std::queue<std::string> ;
@@ -759,15 +758,16 @@ db_histQueue Database::getFullHist()
             hist->setHistCustomerId(recuperatedClientId);
             hist->setHistProductId(recuperatedProductId);
 
-            result->push(*hist);
+            result.push(*hist);
             queryResultFunction->pop();
             j++;
             vectorFromQueue.clear();
         }
     }
     clear(queue);
+    delete hist;
     delete queryResultFunction;
-    return *result;
+    return result;
 }
 
 db_histQueue Database::getLastOperations(int limit)
@@ -779,8 +779,7 @@ db_histQueue Database::getLastOperations(int limit)
 
     unsigned i;
     unsigned j=0;
-    db_histQueue *result(0);
-    result=new db_histQueue;
+    db_histQueue result;
 
     std::queue<std::string> *queryResultFunction(0);
     queryResultFunction = new std::queue<std::string> ;
@@ -830,15 +829,16 @@ db_histQueue Database::getLastOperations(int limit)
             hist->setHistPrice(recuperatedPrice);
             hist->setHistOperation(vectorFromQueue[3]);
 
-            result->push(*hist);
+            result.push(*hist);
             queryResultFunction->pop();
             j++;
             vectorFromQueue.clear();
         }
     }
     clear(queue);
+    delete hist;
     delete queryResultFunction;
-    return *result;
+    return result;
 
 }
 // hist.conso_price n'est pas dans la db actuellement, il faudra faire avec conso.price
@@ -853,8 +853,7 @@ db_histQueue Database::getCustomerHist(unsigned id)
 
     unsigned i;
     unsigned j=0;
-    db_histQueue *result(0);
-    result=new db_histQueue;
+    db_histQueue result;
 
     std::queue<std::string> *queryResultFunction(0);
     queryResultFunction = new std::queue<std::string> ;
@@ -905,14 +904,15 @@ db_histQueue Database::getCustomerHist(unsigned id)
             hist->setHistOperation(vectorFromQueue[3]);
 
             queryResultFunction->pop();
-            result->push(*hist);
+            result.push(*hist);
             j++;
             vectorFromQueue.clear();
         }
     }
     clear(queue);
+    delete hist;
     delete queryResultFunction;
-    return *result;
+    return result;
 
 }
 
@@ -926,8 +926,7 @@ db_histQueue Database::getProductHist(unsigned id)
 
     unsigned i;
     unsigned j=0;
-    db_histQueue *result(0);
-    result=new db_histQueue;
+    db_histQueue result;
 
     std::queue<std::string> *queryResultFunction(0);
     queryResultFunction = new std::queue<std::string> ;
@@ -978,14 +977,15 @@ db_histQueue Database::getProductHist(unsigned id)
             hist->setHistOperation(vectorFromQueue[3]);
 
             queryResultFunction->pop();
-            result->push(*hist);
+            result.push(*hist);
             j++;
             vectorFromQueue.clear();
         }
     }
     clear(queue);
+    delete hist;
     delete queryResultFunction;
-    return *result;
+    return result;
 }
 
 db_customerTuple Database::getCustomerFromId(unsigned customerId)
@@ -998,11 +998,11 @@ db_customerTuple Database::getCustomerFromId(unsigned customerId)
     std::queue<std::string> *queryResultFunction(0);
 
     queryResultFunction = new std::queue<std::string> ;
+    delete queryResult;
     queryResult = new std::queue<std::string> ;
 
 
-    db_customerTuple *customer(0);
-    customer=new db_customerTuple;
+    db_customerTuple customer;
 
     queryString+=" SELECT * FROM notes WHERE client_id=";
     queryString+=idString;
@@ -1034,12 +1034,12 @@ db_customerTuple Database::getCustomerFromId(unsigned customerId)
         std::istringstream(vectorFromQueue[4]) >> recuperatedCategory;
 
         //*customer = std::make_tuple (vectorFromQueue[1],vectorFromQueue[2],vectorFromQueue[4],recuperatedBalance,recuperatedId,vectorFromQueue[3]);
-        customer->setCustomerId(recuperatedId);
-        customer->setCustomerName(vectorFromQueue[1]);
-        customer->setCustomerFirstname(vectorFromQueue[2]);
-        customer->setCustomerLogin(vectorFromQueue[3]);
-        customer->setCustomerCategory(recuperatedCategory);
-        customer->setCustomerBalance(recuperatedBalance);
+        customer.setCustomerId(recuperatedId);
+        customer.setCustomerName(vectorFromQueue[1]);
+        customer.setCustomerFirstname(vectorFromQueue[2]);
+        customer.setCustomerLogin(vectorFromQueue[3]);
+        customer.setCustomerCategory(recuperatedCategory);
+        customer.setCustomerBalance(recuperatedBalance);
 
 
         queryResultFunction->pop();
@@ -1047,7 +1047,7 @@ db_customerTuple Database::getCustomerFromId(unsigned customerId)
     vectorFromQueue.clear();
     delete queryResultFunction;
     clear(queue);
-    return *customer;
+    return customer;
 }
 
 

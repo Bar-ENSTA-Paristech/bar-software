@@ -3,7 +3,7 @@
 
 #include <QScrollArea>
 #include <QLabel>
-#include <Qframe>
+#include <QFrame>
 #include <QGridLayout>
 #include <QStyleFactory>
 #include "multilist.h"
