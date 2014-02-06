@@ -12,6 +12,7 @@
 #include "../view/cartdisplay.h"
 #include "../view/productschoices.h"
 #include "../view/history.h"
+#include "mainwindow.h"
 #include "login.h"
 #include "individualhistory.h"
 #include "editcustomer.h"
@@ -31,6 +32,7 @@
 #include "structures.h"
 
 #include "../model/database.h"
+#include "plotting.h"
 
 
 class SearchResults;
@@ -94,6 +96,8 @@ public:
     bool newGlobalPassword(QString globalPasswd, QString passwd1, QString passwd2);
     bool newRootPassword(QString rootPasswd, QString passwd1, QString passwd2);
 
+    void displayProductGraph(int id, bool consumption);
+
     void setDb(sqlite3*);
     sqlite3* getDb();
 
@@ -116,7 +120,7 @@ private:
 
         /* Model objects */
     Database* database;
-
+    Plotting* plotting;
 
 
 

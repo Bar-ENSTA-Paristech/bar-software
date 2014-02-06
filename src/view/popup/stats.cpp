@@ -110,8 +110,7 @@ Stats::Stats(QWidget *parent) :
 
     //category0Stocks->setStyleSheet("background: #f00;");
     frame->setLayout(layout);
-
-
+    CtrlActive = false;
 
 }
 
@@ -137,26 +136,45 @@ void Stats::launchStats(view_statsTuple& stats, view_productQueue& category0, vi
     this->show();
 }
 
+void Stats::keyPressEvent(QKeyEvent * key)
+{
+    if(key->key() == Qt::Key_Control)
+        CtrlActive = true;
+}
 
+void Stats::keyReleaseEvent(QKeyEvent * key)
+{
+    if(key->key() == Qt::Key_Control)
+        CtrlActive = false;
+}
 
+void Stats::lineClicked(int id)
+{
+    // Call to consumption datas if Ctrl key pressed, else Stock datas
+    controller->displayProductGraph(id, CtrlActive);
+}
 
 // #################### VIEW_STOCKS #######
 
 
 ViewStocks::ViewStocks(QWidget *parent) :
-    MultiList(parent, 3, 0)
+    MultiList(parent, 4, 0)
 {
+    VIEW.viewStocks = this;
     headers[0]->setText("Consommation");
     headers[1]->setText("Vol.(cL)");
     headers[2]->setText("Stock");
+    headers[3]->setText("Id");
 
     stretchColumns = new int[3];
     stretchColumns[0]=0;
     stretchColumns[1]=2;
     stretchColumns[2]=-1;
     defaultHeaderWidth = 100;
-    hiddenColumn = -1;
+    hiddenColumn = 3;
     updateHeadersSize(defaultHeaderWidth, stretchColumns, hiddenColumn);
+
+    QObject::connect(table, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(lineClicked(QModelIndex)));
 }
 
 void ViewStocks::setStocks(view_productQueue& queue)
@@ -175,10 +193,16 @@ void ViewStocks::setStocks(view_productQueue& queue)
         model->item(i,0)->setText(tuple.getProductName());
         model->item(i,1)->setText(QString::number(tuple.getProductVolume()));
         model->item(i,2)->setText(QString::number(tuple.getProductStock()));
+        model->item(i,3)->setText(QString::number(tuple.getProductId()));
     }
     table->sortByColumn(0, Qt::AscendingOrder);
     table->setModel(model);
     updateHeadersSize(defaultHeaderWidth, stretchColumns, hiddenColumn);
     return;
+}
+
+void ViewStocks::lineClicked(QModelIndex index)
+{
+    VIEW.stats->lineClicked(model->item(index.row(), 3)->text().toInt());
 }
 

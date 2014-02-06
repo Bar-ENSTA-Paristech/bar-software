@@ -14,6 +14,7 @@ Controller::Controller()
     curCustomer = new Customer;
     view_curCustomer = new view_customerTuple;
     database = new Database;
+    plotting = new Plotting;
 
 }
 
@@ -876,4 +877,29 @@ std::vector<QString> Controller::getConsoTypes()
         view_consotypes.push_back(QString::fromStdString(db_consotypes[i]));
     }
     return view_consotypes;
+}
+
+void Controller::displayProductGraph(int id, bool consumption)
+{
+    db_dataarray datas;
+    database->openDatabase();
+    db_productTuple db_product = database->getProductFromId(id);
+    database->closeDatabase();
+    QString title;
+    if(consumption)
+    {
+        datas = plotting->productConsumption(id, 0);
+        title = "Evolution de la consommation de "+ QString::fromStdString(db_product.getProductName())+
+                " "+QString::number(db_product.getProductVolume())+"cL"+" au cours du temps.";
+        view->mainWindow->setGraph(datas, "Temps", "Consommation en unité (L pour la pression)", title);
+    }
+    else
+    {
+        datas = plotting->productStock(id, 0);
+        title = "Evolution des stocks de "+ QString::fromStdString(db_product.getProductName())+
+                " "+QString::number(db_product.getProductVolume())+"cL"+" au cours du temps.";
+        view->mainWindow->setGraph(datas, "Temps", "Stocks en unité (L pour la pression)", title);
+    }
+
+
 }

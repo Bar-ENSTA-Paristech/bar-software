@@ -26,6 +26,7 @@ public:
     //QTableWidgetItem **headers;
     //QTableWidget *table;
     void setRows(int numberOfRows);
+    void setController(Controller* _controller){controller = _controller;}
 
 private slots:
     void sortItems(int index);

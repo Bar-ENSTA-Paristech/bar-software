@@ -266,6 +266,8 @@ void MainWindow::setController(Controller *controllerParam)
     VIEW.editProduct->setController(controller);
     VIEW.editLogin->setController(controller);
     VIEW.admin->setController(controller);
+    VIEW.stats->setController(controller);
+    VIEW.viewStocks->setController(controller);
 
     controller->mainController();
 }
@@ -298,6 +300,7 @@ void MainWindow::setGraph(db_dataarray& data, QString xTitle, QString yTitle, QS
     }
 
     QCustomPlot* customPlot = new QCustomPlot();
+    customPlot->setAttribute(Qt::WA_DeleteOnClose); // Pour supprimer l'espace mémoire à la fermeture de la fenêtre.
 
     // create graph and assign data to it:
     customPlot->addGraph();

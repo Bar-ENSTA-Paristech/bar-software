@@ -104,12 +104,14 @@ public:
     void setProductName (std::string _name);
     void setProductPrice (float _price);
     void setProductStock (int stock);
+    void setProductVolume(unsigned _volume){volume=_volume;}
     void setProductCategory (unsigned category);
 
     unsigned getProductId ();
     std::string getProductName();
     float getProductPrice();
     int getProductStock();
+    unsigned getProductVolume(){return volume;}
     unsigned getProductCategory();
 
     view_productTuple transformIntoProductView();
@@ -119,6 +121,7 @@ private:
     std::string name;
     float price;
     int stock;
+    unsigned volume;
     unsigned category;
 };
 
@@ -300,6 +303,7 @@ class NewCustomer;
 class Popup;
 class ProductsChoices;
 class Stats;
+class ViewStocks;
 class IndividualHistory;
 class IndividualHistoryList;
 
@@ -329,6 +333,7 @@ typedef struct{
     ProductsChoices* productChoices;
     SearchResults* searchResults;
     Stats* stats;
+    ViewStocks* viewStocks;
 } ViewObjects;
 
 typedef struct{

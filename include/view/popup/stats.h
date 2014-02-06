@@ -5,9 +5,11 @@
 #include <QLabel>
 #include <QFrame>
 #include <QGridLayout>
+#include <QKeyEvent>
 #include <QStyleFactory>
 #include "multilist.h"
 #include "popup.h"
+#include "controller.h"
 #include "structures.h"
 
 extern ViewObjects VIEW;
@@ -21,6 +23,7 @@ public:
     // launch a window with all the stats, including stocks of each category (that's why there is 6 view_productTuple in arguments)
     void launchStats(view_statsTuple& stats, view_productQueue& category0, view_productQueue& category1, view_productQueue& category2,
                      view_productQueue& category3, view_productQueue& category4, view_productQueue& category5);
+    bool getCtrlActive(){return CtrlActive;}
     
 signals:
     
@@ -63,9 +66,12 @@ private:
 	QScrollArea* scrollArea;
 	QFrame* frame;
 
-public slots:
+    bool CtrlActive;
 
-    
+public slots:
+    void keyPressEvent(QKeyEvent * key);
+    void keyReleaseEvent(QKeyEvent * key);
+    void lineClicked(int id);
 };
 
 
@@ -85,6 +91,7 @@ private:
 signals:
 
 public slots:
+    void lineClicked(QModelIndex index);
 };
 
 
