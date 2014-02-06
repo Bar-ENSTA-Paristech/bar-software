@@ -64,7 +64,7 @@ int main(int argc, char *argv[])
     DB.closeDatabase();
 */
     //Test graph
-    Controller * controller = new Controller;
+    Controller * controller = new Controller; qDebug() << "Controlleur : " << controller;
     QApplication application(argc, argv);
     QFile css(GLOBAL_PATH + "resources/design/mainDesign.css");
     if(css.open(QIODevice::ReadOnly)) {

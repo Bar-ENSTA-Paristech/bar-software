@@ -28,13 +28,11 @@ Database::Database()
 
 int Database::openDatabase()
 {
-
     //Modification de la configuration de sqlite pour accepter les URI (gestion des repertoires)
     sqlite3_config(SQLITE_CONFIG_URI,1);
 
     std::cout<<"Tentative d'ouverture de db"<<std::endl;
     int i=0;
-    sqlite3* DB;
     QString Path;
     Path=GLOBAL_PATH+"resources/BDD/bar.db";
     char DBfilename[100];
@@ -44,17 +42,18 @@ int Database::openDatabase()
     }
     DBfilename[i]='\0';
     std::cout<<DBfilename<<std::endl;
-    int coderesult=sqlite3_open(DBfilename //Database filename
-                                ,&DB);//adresse mémoire de la BDD
-
+    int coderesult=sqlite3_open_v2(DBfilename //Database filename
+                                    ,&handle //adresse mémoire de la BDD
+                                   , SQLITE_OPEN_READWRITE
+                                   , NULL); // Default VFS
 
 
     if (coderesult!=SQLITE_OK)
-        std::cout<<sqlite3_errmsg(DB)<<std::endl;
+        std::cout<<sqlite3_errmsg(handle)<<std::endl;
     else{
-        handle=DB;
+        //handle=DB;
+        std::cout<<"OK"<<std::endl;
     }
-    std::cout<<"OK"<<std::endl;
 
     return coderesult;
 
@@ -63,8 +62,7 @@ int Database::openDatabase()
 int Database::closeDatabase()
 {
     std::cout<<"Tentative de fermeture de db"<<std::endl;
-    sqlite3* DB=handle;
-    int coderesult=sqlite3_close(DB);
+    int coderesult=sqlite3_close_v2(handle);
 
     if (coderesult!=SQLITE_OK)
         std::cout<<"The database could not close properly."<<std::endl;
@@ -1110,6 +1108,7 @@ int Database::createCustomerAccount(db_customerTuple tuple)
     queryString+=");";
 
     query.setQuery(queryString);
+    std::cout << queryString << std::endl;
     query.setVerbose(1);
     code=executeQuery(query);
 

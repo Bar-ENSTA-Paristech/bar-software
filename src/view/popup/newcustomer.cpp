@@ -38,10 +38,10 @@ NewCustomer::NewCustomer(QWidget *parent) :
     QObject::connect(cancelButton, SIGNAL(clicked()), this, SLOT(cancel()));
 }
 
-void NewCustomer::setController(Controller* controller_par)
+/*void NewCustomer::setController(Controller* controller_par)
 {
     controller = controller_par;
-}
+}*/
 
 void NewCustomer::launchNewCustomer(std::vector<QString> categories)
 {

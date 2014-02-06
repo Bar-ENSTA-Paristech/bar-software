@@ -18,7 +18,7 @@ class NewCustomer : public Popup
 public:
     explicit NewCustomer(QWidget *parent = 0);
     void launchNewCustomer(std::vector<QString> categories);
-    void setController(Controller* controller);
+    //void setController(Controller* controller);
     
 signals:
     
@@ -37,7 +37,7 @@ private:
     QPushButton* validateButton;
     QPushButton* cancelButton;
 
-    Controller* controller;
+    //Controller* controller;
     view_customerTuple tmpCustomer;
 
 

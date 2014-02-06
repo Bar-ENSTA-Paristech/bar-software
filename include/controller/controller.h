@@ -115,7 +115,7 @@ private:
     bool negativeAllowed;
 
         /* Model objects */
-    Database database;
+    Database* database;
 
 
 

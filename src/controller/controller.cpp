@@ -13,17 +13,18 @@ Controller::Controller()
     curCart = new Cart;
     curCustomer = new Customer;
     view_curCustomer = new view_customerTuple;
+    database = new Database;
 
 }
 
 void Controller::setDb(sqlite3* handle)
 {
-    database.setHandle(handle);
+    database->setHandle(handle);
 }
 
 sqlite3* Controller::getDb()
 {
-    return database.getHandle();
+    return database->getHandle();
 }
 
 void Controller::setViewPointers(ViewObjects* viewObjects)
@@ -36,7 +37,7 @@ void Controller::setViewPointers(ViewObjects* viewObjects)
     view = viewObjects;
 
     //mp_stock = new Stock( this, &database, par4 );
-    mp_stock = new Stock( this, &database, view->productChoices );
+    mp_stock = new Stock( this, database, view->productChoices );
 }
 
 void Controller::mainController()
@@ -45,9 +46,9 @@ void Controller::mainController()
     // Initialize view fields
 
     //TEST : Autodump de la BDD
-    database.openDatabase();
-    database.autoDumpHist();
-    database.closeDatabase();
+    database->openDatabase();
+    database->autoDumpHist();
+    database->closeDatabase();
 
     newText_Search( emptyString );
     newGlobal_Hist();
@@ -69,8 +70,8 @@ void Controller::newText_Search(QString &viewSearch)
     dbSearch = viewSearch.toStdString();
 
 
-    database.openDatabase();
-    dbQueue = database.searchCustomer(dbSearch);        // Get customer information corresponding to the search from model
+    database->openDatabase();
+    dbQueue = database->searchCustomer(dbSearch);        // Get customer information corresponding to the search from model
 
 
     if ( !dbQueue.empty() ){
@@ -96,7 +97,7 @@ void Controller::newText_Search(QString &viewSearch)
     // Sent result to view
     view->searchResults->setSearchResults(viewQueue );
 
-    database.closeDatabase();
+    database->closeDatabase();
 
 }
 
@@ -108,8 +109,8 @@ void Controller::newGlobal_Hist()
     db_histQueue dbHistoryQueue;
     db_histTuple dbHistoryTuple;
 
-    database.openDatabase();
-    dbHistoryQueue = database.getLastOperations(30);
+    database->openDatabase();
+    dbHistoryQueue = database->getLastOperations(30);
 
     if ( !dbHistoryQueue.empty() ){
 
@@ -128,17 +129,17 @@ void Controller::newGlobal_Hist()
     // Sent result to view
     view->history->setHistory(HistoryQueue);
 
-    database.closeDatabase();
+    database->closeDatabase();
 
 }
 
 void Controller::newClic_Customer(unsigned int customerId)
 {
-    database.openDatabase();
+    database->openDatabase();
     db_customerTuple tmp_dbCustomerInfo;
     view_customerTuple tmpViewCustomerInfo;
 
-    tmp_dbCustomerInfo = database.getCustomerFromId( customerId );
+    tmp_dbCustomerInfo = database->getCustomerFromId( customerId );
 
     /* Create the customer */
     tmpViewCustomerInfo=tmp_dbCustomerInfo.transformIntoCustomerView();
@@ -147,7 +148,7 @@ void Controller::newClic_Customer(unsigned int customerId)
     //view->customerPanel->setFuturBalance(tmpViewCustomerInfo.getCustomerBalance()); Ca sert à rien d'afficher deux fois la meme somme ...
     view->customerPanel->setFuturBalance(0,false); // on l'efface pour le nouveau client (reset)
 
-    database.closeDatabase();
+    database->closeDatabase();
 
 }
 
@@ -183,7 +184,7 @@ void Controller::newClic_ValidateCart(bool isCash)
 
 
     currentCartController = curCart->getList();
-    database.openDatabase();
+    database->openDatabase();
     if (curCustomer->getCustomerId()==0)
     {
         cashTrans=1;
@@ -193,7 +194,7 @@ void Controller::newClic_ValidateCart(bool isCash)
 
     for (int i=0; i<currentCartController.size();i++)
     {
-        db_productInfo=database.getProductFromId(currentCartController[i].first);
+        db_productInfo=database->getProductFromId(currentCartController[i].first);
 
         for (unsigned j=0;j<currentCartController.first().second;j++)
         {
@@ -203,26 +204,26 @@ void Controller::newClic_ValidateCart(bool isCash)
             histToBeInserted.setHistProductId(db_productInfo.getProductId());
             histToBeInserted.setHistPrice(db_productInfo.getProductPrice());
             qDebug()<<"Modifde l'hist";
-            database.addHist(histToBeInserted);
+            database->addHist(histToBeInserted);
         }
 
         if (!cashTrans)
         {
             qDebug()<<"Modification du compte débité";
-            customerToBeEdited = database.getCustomerFromId(curCustomer->getCustomerId());
+            customerToBeEdited = database->getCustomerFromId(curCustomer->getCustomerId());
             customerToBeEdited.setCustomerBalance(curCustomer->getBalance()-curCart->getPrice());
-            database.editCustomerAccount(customerToBeEdited);
+            database->editCustomerAccount(customerToBeEdited);
         }
 
         qDebug()<<"Modification des stocks";
         productToBeEdited = db_productInfo;
         productToBeEdited.setProductStock(productToBeEdited.getProductStock()-currentCartController[i].second);
-        database.editProduct(productToBeEdited);
+        database->editProduct(productToBeEdited);
 
     }
 
-    editedCustomer = database.getCustomerFromId(curCustomer->getCustomerId()).transformIntoCustomerView();
-    database.closeDatabase();
+    editedCustomer = database->getCustomerFromId(curCustomer->getCustomerId()).transformIntoCustomerView();
+    database->closeDatabase();
     qDebug()<<"Validated cart";
 
     //Affichage d'un popup ? -> non juste un Qlabel au dessus des boutons : plus léger et plus rapide
@@ -290,8 +291,8 @@ view_productQueue Controller::getProductsOfCategorie(unsigned view_productTypeId
     view_productQueue viewQueue;
     //viewQueue=new view_productQueue;
 
-    database.openDatabase();
-    dbQueue = database.getProductsFromCategory(view_productTypeId);        // Get product information corresponding to the search from model
+    database->openDatabase();
+    dbQueue = database->getProductsFromCategory(view_productTypeId);        // Get product information corresponding to the search from model
 
     if ( !dbQueue.empty() ){
 
@@ -306,7 +307,7 @@ view_productQueue Controller::getProductsOfCategorie(unsigned view_productTypeId
         }
 
     }
-    database.closeDatabase();
+    database->closeDatabase();
     return viewQueue;
 }
 
@@ -329,8 +330,8 @@ void Controller::newClic_Product(unsigned &view_productId)
     }
     else
     {
-        database.openDatabase();
-        db_productInfo=database.getProductFromId(view_productId);
+        database->openDatabase();
+        db_productInfo=database->getProductFromId(view_productId);
 
         //10 is a standard value while waiting Customer to be OK.
         //curCart->setCustomerID(10);
@@ -353,7 +354,7 @@ void Controller::newClic_Product(unsigned &view_productId)
         //Which contains : customerId,product_id,p
         for (int i=0; i<currentCartController.size();i++)
         {
-            db_productInfo=database.getProductFromId(currentCartController[i].first);
+            db_productInfo=database->getProductFromId(currentCartController[i].first);
             displayProd.setCartCustomerId(curCustomer->getCustomerId());
             displayProd.setCartPrice(db_productInfo.getProductPrice());
             displayProd.setCartProdId(currentCartController[i].first);
@@ -362,7 +363,7 @@ void Controller::newClic_Product(unsigned &view_productId)
 
             displayCart.push(displayProd);
         }
-        database.closeDatabase();
+        database->closeDatabase();
         // Send to view
         view->cartDisplay->setTotalPrice(curCart->getPrice());
         view->cartDisplay->setCart(displayCart);
@@ -386,7 +387,7 @@ bool Controller::view_isLoginCorrect(QString login, QString passwd, LoginType lo
     // ######### TO COMPLETE #######
     int isLoginIncorrect;
 
-    database.openDatabase();
+    database->openDatabase();
 
     switch (loginType){
     case GLOBAL:
@@ -399,8 +400,8 @@ bool Controller::view_isLoginCorrect(QString login, QString passwd, LoginType lo
         _login=login.toStdString();
         break;
     }
-    _truepass= database.getPassword(_login);
-    database.closeDatabase();
+    _truepass= database->getPassword(_login);
+    database->closeDatabase();
 
     isLoginIncorrect= _truepass.compare(passwd.toStdString());
 
@@ -418,9 +419,9 @@ bool Controller::view_isLoginCorrect(QString login, QString passwd, LoginType lo
             break;
         case EDIT_CUSTOMER :
             view->currentPopup = view->editCustomer;
-            database.openDatabase();
-            dbQueue = database.getCustCategories();
-            database.closeDatabase();
+            database->openDatabase();
+            dbQueue = database->getCustCategories();
+            database->closeDatabase();
             while(!dbQueue.empty()){
                 dbTuple = dbQueue.front();
                 categories.push_back( QString::fromStdString( dbTuple.getCategoryName() ) );
@@ -438,9 +439,9 @@ bool Controller::view_isLoginCorrect(QString login, QString passwd, LoginType lo
             break;
         case NEW_CUSTOMER :
             view->currentPopup = view->newCustomer;
-            database.openDatabase();
-            dbQueue = database.getCustCategories();
-            database.closeDatabase();
+            database->openDatabase();
+            dbQueue = database->getCustCategories();
+            database->closeDatabase();
             while(!dbQueue.empty()){
                 dbTuple = dbQueue.front();
                 categories.push_back( QString::fromStdString( dbTuple.getCategoryName() ) );
@@ -504,8 +505,8 @@ void Controller::newClic_IndividualHistory()
         db_histQueue dbCustomerHist;
         db_histTuple dbCustomerHistTuple;
 
-        database.openDatabase();
-        dbCustomerHist = database.getCustomerHist(id);
+        database->openDatabase();
+        dbCustomerHist = database->getCustomerHist(id);
 
         if ( !dbCustomerHist.empty() ){
 
@@ -523,7 +524,7 @@ void Controller::newClic_IndividualHistory()
         // Send result to view
 
         view->individualHistory->launchIndividualHistory(CustomerHist);
-        database.closeDatabase();
+        database->closeDatabase();
     }
 }
 
@@ -532,9 +533,9 @@ std::queue<QString> Controller::newCustCategoryList()
     db_categoryQueue DbCatList;
     db_categoryTuple DbCat;
     QString cat;
-    database.openDatabase();
-    DbCatList=database.getCustCategories();
-    database.closeDatabase();
+    database->openDatabase();
+    DbCatList=database->getCustCategories();
+    database->closeDatabase();
     std::queue<QString> result;
     result.push(QString("Tous")); // always present : Id -1
 
@@ -591,7 +592,7 @@ void Controller::newClic_EditCustomer()
 void Controller::receiveCalculatorEntry(float amount)
 {
     db_customerTuple dbTuple;
-    database.openDatabase();
+    database->openDatabase();
 
     curCustomer->setBalance( curCustomer->getBalance() + amount);
 
@@ -602,7 +603,7 @@ void Controller::receiveCalculatorEntry(float amount)
     dbTuple.setCustomerCategory(curCustomer->getCategory());
     dbTuple.setCustomerBalance(curCustomer->getBalance());
 
-    database.editCustomerAccount(dbTuple);
+    database->editCustomerAccount(dbTuple);
 
     //Send updated information to view so it can display the new customer info
     newText_Search(curSearch);
@@ -610,7 +611,7 @@ void Controller::receiveCalculatorEntry(float amount)
     view_curCustomer->setCustomerBalance(view_curCustomer->getCustomerBalance() + amount);
     view->customerPanel->setCustomer(*view_curCustomer);
 
-    database.closeDatabase();
+    database->closeDatabase();
 }
 
 void Controller::receiveEditCustomerEntry(view_customerTuple& customer)
@@ -622,9 +623,9 @@ void Controller::receiveEditCustomerEntry(view_customerTuple& customer)
     *view_curCustomer = curCustomer->getViewCustomer();
 
     db_customerTuple editedCustomer = curCustomer->getDbCustomer();
-    database.openDatabase();
-    database.editCustomerAccount(editedCustomer);
-    database.closeDatabase();
+    database->openDatabase();
+    database->editCustomerAccount(editedCustomer);
+    database->closeDatabase();
     // GUI Update
     newText_Search(curSearch);
     view->customerPanel->setCustomer(*view_curCustomer);
@@ -655,9 +656,9 @@ void Controller::newClic_GlobalHistory()
     view_histTuple viewTuple;
     db_histTuple dbTuple;
     // GO FETCH THE CONTENT OF THE HIST TABLE (ONLY CONTENTS AROUND 1000 ROWS WITH THE AUTODUMP)
-    database.openDatabase();
-    dbQueue=database.getFullHist();
-    database.closeDatabase();
+    database->openDatabase();
+    dbQueue=database->getFullHist();
+    database->closeDatabase();
 
     while (!dbQueue.empty())
     {
@@ -681,10 +682,10 @@ void Controller::receiveNewCustomerEntry(view_customerTuple& customer)
 {
     db_customerTuple dbTuple;
 
-    database.openDatabase();
+    database->openDatabase();
     dbTuple = customer.transformIntoCustomerDb();
-    qDebug() << database.createCustomerAccount( dbTuple );
-    database.closeDatabase();
+    qDebug() << database->createCustomerAccount( dbTuple );
+    database->closeDatabase();
 }
 
 void Controller::newClic_AddStock()
@@ -700,16 +701,16 @@ void Controller::receiveNewStocks(view_productQueue& products)
     db_productTuple db_tuple;
     unsigned n = products.size();
 
-    database.openDatabase();
+    database->openDatabase();
     for(unsigned i = 0 ; i < n ; i++)
     {
         view_tuple = products.front();
         products.pop();
-        db_tuple = database.getProductFromId(view_tuple.getProductId());
+        db_tuple = database->getProductFromId(view_tuple.getProductId());
         db_tuple.setProductStock(db_tuple.getProductStock() + view_tuple.getProductStock());
-        database.editProduct(db_tuple);
+        database->editProduct(db_tuple);
     }
-    database.closeDatabase();
+    database->closeDatabase();
 }
 
 void Controller::newClic_AddProduct()
@@ -722,11 +723,11 @@ void Controller::newClic_AddProduct()
 void Controller::receiveNewProduct(view_productTuple& product)
 {
     db_productTuple dbTuple;
-    database.openDatabase();
+    database->openDatabase();
     dbTuple = product.transformIntoProductDb();
-    database.createProduct( dbTuple );
+    database->createProduct( dbTuple );
     // Should a confirmation popup be set by the view here, to inform the user of the success of the insertion ? => la flemme et le gars va surement vérifier de suite
-    database.closeDatabase();
+    database->closeDatabase();
     // Par contre un refresh des produits serait pas mal du coup
 }
 
@@ -742,16 +743,16 @@ void Controller::receiveEditProduct(view_productTuple& product, bool deleteProdu
     // TO COMPLETE (the ID in the tuple is the one used in DB)
     db_productTuple db_tuple;
 
-    database.openDatabase();
+    database->openDatabase();
     if(deleteProduct)
     {
-        database.deleteProduct(product.getProductId());
-        database.closeDatabase();
+        database->deleteProduct(product.getProductId());
+        database->closeDatabase();
         return;
     }
     db_tuple = product.transformIntoProductDb();
-    database.editProduct(db_tuple);
-    database.closeDatabase();
+    database->editProduct(db_tuple);
+    database->closeDatabase();
 }
 
 
@@ -760,14 +761,14 @@ bool Controller::newIndividualPassword(QString login, QString rootPasswd, QStrin
     if(passwd1 != passwd2 || passwd1.isEmpty() || rootPasswd.isEmpty() || login.isEmpty())
         return false;
 
-    database.openDatabase();
+    database->openDatabase();
     std::string _login = "root";
-    std::string currentRootPasswd = database.getPassword(_login);
+    std::string currentRootPasswd = database->getPassword(_login);
     if(currentRootPasswd != rootPasswd.toStdString()) // Source de bug : A Hacher ?
         return false;
 
-    database.setPassword(login.toStdString(), passwd1.toStdString());
-    database.closeDatabase();
+    database->setPassword(login.toStdString(), passwd1.toStdString());
+    database->closeDatabase();
     return true;
 }
 
@@ -776,14 +777,14 @@ bool Controller::newGlobalPassword(QString globalPasswd, QString passwd1, QStrin
     if(passwd1 != passwd2 || passwd1.isEmpty() || globalPasswd.isEmpty())
         return false;
 
-    database.openDatabase();
+    database->openDatabase();
     std::string _login = "global";
-    std::string currentGlobalPasswd = database.getPassword(_login);
+    std::string currentGlobalPasswd = database->getPassword(_login);
     if(currentGlobalPasswd != globalPasswd.toStdString()) // Source de bug : A Hacher ?
         return false;
 
-    database.setPassword(_login, passwd1.toStdString());
-    database.closeDatabase();
+    database->setPassword(_login, passwd1.toStdString());
+    database->closeDatabase();
     return true;
 }
 
@@ -792,14 +793,14 @@ bool Controller::newRootPassword(QString rootPasswd, QString passwd1, QString pa
     if(passwd1 != passwd2 || passwd1.isEmpty() || rootPasswd.isEmpty())
         return false;
 
-    database.openDatabase();
+    database->openDatabase();
     std::string _login = "root";
-    std::string currentRootPasswd = database.getPassword(_login);
+    std::string currentRootPasswd = database->getPassword(_login);
     if(currentRootPasswd != rootPasswd.toStdString()) // Source de bug : A Hacher ?
         return false;
 
-    database.setPassword(_login, passwd1.toStdString());
-    database.closeDatabase();
+    database->setPassword(_login, passwd1.toStdString());
+    database->closeDatabase();
     return true;
 }
 
@@ -842,8 +843,8 @@ void Controller::newClic_Category(int id)
         db_customerQueue dbQueue;
         view_customerQueue viewQueue;
 
-        database.openDatabase();
-        dbQueue = database.getCustomerFromCategory((unsigned) id);        // Get customer information corresponding to the search from model
+        database->openDatabase();
+        dbQueue = database->getCustomerFromCategory((unsigned) id);        // Get customer information corresponding to the search from model
 
         if ( !dbQueue.empty() ){
 
@@ -859,16 +860,16 @@ void Controller::newClic_Category(int id)
         // Sent result to view
         view->searchResults->setSearchResults(viewQueue );
 
-        database.closeDatabase();
+        database->closeDatabase();
         break;
     }
 }
 
 std::vector<QString> Controller::getConsoTypes()
 {
-    database.openDatabase();
-    std::vector<std::string> db_consotypes = database.getConsoTypes();
-    database.closeDatabase();
+    database->openDatabase();
+    std::vector<std::string> db_consotypes = database->getConsoTypes();
+    database->closeDatabase();
     std::vector<QString> view_consotypes;
     for(unsigned i = 0; i < db_consotypes.size() ; i++)
     {

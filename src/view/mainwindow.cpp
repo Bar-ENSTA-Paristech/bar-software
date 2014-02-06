@@ -260,6 +260,7 @@ void MainWindow::setController(Controller *controllerParam)
     calculatorWindow->setController(controller);
     VIEW.individualHistory->setController(controller);
     VIEW.editCustomer->setController(controller);
+    VIEW.newCustomer->setController(controller);
     VIEW.addStock->setController(controller);
     VIEW.addProduct->setController(controller);
     VIEW.editProduct->setController(controller);
