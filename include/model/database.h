@@ -99,6 +99,8 @@ public:
 
     int autoDumpHist();
 
+    void convertToPointDecimal(std::string &str); // Remplace les éventuelles virgules d'un décimal par des points, compréhensible par SQLite
+
 private:
     sqlite3* handle; //Pointeur vers la BDD
 };

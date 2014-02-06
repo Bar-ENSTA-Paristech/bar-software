@@ -1095,6 +1095,7 @@ int Database::createCustomerAccount(db_customerTuple tuple)
     //Il faut transfomer les int et float en std::string
     //std::string categorieString = static_cast<std::ostringstream*>( &(std::ostringstream() << categorie) )->str();
     std::string balanceString = std::to_string(balance);
+    convertToPointDecimal(balanceString); // peut contenir une virgule (notemment sous linux)
 
     queryString+="INSERT INTO notes (nom,prenom,login,type,compte) VALUES (";
     queryString+=nom;
@@ -1134,6 +1135,7 @@ int Database::editCustomerAccount(db_customerTuple tuple)
 
     //std::string categorieString = static_cast<std::ostringstream*>( &(std::ostringstream() << categorie) )->str();
     std::string balanceString = std::to_string(balance);
+    convertToPointDecimal(balanceString); // peut contenir une virgule (notemment sous linux)
     std::string idString = std::to_string(id);
     std::string categorieString = std::to_string(categorie);
 
@@ -1205,6 +1207,7 @@ int Database::createProduct(db_productTuple tuple)
     std::string stockString = std::to_string(stock);
     std::string categorieString = std::to_string(categorie);
     std::string priceString = std::to_string(prix);
+    convertToPointDecimal(priceString); // peut contenir une virgule (notemment sous linux)
 
     queryString+="INSERT INTO consos (nom,type,prix,stock) VALUES (";
     queryString+="'";
@@ -1245,6 +1248,7 @@ int Database::editProduct(db_productTuple tuple)
     std::string categorieString = std::to_string(categorie);
     std::string stockString = std::to_string(stock);
     std::string priceString = std::to_string(price);
+    convertToPointDecimal(priceString); // peut contenir une virgule (notemment sous linux)
     std::string idString = std::to_string(id);
 
     queryString+="UPDATE consos ";
@@ -1353,6 +1357,7 @@ int Database::addHist(db_histTuple tuple,bool to_old)
     //Il faut transfomer les int et float en std::string
     std::string productIdString = std::to_string(product_id);
     std::string priceString = std::to_string(price);
+    convertToPointDecimal(priceString); // peut contenir une virgule (notemment sous linux)
     std::string clientIdString = std::to_string(client_id);
 
     //
@@ -1467,4 +1472,14 @@ int Database::autoDumpHist()
     }
 
     return code;
+}
+
+void Database::convertToPointDecimal(std::string& str)
+{
+    unsigned n = str.size();
+    for(unsigned i = 0 ; i < n ; i++)
+    {
+        if(str[i]==',')
+            str[i]='.';
+    }
 }
