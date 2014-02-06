@@ -38,7 +38,7 @@ int Database::openDatabase()
     QString Path;
     Path=GLOBAL_PATH+"resources/BDD/bar.db";
     char DBfilename[100];
-    for (i;i<Path.size();i++)
+    for (i=0;i<Path.size();i++)
     {
         DBfilename[i]=Path.at(i).toLatin1();
     }

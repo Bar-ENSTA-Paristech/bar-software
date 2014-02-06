@@ -195,7 +195,7 @@ void Controller::newClic_ValidateCart(bool isCash)
     {
         db_productInfo=database.getProductFromId(currentCartController[i].first);
 
-        for (int j=0;j<currentCartController.first().second;j++)
+        for (unsigned j=0;j<currentCartController.first().second;j++)
         {
             qDebug()<<"Creating a histTuple to insert into the database";
 

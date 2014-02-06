@@ -29,7 +29,7 @@ private:
     std::string type; //based on data table, for example "Boisson", "Divers", ...
     float price;
     int stock; // Can be negative but must be unisgned at construction of object
-    int id;
+    unsigned id;
     int typeId;
 
 

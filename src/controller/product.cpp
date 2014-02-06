@@ -7,7 +7,7 @@ Product::Product()
 {
 }
 
-Product::Product(unsigned int _id, std::string _name, std::string _type, float _price, unsigned _stock) : name(_name), price(_price), stock(_stock)
+Product::Product(unsigned int _id, std::string _name, std::string _type, float _price, unsigned _stock) : id(_id), type(_type), name(_name), price(_price), stock(_stock)
 {
 }
 
@@ -64,9 +64,9 @@ Product &Product::operator ++()
 
 Product &Product::operator ++(int)
 {
-    Product temp = *this; // y a un Warning bizarre ici, à vérifier si bug. Signé Shimone
+    //Product temp = *this; // y a un Warning bizarre ici, à vérifier si bug. Signé Shimone
     ++stock;
-    return temp;
+    return *this;
 }
 
 Product &Product::operator --()

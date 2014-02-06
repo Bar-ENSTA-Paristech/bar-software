@@ -83,7 +83,7 @@ void MultiList::setRows(int numberOfRows)
         return;
     bool newRows = false;
 
-    int old_rows = rows;
+    //int old_rows = rows;
     rows = numberOfRows;
 
     // If we need more rows than we have already created, we launch an other salve of 500 rows to create
