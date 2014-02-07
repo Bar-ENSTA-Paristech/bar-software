@@ -59,7 +59,8 @@ private:
 signals:
     
 public slots:
-    void validateCart();
+    void tryValidateCart(); // do it if balance is not negative (or it is cash)
+    void validateNegativeCart(); // Called from controller if it is a negative balance
     void cancelCart();
     void timerTimeout();
     

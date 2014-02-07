@@ -37,7 +37,7 @@ CartDisplay::CartDisplay(QWidget *parent) :
     timer = new QTimer(this);
     timer->setTimerType(Qt::VeryCoarseTimer); // we don't need accuracy at all here
 
-    QObject::connect(validateButton, SIGNAL(clicked()),this,SLOT(validateCart()));
+    QObject::connect(validateButton, SIGNAL(clicked()),this,SLOT(tryValidateCart()));
     QObject::connect(cancelButton, SIGNAL(clicked()),this,SLOT(cancelCart()));
     QObject::connect(timer, SIGNAL(timeout()), this, SLOT(timerTimeout()));
 
@@ -72,11 +72,24 @@ void CartDisplay::setTotalPrice(float price)
         totalPrice->setText("- €");
 }
 
-void CartDisplay::validateCart()
+void CartDisplay::tryValidateCart()
 {
-    controller->newClic_ValidateCart(cash->isChecked());
-    if(cash->isEnabled())
-        cash->setChecked(false);
+    if(cash->isChecked() || !controller->isCustomerInNegative()) // no login requested
+    {
+        controller->newClic_ValidateCart(cash->isChecked());
+        if(cash->isEnabled())
+            cash->setChecked(false);
+    }
+    else // No cash and negative balance => individual request
+    {
+        controller->setCurrentLoginRequest(NEGATIVE_BALANCE);
+        VIEW.login->checkIndividual();
+    }
+}
+
+void CartDisplay::validateNegativeCart()
+{
+    controller->newClic_ValidateCart(false);
 }
 
 void CartDisplay::cancelCart()

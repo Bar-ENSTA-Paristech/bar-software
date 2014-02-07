@@ -76,7 +76,7 @@ public:
     void newClic_Category(int id); // 0 for no filter (category TOUS), else id is the category id
     void newGlobal_Hist();
     std::queue<QString> newCustCategoryList();
-    void receiveCalculatorEntry(float amount);
+    void receiveCalculatorEntry(float amount, bool isPaidByCard);
     void receiveEditCustomerEntry(view_customerTuple& customer);
     void receiveNewCustomerEntry(view_customerTuple& customer);
     void receiveNewStocks(view_productQueue& products);
@@ -87,8 +87,7 @@ public:
     void setViewPointers(ViewObjects *viewObjects);
     void setCurCustomer(view_customerTuple &tuple);
     bool view_isLoginCorrect(QString login, QString passwd, LoginType loginType);
-    bool isNegativeAllowed();
-    db_categoryQueue getConsoTypes();
+    bool isCustomerInNegative();
 
     view_productQueue getProductsOfCategorie(unsigned view_productTypeId);
     // for these newPassword functions, they return false if an error occurs (eg new passwords different, bad rootPassword or globalPassord)
@@ -97,6 +96,8 @@ public:
     bool newRootPassword(QString rootPasswd, QString passwd1, QString passwd2);
 
     void displayProductGraph(int id, bool consumption);
+    void setCurrentLoginRequest(LoginObjects _currentLoginRequest){currentLoginRequest = _currentLoginRequest;}
+    db_categoryQueue getConsoTypes(){return consoTypes;}
 
     void setDb(sqlite3*);
     sqlite3* getDb();
@@ -116,11 +117,11 @@ private:
     Customer * curCustomer;
     Cart * curCart;
     QString curSearch;
-    bool negativeAllowed;
 
         /* Model objects */
     Database* database;
     Plotting* plotting;
+    db_categoryQueue consoTypes;
 
 
 

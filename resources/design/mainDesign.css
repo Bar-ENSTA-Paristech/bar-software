@@ -114,8 +114,8 @@ padding-right : 15%;
 #leftPart{
 margin-top:8%;
 margin-bottom:10%;
-margin-left: 16%;
-margin-right : 8%;
+margin-left: 10%;
+margin-right : 5%;
 background-color: #5d5d5d;
 }
 
@@ -123,8 +123,8 @@ background-color: #5d5d5d;
 #rightPart{
 margin-top:8%;
 margin-bottom:10%;
-margin-left: 8%;
-margin-right : 16%;
+margin-left: 5%;
+margin-right : 10%;
 background-color: #5d5d5d;
 }
 

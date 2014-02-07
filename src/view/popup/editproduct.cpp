@@ -54,6 +54,7 @@ EditProduct::EditProduct(QWidget *parent) :
 
 void EditProduct::launchEditProduct()
 {
+    categorieSelected(categorie->currentIndex());
     this->show();
 }
 
@@ -116,11 +117,14 @@ void EditProduct::categorieSelected(int index)
 
 void EditProduct::productSelected(int index)
 {
-    if(index == -1) // new categorie loads so we set by default the index at 0 if it exists
+    if(index == -1) // -1 means categorie just loaded. so we set by default the index at 0 if it exists
+    {
         if(tmpProductVector.size() > 0)
             index = 0;
         else
             return;
+    }
+
     tmpProduct = tmpProductVector[index];
     newName->setText(tmpProduct.getProductName());
     price->setText(QString::number(tmpProduct.getProductPrice()));
