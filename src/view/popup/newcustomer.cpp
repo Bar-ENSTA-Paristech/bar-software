@@ -45,7 +45,7 @@ NewCustomer::NewCustomer(QWidget *parent) :
 
 void NewCustomer::launchNewCustomer(std::vector<QString> categories)
 {
-    for(unsigned i = 0 ; i < categories.size() ; i++)
+    for(unsigned i = 1 ; i < categories.size() ; i++) // Avoid guest at i=0
         categorie->addItem(categories[i]);
 
     this->show();
@@ -61,7 +61,7 @@ void NewCustomer::validate()
     tmpCustomer.setCustomerFirstName(firstName->text());
     tmpCustomer.setCustomerLogin(login->text());
     // #### CATEGORIES EN UNSIGNED ? A REGLER ###################
-    tmpCustomer.setCustomerCategory(0);
+    tmpCustomer.setCustomerCategory(categorie->currentIndex()+1); // +1 because 0 is reserved for guests
     tmpCustomer.setCustomerBalance(name->text().toFloat());
     controller->receiveNewCustomerEntry(tmpCustomer);
     this->hide();

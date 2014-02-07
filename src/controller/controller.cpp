@@ -866,17 +866,12 @@ void Controller::newClic_Category(int id)
     }
 }
 
-std::vector<QString> Controller::getConsoTypes()
+db_categoryQueue Controller::getConsoTypes()
 {
     database->openDatabase();
-    std::vector<std::string> db_consotypes = database->getConsoTypes();
+    db_categoryQueue db_consotypes = database->getProdCategories();
     database->closeDatabase();
-    std::vector<QString> view_consotypes;
-    for(unsigned i = 0; i < db_consotypes.size() ; i++)
-    {
-        view_consotypes.push_back(QString::fromStdString(db_consotypes[i]));
-    }
-    return view_consotypes;
+    return db_consotypes;
 }
 
 void Controller::displayProductGraph(int id, bool consumption)

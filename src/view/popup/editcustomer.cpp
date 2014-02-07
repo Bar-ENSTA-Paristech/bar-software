@@ -56,7 +56,7 @@ void EditCustomer::launchEditCustomer(view_customerTuple& customer, std::vector<
 
 void EditCustomer::validate()
 {
-    tmpCustomer.setCustomerCategory((unsigned)categorie->currentIndex()+1);
+    tmpCustomer.setCustomerCategory((unsigned)categorie->currentIndex()+1); // +1 because category 0 is for guest
     tmpCustomer.setCustomerFirstName(firstName->text());
     tmpCustomer.setCustomerLogin(login->text());
     tmpCustomer.setCustomerName(name->text());

@@ -11,6 +11,10 @@ color : white;
 padding: 0px;
 }
 
+QToolTip{
+color: black;
+}
+
 #searchBar QLineEdit{
 color: black;
 font-family: Gisha ;

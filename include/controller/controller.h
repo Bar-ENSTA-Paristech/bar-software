@@ -88,7 +88,7 @@ public:
     void setCurCustomer(view_customerTuple &tuple);
     bool view_isLoginCorrect(QString login, QString passwd, LoginType loginType);
     bool isNegativeAllowed();
-    std::vector<QString> getConsoTypes();
+    db_categoryQueue getConsoTypes();
 
     view_productQueue getProductsOfCategorie(unsigned view_productTypeId);
     // for these newPassword functions, they return false if an error occurs (eg new passwords different, bad rootPassword or globalPassord)

@@ -94,9 +94,6 @@ public:
 
     int addToBar (std::pair<std::string,std::string>);
 
-    std::vector< std::string > getConsoTypes(){} // Renvoie les différents types de consommations (Bières, Pression, etc)
-    // ########## A IMPLEMENTER ###########
-
     int autoDumpHist();
 
     void convertToPointDecimal(std::string &str); // Remplace les éventuelles virgules d'un décimal par des points, compréhensible par SQLite
