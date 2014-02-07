@@ -1078,9 +1078,10 @@ std::string Database::getPassword (std::string &login)
 int Database::createCustomerAccount(db_customerTuple tuple)
 {
     std::string nom,prenom,login;
-    int code;
+    int code,categorie;
     float balance;
-    std::string categorie;
+
+
     std::string queryString="";
     Query query;
 
@@ -1093,16 +1094,17 @@ int Database::createCustomerAccount(db_customerTuple tuple)
     //Il faut transfomer les int et float en std::string
     //std::string categorieString = static_cast<std::ostringstream*>( &(std::ostringstream() << categorie) )->str();
     std::string balanceString = std::to_string(balance);
+    std::string categorieString = std::to_string(categorie);
     convertToPointDecimal(balanceString); // peut contenir une virgule (notemment sous linux)
 
-    queryString+="INSERT INTO notes (nom,prenom,login,type,compte) VALUES (";
+    queryString+="INSERT INTO notes (nom,prenom,login,type,compte) VALUES ('";
     queryString+=nom;
-    queryString+=", ";
+    queryString+="', '";
     queryString+=prenom;
-    queryString+=", ";
+    queryString+="', '";
     queryString+=login;
-    queryString+=", ";
-    queryString+=categorie;
+    queryString+="', ";
+    queryString+=categorieString;
     queryString+=", ";
     queryString+=balanceString;
     queryString+=");";

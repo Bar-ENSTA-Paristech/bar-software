@@ -436,6 +436,9 @@ bool Controller::view_isLoginCorrect(QString login, QString passwd, LoginType lo
         case DELETE_CUSTOMER :
             view->currentPopup = view->deleteCustomer;
             view->deleteCustomer->printDelete(*view_curCustomer);
+            database->openDatabase();
+            database->deleteCustomerAccount(curCustomer->getCustomerId());
+            database->closeDatabase();
             newText_Search(curSearch);
             break;
         case NEW_CUSTOMER :

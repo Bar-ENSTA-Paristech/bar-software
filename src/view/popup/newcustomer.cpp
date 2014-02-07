@@ -61,8 +61,9 @@ void NewCustomer::validate()
     tmpCustomer.setCustomerFirstName(firstName->text());
     tmpCustomer.setCustomerLogin(login->text());
     // #### CATEGORIES EN UNSIGNED ? A REGLER ###################
-    tmpCustomer.setCustomerCategory(categorie->currentIndex()+1); // +1 because 0 is reserved for guests
-    tmpCustomer.setCustomerBalance(name->text().toFloat());
+    tmpCustomer.setCustomerCategory(categorie->currentIndex()+1);// +1 because 0 is for guest
+    tmpCustomer.setCustomerBalance(balance->text().toFloat());
+
     controller->receiveNewCustomerEntry(tmpCustomer);
     this->hide();
 }
