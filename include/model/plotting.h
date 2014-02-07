@@ -16,13 +16,13 @@ class Plotting
 public:
     Plotting();
 
-    db_dataarray customerConsumption (int id,int scale,int type);
-    db_dataarray customerBalance (int id,int scale);
+    db_dataarray customerConsumption (int id, int scale, int numberOfPoints, int type=0);
+    db_dataarray customerBalance (int id,int scale, int numberOfPoints);
 
-    db_dataarray productConsumption (int id,int scale);
-    db_dataarray productStock (int id,int scale);
+    db_dataarray productConsumption (int id, int scale, int numberOfPoints);
+    db_dataarray productStock (int id, int scale, int numberOfPoints);
 
-    db_dataarray totalConsumption (int scale,int type);
+    db_dataarray totalConsumption (int scale, int numberOfPoints, int type=0);
 
     db_dataarray stockValue(int scale);
     db_dataarray accountValue(int scale);

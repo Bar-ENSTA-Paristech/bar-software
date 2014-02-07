@@ -19,7 +19,7 @@ Popup::Popup(QWidget *parent) :
 
 bool Popup::isBalanceCorrect(QString value)
 {
-    const QRegExp regex ("^-?[0-9]+(.[0-9]?)?$");
+    const QRegExp regex ("^-?[0-9]+(\.[0-9]?)?$");
     if(value.contains(regex))
     {
         return true;

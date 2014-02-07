@@ -888,14 +888,14 @@ void Controller::displayProductGraph(int id, bool consumption)
     QString title;
     if(consumption)
     {
-        datas = plotting->productConsumption(id, 0);
+        datas = plotting->productConsumption(id, 1, 100);
         title = "Evolution de la consommation de "+ QString::fromStdString(db_product.getProductName())+
                 " "+QString::number(db_product.getProductVolume())+"cL"+" au cours du temps.";
         view->mainWindow->setGraph(datas, "Temps", "Consommation en unité (L pour la pression)", title);
     }
     else
     {
-        datas = plotting->productStock(id, 0);
+        datas = plotting->productStock(id, 1, 100);
         title = "Evolution des stocks de "+ QString::fromStdString(db_product.getProductName())+
                 " "+QString::number(db_product.getProductVolume())+"cL"+" au cours du temps.";
         view->mainWindow->setGraph(datas, "Temps", "Stocks en unité (L pour la pression)", title);

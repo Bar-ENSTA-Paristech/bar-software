@@ -13,7 +13,7 @@ Plotting::Plotting()
  *scale=2 ->Mensuel
  */
 
-db_dataarray Plotting::customerConsumption(int id,int scale,int type)
+db_dataarray Plotting::customerConsumption(int id, int scale, int numberOfPoints, int type)
 {
     db_histQueue customer_hist = db.getCustomerHist(id);
     db_histTuple customer_operation;
@@ -22,14 +22,14 @@ db_dataarray Plotting::customerConsumption(int id,int scale,int type)
     QDateTime now=QDateTime::currentDateTime();
     int k;
     //recupérer les anciennes données quand getCustomer_Old_Hist sera implémenté
-    std::vector<double> x(100), y(100);
+    std::vector<double> x(numberOfPoints), y(numberOfPoints);
     db_dataarray Values=make_pair(x,y);
     int now_int = QDateTime::currentDateTime().toTime_t();
     //On remplit le tableau, qui contient les dates et les valeurs:
     // Values.first contient les dates,
     // Values.second les valeurs.
 
-    for (int i=0;i<100;i++)
+    for (int i=0;i<numberOfPoints;i++)
     {
         Values.first[i]=0;
         Values.second[i]=0;
@@ -42,15 +42,26 @@ db_dataarray Plotting::customerConsumption(int id,int scale,int type)
         std::string operation_time=customer_operation.getHistDate();
         QString qoperation_time=QString::fromStdString(operation_time);
 
-        if (scale==0)
+        qtime=QDateTime::fromString(qoperation_time,format);
+        k=-now.secsTo(qtime)/(3600*24*scale);
+        for (int i=0;i<numberOfPoints;i++)
+        {
+            Values.first[i]=now_int-(24*3600*scale)*i;
+        }
+        if (k<numberOfPoints && k>=0)
+        {
+            Values.second[k]++;
+        }
+
+        /*if (scale==0)
         {
             qtime=QDateTime::fromString(qoperation_time,format);
             k=-now.secsTo(qtime)/(3600*24);
-            for (int i=0;i<100;i++)
+            for (int i=0;i<numberOfPoints;i++)
             {
                 Values.first[i]=now_int-(24*3600)*i;
             }
-            if (k<100 && k>=0)
+            if (k<numberOfPoints && k>=0)
             {
                 Values.second[k]++;
             }
@@ -61,7 +72,7 @@ db_dataarray Plotting::customerConsumption(int id,int scale,int type)
             {
                 qtime=QDateTime::fromString(qoperation_time,format);
                 k=-now.secsTo(qtime)/(3600*24*7);
-                for (int i=0;i<100;i++)
+                for (int i=0;i<numberOfPoints;i++)
                 {
                     Values.first[i]=now_int-(3600*24*7)*i;
                 }
@@ -70,7 +81,7 @@ db_dataarray Plotting::customerConsumption(int id,int scale,int type)
             {
                 qtime=QDateTime::fromString(qoperation_time,format);
                 k=-now.secsTo(qtime)/(2628000);
-                for (int i=0;i<100;i++)
+                for (int i=0;i<numberOfPoints;i++)
                 {
                     Values.first[i]=now_int-(2628000)*i;
                 }
@@ -78,15 +89,15 @@ db_dataarray Plotting::customerConsumption(int id,int scale,int type)
 
         }
 
-        if (k<100 && k>0)
+        if (k<numberOfPoints && k>0)
         {
             Values.second[k]++;
-        }
+        }*/
     }
     return (Values);
 }
 
-db_dataarray Plotting::customerBalance(int id, int scale)
+db_dataarray Plotting::customerBalance(int id, int scale, int numberOfPoints)
 {
     db_histQueue customer_hist = db.getCustomerHist(id);
     db_customerTuple customer_data =db.getCustomerFromId(id);
@@ -97,14 +108,14 @@ db_dataarray Plotting::customerBalance(int id, int scale)
     float balance= customer_data.getCustomerBalance();
     int k;
     //recupérer les anciennes données quand getCustomer_Old_Hist sera implémenté
-    std::vector<double> x(100), y(100);
+    std::vector<double> x(numberOfPoints), y(numberOfPoints);
     db_dataarray Values=make_pair(x,y);
     int now_int = QDateTime::currentDateTime().toTime_t();
     //On remplit le tableau, qui contient les dates et les valeurs:
     // Values.first contient les dates,
     // Values.second les valeurs.
 
-    for (int i=0;i<100;i++)
+    for (int i=0;i<numberOfPoints;i++)
     {
         Values.first[i]=0;
         Values.second[i]=balance;
@@ -117,6 +128,13 @@ db_dataarray Plotting::customerBalance(int id, int scale)
         std::string operation_time=customer_operation.getHistDate();
         QString qoperation_time=QString::fromStdString(operation_time);
 
+        qtime=QDateTime::fromString(qoperation_time,format);
+        k=-now.secsTo(qtime)/(3600*24*scale);
+        for (int i=0;i<numberOfPoints;i++)
+        {
+            Values.first[i]=now_int-(24*3600*scale)*i;
+        }
+/*
         if (scale==0)
         {
             qtime=QDateTime::fromString(qoperation_time,format);
@@ -147,13 +165,13 @@ db_dataarray Plotting::customerBalance(int id, int scale)
                 }
             }
 
-        }
-        if (k<100 && k>=0)
+        }*/
+        if (k<numberOfPoints && k>=0)
         {
             balance+=customer_operation.getHistPrice();
             Values.second[k]=balance;
         }
-for (int l=0;l<100;l++)
+for (int l=0;l<numberOfPoints;l++)
 {
     if (k<l)
     {
@@ -165,84 +183,13 @@ for (int l=0;l<100;l++)
     return (Values);
 }
 
-db_dataarray Plotting::productConsumption(int id, int scale)
-{
-db_histQueue product_hist = db.getProductHist(id);
-db_histTuple product_operation;
-QString format="yyyy-MM-dd hh:mm:ss";
-QDateTime qtime=QDateTime::currentDateTime();
-QDateTime now=QDateTime::currentDateTime();
-int k;
-//recupérer les anciennes données quand getCustomer_Old_Hist sera implémenté
-std::vector<double> x(100), y(100);
-db_dataarray Values=make_pair(x,y);
-int now_int = QDateTime::currentDateTime().toTime_t();
-//On remplit le tableau, qui contient les dates et les valeurs:
-// Values.first contient les dates,
-// Values.second les valeurs.
-
-for (int i=0;i<100;i++)
-{
-    Values.first[i]=0;
-    Values.second[i]=0;
-}
-
-for (unsigned j=0; j<product_hist.size();j++)
-{
-    product_operation=product_hist.front();
-    product_hist.pop();
-    std::string operation_time=product_operation.getHistDate();
-    QString qoperation_time=QString::fromStdString(operation_time);
-
-    if (scale==0)
-    {
-        qtime=QDateTime::fromString(qoperation_time,format);
-        k=-now.secsTo(qtime)/(3600*24);
-        for (int i=0;i<100;i++)
-        {
-            Values.first[i]=now_int-(24*3600)*i;
-        }
-    }
-    else
-    {
-        if (scale==1)
-        {
-            qtime=QDateTime::fromString(qoperation_time,format);
-            k=-now.secsTo(qtime)/(3600*24*7);
-            for (int i=0;i<100;i++)
-            {
-                Values.first[i]=now_int-(3600*24*7)*i;
-            }
-        }
-        else
-        {
-            qtime=QDateTime::fromString(qoperation_time,format);
-            k=-now.secsTo(qtime)/(2628000);
-            for (int i=0;i<100;i++)
-            {
-                Values.first[i]=now_int-(2628000)*i;
-            }
-        }
-
-    }
-
-    if (k<100 && k>0)
-    {
-        Values.second[k]++;
-    }
-}
-return (Values);
-}
-
-db_dataarray Plotting::productStock(int id, int scale)
+db_dataarray Plotting::productConsumption(int id, int scale, int numberOfPoints)
 {
     db_histQueue product_hist = db.getProductHist(id);
-    db_productTuple product_data =db.getProductFromId(id);
     db_histTuple product_operation;
     QString format="yyyy-MM-dd hh:mm:ss";
     QDateTime qtime=QDateTime::currentDateTime();
     QDateTime now=QDateTime::currentDateTime();
-    int stock= product_data.getProductStock();
     int k;
     //recupérer les anciennes données quand getCustomer_Old_Hist sera implémenté
     std::vector<double> x(100), y(100);
@@ -255,7 +202,7 @@ db_dataarray Plotting::productStock(int id, int scale)
     for (int i=0;i<100;i++)
     {
         Values.first[i]=0;
-        Values.second[i]=stock;
+        Values.second[i]=0;
     }
 
     for (unsigned j=0; j<product_hist.size();j++)
@@ -265,6 +212,13 @@ db_dataarray Plotting::productStock(int id, int scale)
         std::string operation_time=product_operation.getHistDate();
         QString qoperation_time=QString::fromStdString(operation_time);
 
+        qtime=QDateTime::fromString(qoperation_time,format);
+        k=-now.secsTo(qtime)/(3600*24*scale);
+        for (int i=0;i<100;i++)
+        {
+            Values.first[i]=now_int-(24*3600*scale)*i;
+        }
+    /*
         if (scale==0)
         {
             qtime=QDateTime::fromString(qoperation_time,format);
@@ -295,13 +249,91 @@ db_dataarray Plotting::productStock(int id, int scale)
                 }
             }
 
+        }*/
+
+        if (k<numberOfPoints && k>0)
+        {
+            Values.second[k]++;
         }
-        if (k<100 && k>=0)
+    }
+    return (Values);
+}
+
+db_dataarray Plotting::productStock(int id, int scale, int numberOfPoints)
+{
+    db_histQueue product_hist = db.getProductHist(id);
+    db_productTuple product_data =db.getProductFromId(id);
+    db_histTuple product_operation;
+    QString format="yyyy-MM-dd hh:mm:ss";
+    QDateTime qtime=QDateTime::currentDateTime();
+    QDateTime now=QDateTime::currentDateTime();
+    int stock= product_data.getProductStock();
+    int k;
+    //recupérer les anciennes données quand getCustomer_Old_Hist sera implémenté
+    std::vector<double> x(numberOfPoints), y(numberOfPoints);
+    db_dataarray Values=make_pair(x,y);
+    int now_int = QDateTime::currentDateTime().toTime_t();
+    //On remplit le tableau, qui contient les dates et les valeurs:
+    // Values.first contient les dates,
+    // Values.second les valeurs.
+
+    for (int i=0;i<numberOfPoints;i++)
+    {
+        Values.first[i]=0;
+        Values.second[i]=stock;
+    }
+
+    for (unsigned j=0; j<product_hist.size();j++)
+    {
+        product_operation=product_hist.front();
+        product_hist.pop();
+        std::string operation_time=product_operation.getHistDate();
+        QString qoperation_time=QString::fromStdString(operation_time);
+
+        qtime=QDateTime::fromString(qoperation_time,format);
+        k=-now.secsTo(qtime)/(3600*24*scale);
+        for (int i=0;i<numberOfPoints;i++)
+        {
+            Values.first[i]=now_int-(24*3600*scale)*i;
+        }
+/*
+        if (scale==0)
+        {
+            qtime=QDateTime::fromString(qoperation_time,format);
+            k=-now.secsTo(qtime)/(3600*24);
+            for (int i=0;i<100;i++)
+            {
+                Values.first[i]=now_int-(24*3600)*i;
+            }
+        }
+        else
+        {
+            if (scale==1)
+            {
+                qtime=QDateTime::fromString(qoperation_time,format);
+                k=-now.secsTo(qtime)/(3600*24*7);
+                for (int i=0;i<100;i++)
+                {
+                    Values.first[i]=now_int-(3600*24*7)*i;
+                }
+            }
+            else
+            {
+                qtime=QDateTime::fromString(qoperation_time,format);
+                k=-now.secsTo(qtime)/(2628000);
+                for (int i=0;i<100;i++)
+                {
+                    Values.first[i]=now_int-(2628000)*i;
+                }
+            }
+
+        }*/
+        if (k<numberOfPoints && k>=0)
         {
             stock++;
             Values.second[k]=stock;
         }
-for (int l=0;l<100;l++)
+for (int l=0;l<numberOfPoints;l++)
 {
     if (k<l)
     {
@@ -314,7 +346,7 @@ for (int l=0;l<100;l++)
 }
 
 
-db_dataarray Plotting::totalConsumption(int scale,int type)
+db_dataarray Plotting::totalConsumption(int scale,int numberOfPoints, int type)
 {
     db_histQueue hist = db.getFullHist();
     db_histTuple operation;
@@ -324,11 +356,11 @@ db_dataarray Plotting::totalConsumption(int scale,int type)
     QDateTime now=QDateTime::currentDateTime();
     int k;
     //recupérer les anciennes données quand getCustomer_Old_Hist sera implémenté
-    std::vector<double> x(100), y(100);
+    std::vector<double> x(numberOfPoints), y(numberOfPoints);
     db_dataarray Values=make_pair(x,y);
     int now_int = QDateTime::currentDateTime().toTime_t();
 
-    for (int i=0;i<100;i++)
+    for (int i=0;i<numberOfPoints;i++)
     {
         Values.first[i]=0;
         Values.second[i]=0;
@@ -341,6 +373,14 @@ db_dataarray Plotting::totalConsumption(int scale,int type)
         std::string operation_time=operation.getHistDate();
         QString qoperation_time=QString::fromStdString(operation_time);
 
+        qtime=QDateTime::fromString(qoperation_time,format);
+        k=-now.secsTo(qtime)/(3600*24*scale);
+
+        for (int i=0;i<numberOfPoints;i++)
+        {
+            Values.first[i]=now_int-(24*3600*scale)*i;
+        }
+/*
         if (scale==0)
         {
             qtime=QDateTime::fromString(qoperation_time,format);
@@ -371,8 +411,8 @@ db_dataarray Plotting::totalConsumption(int scale,int type)
                     Values.first[i]=now_int-(2628000)*i;
                 }
             }
-        }
-        if (k<100 && k>=0)
+        }*/
+        if (k<numberOfPoints && k>=0)
         {
             Values.second[k]++;
         }
