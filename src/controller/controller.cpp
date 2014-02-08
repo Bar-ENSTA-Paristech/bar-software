@@ -9,13 +9,14 @@
 Controller::Controller()
 {
     /*Call here functions for the default display : allCustomers, history, productTypes ... */
-    negativeAllowed = true;
     curCart = new Cart;
     curCustomer = new Customer;
     view_curCustomer = new view_customerTuple;
     database = new Database;
     plotting = new Plotting;
-
+    database->openDatabase();
+    consoTypes = database->getProdCategories();
+    database->closeDatabase();
 }
 
 void Controller::setDb(sqlite3* handle)
@@ -467,9 +468,13 @@ bool Controller::view_isLoginCorrect(QString login, QString passwd, LoginType lo
             AdminTuple tuple;
             view->admin->launchAdmin(tuple);
             break;
+        case NEGATIVE_BALANCE :
+            view->cartDisplay->validateNegativeCart();
+            break;
         default :
-            return false;
+            break;
         }
+        currentLoginRequest = NONE;
         return true;
     }
 }
@@ -556,9 +561,9 @@ std::queue<QString> Controller::newCustCategoryList()
     return result;
 }
 
-bool Controller::isNegativeAllowed()
+bool Controller::isCustomerInNegative()
 {
-    return negativeAllowed;
+    return (curCustomer->getBalance() < 0);
 }
 
 void Controller::setCurCustomer(view_customerTuple &tuple)
@@ -593,7 +598,7 @@ void Controller::newClic_EditCustomer()
     }
 }
 
-void Controller::receiveCalculatorEntry(float amount)
+void Controller::receiveCalculatorEntry(float amount, bool isPaidByCard)
 {
     db_customerTuple dbTuple;
     database->openDatabase();
@@ -607,6 +612,7 @@ void Controller::receiveCalculatorEntry(float amount)
     dbTuple.setCustomerCategory(curCustomer->getCategory());
     dbTuple.setCustomerBalance(curCustomer->getBalance());
 
+    // ###### A voir si on envoie isPaidByCash au modele qu'il gère l'affaire, ou que le controlleur gère la caisse etc.
     database->editCustomerAccount(dbTuple);
 
     //Send updated information to view so it can display the new customer info
@@ -867,14 +873,6 @@ void Controller::newClic_Category(int id)
         database->closeDatabase();
         break;
     }
-}
-
-db_categoryQueue Controller::getConsoTypes()
-{
-    database->openDatabase();
-    db_categoryQueue db_consotypes = database->getProdCategories();
-    database->closeDatabase();
-    return db_consotypes;
 }
 
 void Controller::displayProductGraph(int id, bool consumption)

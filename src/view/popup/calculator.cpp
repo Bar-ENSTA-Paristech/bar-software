@@ -13,6 +13,7 @@ Calculator::Calculator(QWidget *parent) :
     QPushButton* cancel = new QPushButton(this);
     buttonsFrame = new QFrame(this);
     buttonsLayout = new QGridLayout(buttonsFrame);
+    paidByCard = new QCheckBox("Payé par carte", this);
     buttons = new QPushButton*[CALCULATOR_BUTTONS];
     for(int i=0 ; i < CALCULATOR_BUTTONS ; i++)
         buttons[i] = new QPushButton(buttonsFrame);
@@ -20,8 +21,9 @@ Calculator::Calculator(QWidget *parent) :
     layout->addWidget(label, 0,0, 1, 2, Qt::AlignCenter);
     layout->addWidget(buttonsFrame, 1,0,1,2, Qt::AlignCenter);
     layout->addWidget(sum, 2,0, 1, 2, Qt::AlignCenter);
-    layout->addWidget(validate, 3,0);
-    layout->addWidget(cancel, 3,1);
+    layout->addWidget(paidByCard, 3, 0, 1, 2);
+    layout->addWidget(validate, 4,0);
+    layout->addWidget(cancel, 4,1);
     this->setLayout(layout);
 
     label->setText("Tapez une valeur. Ex : 9.5 ajoutera 9.5€ au compte, -14 retirera 14€");
@@ -46,6 +48,7 @@ Calculator::Calculator(QWidget *parent) :
     }    
     buttonsLayout->addWidget(buttons[12], 3, 3, 1, 1, Qt::AlignCenter);// AC
     QObject::connect(buttons[12], SIGNAL(clicked()), this, SLOT(buttonPushed()));
+    QObject::connect(sum, SIGNAL(textChanged(QString)), this, SLOT(sumEdited(QString)));
     buttons[12]->setText("AC");
     buttonsFrame->setLayout(buttonsLayout);
 }
@@ -53,11 +56,24 @@ Calculator::Calculator(QWidget *parent) :
 void Calculator::launchCalculator()
 {
     // If negative balance not allowed, we disable "-" button
-    if(!controller->isNegativeAllowed())
+    /*if(!controller->isNegativeAllowed())
         buttons[11]->setEnabled(false);
     else
-        buttons[11]->setEnabled(true);
+        buttons[11]->setEnabled(true);*/
     this->show();
+}
+
+void Calculator::sumEdited(QString str)
+{
+    if(str[0] == '-')
+    {
+        paidByCard->setChecked(false);
+        paidByCard->setEnabled(false);
+    }
+    else
+    {
+        paidByCard->setEnabled(true);
+    }
 }
 
 void Calculator::validate()
@@ -68,7 +84,7 @@ void Calculator::validate()
     {
         float floatValue = value.toFloat();
         // ###### APPEL AU CONTROLLEUR POUR TRANSACTION #####
-        controller->receiveCalculatorEntry(floatValue);
+        controller->receiveCalculatorEntry(floatValue, paidByCard->isChecked());
         this->hide();
     }
 

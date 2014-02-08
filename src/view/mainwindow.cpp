@@ -13,7 +13,7 @@ MainWindow::MainWindow()
     this->setCentralWidget(centralWidget);
     this->setGeometry(20, 40, 1000, 800);
     this->setWindowTitle("RAB WareSoft");
-    this->setMinimumSize(800, 600);
+    this->setMinimumSize(900, 600);
     this->setStyle(QStyleFactory::create("fusion"));
 
     // Creating main widgets (menu at top and the remaining
@@ -232,7 +232,7 @@ void MainWindow::shortcutRoutine()
     else if(sender->key().toString() == QString("Ctrl+D"))
         consoLogos->newCategorieToController(5);
     else if(sender->key().toString() == QString("Enter") || sender->key().toString() == QString("Return"))
-        VIEW.cartDisplay->validateCart();
+        VIEW.cartDisplay->tryValidateCart();
 
 
 }

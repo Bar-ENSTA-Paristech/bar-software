@@ -7,6 +7,7 @@
 #include <QLineEdit>
 #include <QPushButton>
 #include <QString>
+#include <QCheckBox>
 #include <QRegExp>
 #include <QErrorMessage>
 #include "controller.h"
@@ -30,6 +31,7 @@ private:
     QLineEdit* sum;
     QFrame* buttonsFrame;
     QPushButton** buttons;
+    QCheckBox* paidByCard;
     QGridLayout*  buttonsLayout;
 
 
@@ -39,6 +41,7 @@ public slots:
     void validate();
     void cancel();
     void buttonPushed();
+    void sumEdited(QString str);
     
 };
 
