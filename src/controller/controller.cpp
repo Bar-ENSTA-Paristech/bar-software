@@ -525,7 +525,7 @@ void Controller::newClic_IndividualHistory()
         db_histTuple dbCustomerHistTuple;
 
         database->openDatabase();
-        dbCustomerHist = database->getCustomerHist(id);
+        dbCustomerHist = database->getCustomerHist(id,false);
 
         if ( !dbCustomerHist.empty() ){
 
@@ -889,19 +889,27 @@ void Controller::displayProductGraph(int id, bool consumption)
 {
     db_dataarray datas;
     database->openDatabase();
+    plotting->setDb(database->getHandle());
     db_productTuple db_product = database->getProductFromId(id);
     database->closeDatabase();
     QString title;
     if(consumption)
     {
-        datas = plotting->productConsumption(id, 1, 100);
+        database->openDatabase();
+        plotting->setDb(database->getHandle());
+
+        datas = plotting->productConsumption(id, 10, 100);
         title = "Evolution de la consommation de "+ QString::fromStdString(db_product.getProductName())+
                 " "+QString::number(db_product.getProductVolume())+"cL"+" au cours du temps.";
+        //if datas.
         view->mainWindow->setGraph(datas, "Temps", "Consommation en unité (L pour la pression)", title);
     }
     else
     {
-        datas = plotting->productStock(id, 1, 100);
+        //database->openDatabase();
+        plotting->setDb(database->getHandle());
+
+        datas = plotting->productStock(id, 10, 100);
         title = "Evolution des stocks de "+ QString::fromStdString(db_product.getProductName())+
                 " "+QString::number(db_product.getProductVolume())+"cL"+" au cours du temps.";
         view->mainWindow->setGraph(datas, "Temps", "Stocks en unité (L pour la pression)", title);

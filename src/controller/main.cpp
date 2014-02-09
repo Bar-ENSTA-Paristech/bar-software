@@ -19,6 +19,7 @@ QString GLOBAL_PATH;
 
 int main(int argc, char *argv[])
 {
+    //
     QDir currentDir(QDir::currentPath());
     //QCoreApplication::addLibraryPath(QCoreApplication::applicationDirPath()); for deployement ?
 #ifdef Q_OS_LINUX //pour linux

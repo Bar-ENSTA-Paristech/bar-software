@@ -1,12 +1,5 @@
-#include <iostream>
 #include "database.h"
-#include <cstring>
-#include <QDebug>
-#include <tuple>
-#include <sstream>
-#include <vector>
-#include "structures.h"
-#include <QDateTime>
+
 
 
 //La déclaration du pointeur vers le résultat de la requête doit se faire dans l'espage global
@@ -43,7 +36,7 @@ int Database::openDatabase()
     DBfilename[i]='\0';
     std::cout<<DBfilename<<std::endl;
     int coderesult=sqlite3_open_v2(DBfilename //Database filename
-                                    ,&handle //adresse mémoire de la BDD
+                                   ,&handle //adresse mémoire de la BDD
                                    , SQLITE_OPEN_READWRITE
                                    , NULL); // Default VFS
 
@@ -494,9 +487,9 @@ db_customerQueue Database::getCustomerFromCategory(unsigned id)
 
     //Formation du string de query adapté
 
-        queryString+=" SELECT * FROM notes WHERE type='";
-        queryString+=idstring;
-        queryString+="' ORDER BY nom ASC;";
+    queryString+=" SELECT * FROM notes WHERE type='";
+    queryString+=idstring;
+    queryString+="' ORDER BY nom ASC;";
 
     //Implémentation de la query et execution de celle ci
     query.setQuery(queryString);
@@ -841,7 +834,7 @@ db_histQueue Database::getLastOperations(int limit)
 }
 // hist.conso_price n'est pas dans la db actuellement, il faudra faire avec conso.price
 //en réalité, on utilisera conso.price pour hist_older=avant la maj
-db_histQueue Database::getCustomerHist(unsigned id)
+db_histQueue Database::getCustomerHist(unsigned id, bool old)
 {
     Query query;
     std::string id_String = std::to_string(id);
@@ -856,22 +849,42 @@ db_histQueue Database::getCustomerHist(unsigned id)
     std::queue<std::string> *queryResultFunction(0);
     queryResultFunction = new std::queue<std::string> ;
 
+    if (old!=true)
+    {
     //Utiliser des jointures
     // From client_id -> nom + prénom
     // From conso_id -> conso + prix
-    std::string queryString="SELECT historique.his_id, notes.nom, notes.prenom,consos.nom, consos.prix, historique.date_conso ";
-    queryString+="FROM historique ";
+    std::string queryString="SELECT notes.nom, notes.prenom,consos.nom, consos.prix, hist.date_conso ";
+    queryString+="FROM hist ";
     queryString+="LEFT JOIN consos ";
-    queryString+="ON consos.conso_id = historique.conso_id ";
+    queryString+="ON consos.conso_id = hist.conso_id ";
     queryString+="LEFT JOIN notes ";
-    queryString+="ON notes.client_id=historique.client_id ";
+    queryString+="ON notes.client_id=hist.client_id ";
     queryString+="WHERE notes.client_id=";
     queryString+=id_String;
-    queryString+=" ORDER BY historique.date_conso DESC LIMIT 300;";
+    queryString+=" ORDER BY hist.date_conso DESC ;";
 
     query.setQuery(queryString);
     query.setVerbose(1);
     executeQuery(query);
+}
+    else
+    {
+        std::string queryString="SELECT notes.nom, notes.prenom,consos.nom, consos.prix, historique_save.date_conso ";
+        queryString+="FROM historique_save ";
+        queryString+="LEFT JOIN consos ";
+        queryString+="ON consos.conso_id = historique_save.conso_id ";
+        queryString+="LEFT JOIN notes ";
+        queryString+="ON notes.client_id=historique_save.client_id ";
+        queryString+="WHERE notes.client_id=";
+        queryString+=id_String;
+        queryString+=" ORDER BY historique.date_conso DESC ;";
+
+        query.setQuery(queryString);
+        query.setVerbose(1);
+        executeQuery(query);
+
+    }
 
 
     *queryResultFunction=*queryResult;
@@ -914,7 +927,7 @@ db_histQueue Database::getCustomerHist(unsigned id)
 
 }
 
-db_histQueue Database::getProductHist(unsigned id)
+db_histQueue Database::getProductHist(unsigned id,bool old)
 {
     Query query;
     std::string id_String = std::to_string(id);
@@ -929,29 +942,47 @@ db_histQueue Database::getProductHist(unsigned id)
     std::queue<std::string> *queryResultFunction(0);
     queryResultFunction = new std::queue<std::string> ;
 
-    //Utiliser des jointures
-    // From client_id -> nom + prénom
-    // From conso_id -> conso + prix
-    std::string queryString="SELECT historique.his_id, notes.nom, notes.prenom,consos.nom, consos.prix, historique.date_conso ";
-    queryString+="FROM historique ";
-    queryString+="LEFT JOIN notes ";
-    queryString+="ON notes.client_id=historique.client_id ";
-    queryString+="LEFT JOIN consos ";
-    queryString+="ON consos.conso_id = historique.conso_id ";
-    queryString+="WHERE consos.conso_id=";
-    queryString+=id_String;
-    queryString+=" ORDER BY historique.date_conso DESC;";
+    if (old!=true)
+    {
+        //Utiliser des jointures
+        // From client_id -> nom + prénom
+        // From conso_id -> conso + prix
+        std::string queryString="SELECT historique.his_id, notes.nom, notes.prenom,consos.nom, consos.prix, historique.date_conso ";
+        queryString+="FROM historique ";
+        queryString+="LEFT JOIN notes ";
+        queryString+="ON notes.client_id=historique.client_id ";
+        queryString+="LEFT JOIN consos ";
+        queryString+="ON consos.conso_id = historique.conso_id ";
+        queryString+="WHERE consos.conso_id=";
+        queryString+=id_String;
+        queryString+=" ORDER BY historique.date_conso DESC;";
 
-    query.setQuery(queryString);
-    query.setVerbose(1);
-    executeQuery(query);
+        query.setQuery(queryString);
+        query.setVerbose(1);
+        executeQuery(query);
+    }
+
+    else
+    {
+        std::string queryString="SELECT historique_save.his_id, notes.nom, notes.prenom,consos.nom, consos.prix, historique_save.date_conso ";
+        queryString+="FROM historique_save ";
+        queryString+="LEFT JOIN notes ";
+        queryString+="ON notes.client_id=historique_save.client_id ";
+        queryString+="LEFT JOIN consos ";
+        queryString+="ON consos.conso_id = historique_save.conso_id ";
+        queryString+="WHERE consos.conso_id=";
+        queryString+=id_String;
+        queryString+=" ORDER BY historique_save.date_conso DESC;";
+
+        query.setQuery(queryString);
+        query.setVerbose(1);
+        executeQuery(query);
+    }
 
 
     *queryResultFunction=*queryResult;
     std::vector<std::string> vectorFromQueue;
 
-    for (i=0;i<=queryResultFunction->size();i++)
-    {
         while(!queryResultFunction->empty())
         {
 
@@ -979,7 +1010,6 @@ db_histQueue Database::getProductHist(unsigned id)
             j++;
             vectorFromQueue.clear();
         }
-    }
     clear(queue);
     delete hist;
     delete queryResultFunction;
