@@ -42,7 +42,7 @@ void ProductsChoices::setProductsChoices(view_productQueue queue)
             }
         }
         model->item(i,0)->setText(tuple.getProductName());
-        model->item(i,1)->setText(QString::number(tuple.getProductStock()));    // Confusion between the stock (given) and the volume (expected)
+        model->item(i,1)->setText(QString::number(tuple.getProductVolume()));    // Confusion between the stock (given) and the volume (expected)
         model->item(i,2)->setText(QString::number(tuple.getProductPrice()));
         model->item(i,3)->setText(QString::number(tuple.getProductId()));
         queue.pop();

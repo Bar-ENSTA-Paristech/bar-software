@@ -101,6 +101,8 @@ public:
     void displayProductGraph(int id, bool consumption);
     void setCurrentLoginRequest(LoginObjects _currentLoginRequest){currentLoginRequest = _currentLoginRequest;}
     db_categoryQueue getConsoTypes(){return consoTypes;}
+    db_categoryQueue getCustomerCategories(){
+        db_categoryQueue queue; database->openDatabase(); queue=database->getCustCategories(); database->closeDatabase(); return queue;}
 
     void setDb(sqlite3*);
     sqlite3* getDb();

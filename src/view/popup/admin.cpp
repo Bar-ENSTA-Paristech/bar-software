@@ -4,7 +4,7 @@ Admin::Admin(QWidget *parent) :
     Popup(parent)
 {
     VIEW.admin = this;
-    this->setGeometry(50,50, 600,600);
+    this->setGeometry(50,50, 300,300);
 
     layout = new QGridLayout(this);
     //negativeAllowed = new QCheckBox("Négatif autorisé", this);
