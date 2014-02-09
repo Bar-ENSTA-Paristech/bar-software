@@ -31,6 +31,7 @@ typedef enum {INDIVIDUAL, GLOBAL, ROOT} LoginType;
 typedef enum {NONE, CALCULATOR, EDIT_CUSTOMER, DELETE_CUSTOMER, NEW_CUSTOMER, ADD_STOCK, ADD_PRODUCT, EDIT_PRODUCT,
               ADMIN, NEGATIVE_BALANCE} LoginObjects;
 typedef enum {CASH,CHEQUE,CB,BILL}PaymentType;
+typedef enum {BDE=1,CAISSE=2}Account;
 
 class view_customerTuple;
 class view_productTuple;

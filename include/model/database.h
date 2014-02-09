@@ -79,8 +79,6 @@ public:
 
     void dumpProductToDelete(db_productTuple tuple); //Cas d'un stock non nul a gérer dans le controlleur
 
-
-
     void addHistCashier(db_finop_tuple tuple); //Paiement par Cash/Chèque
 
     void transferToBDE(db_finop_tuple tuple); // Paiement par CB ou Vidage de caisse//Paiement des factures
@@ -88,6 +86,10 @@ public:
     db_finop_queue getBDEHist();
 
     db_finop_queue getCashierHist();
+
+    float getAccountValue(Account cpt);
+
+    void updateAccountValue(float addedValue,Account cpt);
     // ############# A IMPLEMENTER #############
     void dumpHistOfDeletedCust (unsigned id);
 
