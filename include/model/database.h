@@ -1,13 +1,19 @@
 #ifndef DATABASE_H
 #define DATABASE_H
 
+#include <iostream>
 #include <cstring>
+#include <QDebug>
+#include <tuple>
+#include <sstream>
+#include <QString>
+#include <vector>
+#include <QDateTime>
 #include "sqlite3.h"
 #include "query.h"
 #include "queue"
 #include "tuple"
 #include "structures.h"
-#include <QString>
 
 extern QString GLOBAL_PATH;
 
@@ -58,9 +64,9 @@ public:
 
     db_histQueue getFullHist();
 
-    db_histQueue getProductHist (unsigned id);
+    db_histQueue getProductHist (unsigned id,bool old);
 
-    db_histQueue getCustomerHist(unsigned);//Renvoie l'historique d'un client en ayant recu son id
+    db_histQueue getCustomerHist(unsigned id,bool old);//Renvoie l'historique d'un client en ayant recu son id
     //OK (Fonctionne - a tester plus en profondeur)
 
     std::string getPassword (std::string &login);//Retourne le password correspondant au login recherché

@@ -7,15 +7,17 @@ Plotting::Plotting()
 {
 }
 
-/* Dans toutes les méthodes de recherche, l'arg "scale" correspond à l'échelle du graphe:
- *scale=0 ->Quotidien
- *scale=1 ->Hebdomadaire
- *scale=2 ->Mensuel
+/* Dans toutes les méthodes de recherche, l'arg "scale" correspond à l'échelle du graphe en jours:
  */
 
 db_dataarray Plotting::customerConsumption(int id, int scale, int numberOfPoints, int type)
 {
-    db_histQueue customer_hist = db.getCustomerHist(id);
+    db.openDatabase();
+    db_histQueue customer_hist = db.getCustomerHist(id,false);
+    db.closeDatabase();
+    db.openDatabase();
+    db_histQueue customer_hist_old = db.getCustomerHist(id,true);
+    db.closeDatabase();
     db_histTuple customer_operation;
     QString format="yyyy-MM-dd hh:mm:ss";
     QDateTime qtime=QDateTime::currentDateTime();
@@ -34,73 +36,66 @@ db_dataarray Plotting::customerConsumption(int id, int scale, int numberOfPoints
         Values.first[i]=0;
         Values.second[i]=0;
     }
-
-    for (unsigned j=0; j<customer_hist.size();j++)
+    if (!customer_hist.empty())
     {
-        customer_operation=customer_hist.front();
-        customer_hist.pop();
-        std::string operation_time=customer_operation.getHistDate();
-        QString qoperation_time=QString::fromStdString(operation_time);
+        for (unsigned j=0; j<customer_hist.size();j++)
+        {
+            customer_operation=customer_hist.front();
+            customer_hist.pop();
+            std::string operation_time=customer_operation.getHistDate();
+            QString qoperation_time=QString::fromStdString(operation_time);
 
-        qtime=QDateTime::fromString(qoperation_time,format);
-        k=-now.secsTo(qtime)/(3600*24*scale);
-        for (int i=0;i<numberOfPoints;i++)
-        {
-            Values.first[i]=now_int-(24*3600*scale)*i;
-        }
-        if (k<numberOfPoints && k>=0)
-        {
-            Values.second[k]++;
-        }
-
-        /*if (scale==0)
-        {
             qtime=QDateTime::fromString(qoperation_time,format);
-            k=-now.secsTo(qtime)/(3600*24);
+            k=-now.secsTo(qtime)/(3600*24*scale);
             for (int i=0;i<numberOfPoints;i++)
             {
-                Values.first[i]=now_int-(24*3600)*i;
+                Values.first[i]=now_int-(24*3600*scale)*i;
+            }
+            if (k<numberOfPoints && k>=0)
+            {
+                Values.second[k]++;
+            }
+
+        }
+    }
+    else{}
+
+    if (!customer_hist_old.empty())
+    {
+        for (unsigned j=0; j<customer_hist_old.size();j++)
+        {
+            customer_operation=customer_hist_old.front();
+            customer_hist_old.pop();
+            std::string operation_time=customer_operation.getHistDate();
+            QString qoperation_time=QString::fromStdString(operation_time);
+
+            qtime=QDateTime::fromString(qoperation_time,format);
+            k=-now.secsTo(qtime)/(3600*24*scale);
+            for (int i=0;i<numberOfPoints;i++)
+            {
+                Values.first[i]=now_int-(24*3600*scale)*i;
             }
             if (k<numberOfPoints && k>=0)
             {
                 Values.second[k]++;
             }
         }
-        else
-        {
-            if (scale==1)
-            {
-                qtime=QDateTime::fromString(qoperation_time,format);
-                k=-now.secsTo(qtime)/(3600*24*7);
-                for (int i=0;i<numberOfPoints;i++)
-                {
-                    Values.first[i]=now_int-(3600*24*7)*i;
-                }
-            }
-            else
-            {
-                qtime=QDateTime::fromString(qoperation_time,format);
-                k=-now.secsTo(qtime)/(2628000);
-                for (int i=0;i<numberOfPoints;i++)
-                {
-                    Values.first[i]=now_int-(2628000)*i;
-                }
-            }
-
-        }
-
-        if (k<numberOfPoints && k>0)
-        {
-            Values.second[k]++;
-        }*/
     }
+    else{}
     return (Values);
 }
 
 db_dataarray Plotting::customerBalance(int id, int scale, int numberOfPoints)
 {
-    db_histQueue customer_hist = db.getCustomerHist(id);
+    db.openDatabase();
+    db_histQueue customer_hist_old = db.getCustomerHist(id,true);
+    db.closeDatabase();
+    db.openDatabase();
+    db_histQueue customer_hist = db.getCustomerHist(id,false);
+    db.closeDatabase();
+    db.openDatabase();
     db_customerTuple customer_data =db.getCustomerFromId(id);
+    db.closeDatabase();
     db_histTuple customer_operation;
     QString format="yyyy-MM-dd hh:mm:ss";
     QDateTime qtime=QDateTime::currentDateTime();
@@ -120,72 +115,81 @@ db_dataarray Plotting::customerBalance(int id, int scale, int numberOfPoints)
         Values.first[i]=0;
         Values.second[i]=balance;
     }
-
-    for (unsigned j=0; j<customer_hist.size();j++)
+    if (!customer_hist.empty())
     {
-        customer_operation=customer_hist.front();
-        customer_hist.pop();
-        std::string operation_time=customer_operation.getHistDate();
-        QString qoperation_time=QString::fromStdString(operation_time);
+        for (unsigned j=0; j<customer_hist.size();j++)
+        {
+            customer_operation=customer_hist.front();
+            customer_hist.pop();
+            std::string operation_time=customer_operation.getHistDate();
+            QString qoperation_time=QString::fromStdString(operation_time);
 
-        qtime=QDateTime::fromString(qoperation_time,format);
-        k=-now.secsTo(qtime)/(3600*24*scale);
-        for (int i=0;i<numberOfPoints;i++)
-        {
-            Values.first[i]=now_int-(24*3600*scale)*i;
-        }
-/*
-        if (scale==0)
-        {
             qtime=QDateTime::fromString(qoperation_time,format);
-            k=-now.secsTo(qtime)/(3600*24);
-            for (int i=0;i<100;i++)
+            k=-now.secsTo(qtime)/(3600*24*scale);
+            for (int i=0;i<numberOfPoints;i++)
             {
-                Values.first[i]=now_int-(24*3600)*i;
+                Values.first[i]=now_int-(24*3600*scale)*i;
             }
-        }
-        else
-        {
-            if (scale==1)
+
+            if (k<numberOfPoints && k>=0)
             {
-                qtime=QDateTime::fromString(qoperation_time,format);
-                k=-now.secsTo(qtime)/(3600*24*7);
-                for (int i=0;i<100;i++)
-                {
-                    Values.first[i]=now_int-(3600*24*7)*i;
-                }
+                balance+=customer_operation.getHistPrice();
+                Values.second[k]=balance;
             }
-            else
+            for (int l=0;l<numberOfPoints;l++)
             {
-                qtime=QDateTime::fromString(qoperation_time,format);
-                k=-now.secsTo(qtime)/(2628000);
-                for (int i=0;i<100;i++)
+                if (k<l)
                 {
-                    Values.first[i]=now_int-(2628000)*i;
+                    Values.second[l]=balance;
                 }
             }
 
-        }*/
-        if (k<numberOfPoints && k>=0)
-        {
-            balance+=customer_operation.getHistPrice();
-            Values.second[k]=balance;
         }
-for (int l=0;l<numberOfPoints;l++)
-{
-    if (k<l)
+    }
+    else{}
+    if (!customer_hist_old.empty())
     {
-        Values.second[l]=balance;
-    }
-}
+        for (unsigned j=0; j<customer_hist_old.size();j++)
+        {
+            customer_operation=customer_hist_old.front();
+            customer_hist_old.pop();
+            std::string operation_time=customer_operation.getHistDate();
+            QString qoperation_time=QString::fromStdString(operation_time);
 
+            qtime=QDateTime::fromString(qoperation_time,format);
+            k=-now.secsTo(qtime)/(3600*24*scale);
+            for (int i=0;i<numberOfPoints;i++)
+            {
+                Values.first[i]=now_int-(24*3600*scale)*i;
+            }
+
+            if (k<numberOfPoints && k>=0)
+            {
+                balance+=customer_operation.getHistPrice();
+                Values.second[k]=balance;
+            }
+            for (int l=0;l<numberOfPoints;l++)
+            {
+                if (k<l)
+                {
+                    Values.second[l]=balance;
+                }
+            }
+
+        }
     }
+    else{}
     return (Values);
 }
 
 db_dataarray Plotting::productConsumption(int id, int scale, int numberOfPoints)
 {
-    db_histQueue product_hist = db.getProductHist(id);
+    db_histQueue product_hist_old = db.getProductHist(id,true);
+    db.closeDatabase();
+    db.openDatabase();
+    db_histQueue product_hist = db.getProductHist(id,false);
+    db.closeDatabase();
+
     db_histTuple product_operation;
     QString format="yyyy-MM-dd hh:mm:ss";
     QDateTime qtime=QDateTime::currentDateTime();
@@ -204,65 +208,66 @@ db_dataarray Plotting::productConsumption(int id, int scale, int numberOfPoints)
         Values.first[i]=0;
         Values.second[i]=0;
     }
-
-    for (unsigned j=0; j<product_hist.size();j++)
+    if (!product_hist.empty())
     {
-        product_operation=product_hist.front();
-        product_hist.pop();
-        std::string operation_time=product_operation.getHistDate();
-        QString qoperation_time=QString::fromStdString(operation_time);
+        for (unsigned j=0; j<product_hist.size();j++)
+        {
+            product_operation=product_hist.front();
+            product_hist.pop();
+            std::string operation_time=product_operation.getHistDate();
+            QString qoperation_time=QString::fromStdString(operation_time);
 
-        qtime=QDateTime::fromString(qoperation_time,format);
-        k=-now.secsTo(qtime)/(3600*24*scale);
-        for (int i=0;i<100;i++)
-        {
-            Values.first[i]=now_int-(24*3600*scale)*i;
-        }
-    /*
-        if (scale==0)
-        {
             qtime=QDateTime::fromString(qoperation_time,format);
-            k=-now.secsTo(qtime)/(3600*24);
+            k=-now.secsTo(qtime)/(3600*24*scale);
             for (int i=0;i<100;i++)
             {
-                Values.first[i]=now_int-(24*3600)*i;
+                Values.first[i]=now_int-(24*3600*scale)*i;
             }
-        }
-        else
-        {
-            if (scale==1)
+            if (k<numberOfPoints && k>0)
             {
-                qtime=QDateTime::fromString(qoperation_time,format);
-                k=-now.secsTo(qtime)/(3600*24*7);
-                for (int i=0;i<100;i++)
-                {
-                    Values.first[i]=now_int-(3600*24*7)*i;
-                }
+                Values.second[k]++;
             }
-            else
-            {
-                qtime=QDateTime::fromString(qoperation_time,format);
-                k=-now.secsTo(qtime)/(2628000);
-                for (int i=0;i<100;i++)
-                {
-                    Values.first[i]=now_int-(2628000)*i;
-                }
-            }
-
-        }*/
-
-        if (k<numberOfPoints && k>0)
-        {
-            Values.second[k]++;
         }
     }
+    else{}
+    if (!product_hist_old.empty())
+    {
+        for (unsigned j=0; j<product_hist_old.size();j++)
+        {
+            product_operation=product_hist_old.front();
+            product_hist_old.pop();
+            std::string operation_time=product_operation.getHistDate();
+            QString qoperation_time=QString::fromStdString(operation_time);
+
+            qtime=QDateTime::fromString(qoperation_time,format);
+            k=-now.secsTo(qtime)/(3600*24*scale);
+            for (int i=0;i<100;i++)
+            {
+                Values.first[i]=now_int-(24*3600*scale)*i;
+            }
+            if (k<numberOfPoints && k>0)
+            {
+                Values.second[k]++;
+            }
+        }
+    }
+    else{}
     return (Values);
 }
 
 db_dataarray Plotting::productStock(int id, int scale, int numberOfPoints)
 {
-    db_histQueue product_hist = db.getProductHist(id);
+
+    db.openDatabase();
+    std::cout<<"Teststock";
+    db_histQueue product_hist = db.getProductHist(id,false);
+    db.closeDatabase();
+    db.openDatabase();
+    db_histQueue product_hist_old = db.getProductHist(id,true);
+    db.closeDatabase();
+    db.openDatabase();
     db_productTuple product_data =db.getProductFromId(id);
+    db.closeDatabase();
     db_histTuple product_operation;
     QString format="yyyy-MM-dd hh:mm:ss";
     QDateTime qtime=QDateTime::currentDateTime();
@@ -282,73 +287,79 @@ db_dataarray Plotting::productStock(int id, int scale, int numberOfPoints)
         Values.first[i]=0;
         Values.second[i]=stock;
     }
-
-    for (unsigned j=0; j<product_hist.size();j++)
+    if (!product_hist.empty())
     {
-        product_operation=product_hist.front();
-        product_hist.pop();
-        std::string operation_time=product_operation.getHistDate();
-        QString qoperation_time=QString::fromStdString(operation_time);
+        for (unsigned j=0; j<product_hist.size();j++)
+        {
+            product_operation=product_hist.front();
+            product_hist.pop();
+            std::string operation_time=product_operation.getHistDate();
+            QString qoperation_time=QString::fromStdString(operation_time);
 
-        qtime=QDateTime::fromString(qoperation_time,format);
-        k=-now.secsTo(qtime)/(3600*24*scale);
-        for (int i=0;i<numberOfPoints;i++)
-        {
-            Values.first[i]=now_int-(24*3600*scale)*i;
-        }
-/*
-        if (scale==0)
-        {
             qtime=QDateTime::fromString(qoperation_time,format);
-            k=-now.secsTo(qtime)/(3600*24);
-            for (int i=0;i<100;i++)
+            k=-now.secsTo(qtime)/(3600*24*scale);
+            for (int i=0;i<numberOfPoints;i++)
             {
-                Values.first[i]=now_int-(24*3600)*i;
-            }
-        }
-        else
-        {
-            if (scale==1)
-            {
-                qtime=QDateTime::fromString(qoperation_time,format);
-                k=-now.secsTo(qtime)/(3600*24*7);
-                for (int i=0;i<100;i++)
-                {
-                    Values.first[i]=now_int-(3600*24*7)*i;
-                }
-            }
-            else
-            {
-                qtime=QDateTime::fromString(qoperation_time,format);
-                k=-now.secsTo(qtime)/(2628000);
-                for (int i=0;i<100;i++)
-                {
-                    Values.first[i]=now_int-(2628000)*i;
-                }
+                Values.first[i]=now_int-(24*3600*scale)*i;
             }
 
-        }*/
-        if (k<numberOfPoints && k>=0)
-        {
-            stock++;
-            Values.second[k]=stock;
+            if (k<numberOfPoints && k>=0)
+            {
+                stock++;
+                Values.second[k]=stock;
+            }
+            for (int l=0;l<numberOfPoints;l++)
+            {
+                if (k<l)
+                {
+                    Values.second[l]=stock;
+                }
+            }
         }
-for (int l=0;l<numberOfPoints;l++)
-{
-    if (k<l)
+
+    }
+    else{}
+
+    if (!product_hist.empty())
     {
-        Values.second[l]=stock;
-    }
-}
+        for (unsigned j=0; j<product_hist_old.size();j++)
+        {
+            product_operation=product_hist_old.front();
+            product_hist_old.pop();
+            std::string operation_time=product_operation.getHistDate();
+            QString qoperation_time=QString::fromStdString(operation_time);
 
+            qtime=QDateTime::fromString(qoperation_time,format);
+            k=-now.secsTo(qtime)/(3600*24*scale);
+            for (int i=0;i<numberOfPoints;i++)
+            {
+                Values.first[i]=now_int-(24*3600*scale)*i;
+            }
+
+            if (k<numberOfPoints && k>=0)
+            {
+                stock++;
+                Values.second[k]=stock;
+            }
+            for (int l=0;l<numberOfPoints;l++)
+            {
+                if (k<l)
+                {
+                    Values.second[l]=stock;
+                }
+            }
+        }
     }
+    else{}
     return (Values);
 }
 
 
 db_dataarray Plotting::totalConsumption(int scale,int numberOfPoints, int type)
 {
+    db.openDatabase();
     db_histQueue hist = db.getFullHist();
+    db.closeDatabase();
     db_histTuple operation;
     QString format="yyyy-MM-dd hh:mm:ss";
 
@@ -365,59 +376,31 @@ db_dataarray Plotting::totalConsumption(int scale,int numberOfPoints, int type)
         Values.first[i]=0;
         Values.second[i]=0;
     }
-
-    for (unsigned j=0; j<hist.size();j++)
+    if (!hist.empty())
     {
-        operation=hist.front();
-        hist.pop();
-        std::string operation_time=operation.getHistDate();
-        QString qoperation_time=QString::fromStdString(operation_time);
-
-        qtime=QDateTime::fromString(qoperation_time,format);
-        k=-now.secsTo(qtime)/(3600*24*scale);
-
-        for (int i=0;i<numberOfPoints;i++)
+        for (unsigned j=0; j<hist.size();j++)
         {
-            Values.first[i]=now_int-(24*3600*scale)*i;
-        }
-/*
-        if (scale==0)
-        {
+            operation=hist.front();
+            hist.pop();
+            std::string operation_time=operation.getHistDate();
+            QString qoperation_time=QString::fromStdString(operation_time);
+
             qtime=QDateTime::fromString(qoperation_time,format);
-            k=-now.secsTo(qtime)/(3600*24);
+            k=-now.secsTo(qtime)/(3600*24*scale);
 
-            for (int i=0;i<100;i++)
+            for (int i=0;i<numberOfPoints;i++)
             {
-                Values.first[i]=now_int-(24*3600)*i;
+                Values.first[i]=now_int-(24*3600*scale)*i;
             }
-        }
-        else
-        {
-            if (scale==1)
-            {
-                qtime=QDateTime::fromString(qoperation_time,format);
-                k=-now.secsTo(qtime)/(3600*24*7);
-                for (int i=0;i<100;i++)
-                {
-                    Values.first[i]=now_int-(3600*24*7)*i;
-                }
-            }
-            else
-            {
-                qtime=QDateTime::fromString(qoperation_time,format);
-                k=-now.secsTo(qtime)/(2628000);
-                for (int i=0;i<100;i++)
-                {
-                    Values.first[i]=now_int-(2628000)*i;
-                }
-            }
-        }*/
-        if (k<numberOfPoints && k>=0)
-        {
-            Values.second[k]++;
-        }
 
+            if (k<numberOfPoints && k>=0)
+            {
+                Values.second[k]++;
+            }
+
+        }
     }
+    else{}
     return (Values);
 }
 
