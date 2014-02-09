@@ -117,7 +117,7 @@ Stats::Stats(QWidget *parent) :
 void Stats::launchStats(view_statsTuple& stats, view_productQueue& category0, view_productQueue& category1, view_productQueue& category2,
                  view_productQueue& category3, view_productQueue& category4, view_productQueue& category5)
 {
-    accountsTotal->setText(QString::number(stats.accountsTotal));
+    accountsTotal->setText(QString::number(stats.accountsTotal) + " €");
     moneyInCashRegister->setText(QString::number(stats.moneyInCashRegister) + " €");
     moneyGivenThisYear->setText(QString::number(stats.moneyGivenThisYear) + " €");
     moneyGivenLastYear->setText(QString::number(stats.moneyGivenLastYear) + " €");
@@ -152,6 +152,7 @@ void Stats::lineClicked(int id)
 {
     // Call to consumption datas if Ctrl key pressed, else Stock datas
     controller->displayProductGraph(id, CtrlActive);
+    CtrlActive = false;
 }
 
 // #################### VIEW_STOCKS #######

@@ -38,7 +38,7 @@ public:
     sqlite3* getHandle();
     void setHandle(sqlite3*);
 
-    db_customerQueue searchCustomer(std::string &string,int cat=0);//Méthode qui renvoie une queue de tuple correspondant aux infos des consommateurs dont le nom correspond à la recherche
+    db_customerQueue searchCustomer(std::string &string,int cat=-1);//Méthode qui renvoie une queue de tuple correspondant aux infos des consommateurs dont le nom correspond à la recherche
     //OK (Fonctionne - a tester plus en profondeur)
 
     db_customerTuple getCustomerFromId(unsigned id);//Méthode recevant l'id d'un client et renvoyant le tuple de ses infos
