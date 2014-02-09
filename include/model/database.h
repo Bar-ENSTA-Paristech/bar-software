@@ -45,7 +45,7 @@ public:
     //OK (Fonctionne - a tester plus en profondeur)
 
     db_customerQueue getCustomerFromCategory(int id); // Méthode renvoyant les clients d'une certaine catégorie
-    //  ######### A IMPLEMENTER ########
+
 
     db_productQueue getProductsFromCategory(int cat);//Méthode recevant un unsigned correspondant à une catégorie de conso et renvoie toutes les consos correspondates
 
@@ -75,9 +75,26 @@ public:
 
     std::string getPassword (std::string &login);//Retourne le password correspondant au login recherché
 
-    void setPassword(std::string login, std::string password){} // edit le mdp ou le crée si le login est inconnu
-    // ############# A IMPLEMENTER #############
+    void dumpCustomerToDelete(db_customerTuple tuple);//
 
+    void dumpProductToDelete(db_productTuple tuple); //Cas d'un stock non nul a gérer dans le controlleur
+
+
+
+    void addHistCashier(db_finop_tuple tuple); //Paiement par Cash/Chèque
+
+    void transferToBDE(db_finop_tuple tuple); // Paiement par CB ou Vidage de caisse//Paiement des factures
+
+    db_finop_queue getBDEHist();
+
+    db_finop_queue getCashierHist();
+    // ############# A IMPLEMENTER #############
+    void dumpHistOfDeletedCust (unsigned id);
+
+    void setPassword(std::string login, std::string password); // edit le mdp ou le crée si le login est inconnu
+
+
+    // ######
     int editCustomerAccount (db_customerTuple); //Méthode générique qui met à jour TOUTES les informations du client
     //Implémentée / fonctionne
 

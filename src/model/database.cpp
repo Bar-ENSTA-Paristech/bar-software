@@ -851,23 +851,23 @@ db_histQueue Database::getCustomerHist(unsigned id, bool old)
 
     if (old!=true)
     {
-    //Utiliser des jointures
-    // From client_id -> nom + prénom
-    // From conso_id -> conso + prix
-    std::string queryString="SELECT notes.nom, notes.prenom,consos.nom, consos.prix, hist.date_conso ";
-    queryString+="FROM hist ";
-    queryString+="LEFT JOIN consos ";
-    queryString+="ON consos.conso_id = hist.conso_id ";
-    queryString+="LEFT JOIN notes ";
-    queryString+="ON notes.client_id=hist.client_id ";
-    queryString+="WHERE notes.client_id=";
-    queryString+=id_String;
-    queryString+=" ORDER BY hist.date_conso DESC ;";
+        //Utiliser des jointures
+        // From client_id -> nom + prénom
+        // From conso_id -> conso + prix
+        std::string queryString="SELECT notes.nom, notes.prenom,consos.nom, consos.prix, hist.date_conso ";
+        queryString+="FROM hist ";
+        queryString+="LEFT JOIN consos ";
+        queryString+="ON consos.conso_id = hist.conso_id ";
+        queryString+="LEFT JOIN notes ";
+        queryString+="ON notes.client_id=hist.client_id ";
+        queryString+="WHERE notes.client_id=";
+        queryString+=id_String;
+        queryString+=" ORDER BY hist.date_conso DESC ;";
 
-    query.setQuery(queryString);
-    query.setVerbose(1);
-    executeQuery(query);
-}
+        query.setQuery(queryString);
+        query.setVerbose(1);
+        executeQuery(query);
+    }
     else
     {
         std::string queryString="SELECT notes.nom, notes.prenom,consos.nom, consos.prix, historique_save.date_conso ";
@@ -983,33 +983,33 @@ db_histQueue Database::getProductHist(unsigned id,bool old)
     *queryResultFunction=*queryResult;
     std::vector<std::string> vectorFromQueue;
 
-        while(!queryResultFunction->empty())
+    while(!queryResultFunction->empty())
+    {
+
+        while (queryResultFunction->front()!= "\n"&&!queryResultFunction->empty())
         {
-
-            while (queryResultFunction->front()!= "\n"&&!queryResultFunction->empty())
-            {
-                vectorFromQueue.push_back(queryResultFunction->front());
-                queryResultFunction->pop();
-            }
-            float recuperatedPrice;
-            unsigned recuperatedId;
-
-            std::istringstream(vectorFromQueue[4]) >> recuperatedPrice;
-            std::istringstream(vectorFromQueue[0]) >> recuperatedId;
-
-            //*hist = std::make_tuple (vectorFromQueue[1],vectorFromQueue[2],vectorFromQueue[3],vectorFromQueue[5],recuperatedPrice,recuperatedId);
-            hist->setHistId(recuperatedId);
-            hist->setHistName(vectorFromQueue[1]);
-            hist->setHistFirstName(vectorFromQueue[2]);
-            hist->setHistDate(vectorFromQueue[5]);
-            hist->setHistPrice(recuperatedPrice);
-            hist->setHistOperation(vectorFromQueue[3]);
-
+            vectorFromQueue.push_back(queryResultFunction->front());
             queryResultFunction->pop();
-            result.push(*hist);
-            j++;
-            vectorFromQueue.clear();
         }
+        float recuperatedPrice;
+        unsigned recuperatedId;
+
+        std::istringstream(vectorFromQueue[4]) >> recuperatedPrice;
+        std::istringstream(vectorFromQueue[0]) >> recuperatedId;
+
+        //*hist = std::make_tuple (vectorFromQueue[1],vectorFromQueue[2],vectorFromQueue[3],vectorFromQueue[5],recuperatedPrice,recuperatedId);
+        hist->setHistId(recuperatedId);
+        hist->setHistName(vectorFromQueue[1]);
+        hist->setHistFirstName(vectorFromQueue[2]);
+        hist->setHistDate(vectorFromQueue[5]);
+        hist->setHistPrice(recuperatedPrice);
+        hist->setHistOperation(vectorFromQueue[3]);
+
+        queryResultFunction->pop();
+        result.push(*hist);
+        j++;
+        vectorFromQueue.clear();
+    }
     clear(queue);
     delete hist;
     delete queryResultFunction;
@@ -1513,4 +1513,280 @@ void Database::convertToPointDecimal(std::string& str)
         if(str[i]==',')
             str[i]='.';
     }
+}
+
+void Database::dumpCustomerToDelete(db_customerTuple tuple)
+{
+    std::string nom,prenom,login;
+    int code,categorie;
+    float balance;
+
+
+    std::string queryString="";
+    Query query;
+
+    nom=tuple.getCustomerName();
+    prenom=tuple.getCustomerFirstname();
+    login=tuple.getCustomerLogin();
+    categorie=tuple.getCustomerCategory();
+    balance=tuple.getCustomerBalance();
+
+    //Il faut transfomer les int et float en std::string
+    //std::string categorieString = static_cast<std::ostringstream*>( &(std::ostringstream() << categorie) )->str();
+    std::string balanceString = std::to_string(balance);
+    std::string categorieString = std::to_string(categorie);
+    convertToPointDecimal(balanceString); // peut contenir une virgule (notemment sous linux)
+
+    queryString+="INSERT INTO notes_old (nom,prenom,login,type,compte) VALUES ('";
+    queryString+=nom;
+    queryString+="', '";
+    queryString+=prenom;
+    queryString+="', '";
+    queryString+=login;
+    queryString+="', ";
+    queryString+=categorieString;
+    queryString+=", ";
+    queryString+=balanceString;
+    queryString+=");";
+
+    query.setQuery(queryString);
+    std::cout << queryString << std::endl;
+    query.setVerbose(1);
+    code=executeQuery(query);
+
+    return ;
+}
+
+void Database::dumpProductToDelete(db_productTuple tuple)
+{
+    std::string nom;
+    int code;
+    float prix;
+    int stock=0;
+    int categorie;
+    std::string queryString="";
+    Query query;
+
+    nom=tuple.getProductName();
+    categorie=tuple.getProductCategory();
+    prix=tuple.getProductPrice();
+    stock=tuple.getProductStock();
+
+    //Il faut transfomer les int et float en std::string
+    std::string stockString = std::to_string(stock);
+    std::string categorieString = std::to_string(categorie);
+    std::string priceString = std::to_string(prix);
+    convertToPointDecimal(priceString); // peut contenir une virgule (notemment sous linux)
+
+    queryString+="INSERT INTO consos (nom,type,prix,stock) VALUES (";
+    queryString+="'";
+    queryString+=nom;
+    queryString+="'";
+    queryString+=", ";
+    queryString+=categorieString;
+    queryString+=", ";
+    queryString+=priceString;
+    queryString+=", ";
+    queryString+=stockString;
+    queryString+=");";
+
+    query.setQuery(queryString);
+    query.setVerbose(1);
+    code=executeQuery(query);
+
+    return ;
+}
+
+void dumpHistOfDeletedCust (unsigned id)
+{
+
+}
+
+void Database::setPassword(std::string login, std::string password)
+{
+
+}
+
+void Database::addHistCashier(db_finop_tuple tuple) //Paiement par Cash/Chèque
+{
+
+    float value=tuple.getOpValue();
+    PaymentType type=tuple.getOpType();
+
+    int code;
+
+    std::string queryString="";
+    Query query;
+
+    //Il faut transfomer les int et float en std::string
+    std::string valueString = std::to_string(value);
+    std::string typeString = std::to_string(type);
+    convertToPointDecimal(valueString); // peut contenir une virgule (notemment sous linux)
+
+        queryString+="INSERT INTO caisse (op_value,op_type,op_date) VALUES (";
+        queryString+=valueString;
+        queryString+=", ";
+        queryString+=typeString;
+        queryString+=", ";
+        queryString+="CURRENT_TIMESTAMP";
+        queryString+=");";
+
+    query.setQuery(queryString);
+    query.setVerbose(1);
+    code=executeQuery(query);
+
+    return ;
+}
+
+void Database::transferToBDE(db_finop_tuple tuple) // Paiement par CB ou Vidage de caisse - Encaissement de facture
+{
+
+    float value=tuple.getOpValue();
+    PaymentType type=tuple.getOpType();
+
+    int code;
+
+    std::string queryString="";
+    Query query;
+
+    //Il faut transfomer les int et float en std::string
+    std::string valueString = std::to_string(value);
+    std::string typeString = std::to_string(type);
+    convertToPointDecimal(valueString); // peut contenir une virgule (notemment sous linux)
+
+        queryString+="INSERT INTO BDE (op_value,op_type,op_date) VALUES (";
+        queryString+=valueString;
+        queryString+=", ";
+        queryString+=typeString;
+        queryString+=", ";
+        queryString+="CURRENT_TIMESTAMP";
+        queryString+=");";
+
+    query.setQuery(queryString);
+    query.setVerbose(1);
+    code=executeQuery(query);
+
+    return ;
+}
+
+db_finop_queue Database::getBDEHist()
+{
+    Query query;
+
+    db_finop_tuple *hist(0);
+    hist=new db_finop_tuple;
+
+    unsigned i;
+    unsigned j=0;
+    db_finop_queue result;
+
+    std::queue<std::string> *queryResultFunction(0);
+    queryResultFunction = new std::queue<std::string> ;
+
+    std::vector<std::string> vectorFromQueue;
+
+    std::string queryString="SELECT (op_id,op_value,op_type,op_date) FROM BDE ";
+    queryString+="ORDER BY BDE.op_date DESC;";
+
+
+    query.setQuery(queryString);
+    query.setVerbose(1);
+    executeQuery(query);
+
+    *queryResultFunction=*queryResult;
+
+    for (i=0;i<=queryResultFunction->size();i++)
+    {
+        while(!queryResultFunction->empty())
+        {
+            while (queryResultFunction->front()!= "\n"&&!queryResultFunction->empty())
+            {
+                vectorFromQueue.push_back(queryResultFunction->front());
+                queryResultFunction->pop();
+            }
+
+            float recuperatedValue;
+            unsigned recuperatedId;
+            int recuperatedType;
+
+            std::istringstream(vectorFromQueue[1]) >> recuperatedValue;
+            std::istringstream(vectorFromQueue[0]) >> recuperatedId;
+            std::istringstream(vectorFromQueue[2]) >> recuperatedType;
+
+            hist->setOpId(recuperatedId);
+            hist->setOpType(static_cast<PaymentType>(recuperatedType));
+            hist->setOpValue(recuperatedValue);
+            hist->setOpDate(vectorFromQueue[3]);
+
+            result.push(*hist);
+            queryResultFunction->pop();
+            j++;
+            vectorFromQueue.clear();
+        }
+    }
+    clear(queue);
+    delete hist;
+    delete queryResultFunction;
+    return result;
+}
+
+db_finop_queue Database::getCashierHist()
+{
+    Query query;
+
+    db_finop_tuple *hist(0);
+    hist=new db_finop_tuple;
+
+    unsigned i;
+    unsigned j=0;
+    db_finop_queue result;
+
+    std::queue<std::string> *queryResultFunction(0);
+    queryResultFunction = new std::queue<std::string> ;
+
+    std::vector<std::string> vectorFromQueue;
+
+    std::string queryString="SELECT (op_id,op_value,op_type,op_date) FROM caisse ";
+    queryString+="ORDER BY BDE.op_date DESC;";
+
+
+    query.setQuery(queryString);
+    query.setVerbose(1);
+    executeQuery(query);
+
+    *queryResultFunction=*queryResult;
+
+    for (i=0;i<=queryResultFunction->size();i++)
+    {
+        while(!queryResultFunction->empty())
+        {
+            while (queryResultFunction->front()!= "\n"&&!queryResultFunction->empty())
+            {
+                vectorFromQueue.push_back(queryResultFunction->front());
+                queryResultFunction->pop();
+            }
+
+            float recuperatedValue;
+            unsigned recuperatedId;
+            int recuperatedType;
+
+            std::istringstream(vectorFromQueue[1]) >> recuperatedValue;
+            std::istringstream(vectorFromQueue[0]) >> recuperatedId;
+            std::istringstream(vectorFromQueue[2]) >> recuperatedType;
+
+            hist->setOpId(recuperatedId);
+            hist->setOpType(static_cast<PaymentType>(recuperatedType));
+            hist->setOpValue(recuperatedValue);
+            hist->setOpDate(vectorFromQueue[3]);
+
+            result.push(*hist);
+            queryResultFunction->pop();
+            j++;
+            vectorFromQueue.clear();
+        }
+    }
+    clear(queue);
+    delete hist;
+    delete queryResultFunction;
+    return result;
 }
