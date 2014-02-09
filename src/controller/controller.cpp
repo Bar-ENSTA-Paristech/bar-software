@@ -854,7 +854,7 @@ void Controller::newClic_Category(int id)
         view_customerQueue viewQueue;
 
         database->openDatabase();
-        dbQueue = database->getCustomerFromCategory((unsigned) id);        // Get customer information corresponding to the search from model
+        dbQueue = database->getCustomerFromCategory(id);        // Get customer information corresponding to the search from model
 
         if ( !dbQueue.empty() ){
 
@@ -891,7 +891,6 @@ void Controller::displayProductGraph(int id, bool consumption)
         datas = plotting->productConsumption(id, 10, 100);
         title = "Evolution de la consommation de "+ QString::fromStdString(db_product.getProductName())+
                 " "+QString::number(db_product.getProductVolume())+"cL"+" au cours du temps.";
-        //if datas.
         view->mainWindow->setGraph(datas, "Temps", "Consommation en unité (L pour la pression)", title);
     }
     else

@@ -444,7 +444,7 @@ db_categoryQueue Database::getCustCategories()
                 vectorFromQueue.push_back(queryResultFunction->front());
                 queryResultFunction->pop();
             }
-            unsigned recuperatedId;
+            int recuperatedId;
 
             std::istringstream(vectorFromQueue[0]) >> recuperatedId;
 
@@ -465,7 +465,7 @@ db_categoryQueue Database::getCustCategories()
 }
 
 
-db_customerQueue Database::getCustomerFromCategory(unsigned id)
+db_customerQueue Database::getCustomerFromCategory(int id)
 {
     std::string idstring=std::to_string(id);
 
@@ -519,7 +519,7 @@ db_customerQueue Database::getCustomerFromCategory(unsigned id)
                 //On transforme les std::string en float et unsigned pour les champs Balance et Id
                 float recuperatedBalance;
                 int recuperatedId;
-                unsigned recuperatedCategory;
+                int recuperatedCategory;
 
                 std::istringstream(vectorFromQueue[4]) >> recuperatedCategory;
                 std::istringstream(vectorFromQueue[5]) >> recuperatedBalance;
@@ -548,7 +548,7 @@ db_customerQueue Database::getCustomerFromCategory(unsigned id)
 
 }
 
-db_productQueue Database::getProductsFromCategory(unsigned categorie)
+db_productQueue Database::getProductsFromCategory(int categorie)
 {
     //On doit transformer l'int categorie en string pour effectuer la requête
     std::string idString = std::to_string(categorie);
@@ -566,8 +566,8 @@ db_productQueue Database::getProductsFromCategory(unsigned categorie)
     delete queryResult;
     queryResult = new std::queue<std::string> ;
 
-    unsigned i;
-    unsigned j=0;
+    int i;
+    int j=0;
 
     queryString+=" SELECT * FROM consos WHERE type=";
     queryString+=idString;
@@ -592,9 +592,9 @@ db_productQueue Database::getProductsFromCategory(unsigned categorie)
             }
 
             float recuperatedPrice;
-            unsigned recuperatedId;
-            unsigned recuperatedStock;
-            unsigned recuperatedCategory;
+            int recuperatedId;
+            int recuperatedStock;
+            int recuperatedCategory;
 
             std::istringstream(vectorFromQueue[3]) >> recuperatedPrice;
             std::istringstream(vectorFromQueue[0]) >> recuperatedId;
@@ -659,7 +659,7 @@ db_productTuple Database::getProductFromId(unsigned id)
         float recuperatedPrice;
         unsigned recuperatedId;
         unsigned recuperatedStock;
-        unsigned recuperatedCategory;
+        int recuperatedCategory;
 
         std::istringstream(vectorFromQueue[3]) >> recuperatedPrice;
         std::istringstream(vectorFromQueue[0]) >> recuperatedId;
