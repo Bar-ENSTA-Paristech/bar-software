@@ -322,9 +322,11 @@ typedef struct{
     EditLogin* editLogin;
     EditProduct* editProduct;
     GlobalHistory* globalHistory;
+    GlobalHistory* globalHistory_old;
     History* history;
     IndividualHistoryList* individualHistoryList;
     IndividualHistory* individualHistory;
+    IndividualHistory* individualHistory_old;
     LeftPart* leftPart;
     RightPart* rightPart;
     Login* login;

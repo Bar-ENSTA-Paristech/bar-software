@@ -205,7 +205,7 @@ db_customerQueue Database::searchCustomer(std::string &string,int cat)
 
     //Formation du string de query adapté
 
-    if (cat==0)
+    if (cat==-1)
     {
         queryString+=" SELECT * FROM notes WHERE nom LIKE '";
         queryString+=searchString;

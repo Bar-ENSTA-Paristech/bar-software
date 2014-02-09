@@ -24,6 +24,7 @@ private:
     QPushButton* oldHistory;
     QPushButton* oldIndividualHistory;
     QComboBox* oldIndividualCustomer;
+    QPushButton* individualGraphButton;
     QPushButton* validateButton;
     QPushButton* cancelButton;
     //QCheckBox* negativeAllowed;
@@ -33,6 +34,9 @@ private:
     
 public slots:
     void validate();
+    void clickOnGlobalHistory();
+    void clickOnIndividualHistory();
+    void clickOnIndividualGraph();
     
 };
 
