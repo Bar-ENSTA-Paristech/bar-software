@@ -57,7 +57,7 @@ font-family :Gisha;
 
 CustomerPanel QPushButton{
 padding : 0.5em;
-margin-right : 0.5em;
+margin-right : 0.1em;
 }
 
 #consoLogos *{

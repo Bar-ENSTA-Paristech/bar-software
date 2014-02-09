@@ -382,12 +382,14 @@ bool Controller::view_isLoginCorrect(QString login, QString passwd, LoginType lo
 {
     db_categoryQueue dbQueue;
     db_categoryTuple dbTuple;
+    db_customerQueue dbCustQueue;
+    AdminTuple adminTuple;
     std::vector<QString> categories;
 
     std::string _login;
     std::string _truepass;
     // ######### TO COMPLETE #######
-    int isLoginIncorrect;
+    int isLoginIncorrect, sizeOfQueue;
 
     database->openDatabase();
 
@@ -465,8 +467,16 @@ bool Controller::view_isLoginCorrect(QString login, QString passwd, LoginType lo
             view->editProduct->launchEditProduct();
             break;
         case ADMIN :
-            AdminTuple tuple;
-            view->admin->launchAdmin(tuple);
+            database->openDatabase();
+            dbCustQueue = database->getOldCustomers();
+            sizeOfQueue = dbCustQueue.size();
+            for(int i = 0 ; i < sizeOfQueue ; i++)
+            {
+                adminTuple.oldCustomers.push(dbCustQueue.front().transformIntoCustomerView());
+                dbCustQueue.pop();
+            }
+            database->closeDatabase();
+            view->admin->launchAdmin(adminTuple);
             break;
         case NEGATIVE_BALANCE :
             view->cartDisplay->validateNegativeCart();
@@ -818,9 +828,24 @@ void Controller::newClic_Stats()
 {
     // Besoin de mettre un login ? => Non, Pourquoi ? C'est juste un accès en lecture et le bar n'est pas une secte.
     view_statsTuple statsTuple;
+    db_customerTuple custTuple;
+    std::string emptyString;
     view_productQueue queues[NUMBER_OF_CATEGORIES];
     for(int i=0 ; i<NUMBER_OF_CATEGORIES ; i++)
         queues[i] = this->getProductsOfCategorie((unsigned)i);
+    database->openDatabase();
+    db_customerQueue custQueue = database->searchCustomer(emptyString);
+    db_productQueue prodQueue = database->getAllProducts();
+    database->closeDatabase();
+    statsTuple.numberOfCustomers = custQueue.size();
+    statsTuple.numberOfProducts = prodQueue.size();
+    statsTuple.accountsTotal = 0;
+    for(int i = 0 ; i < statsTuple.numberOfCustomers ; i++)
+    {
+        custTuple = custQueue.front();
+        custQueue.pop();
+        statsTuple.accountsTotal += custTuple.getCustomerBalance();
+    }
 
     view->stats->launchStats(statsTuple, queues[0], queues[1], queues[2], queues[3], queues[4], queues[5]);
 

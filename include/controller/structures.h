@@ -338,9 +338,8 @@ typedef struct{
 } ViewObjects;
 
 typedef struct{
-    bool isNegativeAllowed;
     float cashTransfered;
-
+    view_customerQueue oldCustomers;
 }AdminTuple;
 
 #endif // STRUCTURES_H

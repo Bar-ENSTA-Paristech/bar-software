@@ -15,15 +15,18 @@ class Admin : public Popup
     Q_OBJECT
 public:
     explicit Admin(QWidget *parent = 0);
-    void launchAdmin(AdminTuple tuple);
+    void launchAdmin(AdminTuple &tuple);
     
 signals:
 
 private:
     QGridLayout* layout;
+    QPushButton* oldHistory;
+    QPushButton* oldIndividualHistory;
+    QComboBox* oldIndividualCustomer;
     QPushButton* validateButton;
     QPushButton* cancelButton;
-    QCheckBox* negativeAllowed;
+    //QCheckBox* negativeAllowed;
     QLabel* cashTransferLabel;
     QLineEdit* cashTransfer;
 

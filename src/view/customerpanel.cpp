@@ -58,7 +58,7 @@ CustomerPanel::CustomerPanel(QWidget *parent) :
     categorieLabel->setFont(normal);
     balanceLabel->setFont(normal);
     photo->setPixmap(GLOBAL_PATH + "resources/photos/no_photo.jpg");
-    photo->setMaximumSize(150, 220);
+    photo->setMaximumSize(145, 220);
 
     infosLayout->addWidget(nameLabel, 0, 0);
     infosLayout->addWidget(name, 0, 1, 1, 1, Qt::AlignLeft);

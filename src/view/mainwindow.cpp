@@ -300,6 +300,7 @@ void MainWindow::setGraph(db_dataarray& data, QString xTitle, QString yTitle, QS
     }
 
     QCustomPlot* customPlot = new QCustomPlot();
+    customPlot->setWindowFlags(Qt::WindowStaysOnTopHint);
     customPlot->setAttribute(Qt::WA_DeleteOnClose); // Pour supprimer l'espace mémoire à la fermeture de la fenêtre.
 
     // create graph and assign data to it:
