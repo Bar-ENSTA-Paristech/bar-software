@@ -1623,13 +1623,13 @@ void Database::addHistCashier(db_finop_tuple tuple) //Paiement par Cash/Chèque
     std::string typeString = std::to_string(type);
     convertToPointDecimal(valueString); // peut contenir une virgule (notemment sous linux)
 
-        queryString+="INSERT INTO caisse (op_value,op_type,op_date) VALUES (";
-        queryString+=valueString;
-        queryString+=", ";
-        queryString+=typeString;
-        queryString+=", ";
-        queryString+="CURRENT_TIMESTAMP";
-        queryString+=");";
+    queryString+="INSERT INTO caisse (op_value,op_type,op_date) VALUES (";
+    queryString+=valueString;
+    queryString+=", ";
+    queryString+=typeString;
+    queryString+=", ";
+    queryString+="CURRENT_TIMESTAMP";
+    queryString+=");";
 
     query.setQuery(queryString);
     query.setVerbose(1);
@@ -1654,13 +1654,13 @@ void Database::transferToBDE(db_finop_tuple tuple) // Paiement par CB ou Vidage 
     std::string typeString = std::to_string(type);
     convertToPointDecimal(valueString); // peut contenir une virgule (notemment sous linux)
 
-        queryString+="INSERT INTO BDE (op_value,op_type,op_date) VALUES (";
-        queryString+=valueString;
-        queryString+=", ";
-        queryString+=typeString;
-        queryString+=", ";
-        queryString+="CURRENT_TIMESTAMP";
-        queryString+=");";
+    queryString+="INSERT INTO BDE (op_value,op_type,op_date) VALUES (";
+    queryString+=valueString;
+    queryString+=", ";
+    queryString+=typeString;
+    queryString+=", ";
+    queryString+="CURRENT_TIMESTAMP";
+    queryString+=");";
 
     query.setQuery(queryString);
     query.setVerbose(1);
@@ -1789,4 +1789,81 @@ db_finop_queue Database::getCashierHist()
     delete hist;
     delete queryResultFunction;
     return result;
+}
+
+float Database::getAccountValue(Account cpt)
+{
+    //On doit transformer l'int id en string pour effectuer la requête
+    std::string idString = std::to_string(static_cast<int>(cpt));
+    std::string queryString;
+    Query query;
+
+    std::queue<std::string> *queryResultFunction(0);
+    queryResultFunction = new std::queue<std::string> ;
+
+    delete queryResult;
+    queryResult = new std::queue<std::string> ;
+
+    queryString+="SELECT cpt_values FROM comptes WHERE cpt_id=";
+    queryString+=idString;
+    queryString+=";";
+
+    query.setQuery(queryString);
+    query.setVerbose(1);
+    executeQuery(query);
+    float recuperatedPrice;
+
+    *queryResultFunction=*queryResult;
+
+    std::vector<std::string> vectorFromQueue;
+
+    if (queryResultFunction->size()!=0)
+    {
+        while (queryResultFunction->front()!= "\n"&&queryResultFunction->size()>1)
+        {
+            vectorFromQueue.push_back(queryResultFunction->front());
+            queryResultFunction->pop();
+        }
+
+        std::istringstream(vectorFromQueue[0]) >> recuperatedPrice;
+        queryResultFunction->pop();
+    }
+    else
+    {
+    }
+    clear(queue);
+    delete queryResultFunction;
+    vectorFromQueue.clear();
+    return (recuperatedPrice);
+}
+
+
+
+void Database::updateAccountValue(float addedValue,Account cpt)
+{
+
+    int id=static_cast<int>(cpt);
+    float value=this->getAccountValue(cpt)+addedValue;
+
+    std::string queryString="";
+    Query query;
+
+    std::string valueString = std::to_string(value);
+    convertToPointDecimal(valueString); // peut contenir une virgule (notemment sous linux)
+    std::string idString = std::to_string(id);
+
+    queryString+="UPDATE comptes ";
+
+    queryString+="SET cpt_value=";
+    queryString+=valueString;
+    queryString+=" WHERE cpt_id=";
+    queryString+=idString;
+    queryString+=";";
+
+    query.setQuery(queryString);
+    std::cout<<queryString<<std::endl;
+    query.setVerbose(1);
+    executeQuery(query);
+
+    return;
 }
