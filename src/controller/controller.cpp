@@ -275,7 +275,7 @@ void Controller::newClic_ProductTypes(unsigned view_productTypeId)
 
     // Sent result to view
     view->productChoices->setProductsChoices(viewQueue);
-
+    currentConsoTypeIndex = view_productTypeId;
 
     //Emptying the view queue
     return;
@@ -749,6 +749,7 @@ void Controller::receiveNewProduct(view_productTuple& product)
     // Should a confirmation popup be set by the view here, to inform the user of the success of the insertion ? => la flemme et le gars va surement vérifier de suite
     database->closeDatabase();
     // Par contre un refresh des produits serait pas mal du coup
+    this->newClic_ProductTypes(currentConsoTypeIndex);
 }
 
 void Controller::newClic_EditProduct()
@@ -760,7 +761,6 @@ void Controller::newClic_EditProduct()
 
 void Controller::receiveEditProduct(view_productTuple& product, bool deleteProduct)
 {
-    // TO COMPLETE (the ID in the tuple is the one used in DB)
     db_productTuple db_tuple;
 
     database->openDatabase();
@@ -773,6 +773,8 @@ void Controller::receiveEditProduct(view_productTuple& product, bool deleteProdu
     db_tuple = product.transformIntoProductDb();
     database->editProduct(db_tuple);
     database->closeDatabase();
+    // refresh de la gui
+    this->newClic_ProductTypes(currentConsoTypeIndex);
 }
 
 
@@ -928,6 +930,19 @@ void Controller::displayProductGraph(int id, bool consumption)
                 " "+QString::number(db_product.getProductVolume())+"cL"+" au cours du temps.";
         view->mainWindow->setGraph(datas, "Temps", "Stocks en unité (L pour la pression)", title);
     }
+}
 
+void Controller::newClic_GlobalHistory_old()
+{
+    // To define
+}
 
+void Controller::newClic_IndividualHistory_old(int customerId)
+{
+    // To define
+}
+
+void Controller::newClic_IndividualGraph(int customerId)
+{
+    // To define
 }

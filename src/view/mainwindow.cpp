@@ -145,9 +145,11 @@ MainWindow::MainWindow()
     VIEW.login = new Login();
     calculatorWindow = new Calculator();
     VIEW.individualHistory = new IndividualHistory();
+    VIEW.individualHistory_old = new IndividualHistory();
     VIEW.editCustomer = new EditCustomer();
     VIEW.deleteCustomer = new DeleteCustomer();
     VIEW.globalHistory = new GlobalHistory();
+    VIEW.globalHistory_old = new GlobalHistory();
     VIEW.newCustomer = new NewCustomer();
     VIEW.addStock = new AddStock();
     VIEW.addProduct = new AddProduct();
@@ -259,6 +261,8 @@ void MainWindow::setController(Controller *controllerParam)
     VIEW.login->setController(controller);
     calculatorWindow->setController(controller);
     VIEW.individualHistory->setController(controller);
+    VIEW.individualHistory_old->setController(controller);
+    VIEW.globalHistory_old->setController(controller);
     VIEW.editCustomer->setController(controller);
     VIEW.newCustomer->setController(controller);
     VIEW.addStock->setController(controller);

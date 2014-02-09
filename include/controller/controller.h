@@ -75,6 +75,9 @@ public:
     void newClic_Admin();
     void newClic_Category(int id); // 0 for no filter (category TOUS), else id is the category id
     void newGlobal_Hist();
+    void newClic_GlobalHistory_old();
+    void newClic_IndividualHistory_old(int customerId);
+    void newClic_IndividualGraph(int customerId);
     std::queue<QString> newCustCategoryList();
     void receiveCalculatorEntry(float amount, bool isPaidByCard);
     void receiveEditCustomerEntry(view_customerTuple& customer);
@@ -111,6 +114,7 @@ private:
     ViewObjects*  view;
     LoginObjects currentLoginRequest;
     view_customerTuple *view_curCustomer;
+    int currentConsoTypeIndex;
 
         /* Controller objects */
     Stock * mp_stock;

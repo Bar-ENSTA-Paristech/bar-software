@@ -23,6 +23,12 @@ Admin::Admin(QWidget *parent) :
     oldIndividualHistory->setStyleSheet("background: none;");
     oldIndividualHistory->setToolTip("Voir le vieux historique de cette personne");
     oldIndividualCustomer = new QComboBox(this);
+    individualGraphButton = new QPushButton(QIcon(GLOBAL_PATH + "resources/pictures/graph.png"), "", this);
+    individualGraphButton->setFlat(true);
+    individualGraphButton->setCursor(Qt::PointingHandCursor);
+    individualGraphButton->setIconSize(QSize(32,32));
+    individualGraphButton->setStyleSheet("background: none;");
+    individualGraphButton->setToolTip("Voir le graphe de solde de cette personne");
 
     validateButton = new QPushButton("Valider", this);
     cancelButton = new QPushButton("Annuler", this);
@@ -30,6 +36,7 @@ Admin::Admin(QWidget *parent) :
     layout->addWidget(oldHistory, 0,0);
     layout->addWidget(oldIndividualCustomer, 1,0);
     layout->addWidget(oldIndividualHistory, 1,1);
+    layout->addWidget(individualGraphButton, 1,2);
     layout->addWidget(cashTransferLabel, 2,0);
     layout->addWidget(cashTransfer, 2,1);
     layout->addWidget(validateButton, 20,0);
@@ -37,6 +44,9 @@ Admin::Admin(QWidget *parent) :
 
     QObject::connect(validateButton, SIGNAL(clicked()), this, SLOT(validate()));
     QObject::connect(cancelButton, SIGNAL(clicked()), this, SLOT(cancel()));
+    QObject::connect(oldHistory, SIGNAL(clicked()), this, SLOT(clickOnGlobalHistory()));
+    QObject::connect(oldIndividualHistory, SIGNAL(clicked()), this, SLOT(clickOnIndividualHistory()));
+    QObject::connect(individualGraphButton, SIGNAL(clicked()), this, SLOT(clickOnIndividualGraph()));
 }
 
 void Admin::launchAdmin(AdminTuple& tuple)
@@ -55,4 +65,23 @@ void Admin::validate()
     tuple.cashTransfered = cashTransfer->text().toFloat();
     controller->receiveAdminInfos(tuple);
     this->hide();
+}
+
+void Admin::clickOnGlobalHistory()
+{
+    controller->newClic_GlobalHistory_old();
+}
+
+void Admin::clickOnIndividualHistory()
+{
+    // id to define
+    int id=0;
+    controller->newClic_IndividualHistory_old(id);
+}
+
+void Admin::clickOnIndividualGraph()
+{
+    // id to define
+    int id=0;
+    controller->newClic_IndividualGraph(id);
 }
