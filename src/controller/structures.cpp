@@ -329,7 +329,7 @@ db_categoryTuple::db_categoryTuple()
 }
 
 
-void db_categoryTuple::setCategoryId(unsigned _id)
+void db_categoryTuple::setCategoryId(int _id)
 {
     id=_id;
 }
@@ -339,7 +339,7 @@ void db_categoryTuple::setCategoryName(std::string _name)
     name=_name;
 }
 
-unsigned db_categoryTuple::getCategoryId()
+int db_categoryTuple::getCategoryId()
 {
     return id;
 }
@@ -575,4 +575,50 @@ float view_cartTuple::getCartPrice()
 QString view_cartTuple::getCartProdName()
 {
     return conso_name;
+}
+
+// ##################################
+// DB_FINOPTUPLE
+// #################################
+
+void db_finop_tuple::setOpId (int _id)
+{
+    id=_id;
+    return;
+}
+
+void db_finop_tuple::setOpType (PaymentType _type)
+{
+    P_type=_type;
+    return;
+}
+
+void db_finop_tuple::setOpValue (float _value)
+{
+    value=_value;
+}
+
+void db_finop_tuple::setOpDate(std::string _date)
+{
+    date=_date;
+}
+
+int db_finop_tuple::getOpId ()
+{
+    return id;
+}
+
+PaymentType db_finop_tuple::getOpType ()
+{
+    return P_type;
+}
+
+float db_finop_tuple::getOpValue ()
+{
+    return value;
+}
+
+std::string db_finop_tuple::getOpDate()
+{
+    return date;
 }

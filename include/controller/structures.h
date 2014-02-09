@@ -30,6 +30,7 @@
 typedef enum {INDIVIDUAL, GLOBAL, ROOT} LoginType;
 typedef enum {NONE, CALCULATOR, EDIT_CUSTOMER, DELETE_CUSTOMER, NEW_CUSTOMER, ADD_STOCK, ADD_PRODUCT, EDIT_PRODUCT,
               ADMIN, NEGATIVE_BALANCE} LoginObjects;
+typedef enum {CASH,CHEQUE,CB,BILL}PaymentType;
 
 class view_customerTuple;
 class view_productTuple;
@@ -159,14 +160,14 @@ class db_categoryTuple
 public:
     db_categoryTuple();
 
-    void setCategoryId(unsigned _id);
+    void setCategoryId(int _id);
     void setCategoryName(std::string _name);
 
-    unsigned getCategoryId();
+    int getCategoryId();
     std::string getCategoryName();
 
 private:
-    unsigned id;
+    int id;
     std::string name;
 
 };
@@ -269,6 +270,26 @@ public:
     unsigned numberOfProducts;
 };
 
+class db_finop_tuple
+{
+public:
+    void setOpId (int _id);
+    void setOpType (PaymentType _type);
+    void setOpValue (float _value);
+    void setOpDate (std::string date);
+
+    int getOpId ();
+    PaymentType getOpType ();
+    float getOpValue ();
+    std::string getOpDate();
+
+private:
+    int id;
+    PaymentType P_type;
+    float value;
+    std::string date;
+};
+
 typedef std::queue<db_histTuple> db_histQueue;
 typedef std::queue<db_customerTuple> db_customerQueue;
 typedef std::queue<view_customerTuple> view_customerQueue;
@@ -278,6 +299,7 @@ typedef std::queue<db_categoryTuple> db_categoryQueue;
 typedef std::queue<view_histTuple> view_histQueue;
 typedef std::queue<db_histTuple> db_histQueue;
 typedef std::queue<view_cartTuple> view_cartQueue;
+typedef std::queue<db_finop_tuple> db_finop_queue;
 
 typedef std::pair< std::vector< double > , std::vector< double > > db_dataarray;
 
