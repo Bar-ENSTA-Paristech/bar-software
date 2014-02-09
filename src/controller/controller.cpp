@@ -382,12 +382,14 @@ bool Controller::view_isLoginCorrect(QString login, QString passwd, LoginType lo
 {
     db_categoryQueue dbQueue;
     db_categoryTuple dbTuple;
+    db_customerQueue dbCustQueue;
+    AdminTuple adminTuple;
     std::vector<QString> categories;
 
     std::string _login;
     std::string _truepass;
     // ######### TO COMPLETE #######
-    int isLoginIncorrect;
+    int isLoginIncorrect, sizeOfQueue;
 
     database->openDatabase();
 
@@ -465,8 +467,16 @@ bool Controller::view_isLoginCorrect(QString login, QString passwd, LoginType lo
             view->editProduct->launchEditProduct();
             break;
         case ADMIN :
-            AdminTuple tuple;
-            view->admin->launchAdmin(tuple);
+            database->openDatabase();
+            dbCustQueue = database->getOldCustomers();
+            sizeOfQueue = dbCustQueue.size();
+            for(int i = 0 ; i < sizeOfQueue ; i++)
+            {
+                adminTuple.oldCustomers.push(dbCustQueue.front().transformIntoCustomerView());
+                dbCustQueue.pop();
+            }
+            database->closeDatabase();
+            view->admin->launchAdmin(adminTuple);
             break;
         case NEGATIVE_BALANCE :
             view->cartDisplay->validateNegativeCart();

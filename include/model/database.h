@@ -41,6 +41,9 @@ public:
     db_customerQueue getCustomerFromCategory(unsigned id); // Méthode renvoyant les clients d'une certaine catégorie
     //  ######### A IMPLEMENTER ########
 
+    db_customerQueue getOldCustomers(){db_customerQueue a; return a;} // Methode renvoyant les clients ayant été supprimés
+    // ########## A IMPLEMENTER ########
+
     db_productQueue getProductsFromCategory(unsigned cat);//Méthode recevant un unsigned correspondant à une catégorie de conso et renvoie toutes les consos correspondates
     //OK (Fonctionne - a tester plus en profondeur
 
