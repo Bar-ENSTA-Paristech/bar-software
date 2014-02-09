@@ -81,7 +81,7 @@ public:
     std::queue<QString> newCustCategoryList();
     void receiveCalculatorEntry(float amount, bool isPaidByCard);
     void receiveEditCustomerEntry(view_customerTuple& customer);
-    void receiveNewCustomerEntry(view_customerTuple& customer);
+    void receiveNewCustomerEntry(view_customerTuple& customer, bool isCash);
     void receiveNewStocks(view_productQueue& products);
     void receiveNewProduct(view_productTuple& product);
     void receiveEditProduct(view_productTuple& product, bool deleteProduct = false);

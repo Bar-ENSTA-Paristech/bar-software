@@ -189,7 +189,7 @@ void Controller::newClic_ValidateCart(bool isCash)
     database->openDatabase();
     if (curCustomer->getCustomerId()==0)
     {
-        cashTrans=1;
+        cashTrans=true;
     }
     else
     {}
@@ -205,7 +205,7 @@ void Controller::newClic_ValidateCart(bool isCash)
             histToBeInserted.setHistCustomerId(curCustomer->getCustomerId());
             histToBeInserted.setHistProductId(db_productInfo.getProductId());
             histToBeInserted.setHistPrice(db_productInfo.getProductPrice());
-            qDebug()<<"Modifde l'hist";
+            qDebug()<<"Modif de l'hist";
             database->addHist(histToBeInserted);
         }
 
@@ -225,6 +225,17 @@ void Controller::newClic_ValidateCart(bool isCash)
     }
 
     editedCustomer = database->getCustomerFromId(curCustomer->getCustomerId()).transformIntoCustomerView();
+
+    //update caisse if it is cash
+    if(cashTrans)
+    {
+        db_finop_tuple finopTuple;
+        finopTuple.setOpType(CASH);
+        finopTuple.setOpValue(curCart->getPrice());
+        database->addHistCashier(finopTuple);
+        database->updateAccountValue(curCart->getPrice(), CAISSE);
+    }
+
     database->closeDatabase();
     qDebug()<<"Validated cart";
 
@@ -631,6 +642,22 @@ void Controller::receiveCalculatorEntry(float amount, bool isPaidByCard)
     view_curCustomer->setCustomerBalance(view_curCustomer->getCustomerBalance() + amount);
     view->customerPanel->setCustomer(*view_curCustomer);
 
+    // update caisse / BDE
+    db_finop_tuple finopTuple;
+    finopTuple.setOpValue(amount);
+    if(isPaidByCard)
+    {
+        finopTuple.setOpType(CB);
+        database->transferToBDE(finopTuple);
+        database->updateAccountValue(amount, BDE);
+    }
+    else
+    {
+        finopTuple.setOpType(CASH);
+        database->addHistCashier(finopTuple);
+        database->updateAccountValue(amount, CAISSE);
+    }
+
     database->closeDatabase();
 }
 
@@ -698,13 +725,31 @@ void Controller::newClic_NewCustomer()
     currentLoginRequest = NEW_CUSTOMER;
 }
 
-void Controller::receiveNewCustomerEntry(view_customerTuple& customer)
+void Controller::receiveNewCustomerEntry(view_customerTuple& customer, bool isCash)
 {
     db_customerTuple dbTuple;
+    db_finop_tuple finopTuple;
+    finopTuple.setOpValue(customer.getCustomerBalance());
 
     database->openDatabase();
     dbTuple = customer.transformIntoCustomerDb();
     qDebug() << database->createCustomerAccount( dbTuple );
+    // Updating caisse / BDE
+    if(finopTuple.getOpValue() != 0)
+    {
+        if(isCash)
+        {
+            finopTuple.setOpType(CASH);
+            database->addHistCashier(finopTuple);
+            database->updateAccountValue(finopTuple.getOpValue(), CAISSE);
+        }
+        else
+        {
+            finopTuple.setOpType(CB);
+            database->transferToBDE(finopTuple);
+            database->updateAccountValue(finopTuple.getOpValue(), BDE);
+        }
+    }
     database->closeDatabase();
 }
 
@@ -838,11 +883,12 @@ void Controller::newClic_Stats()
     database->openDatabase();
     db_customerQueue custQueue = database->searchCustomer(emptyString);
     db_productQueue prodQueue = database->getAllProducts();
+    statsTuple.moneyInCashRegister = database->getAccountValue(CAISSE);
     database->closeDatabase();
     statsTuple.numberOfCustomers = custQueue.size();
     statsTuple.numberOfProducts = prodQueue.size();
     statsTuple.accountsTotal = 0;
-    for(int i = 0 ; i < statsTuple.numberOfCustomers ; i++)
+    for(unsigned i = 0 ; i < statsTuple.numberOfCustomers ; i++)
     {
         custTuple = custQueue.front();
         custQueue.pop();
@@ -863,6 +909,17 @@ void Controller::newClic_Admin()
 void Controller::receiveAdminInfos(AdminTuple tuple)
 {
     // TO COMPLETE
+    if(tuple.cashTransfered != 0)
+    {
+        db_finop_tuple finopTuple;
+        finopTuple.setOpValue(tuple.cashTransfered);
+        finopTuple.setOpType(CASH);
+        database->openDatabase();
+        database->transferToBDE(finopTuple);
+        database->updateAccountValue(tuple.cashTransfered, BDE);
+        database->updateAccountValue(-tuple.cashTransfered, CAISSE);
+        database->closeDatabase();
+    }
 }
 
 void Controller::newClic_Category(int id)
