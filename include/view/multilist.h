@@ -30,10 +30,12 @@ public:
 
 private slots:
     void sortItems(int index);
+    void lineEntered(QModelIndex index);
 
 protected:
     int rows;
     int columns;
+    int rowFocused;
     int sortColumn;
     int rowsAllocated;
     int defaultHeaderWidth;

@@ -18,7 +18,6 @@ ProductsChoices::ProductsChoices(QWidget *parent) :
     updateHeadersSize(defaultHeaderWidth, stretchColumns, hiddenColumn);
 
     QObject::connect(table, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(lineClicked(QModelIndex)));
-
 }
 
 void ProductsChoices::setProductsChoices(view_productQueue queue)
@@ -55,7 +54,21 @@ void ProductsChoices::setProductsChoices(view_productQueue queue)
 
 void ProductsChoices::lineClicked(QModelIndex index)
 {
+    qDebug() << index.row();
     unsigned int clickedProductId =(unsigned) model->item(index.row(),3)->text().toInt();
     controller->newClic_Product(clickedProductId );
-    //controller->newClic_Customer((unsigned) model->item(index.row(),3)->text().toInt());
 }
+
+void ProductsChoices::setFocus()
+{
+    if(this->rows > 0)
+        table->setFocus();
+}
+
+void ProductsChoices::addFocusedProduct()
+{
+    if(table->hasFocus())
+        lineClicked(table->currentIndex());
+}
+
+

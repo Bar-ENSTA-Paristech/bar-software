@@ -92,3 +92,14 @@ void SearchResults::lineClicked(QModelIndex index)
 {
     controller->newClic_Customer((unsigned) model->item(index.row(),4)->text().toInt());
 }
+
+void SearchResults::setFocus()
+{
+    table->setFocus();
+}
+
+void SearchResults::selectFocusedCustomer()
+{
+    if(table->hasFocus())
+        lineClicked(table->currentIndex());
+}

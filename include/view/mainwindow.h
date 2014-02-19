@@ -61,7 +61,6 @@ private slots:
     void launchStats();
     void launchAdmin();
 
-
 private:
     Controller* controller;
     QTimer* timerSearch;
@@ -99,6 +98,7 @@ private:
     QPushButton* editLogin;
     QPushButton* stats;
     QPushButton* admin;
+
 };
 
 #endif // MAINWINDOW_H

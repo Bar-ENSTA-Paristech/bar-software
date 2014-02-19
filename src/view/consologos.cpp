@@ -89,6 +89,7 @@ void ConsoLogos::newCategorieToController(int id)
         this->setStyleSheet(css.readAll());
     }
     controller->newClic_ProductTypes( (unsigned) id);
+    VIEW.productChoices->setFocus();
 
 }
 

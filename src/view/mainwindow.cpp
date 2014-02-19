@@ -235,7 +235,15 @@ void MainWindow::shortcutRoutine()
         consoLogos->newCategorieToController(5);
     else if(sender->key().toString() == QString("Enter") || sender->key().toString() == QString("Return"))
         VIEW.cartDisplay->tryValidateCart();
-
+    else if(sender->key().toString() == QString("Ctrl+Enter") || sender->key().toString() == QString("Ctrl+Return"))
+    {
+        VIEW.productChoices->addFocusedProduct();
+        VIEW.searchResults->selectFocusedCustomer();
+    }
+    else if(sender->key().toString() == QString("F1"))
+        searchText->setFocus();
+    else if(sender->key().toString() == QString("F2"))
+        VIEW.searchResults->setFocus();
 
 }
 
@@ -278,7 +286,7 @@ void MainWindow::setController(Controller *controllerParam)
 
 void MainWindow::setShortcut()
 {
-    int numberOfShortcuts = 8;
+    int numberOfShortcuts = 12;
 
     shortcuts = new QShortcut*[numberOfShortcuts];
     shortcuts[0] = new QShortcut(QKeySequence("Ctrl+B"), this);
@@ -289,6 +297,11 @@ void MainWindow::setShortcut()
     shortcuts[5] = new QShortcut(QKeySequence("Ctrl+D"), this);
     shortcuts[6] = new QShortcut(QKeySequence("Enter"), this);
     shortcuts[7] = new QShortcut(QKeySequence("Return"), this);
+    shortcuts[8] = new QShortcut(QKeySequence("Ctrl+Enter"), this);
+    shortcuts[9] = new QShortcut(QKeySequence("Ctrl+Return"), this);
+    shortcuts[10] = new QShortcut(QKeySequence("F1"), this);
+    shortcuts[11] = new QShortcut(QKeySequence("F2"), this);
+
 
     for(int i=0 ; i < numberOfShortcuts ; i++)
         QObject::connect(shortcuts[i], SIGNAL(activated()), this, SLOT(shortcutRoutine()));
