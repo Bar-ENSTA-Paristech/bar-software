@@ -95,7 +95,6 @@ void ConsoLogos::newCategorieToController(int id)
 
 ConsoLogos::~ConsoLogos()
 {
-    /*delete layout;
     delete[] logos;
-    delete[] logosLabels;*/
+    delete[] logosLabels;
 }

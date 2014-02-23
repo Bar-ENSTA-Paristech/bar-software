@@ -101,8 +101,6 @@ void MultiList::setRows(int numberOfRows)
         {
             for(int j=0 ; j<columns ; j++)
             {
-                //rowItems[j] = new QTableWidgetItem();
-                //table->setItem(i,j, rowItems[j]);
                 rowItems[j] = new QStandardItem();
                 model->setItem(i,j, rowItems[j]);
             }
@@ -110,12 +108,6 @@ void MultiList::setRows(int numberOfRows)
             QStandardItem *verticalHeader = new QStandardItem();
             verticalHeader->setText("");
             model->setVerticalHeaderItem(i,verticalHeader);
-            //QTableWidgetItem* emptyHeader = new QTableWidgetItem();
-            //emptyHeader->setText("");
-            //table->setVerticalHeaderItem(i, emptyHeader);
-            /*QHeaderView* header = new QHeaderView(Qt::Vertical, table);
-            header->
-            table->setVerticalHeader(header);*/
         }
         rowsAllocated += 500;
         // We reset visible the rows that were hidden and need to be use now
@@ -168,8 +160,6 @@ void MultiList::lineEntered(QModelIndex index)
 
 MultiList::~MultiList()
 {
-
-    delete table;
     delete[] stretchColumns;
     delete[] headers;
 }

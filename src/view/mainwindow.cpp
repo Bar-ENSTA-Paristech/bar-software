@@ -183,27 +183,26 @@ MainWindow::MainWindow()
 
 MainWindow::~MainWindow()
 {
-    /*delete controller;
+    delete centralWidget;
     delete timerSearch;
     delete timerAtStart;
-    delete rightPart;
-    delete leftPart;
-    delete searchResults;
-    delete customerPanel;
-    delete cartDisplay;
-    delete productsChoices;
-    delete history;
-    delete consoLogos;
-    delete centralWidget;
-    delete mainWindowLayout;
-    delete menu;
-    delete mainPart;
-    delete searchBar;
-    delete searchIcon;
-    delete searchText;
-    delete searchBarLayout;
-    delete mainPartLayout;
-    delete shortcut;*/
+    delete[] shortcuts;
+
+    delete VIEW.login;
+    delete calculatorWindow;
+    delete VIEW.individualHistory;
+    //delete VIEW.individualHistory_old; // A voir après implémentation
+    delete VIEW.editCustomer;
+    delete VIEW.deleteCustomer;
+    delete VIEW.globalHistory;
+    //delete VIEW.globalHistory_old;
+    delete VIEW.newCustomer;
+    delete VIEW.addStock;
+    delete VIEW.addProduct;
+    delete VIEW.editProduct;
+    delete VIEW.editLogin;
+    delete VIEW.stats;
+    delete VIEW.admin;
 }
 
 
@@ -316,7 +315,7 @@ void MainWindow::setGraph(db_dataarray& data, QString xTitle, QString yTitle, QS
         return;
     }
 
-    QCustomPlot* customPlot = new QCustomPlot();
+    QCustomPlot* customPlot = new QCustomPlot(); // Not te delete ! See 2 lines below
     customPlot->setWindowFlags(Qt::WindowStaysOnTopHint);
     customPlot->setAttribute(Qt::WA_DeleteOnClose); // Pour supprimer l'espace mémoire à la fermeture de la fenêtre.
 

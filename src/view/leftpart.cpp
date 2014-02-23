@@ -40,8 +40,8 @@ LeftPart::LeftPart(QWidget* parent)
 
 LeftPart::~LeftPart()
 {
-    /*delete[] categoriesLabels;
-    delete layout;
+    delete[] categoriesLabels;
+    /*sdelete layout;
     delete categoriesList;
     delete searchResults;
     delete history;
