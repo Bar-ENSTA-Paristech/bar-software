@@ -66,6 +66,10 @@ public:
 
     db_categoryQueue getCustCategories();
 
+    void setProdCategories(db_categoryQueue queue){} // ############## A IMPLEMENTER ##############
+
+    void setCustCategories(db_categoryQueue queue){} // ############## A IMPLEMENTER ##############
+
     db_histQueue getFullHist();
 
     db_histQueue getProductHist (unsigned id,bool old);

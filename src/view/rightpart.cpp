@@ -38,7 +38,7 @@ void RightPart::setController(Controller* par)
 {
     controller = par;
     productsChoices->controller = par;
-    logosFrame->controller = par;
+    logosFrame->setController(par);
     cartDisplay->controller = par;
 }
 

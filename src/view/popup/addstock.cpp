@@ -39,6 +39,15 @@ AddStock::AddStock(QWidget *parent) :
 
 void AddStock::launchAddStock()
 {
+    db_categoryQueue _productCatQueue = controller->getProductsCategories();
+    db_categoryTuple catTuple;
+    int n = _productCatQueue.size();
+    for(int i = 0 ; i < n ; i++)
+    {
+        catTuple = _productCatQueue.front();
+        _productCatQueue.pop();
+        productCatQueue.push_back(catTuple);
+    }
     this->show();
 }
 
@@ -53,12 +62,18 @@ void AddStock::addLine()
     line->consoTypeLabel.setText("Type de Consommation");
     line->productLabel.setText("Produit");
     line->quantityLabel.setText("Quantité");
-    line->consoType.addItem("Bières");
+    // Now we ask to DB for categories, refresh at each launch
+    /*line->consoType.addItem("Bières");
     line->consoType.addItem("Pression");
     line->consoType.addItem("Vin");
     line->consoType.addItem("Salé");
     line->consoType.addItem("Sucré");
-    line->consoType.addItem("Divers");
+    line->consoType.addItem("Divers");*/
+    int n = productCatQueue.size();
+    for(int i = 0 ; i < n ; i++)
+    {
+        line->consoType.addItem(QString::fromStdString(productCatQueue[i].getCategoryName()));
+    }
     QObject::connect(&line->consoType, SIGNAL(currentIndexChanged(int)), this, SLOT(consoTypeChanged(int)));
     lines.push_back(line);
     frameLayout->addWidget(&line->consoTypeLabel, numberOfLines, 0, 1,1, Qt::AlignTop);

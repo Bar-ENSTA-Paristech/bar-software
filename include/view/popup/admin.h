@@ -30,6 +30,12 @@ private:
     //QCheckBox* negativeAllowed;
     QLabel* cashTransferLabel;
     QLineEdit* cashTransfer;
+    QLabel* oldCustCategoryNameLabel;
+    QComboBox* oldCustCategoryName;
+    QLineEdit* newCustCategoryName;
+    QLabel* oldProdCategoryNameLabel;
+    QComboBox* oldProdCategoryName;
+    QLineEdit* newProdCategoryName;
 
     
 public slots:

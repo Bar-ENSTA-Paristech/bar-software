@@ -365,6 +365,10 @@ typedef struct{
 typedef struct{
     float cashTransfered;
     view_customerQueue oldCustomers;
+    int custCategoryID;
+    int prodCategoryID;
+    std::string newCustCategoryName;
+    std::string newProdCategoryName;
 }AdminTuple;
 
 #endif // STRUCTURES_H

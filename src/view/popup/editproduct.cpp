@@ -22,12 +22,13 @@ EditProduct::EditProduct(QWidget *parent) :
     cancelButton = new QPushButton("Annuler", this);
     layout = new QGridLayout(this);
 
-    categorie->addItem("Bières");
+    // Asking the DB for current categories at each launch
+    /*categorie->addItem("Bières");
     categorie->addItem("Pression");
     categorie->addItem("Vin");
     categorie->addItem("Salé");
     categorie->addItem("Sucré");
-    categorie->addItem("Divers");
+    categorie->addItem("Divers");*/
 
     layout->addWidget(categorieLabel, 0, 0);
     layout->addWidget(newNameLabel, 2, 0);
@@ -54,6 +55,16 @@ EditProduct::EditProduct(QWidget *parent) :
 
 void EditProduct::launchEditProduct()
 {
+    db_categoryQueue catQueue = controller->getProductsCategories();
+    db_categoryTuple catTuple;
+    int n = catQueue.size();
+    for(int i = 0 ; i < n ; i++)
+    {
+        catTuple = catQueue.front();
+        catQueue.pop();
+        categorie->addItem(QString::fromStdString(catTuple.getCategoryName()));
+    }
+
     categorieSelected(categorie->currentIndex());
     this->show();
 }

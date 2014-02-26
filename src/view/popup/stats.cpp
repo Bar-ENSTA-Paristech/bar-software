@@ -33,12 +33,12 @@ Stats::Stats(QWidget *parent) :
 	numberOfCustomersLabel = new QLabel("Nombre de comptes : ", frame);
 	numberOfProductsLabel = new QLabel("Nombre total de produits : ", frame);
 
-    stocks0Label = new QLabel("Stocks de la catégorie Bières : ", frame);
-	stocks1Label = new QLabel("Stocks de la catégorie Pression : ", frame);
-	stocks2Label = new QLabel("Stocks de la catégorie Vin : ", frame);
-    stocks3Label = new QLabel("Stocks de la catégorie Salé : ", frame);
-    stocks4Label = new QLabel("Stocks de la catégorie Sucré : ", frame);
-	stocks5Label = new QLabel("Stocks de la catégorie Divers : ", frame);
+    stocks0Label = new QLabel("Stocks de la catégorie ", frame);
+    stocks1Label = new QLabel("Stocks de la catégorie ", frame);
+    stocks2Label = new QLabel("Stocks de la catégorie ", frame);
+    stocks3Label = new QLabel("Stocks de la catégorie ", frame);
+    stocks4Label = new QLabel("Stocks de la catégorie ", frame);
+    stocks5Label = new QLabel("Stocks de la catégorie ", frame);
 
 	stocks0Label->setFont(titleFont);
 	stocks1Label->setFont(titleFont);
@@ -125,6 +125,27 @@ void Stats::launchStats(view_statsTuple& stats, view_productQueue& category0, vi
     totalSoldLastYear->setText(QString::number(stats.totalSoldLastYear) + " €");
     numberOfCustomers->setText(QString::number(stats.numberOfCustomers));
     numberOfProducts->setText(QString::number(stats.numberOfProducts));
+
+    db_categoryQueue catQueue = controller->getProductsCategories();
+    db_categoryTuple catTuple;
+    int n = catQueue.size();
+    if(n < 6)
+    {
+        error->showMessage("Nombre de catégorie de produit insuffisant, rétablissez le bon nombre de catégorie, ou remaniez la classe Stats ...");
+        return;
+    }
+    catTuple = catQueue.front();catQueue.pop();
+    stocks0Label->setText(stocks0Label->text() + QString::fromStdString(catTuple.getCategoryName()) + " : ");
+    catTuple = catQueue.front();catQueue.pop();
+    stocks1Label->setText(stocks1Label->text() + QString::fromStdString(catTuple.getCategoryName()) + " : ");
+    catTuple = catQueue.front();catQueue.pop();
+    stocks2Label->setText(stocks2Label->text() + QString::fromStdString(catTuple.getCategoryName()) + " : ");
+    catTuple = catQueue.front();catQueue.pop();
+    stocks3Label->setText(stocks3Label->text() + QString::fromStdString(catTuple.getCategoryName()) + " : ");
+    catTuple = catQueue.front();catQueue.pop();
+    stocks4Label->setText(stocks4Label->text() + QString::fromStdString(catTuple.getCategoryName()) + " : ");
+    catTuple = catQueue.front();catQueue.pop();
+    stocks5Label->setText(stocks5Label->text() + QString::fromStdString(catTuple.getCategoryName()) + " : ");
 
     category0Stocks->setStocks(category0);
     category1Stocks->setStocks(category1);
