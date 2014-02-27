@@ -641,8 +641,10 @@ void Controller::receiveCalculatorEntry(float amount, bool isPaidByCard)
     curCustomer->setBalance(curCustomer->getBalance() + amount);
     view_curCustomer->setCustomerBalance(view_curCustomer->getCustomerBalance() + amount);
     view->customerPanel->setCustomer(*view_curCustomer);
+    database->closeDatabase();
 
     // update caisse / BDE
+    database->openDatabase(); // if merge with the database opening above, crash appears ...
     db_finop_tuple finopTuple;
     finopTuple.setOpValue(amount);
     if(isPaidByCard)
@@ -919,6 +921,24 @@ void Controller::receiveAdminInfos(AdminTuple tuple)
         database->updateAccountValue(tuple.cashTransfered, BDE);
         database->updateAccountValue(-tuple.cashTransfered, CAISSE);
         database->closeDatabase();
+    }
+    if(tuple.newCustCategoryName != "")
+    {
+        db_categoryTuple catTuple;
+        catTuple.setCategoryId(tuple.custCategoryID);
+        catTuple.setCategoryName(tuple.newCustCategoryName);
+        database->openDatabase();
+        database->editCustCategory(catTuple);
+        database->openDatabase();
+    }
+    if(tuple.newProdCategoryName != "")
+    {
+        db_categoryTuple catTuple;
+        catTuple.setCategoryId(tuple.prodCategoryID);
+        catTuple.setCategoryName(tuple.newProdCategoryName);
+        database->openDatabase();
+        database->editProdCategory(catTuple);
+        database->openDatabase();
     }
 }
 

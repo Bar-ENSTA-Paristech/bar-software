@@ -99,7 +99,7 @@ void Admin::validate()
     tuple.newCustCategoryName = newCustCategoryName->text().toStdString();
     tuple.custCategoryID = oldCustCategoryName->currentIndex() + 1; // because visitor not displayed
     tuple.newProdCategoryName = newProdCategoryName->text().toStdString();
-    tuple.prodCategoryID = oldProdCategoryName->currentIndex();
+    tuple.prodCategoryID = oldProdCategoryName->currentIndex() + 1; // because id 0 is reserved for cash transactions
     controller->receiveAdminInfos(tuple);
     this->hide();
 }
