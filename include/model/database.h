@@ -9,6 +9,8 @@
 #include <QString>
 #include <vector>
 #include <QDateTime>
+#include <ctime>
+#include <cstdio>
 #include "sqlite3.h"
 #include "query.h"
 #include "queue"
@@ -130,6 +132,8 @@ public:
     int autoDumpHist();
 
     void convertToPointDecimal(std::string &str); // Remplace les éventuelles virgules d'un décimal par des points, compréhensible par SQLite
+    std::string xorCrypt(std::string input); // Crypte la sortie avec la méthode xor
+    void appendLog(std::string log); // Ajoute un évenement au log
 
 private:
     sqlite3* handle; //Pointeur vers la BDD

@@ -54,6 +54,11 @@ void Controller::mainController()
 
     newText_Search( emptyString );
     newGlobal_Hist();
+    std::string toto("Heyhey de glaouch !");
+    std::string toto1 = database->xorCrypt(toto);
+    std::cout << toto1 << " " << database->xorCrypt(toto1) << std::endl;
+    database->appendLog(toto1);
+    database->appendLog(toto1);
 
 }
 

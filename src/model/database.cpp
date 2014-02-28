@@ -1804,7 +1804,7 @@ float Database::getAccountValue(Account cpt)
     delete queryResult;
     queryResult = new std::queue<std::string> ;
 
-    queryString+="SELECT cpt_values FROM comptes WHERE cpt_id=";
+    queryString+="SELECT cpt_value FROM comptes WHERE cpt_id=";
     queryString+=idString;
     queryString+=";";
 
@@ -1914,4 +1914,52 @@ void Database::editCustCategory(db_categoryTuple tuple)
     executeQuery(query);
 
     return;
+}
+
+std::string Database::xorCrypt(std::string input)
+{
+    // Here is defined the key
+    char key[] = "R@b&Co§~";
+    int nKey=0;
+    while(key[nKey] != '\0')
+        nKey++;
+
+    int n = input.size();
+    const char *buffer;
+    char tmpBuffer;
+    char *cryptedBuffer;
+    cryptedBuffer = new char[input.size() + 1]; // +1 for \0
+    buffer = input.c_str();
+    for(int i = 0 ; i < n ; i++)
+    {
+        if(buffer[i] != -1) // If there is a -1 (very rare character), it might be the one inserted because there was a 0 in crypted string. So it is replaced by a 0
+            tmpBuffer = buffer[i];
+        else
+            tmpBuffer = 0;
+        cryptedBuffer[i] = key[i % nKey] ^ tmpBuffer;
+        if(cryptedBuffer[i] == '\0') // To avoid any cut of the string : '\0' means end of the string in char*
+            cryptedBuffer[i] = -1;
+    }
+    cryptedBuffer[n] = '\0';
+    std::string output(cryptedBuffer);
+
+    delete[] cryptedBuffer;
+    return output;
+}
+
+void Database::appendLog(std::string log)
+{
+    time_t currentTime = time(NULL);
+    tm* timePtr = localtime(&currentTime);
+    std::cout << "year = " << timePtr->tm_year << std::endl;
+    char year[10];
+    sprintf(year, "%d", timePtr->tm_year + 1900); // year count start at year 1900
+    std::string path = GLOBAL_PATH.toStdString();
+    path += "resources/system_files/";
+    path += year;
+    path += ".txt";
+    FILE* logFile = fopen(path.c_str(), "a");
+    log += '\n';
+    fputs(log.c_str(), logFile);
+    fclose(logFile);
 }
