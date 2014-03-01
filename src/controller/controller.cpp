@@ -1150,11 +1150,14 @@ void Controller::appendLog(std::string log)
 {
     time_t currentTime = time(NULL);
     tm* timePtr = localtime(&currentTime);
-    char year[10];
-    sprintf(year, "%d", timePtr->tm_year + 1900); // year count start at year 1900
+    char month_year[10];
+    if(timePtr->tm_mon < 9) // tm_mon starts at 0 for january
+        sprintf(month_year, "%d-0%d", timePtr->tm_year + 1900, timePtr->tm_mon+1); // year count start at year 1900 & there is a 0 before month to keep always 2 number. Eg 2014-03 and not 2014-3
+    else
+        sprintf(month_year, "%d-%d", timePtr->tm_year + 1900, timePtr->tm_mon+1); // year count start at year 1900
     std::string path = GLOBAL_PATH.toStdString();
     path += "resources/system_files/";
-    path += year;
+    path += month_year;
     path += ".txt";
     std::string date(asctime(timePtr));
     date.pop_back(); // suppression du retour à la ligne
@@ -1164,12 +1167,12 @@ void Controller::appendLog(std::string log)
     FILE* logFile = fopen(path.c_str(), "r");
     fseek(logFile,0,SEEK_END);
     long sizeOfLog = ftell(logFile);
-    char *buffer = (char*) malloc(sizeOfLog*sizeof(char));
+    char *buffer = (char*) malloc((sizeOfLog+1)*sizeof(char));
     fseek(logFile,0,SEEK_SET); std::cout << "avant:" << ftell(logFile) << " : " << buffer << std::endl;
     fread(buffer, sizeof(char), sizeOfLog, logFile);
     fclose(logFile);
     buffer[sizeOfLog] = '\0';
-    std::string logCrypted(buffer, sizeOfLog);std::cout << "apres:" << logCrypted << std::endl;
+    std::string logCrypted(buffer);std::cout << "apres:" << logCrypted << std::endl;
     std::string logUncrpyted = xorCrypt(logCrypted);
     logUncrpyted += log + '\n';
     logCrypted = xorCrypt(logUncrpyted);
@@ -1180,21 +1183,25 @@ void Controller::appendLog(std::string log)
     fclose(logFile);
 }
 
-QString Controller::getLog(int year)
+QString Controller::getLog(int month, int year)
 {
     QString log;
-    std::string cryptedLog, path;
+    std::string cryptedLog, path, monthStr;
     char *buffer;
-    path = GLOBAL_PATH.toStdString() + "resources/system_files/" + std::to_string(year) + ".txt";
+    if(month < 10)
+        monthStr = "0" + std::to_string(month);
+    else
+        monthStr = std::to_string(month);
+    path = GLOBAL_PATH.toStdString() + "resources/system_files/" + std::to_string(year) + "-" + monthStr + ".txt";
     FILE* file = fopen(path.c_str(), "r");
     fseek(file,0,SEEK_END);
     long sizeOfLog = ftell(file);
-    buffer = (char*) malloc(sizeOfLog*sizeof(char));
+    buffer = (char*) malloc((sizeOfLog+1)*sizeof(char));
     fseek(file,0,SEEK_SET);
     fread(buffer, sizeof(char), sizeOfLog, file);
     fclose(file);
     buffer[sizeOfLog] = '\0';
-    cryptedLog.assign(buffer, sizeOfLog);
+    cryptedLog.assign(buffer);
     log = QString::fromStdString(xorCrypt(cryptedLog));
     return log;
 }

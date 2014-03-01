@@ -36,7 +36,7 @@ Admin::Admin(QWidget *parent) :
     oldProdCategoryName = new QComboBox(this);
     newProdCategoryName = new QLineEdit(this);
 
-    logLabel = new QLabel("Année ", this);
+    logLabel = new QLabel("Mois (AAAA-MM) : ", this);
     logYear = new QLineEdit(this);
     viewLog = new QPushButton("Voir le log", this);
 
@@ -109,6 +109,10 @@ void Admin::validate()
     tuple.newProdCategoryName = newProdCategoryName->text().toStdString();
     tuple.prodCategoryID = oldProdCategoryName->currentIndex() + 1; // because id 0 is reserved for cash transactions
     controller->receiveAdminInfos(tuple);
+
+    newCustCategoryName->clear();
+    cashTransfer->clear();
+    newProdCategoryName->clear();
     this->hide();
 }
 
@@ -133,14 +137,26 @@ void Admin::clickOnIndividualGraph()
 
 void Admin::clickOnViewLog()
 {
-    if(!isUInteger(logYear->text()))
-        return;
-    if(!QFile::exists(GLOBAL_PATH + "resources/system_files/" + logYear->text() + ".txt"))
+    QRegExp regex("^[0-9]{4}-[0-9]{2}$");
+    if(!logYear->text().contains(regex))
     {
-        error->showMessage("Aucun fichier de log pour cette année.");
+        error->showMessage("Syntaxe du mois incorrecte (AAAA-MM), par exemple 2014-03");
         return;
     }
-    QString logText = controller->getLog(logYear->text().toInt());
+    if(!QFile::exists(GLOBAL_PATH + "resources/system_files/" + logYear->text() + ".txt"))
+    {
+        error->showMessage("Aucun fichier de log pour ce mois.");
+        return;
+    }
+    QString tmp;
+    int month, year;
+    tmp[0] = logYear->text()[5];
+    tmp[1] = logYear->text()[6];
+    month = tmp.toInt();
+    for(int i =0 ; i < 4 ; i++)
+        tmp[i] = logYear->text()[i];
+    year = tmp.toInt();
+    QString logText = controller->getLog(month, year);
     QWidget *log = new QWidget();
     log->setAttribute(Qt::WA_DeleteOnClose);
     log->setWindowFlags(Qt::WindowStaysOnTopHint);

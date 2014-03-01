@@ -112,7 +112,7 @@ public:
 
     std::string xorCrypt(std::string input); // Crypte la sortie avec la méthode xor
     void appendLog(std::string log); // Ajoute un évenement au log
-    QString getLog(int year);
+    QString getLog(int month, int year);
 
 
 private:
