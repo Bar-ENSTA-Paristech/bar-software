@@ -72,7 +72,7 @@ void AddProduct::validate()
         return;
 
     view_productTuple tuple;
-    tuple.setProductCategory(categorie->currentIndex());
+    tuple.setProductCategory(categorie->currentIndex()+1); // 0 is reserved for +/-
     tuple.setProductName(name->text());
     tuple.setProductPrice(price->text().toFloat());
     tuple.setProductStock(stock->text().toInt());

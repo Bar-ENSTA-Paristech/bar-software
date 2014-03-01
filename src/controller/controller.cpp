@@ -203,7 +203,10 @@ void Controller::newClic_ValidateCart(bool isCash)
 
             histToBeInserted.setHistCustomerId(curCustomer->getCustomerId());
             histToBeInserted.setHistProductId(db_productInfo.getProductId());
-            histToBeInserted.setHistPrice(db_productInfo.getProductPrice());
+            if(cashTrans)
+                histToBeInserted.setHistPrice(0);
+            else
+                histToBeInserted.setHistPrice(db_productInfo.getProductPrice());
             qDebug()<<"Modif de l'hist";
             database->addHist(histToBeInserted);
         }
@@ -635,8 +638,15 @@ void Controller::receiveCalculatorEntry(float amount, bool isPaidByCard)
     dbTuple.setCustomerCategory(curCustomer->getCategory());
     dbTuple.setCustomerBalance(curCustomer->getBalance());
 
-    // ###### A voir si on envoie isPaidByCash au modele qu'il gère l'affaire, ou que le controlleur gère la caisse etc.
     database->editCustomerAccount(dbTuple);
+
+    // Ajout dans l'historique
+    db_histTuple histToBeInserted;
+    histToBeInserted.setHistCustomerId(curCustomer->getCustomerId());
+    histToBeInserted.setHistProductId(0);
+    histToBeInserted.setHistPrice(amount);
+    qDebug()<<"Modif de l'hist";
+    database->addHist(histToBeInserted);
 
     //Send updated information to view so it can display the new customer info
     newText_Search(curSearch);
@@ -644,6 +654,9 @@ void Controller::receiveCalculatorEntry(float amount, bool isPaidByCard)
     view_curCustomer->setCustomerBalance(view_curCustomer->getCustomerBalance() + amount);
     view->customerPanel->setCustomer(*view_curCustomer);
     database->closeDatabase();
+
+    // refresh historique
+    newGlobal_Hist();
 
     // update caisse / BDE
     database->openDatabase(); // if merge with the database opening above, crash appears ...
@@ -941,9 +954,13 @@ void Controller::newClic_Stats()
     view_statsTuple statsTuple;
     db_customerTuple custTuple;
     std::string emptyString;
+    database->openDatabase();
+    db_categoryQueue prodCatQueue = database->getProdCategories();
+    database->closeDatabase();
+    int NUMBER_OF_CATEGORIES = prodCatQueue.size();
     view_productQueue queues[NUMBER_OF_CATEGORIES];
     for(int i=0 ; i<NUMBER_OF_CATEGORIES ; i++)
-        queues[i] = this->getProductsOfCategorie((unsigned)i);
+        queues[i] = this->getProductsOfCategorie((unsigned)i + 1); // 0 is reserved for +/-
     database->openDatabase();
     db_customerQueue custQueue = database->searchCustomer(emptyString);
     db_productQueue prodQueue = database->getAllProducts();

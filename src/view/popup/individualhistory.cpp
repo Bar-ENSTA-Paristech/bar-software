@@ -87,13 +87,31 @@ void IndividualHistoryList::launchIndividualHistory(view_histQueue &queue)
     {
         tuple = queue.front();
         queue.pop();
+        float price = tuple.getHistPrice();
         // if is normal consumption, we calculate the new total of consumptions
         if(tuple.getHistOperation() != "CREDIT" && tuple.getHistOperation() != "DEBIT")
             totalPrice += tuple.getHistPrice();
 
         model->item(i,0)->setText(tuple.getHistOperation());
         model->item(i,1)->setText(tuple.getHistDate());
-        model->item(i,2)->setText(QString::number(tuple.getHistPrice()));
+        if(price > 0 || tuple.getHistOperation() == "DEBIT/CREDIT")
+            model->item(i,2)->setText(QString::number(price));
+        else
+            model->item(i,2)->setText("Cash");
+
+        QBrush negativeColor(QColor(242,222,222)), positiveColor(QColor(159, 255, 140)), normalColor(QColor(255,255,255));
+        QBrush *color;
+        if(tuple.getHistOperation() == "DEBIT/CREDIT")
+        {
+            if(price > 0)
+                color = &positiveColor;
+            else
+                color = &negativeColor;
+        }
+        else
+            color = &normalColor;
+        for(int j=0 ; j < columns ; j++)
+            model->item(i,j)->setBackground(*color);
     }
     VIEW.individualHistory->setTitle("Historique de " + tuple.getHistFirstName() + " " + tuple.getHistName());
     VIEW.individualHistory->setTotalConsummed(QString::number(totalPrice) + " €");

@@ -94,7 +94,7 @@ void AddStock::addLine()
 void AddStock::consoTypeChanged(int index)
 {
     // CALL TO DB TO GET PRODUCTS OF THIS CONSO_TYPE INDEX (Bières, pression, etc)
-    view_productQueue queue = controller->getProductsOfCategorie(index);
+    view_productQueue queue = controller->getProductsOfCategorie(index + 1); // 0 is reserved for +/-
     view_productTuple tuple;
 
     void* consoTypeSender = (void*) QObject::sender();
@@ -149,7 +149,7 @@ void AddStock::validate()
     view_productTuple tuple;
     for (unsigned i =0 ; i <numberOfLines ; i++)
     {
-        tuple.setProductCategory(lines[i]->consoType.currentIndex());
+        tuple.setProductCategory(lines[i]->consoType.currentIndex() + 1); // 0 is reserved for +/-
         tuple.setProductId(lines[i]->productID[lines[i]->product.currentIndex()]);
         tuple.setProductName(lines[i]->product.currentText());
         tuple.setProductStock(lines[i]->quantity.text().toInt());

@@ -58,7 +58,6 @@ void History::setHistory(view_histQueue queue)
     table->setModel(NULL);
 
     // Inserting new results
-    QBrush color;
     unsigned numberOfElements = queue.size();
     setRows(numberOfElements);
 
@@ -66,23 +65,33 @@ void History::setHistory(view_histQueue queue)
     {
         tuple = queue.front();
         queue.pop();
+        float price = tuple.getHistPrice();
         model->item(i,0)->setText(tuple.getHistName());
         model->item(i,1)->setText(tuple.getHistFirstName());
         model->item(i,2)->setText(tuple.getHistOperation());
-        model->item(i,3)->setText(QString::number(tuple.getHistPrice()));
+        if(price > 0 || tuple.getHistOperation() == "DEBIT/CREDIT")
+            model->item(i,3)->setText(QString::number(price));
+        else
+            model->item(i,3)->setText("Cash");
         model->item(i,4)->setText(tuple.getHistDate());
         model->item(i,5)->setText(QString::number(i));
-        if(tuple.getHistOperation() == "DEBIT")
-            color.setColor("#f2dede"); // light red
-        else if(tuple.getHistOperation() == "CREDIT")
-            color.setColor("#dfd008"); // light green
+
+        QBrush negativeColor(QColor(242,222,222)), positiveColor(QColor(159, 255, 140)), normalColor(QColor(255,255,255));
+        QBrush *color;
+        if(tuple.getHistOperation() == "DEBIT/CREDIT")
+        {
+            if(price > 0)
+                color = &positiveColor;
+            else
+                color = &negativeColor;
+        }
         else
-            color.setColor(Qt::black);
+            color = &normalColor;
 
         for(int j=0 ; j < columns ; j++)
         {
             model->item(i,j)->setFont(historyFont);
-            model->item(i,j)->setForeground(color);
+            model->item(i,j)->setBackground(*color);
         }
     }
     table->setModel(model);

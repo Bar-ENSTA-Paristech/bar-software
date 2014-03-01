@@ -88,7 +88,7 @@ void ConsoLogos::newCategorieToController(int id)
     if(css.open(QIODevice::ReadOnly)) {
         this->setStyleSheet(css.readAll());
     }
-    controller->newClic_ProductTypes( (unsigned) id);
+    controller->newClic_ProductTypes( (unsigned) id + 1); // +1 because 0 is reserved for +/-
     VIEW.productChoices->setFocus();
 
 }

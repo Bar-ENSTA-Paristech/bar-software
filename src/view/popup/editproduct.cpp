@@ -78,7 +78,7 @@ void EditProduct::validate()
     else if(!isUInteger(volume->text()))
         return;
 
-    tmpProduct.setProductCategory(categorie->currentIndex());
+    tmpProduct.setProductCategory(categorie->currentIndex() + 1); // 0 is reserved for +/-
     tmpProduct.setProductName(newName->text());
     tmpProduct.setProductPrice(price->text().toFloat());
     tmpProduct.setProductStock(stock->text().toInt());
@@ -115,7 +115,7 @@ void EditProduct::categorieSelected(int index)
     view_productTuple tuple;
     tmpProductVector.clear();
     name->clear();
-    queue = controller->getProductsOfCategorie(index);
+    queue = controller->getProductsOfCategorie(index + 1); // 0 is reserved for +/-
     for (int i=0, n=queue.size() ; i < n ; i++)
     {
         tuple = queue.front();
