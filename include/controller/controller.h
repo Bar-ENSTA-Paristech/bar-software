@@ -3,6 +3,7 @@
 
 #include <QString>
 #include <string>
+#include <cstdio>
 
 #include <memory>
 
@@ -109,6 +110,11 @@ public:
     void setDb(sqlite3*);
     sqlite3* getDb();
 
+    std::string xorCrypt(std::string input); // Crypte la sortie avec la méthode xor
+    void appendLog(std::string log); // Ajoute un évenement au log
+    QString getLog(int year);
+
+
 private:
         /* View objects */
     /*SearchResults * viewSearchResults;
@@ -125,6 +131,7 @@ private:
     Customer * curCustomer;
     Cart * curCart;
     QString curSearch;
+    std::string currentLoggedCustomer;
 
         /* Model objects */
     Database* database;

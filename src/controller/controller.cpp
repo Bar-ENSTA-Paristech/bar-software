@@ -54,12 +54,6 @@ void Controller::mainController()
 
     newText_Search( emptyString );
     newGlobal_Hist();
-    std::string toto("Heyhey de glaouch !");
-    std::string toto1 = database->xorCrypt(toto);
-    std::cout << toto1 << " " << database->xorCrypt(toto1) << std::endl;
-    database->appendLog(toto1);
-    database->appendLog(toto1);
-
 }
 
 
@@ -412,12 +406,15 @@ bool Controller::view_isLoginCorrect(QString login, QString passwd, LoginType lo
     switch (loginType){
     case GLOBAL:
         _login="global";
+        currentLoggedCustomer = "";
         break;
     case ROOT:
         _login="root";
+        currentLoggedCustomer = "";
         break;
     case INDIVIDUAL:
         _login=login.toStdString();
+        currentLoggedCustomer = _login;
         break;
     }
     _truepass= database->getPassword(_login);
@@ -666,10 +663,27 @@ void Controller::receiveCalculatorEntry(float amount, bool isPaidByCard)
     }
 
     database->closeDatabase();
+    if(currentLoggedCustomer != "")
+    {
+        std::string log;
+        log = currentLoggedCustomer + " -> " + std::to_string(amount) + "€ to " + curCustomer->getFirstName() + " " + curCustomer->getName()+
+                " (id:"+std::to_string(curCustomer->getCustomerId())+")";
+        appendLog(log);
+    }
 }
 
 void Controller::receiveEditCustomerEntry(view_customerTuple& customer)
 {
+    if(currentLoggedCustomer != "")
+    {
+        std::string log;
+        log = currentLoggedCustomer + " -> changed " + curCustomer->getFirstName() + " " + curCustomer->getName()+ " " + std::to_string(curCustomer->getCategory()) +" (id " +
+                std::to_string(curCustomer->getCustomerId()) + ", login :"+ curCustomer->getLogin() + ") to " + customer.getCustomerFirstName().toStdString()+
+                " " + customer.getCustomerName().toStdString() + " " + std::to_string(customer.getCustomerCategory())+ " (login : " +
+                customer.getCustomerLogin().toStdString()+ ")";
+        appendLog(log);
+    }
+
     curCustomer->setCategory(customer.getCustomerCategory());
     curCustomer->setFirstName(customer.getCustomerFirstName().toStdString());
     curCustomer->setLogin(customer.getCustomerLogin().toStdString());
@@ -758,6 +772,19 @@ void Controller::receiveNewCustomerEntry(view_customerTuple& customer, bool isCa
         }
     }
     database->closeDatabase();
+    if(currentLoggedCustomer != "")
+    {
+        std::string cash;
+        if(isCash)
+            cash="Paid with Cash";
+        else
+            cash = "Paid by Card";
+        std::string log;
+        log = currentLoggedCustomer + " -> created " + customer.getCustomerFirstName().toStdString()+
+                " " + customer.getCustomerName().toStdString() + " " + std::to_string(customer.getCustomerCategory())+ " (login : " +
+                customer.getCustomerLogin().toStdString()+ ") with account of " + std::to_string(customer.getCustomerBalance()) + "€ "+ cash;
+        appendLog(log);
+    }
 }
 
 void Controller::newClic_AddStock()
@@ -771,6 +798,7 @@ void Controller::receiveNewStocks(view_productQueue& products)
 {
     view_productTuple view_tuple;
     db_productTuple db_tuple;
+    std::string stocks = "";
     unsigned n = products.size();
 
     database->openDatabase();
@@ -781,8 +809,16 @@ void Controller::receiveNewStocks(view_productQueue& products)
         db_tuple = database->getProductFromId(view_tuple.getProductId());
         db_tuple.setProductStock(db_tuple.getProductStock() + view_tuple.getProductStock());
         database->editProduct(db_tuple);
+        stocks += " - " + db_tuple.getProductName() + " " + std::to_string(db_tuple.getProductVolume())+ "cL"+ " : "+std::to_string(view_tuple.getProductStock());
     }
     database->closeDatabase();
+
+    if(currentLoggedCustomer != "")
+    {
+        std::string log;
+        log = currentLoggedCustomer + " -> added stocks " + stocks;
+        appendLog(log);
+    }
 }
 
 void Controller::newClic_AddProduct()
@@ -802,6 +838,14 @@ void Controller::receiveNewProduct(view_productTuple& product)
     database->closeDatabase();
     // Par contre un refresh des produits serait pas mal du coup
     this->newClic_ProductTypes(currentConsoTypeIndex);
+
+    if(currentLoggedCustomer != "")
+    {
+        std::string log;
+        log = currentLoggedCustomer + " -> created " + std::to_string(product.getProductCategory()) + " "+product.getProductName().toStdString()+ " "+
+                std::to_string(product.getProductVolume())+ "cL "+ std::to_string(product.getProductPrice())+ "€. Stock : " + std::to_string(product.getProductStock());
+        appendLog(log);
+    }
 }
 
 void Controller::newClic_EditProduct()
@@ -820,6 +864,14 @@ void Controller::receiveEditProduct(view_productTuple& product, bool deleteProdu
     {
         database->deleteProduct(product.getProductId());
         database->closeDatabase();
+
+        if(currentLoggedCustomer != "")
+        {
+            std::string log;
+            log = currentLoggedCustomer + " -> deleted product of category" + std::to_string(product.getProductCategory()) + " with id "+std::to_string(product.getProductId() );
+            appendLog(log);
+        }
+
         return;
     }
     db_tuple = product.transformIntoProductDb();
@@ -827,6 +879,11 @@ void Controller::receiveEditProduct(view_productTuple& product, bool deleteProdu
     database->closeDatabase();
     // refresh de la gui
     this->newClic_ProductTypes(currentConsoTypeIndex);
+
+    std::string log;
+    log = currentLoggedCustomer + " -> edited product of " + std::to_string(product.getProductCategory()) + " with id " + std::to_string(product.getProductId()) + " into " +
+            product.getProductName().toStdString()+ " "+std::to_string(product.getProductVolume())+ "cL "+std::to_string(product.getProductPrice())+ "€.";
+    appendLog(log);
 }
 
 
@@ -926,6 +983,10 @@ void Controller::receiveAdminInfos(AdminTuple tuple)
         database->updateAccountValue(tuple.cashTransfered, BDE);
         database->updateAccountValue(-tuple.cashTransfered, CAISSE);
         database->closeDatabase();
+
+        std::string log;
+        log = currentLoggedCustomer + " -> transfered " + std::to_string(tuple.cashTransfered) + "€ to the BDE";
+        appendLog(log);
     }
     if(tuple.newCustCategoryName != "")
     {
@@ -935,6 +996,10 @@ void Controller::receiveAdminInfos(AdminTuple tuple)
         database->openDatabase();
         database->editCustCategory(catTuple);
         database->openDatabase();
+
+        std::string log;
+        log = currentLoggedCustomer + " -> changed name of customer category (" + std::to_string(catTuple.getCategoryId()) + ") to "+catTuple.getCategoryName();
+        appendLog(log);
     }
     if(tuple.newProdCategoryName != "")
     {
@@ -944,6 +1009,10 @@ void Controller::receiveAdminInfos(AdminTuple tuple)
         database->openDatabase();
         database->editProdCategory(catTuple);
         database->openDatabase();
+
+        std::string log;
+        log = currentLoggedCustomer + " -> changed name of product category (" + std::to_string(catTuple.getCategoryId()) + ") to "+catTuple.getCategoryName();
+        appendLog(log);
     }
 }
 
@@ -1027,4 +1096,88 @@ void Controller::newClic_IndividualHistory_old(int customerId)
 void Controller::newClic_IndividualGraph(int customerId)
 {
     // To define
+}
+
+std::string Controller::xorCrypt(std::string input)
+{
+    // Here is defined the key
+    char key[] = "R@b&";
+    int nKey=0;
+    while(key[nKey] != '\0')
+        nKey++;
+
+    int n = input.size();
+    const char *buffer;
+    char tmpBuffer;
+    char *cryptedBuffer;
+    cryptedBuffer = new char[input.size() + 1]; // +1 for \0
+    buffer = input.c_str();
+    for(int i = 0 ; i < n ; i++)
+    {
+        if(buffer[i] != -1) // If there is a -1 (very rare character), it might be the one inserted because there was a 0 in crypted string. So it is replaced by a 0
+            tmpBuffer = buffer[i];
+        else
+            tmpBuffer = 0;
+        cryptedBuffer[i] = key[i % nKey] ^ tmpBuffer;
+        if(cryptedBuffer[i] == '\0') // To avoid any cut of the string : '\0' means end of the string in char*
+            cryptedBuffer[i] = -1;
+    }
+    cryptedBuffer[n] = '\0';
+    std::string output(cryptedBuffer);
+
+    delete[] cryptedBuffer;
+    return output;
+}
+
+void Controller::appendLog(std::string log)
+{
+    time_t currentTime = time(NULL);
+    tm* timePtr = localtime(&currentTime);
+    char year[10];
+    sprintf(year, "%d", timePtr->tm_year + 1900); // year count start at year 1900
+    std::string path = GLOBAL_PATH.toStdString();
+    path += "resources/system_files/";
+    path += year;
+    path += ".txt";
+    std::string date(asctime(timePtr));
+    date.pop_back(); // suppression du retour à la ligne
+    log = date + " " + log;
+
+    // lecture de l'ensemble pour décryptage afin d'insérer la nouvelle ligne
+    FILE* logFile = fopen(path.c_str(), "r");
+    fseek(logFile,0,SEEK_END);
+    long sizeOfLog = ftell(logFile);
+    char *buffer = (char*) malloc(sizeOfLog*sizeof(char));
+    fseek(logFile,0,SEEK_SET); std::cout << "avant:" << ftell(logFile) << " : " << buffer << std::endl;
+    fread(buffer, sizeof(char), sizeOfLog, logFile);
+    fclose(logFile);
+    buffer[sizeOfLog] = '\0';
+    std::string logCrypted(buffer, sizeOfLog);std::cout << "apres:" << logCrypted << std::endl;
+    std::string logUncrpyted = xorCrypt(logCrypted);
+    logUncrpyted += log + '\n';
+    logCrypted = xorCrypt(logUncrpyted);
+
+    // Ecriture de l'ensemble crypté dans le fichier
+    logFile = fopen(path.c_str(), "w");
+    fwrite(logCrypted.c_str(), sizeof(char), logCrypted.size(), logFile);
+    fclose(logFile);
+}
+
+QString Controller::getLog(int year)
+{
+    QString log;
+    std::string cryptedLog, path;
+    char *buffer;
+    path = GLOBAL_PATH.toStdString() + "resources/system_files/" + std::to_string(year) + ".txt";
+    FILE* file = fopen(path.c_str(), "r");
+    fseek(file,0,SEEK_END);
+    long sizeOfLog = ftell(file);
+    buffer = (char*) malloc(sizeOfLog*sizeof(char));
+    fseek(file,0,SEEK_SET);
+    fread(buffer, sizeof(char), sizeOfLog, file);
+    fclose(file);
+    buffer[sizeOfLog] = '\0';
+    cryptedLog.assign(buffer, sizeOfLog);
+    log = QString::fromStdString(xorCrypt(cryptedLog));
+    return log;
 }

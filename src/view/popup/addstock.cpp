@@ -39,6 +39,7 @@ AddStock::AddStock(QWidget *parent) :
 
 void AddStock::launchAddStock()
 {
+    productCatQueue.clear();
     db_categoryQueue _productCatQueue = controller->getProductsCategories();
     db_categoryTuple catTuple;
     int n = _productCatQueue.size();
