@@ -22,6 +22,7 @@ int main(int argc, char *argv[])
     //
     QDir currentDir(QDir::currentPath());
     //QCoreApplication::addLibraryPath(QCoreApplication::applicationDirPath()); for deployement ?
+/********************* FOR DEV ********************/
 #ifdef Q_OS_LINUX //pour linux
     currentDir.cdUp();
     currentDir.cd("bar-software");
@@ -34,7 +35,7 @@ int main(int argc, char *argv[])
 #endif
     GLOBAL_PATH = currentDir.absolutePath()+"/";
     qDebug() << "GLOBAL_PATH :" << GLOBAL_PATH;
-/*
+/**********************************************
     std::pair<std::string,std::string> name = {"Woody","Rousseau"};
 
     Customer cus("wrousseau",name,"2014");

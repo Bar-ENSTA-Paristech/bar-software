@@ -15,6 +15,7 @@ NewCustomer::NewCustomer(QWidget *parent) :
     firstName = new QLineEdit(this);
     login = new QLineEdit(this);
     categorie = new QComboBox(this);
+    cardPaid = new QCheckBox("Premier paiement par carte", this);
     balance = new QLineEdit(this);
     validateButton = new QPushButton("Valider", this);
     cancelButton = new QPushButton("Annuler", this);
@@ -30,8 +31,9 @@ NewCustomer::NewCustomer(QWidget *parent) :
     layout->addWidget(login, 2,1);
     layout->addWidget(categorie,3,1);
     layout->addWidget(balance, 4,1);
-    layout->addWidget(validateButton, 5,0);
-    layout->addWidget(cancelButton, 5,1);
+    layout->addWidget(cardPaid, 5,0,1,2);
+    layout->addWidget(validateButton, 6,0);
+    layout->addWidget(cancelButton, 6,1);
     this->setLayout(layout);
 
     QObject::connect(validateButton, SIGNAL(clicked()), this, SLOT(validate()));
@@ -64,7 +66,8 @@ void NewCustomer::validate()
     tmpCustomer.setCustomerCategory(categorie->currentIndex()+1);// +1 because 0 is for guest
     tmpCustomer.setCustomerBalance(balance->text().toFloat());
 
-    controller->receiveNewCustomerEntry(tmpCustomer);
+    controller->receiveNewCustomerEntry(tmpCustomer, !cardPaid->isChecked());
+    cardPaid->setChecked(false);
     this->hide();
 }
 

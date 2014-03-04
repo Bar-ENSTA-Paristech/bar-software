@@ -18,6 +18,8 @@ public:
 
     // receive search results from controller
     void setSearchResults(view_customerQueue&);
+    void setFocus();
+    void selectFocusedCustomer();
     QTimer timer;
 
 signals:

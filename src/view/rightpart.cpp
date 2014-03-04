@@ -19,10 +19,6 @@ RightPart::RightPart(QWidget* parent)
 
 RightPart::~RightPart()
 {
-    /*delete productsChoices;
-    delete logosFrame;
-    delete cartDisplay;
-    delete layout;*/
 }
 
 void RightPart::updateSize()
@@ -42,7 +38,7 @@ void RightPart::setController(Controller* par)
 {
     controller = par;
     productsChoices->controller = par;
-    logosFrame->controller = par;
+    logosFrame->setController(par);
     cartDisplay->controller = par;
 }
 

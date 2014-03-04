@@ -40,6 +40,7 @@ private:
 
     std::vector<ConsoLine*> lines;
     unsigned numberOfLines;
+    std::vector<db_categoryTuple> productCatQueue;
     
 public slots:
     void addLine();

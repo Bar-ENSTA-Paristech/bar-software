@@ -22,12 +22,13 @@ class ConsoLogos : public QFrame
 {
     Q_OBJECT
 public:
-    Controller* controller;
     explicit ConsoLogos(QWidget *parent = 0);
     void newCategorieToController(int id);
+    void setController(Controller* controller);
     ~ConsoLogos();
 
 private:
+    Controller* controller;
     QGridLayout* layout;
     QLabel* logos;
     QPushButton* logosLabels;

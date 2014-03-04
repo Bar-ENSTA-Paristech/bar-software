@@ -4,7 +4,7 @@ Admin::Admin(QWidget *parent) :
     Popup(parent)
 {
     VIEW.admin = this;
-    this->setGeometry(50,50, 600,600);
+    this->setGeometry(50,50, 400, 300);
 
     layout = new QGridLayout(this);
     //negativeAllowed = new QCheckBox("Négatif autorisé", this);
@@ -29,6 +29,16 @@ Admin::Admin(QWidget *parent) :
     individualGraphButton->setIconSize(QSize(32,32));
     individualGraphButton->setStyleSheet("background: none;");
     individualGraphButton->setToolTip("Voir le graphe de solde de cette personne");
+    oldCustCategoryNameLabel = new QLabel("Changer le nom de cette catégorie", this);
+    oldCustCategoryName = new QComboBox(this);
+    newCustCategoryName = new QLineEdit(this);
+    oldProdCategoryNameLabel = new QLabel("Changer le nom de cette catégorie", this);
+    oldProdCategoryName = new QComboBox(this);
+    newProdCategoryName = new QLineEdit(this);
+
+    logLabel = new QLabel("Mois (AAAA-MM) : ", this);
+    logYear = new QLineEdit(this);
+    viewLog = new QPushButton("Voir le log", this);
 
     validateButton = new QPushButton("Valider", this);
     cancelButton = new QPushButton("Annuler", this);
@@ -37,8 +47,17 @@ Admin::Admin(QWidget *parent) :
     layout->addWidget(oldIndividualCustomer, 1,0);
     layout->addWidget(oldIndividualHistory, 1,1);
     layout->addWidget(individualGraphButton, 1,2);
-    layout->addWidget(cashTransferLabel, 2,0);
-    layout->addWidget(cashTransfer, 2,1);
+    layout->addWidget(oldCustCategoryNameLabel, 2, 0);
+    layout->addWidget(oldCustCategoryName, 2 , 1);
+    layout->addWidget(newCustCategoryName, 2,2);
+    layout->addWidget(oldProdCategoryNameLabel, 3, 0);
+    layout->addWidget(oldProdCategoryName, 3 , 1);
+    layout->addWidget(newProdCategoryName, 3,2);
+    layout->addWidget(logLabel, 4,0);
+    layout->addWidget(logYear, 4,1);
+    layout->addWidget(viewLog, 4,2);
+    layout->addWidget(cashTransferLabel, 10,0);
+    layout->addWidget(cashTransfer, 10,1);
     layout->addWidget(validateButton, 20,0);
     layout->addWidget(cancelButton, 20,1);
 
@@ -47,11 +66,33 @@ Admin::Admin(QWidget *parent) :
     QObject::connect(oldHistory, SIGNAL(clicked()), this, SLOT(clickOnGlobalHistory()));
     QObject::connect(oldIndividualHistory, SIGNAL(clicked()), this, SLOT(clickOnIndividualHistory()));
     QObject::connect(individualGraphButton, SIGNAL(clicked()), this, SLOT(clickOnIndividualGraph()));
+    QObject::connect(viewLog, SIGNAL(clicked()), this, SLOT(clickOnViewLog()));
 }
 
 void Admin::launchAdmin(AdminTuple& tuple)
 {
     //negativeAllowed->setChecked(tuple.isNegativeAllowed);
+    db_categoryQueue catQueue;
+    db_categoryTuple catTuple;
+
+    catQueue = controller->getCustomerCategories();
+    int n = catQueue.size() - 1;
+    catQueue.pop(); // on enlève la catégorie visiteur.
+    for(int i =0 ; i < n ; i++)
+    {
+        catTuple = catQueue.front();
+        catQueue.pop();
+        oldCustCategoryName->addItem(QString::fromStdString(catTuple.getCategoryName()));
+    }
+
+    catQueue = controller->getProductsCategories();
+    n = catQueue.size();
+    for(int i =0 ; i < n ; i++)
+    {
+        catTuple = catQueue.front();
+        catQueue.pop();
+        oldProdCategoryName->addItem(QString::fromStdString(catTuple.getCategoryName()));
+    }
 
     this->show();
 }
@@ -63,7 +104,15 @@ void Admin::validate()
     AdminTuple tuple;
     //tuple.isNegativeAllowed = negativeAllowed->isChecked();
     tuple.cashTransfered = cashTransfer->text().toFloat();
+    tuple.newCustCategoryName = newCustCategoryName->text().toStdString();
+    tuple.custCategoryID = oldCustCategoryName->currentIndex() + 1; // because visitor not displayed
+    tuple.newProdCategoryName = newProdCategoryName->text().toStdString();
+    tuple.prodCategoryID = oldProdCategoryName->currentIndex() + 1; // because id 0 is reserved for cash transactions
     controller->receiveAdminInfos(tuple);
+
+    newCustCategoryName->clear();
+    cashTransfer->clear();
+    newProdCategoryName->clear();
     this->hide();
 }
 
@@ -84,4 +133,38 @@ void Admin::clickOnIndividualGraph()
     // id to define
     int id=0;
     controller->newClic_IndividualGraph(id);
+}
+
+void Admin::clickOnViewLog()
+{
+    QRegExp regex("^[0-9]{4}-[0-9]{2}$");
+    if(!logYear->text().contains(regex))
+    {
+        error->showMessage("Syntaxe du mois incorrecte (AAAA-MM), par exemple 2014-03");
+        return;
+    }
+    if(!QFile::exists(GLOBAL_PATH + "resources/system_files/" + logYear->text() + ".txt"))
+    {
+        error->showMessage("Aucun fichier de log pour ce mois.");
+        return;
+    }
+    QString tmp;
+    int month, year;
+    tmp[0] = logYear->text()[5];
+    tmp[1] = logYear->text()[6];
+    month = tmp.toInt();
+    for(int i =0 ; i < 4 ; i++)
+        tmp[i] = logYear->text()[i];
+    year = tmp.toInt();
+    QString logText = controller->getLog(month, year);
+    QWidget *log = new QWidget();
+    log->setAttribute(Qt::WA_DeleteOnClose);
+    log->setWindowFlags(Qt::WindowStaysOnTopHint);
+    log->setGeometry(100,100, 700, 600);
+    QTextEdit *text = new QTextEdit(log);
+    text->setFixedSize(650, 550);
+    text->setWordWrapMode(QTextOption::WordWrap);
+    text->setText(logText);
+    text->setReadOnly(true);
+    log->show();
 }

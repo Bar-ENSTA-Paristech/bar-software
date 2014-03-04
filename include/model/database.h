@@ -9,6 +9,8 @@
 #include <QString>
 #include <vector>
 #include <QDateTime>
+#include <ctime>
+#include <cstdio>
 #include "sqlite3.h"
 #include "query.h"
 #include "queue"
@@ -66,6 +68,10 @@ public:
 
     db_categoryQueue getCustCategories();
 
+    void editProdCategory(db_categoryTuple tuple); // Fonctionne
+
+    void editCustCategory(db_categoryTuple tuple); // Fonctionne
+
     db_histQueue getFullHist();
 
     db_histQueue getProductHist (unsigned id,bool old);
@@ -113,9 +119,9 @@ public:
     int editProduct (db_productTuple);//Méthode générique qui met à jour TOUTES les informations de la conso
     //Rq : penser à Maj prix_consos
 
-    int createCategory (db_categoryTuple);//Méthode créant un nouveau champ dans categories /Par défaut le nouvel id vaut -1
+    int createProdCategory (db_categoryTuple);//Méthode créant un nouveau champ dans categories /Par défaut le nouvel id vaut -1
 
-    int editCategory (db_categoryTuple);
+    //int editCategory (db_categoryTuple); cf versions spécialisées product & customer
 
     int deleteCategory (int id);
 

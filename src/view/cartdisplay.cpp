@@ -45,11 +45,6 @@ CartDisplay::CartDisplay(QWidget *parent) :
 
 CartDisplay::~CartDisplay()
 {
-    /*delete cartList;
-    delete totalPrice;
-    delete validateButton;
-    delete cancelButton;
-    delete layout;*/
 }
 
 bool CartDisplay::getCash()

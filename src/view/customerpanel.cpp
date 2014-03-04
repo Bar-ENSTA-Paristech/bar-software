@@ -131,21 +131,6 @@ CustomerPanel::CustomerPanel(QWidget *parent) :
 
 CustomerPanel::~CustomerPanel()
 {
-    /*delete photo;
-    delete name;
-    delete firstName;
-    delete categorie;
-    delete balance;
-    delete photoFrame;
-    delete infosFrame;
-    delete optionsFrame;
-    delete layout;
-    delete photoLayout;
-    delete infosLayout;
-    delete nameLabel;
-    delete firstNameLabel;
-    delete categorieLabel;
-    delete balanceLabel;*/
 }
 
 void CustomerPanel::setController(Controller* controllerPar)

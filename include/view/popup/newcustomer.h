@@ -5,6 +5,7 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QComboBox>
+#include <QCheckBox>
 #include <QGridLayout>
 #include <QPushButton>
 #include "structures.h"
@@ -33,6 +34,7 @@ private:
     QLineEdit* login;
     QLineEdit* balance;
     QComboBox* categorie;
+    QCheckBox* cardPaid;
     QGridLayout* layout;
     QPushButton* validateButton;
     QPushButton* cancelButton;

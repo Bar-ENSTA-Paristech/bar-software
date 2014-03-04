@@ -18,6 +18,8 @@ public:
 
     // receive product choices from controller
     void setProductsChoices(view_productQueue queue);
+    void setFocus();
+    void addFocusedProduct();
 
 signals:
     

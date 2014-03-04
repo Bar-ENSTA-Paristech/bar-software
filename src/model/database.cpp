@@ -1336,7 +1336,7 @@ int Database::deleteProduct(int id)
     return (code);
 }
 
-int Database::createCategory(db_categoryTuple tuple)
+int Database::createProdCategory(db_categoryTuple tuple)
 {
     std::string nom;
     int code;
@@ -1817,7 +1817,7 @@ float Database::getAccountValue(Account cpt)
     delete queryResult;
     queryResult = new std::queue<std::string> ;
 
-    queryString+="SELECT cpt_values FROM comptes WHERE cpt_id=";
+    queryString+="SELECT cpt_value FROM comptes WHERE cpt_id=";
     queryString+=idString;
     queryString+=";";
 
@@ -1870,6 +1870,54 @@ void Database::updateAccountValue(float addedValue,Account cpt)
     queryString+="SET cpt_value=";
     queryString+=valueString;
     queryString+=" WHERE cpt_id=";
+    queryString+=idString;
+    queryString+=";";
+
+    query.setQuery(queryString);
+    std::cout<<queryString<<std::endl;
+    query.setVerbose(1);
+    executeQuery(query);
+
+    return;
+}
+
+void Database::editProdCategory(db_categoryTuple tuple)
+{
+    std::string queryString="";
+    Query query;
+
+    std::string nameString = tuple.getCategoryName();
+    std::string idString = std::to_string(tuple.getCategoryId());
+
+    queryString+="UPDATE categ_consos ";
+
+    queryString+="SET name='";
+    queryString+=nameString + "'";
+    queryString+=" WHERE id=";
+    queryString+=idString;
+    queryString+=";";
+
+    query.setQuery(queryString);
+    std::cout<<queryString<<std::endl;
+    query.setVerbose(1);
+    executeQuery(query);
+
+    return;
+}
+
+void Database::editCustCategory(db_categoryTuple tuple)
+{
+    std::string queryString="";
+    Query query;
+
+    std::string nameString = tuple.getCategoryName();
+    std::string idString = std::to_string(tuple.getCategoryId());
+
+    queryString+="UPDATE categ_cust ";
+
+    queryString+="SET name='";
+    queryString+=nameString +"'";
+    queryString+=" WHERE id=";
     queryString+=idString;
     queryString+=";";
 

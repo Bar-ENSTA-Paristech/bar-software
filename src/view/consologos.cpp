@@ -28,12 +28,12 @@ ConsoLogos::ConsoLogos(QWidget *parent) :
     layout->setSpacing(0);
     layout->setContentsMargins(0, 0, 0, 0);
 
-    logosLabels[0].setText("Bières - Ctrl+B");
+    /*logosLabels[0].setText("Bières - Ctrl+B");
     logosLabels[1].setText("Pression - Ctrl+P");
     logosLabels[2].setText("Vin - Ctrl+W");
     logosLabels[3].setText("Salé - Ctrl+Q");
     logosLabels[4].setText("Sucré - Ctrl+U");
-    logosLabels[5].setText("Divers - Ctrl+D");
+    logosLabels[5].setText("Divers - Ctrl+D");*/ // On interroge maintenant la DB  pour connaitre les catégories. Fait dans setController
     newCategorieToController(-1);
     this->setLayout(layout);
 
@@ -88,13 +88,34 @@ void ConsoLogos::newCategorieToController(int id)
     if(css.open(QIODevice::ReadOnly)) {
         this->setStyleSheet(css.readAll());
     }
-    controller->newClic_ProductTypes( (unsigned) id);
+    controller->newClic_ProductTypes( (unsigned) id + 1); // +1 because 0 is reserved for +/-
+    VIEW.productChoices->setFocus();
 
+}
+
+void ConsoLogos::setController(Controller *_controller)
+{
+    controller = _controller;
+    db_categoryQueue catQueue = controller->getProductsCategories();
+    db_categoryTuple catTuple;
+    int n = catQueue.size();
+    for (int i = 0 ; i < n ; i ++)
+    {
+        catTuple = catQueue.front();
+        catQueue.pop();
+        logosLabels[i].setText(QString::fromStdString(catTuple.getCategoryName()));
+    }
+
+    logosLabels[0].setText(logosLabels[0].text() + " - Ctrl+B");
+    logosLabels[1].setText(logosLabels[1].text() + " - Ctrl+P");
+    logosLabels[2].setText(logosLabels[2].text() + " - Ctrl+W");
+    logosLabels[3].setText(logosLabels[3].text() + " - Ctrl+Q");
+    logosLabels[4].setText(logosLabels[4].text() + " - Ctrl+U");
+    logosLabels[5].setText(logosLabels[5].text() + " - Ctrl+D");
 }
 
 ConsoLogos::~ConsoLogos()
 {
-    /*delete layout;
     delete[] logos;
-    delete[] logosLabels;*/
+    delete[] logosLabels;
 }

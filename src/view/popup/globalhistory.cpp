@@ -62,7 +62,6 @@ updateHeadersSize(defaultHeaderWidth, stretchColumns, hiddenColumn);
 void GlobalHistoryList::launchGlobalHistory(view_histQueue &queue)
 {
     view_histTuple tuple;
-    float totalPrice = 0;
     table->setModel(NULL);
 
     // Inserting new results
@@ -74,12 +73,30 @@ void GlobalHistoryList::launchGlobalHistory(view_histQueue &queue)
     {
         tuple = queue.front();
         queue.pop();
+        float price = tuple.getHistPrice();
 
         model->item(i,0)->setText(tuple.getHistName());
         model->item(i,1)->setText(tuple.getHistFirstName());
         model->item(i,2)->setText(tuple.getHistOperation());
         model->item(i,3)->setText(tuple.getHistDate());
-        model->item(i,4)->setText(QString::number(tuple.getHistPrice()));
+        if(price > 0 || tuple.getHistOperation() == "DEBIT/CREDIT")
+            model->item(i,4)->setText(QString::number(price));
+        else
+            model->item(i,4)->setText("Cash");
+
+        QBrush negativeColor(QColor(242,222,222)), positiveColor(QColor(159, 255, 140)), normalColor(QColor(255,255,255));
+        QBrush *color;
+        if(tuple.getHistOperation() == "DEBIT/CREDIT")
+        {
+            if(price > 0)
+                color = &positiveColor;
+            else
+                color = &negativeColor;
+        }
+        else
+            color = &normalColor;
+        for(int j=0 ; j < columns ; j++)
+            model->item(i,j)->setBackground(*color);
     }
     //table->sortItems(0, Qt::AscendingOrder);
     //table->sortByColumn(0, Qt::AscendingOrder);

@@ -48,12 +48,11 @@ void Login::validate()
         login->clear();
         passwd->clear();
         this->hide();
-        qDebug() << "hidden";
     }
     else
     {
         login->clear();
-        passwd->clear();qDebug() << "shown";
+        passwd->clear();
     }
 
 }

@@ -23,6 +23,7 @@ class Calculator : public Popup
     Q_OBJECT
 public:
     explicit Calculator(QWidget *parent = 0);
+    ~Calculator(){delete[] buttons;}
     void setController(Controller* controller);
     void launchCalculator();
 

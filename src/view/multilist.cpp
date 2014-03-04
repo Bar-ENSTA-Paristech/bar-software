@@ -45,7 +45,9 @@ MultiList::MultiList(QWidget *parent, int column, int row, bool _isSortable)
     sortColumn = 0;
     //table->sortItems(0, Qt::AscendingOrder);
     model->sort(0, Qt::AscendingOrder);
-    table->setAlternatingRowColors(true);
+    //table->setAlternatingRowColors(true);
+
+    QObject::connect(table, SIGNAL(entered(QModelIndex)), this, SLOT(lineEntered(QModelIndex)));
 
     //QObject::connect(table->horizontalHeader(), SIGNAL(sectionClicked(int)), this, SLOT(sortItems(int)));
 }
@@ -99,8 +101,6 @@ void MultiList::setRows(int numberOfRows)
         {
             for(int j=0 ; j<columns ; j++)
             {
-                //rowItems[j] = new QTableWidgetItem();
-                //table->setItem(i,j, rowItems[j]);
                 rowItems[j] = new QStandardItem();
                 model->setItem(i,j, rowItems[j]);
             }
@@ -108,12 +108,6 @@ void MultiList::setRows(int numberOfRows)
             QStandardItem *verticalHeader = new QStandardItem();
             verticalHeader->setText("");
             model->setVerticalHeaderItem(i,verticalHeader);
-            //QTableWidgetItem* emptyHeader = new QTableWidgetItem();
-            //emptyHeader->setText("");
-            //table->setVerticalHeaderItem(i, emptyHeader);
-            /*QHeaderView* header = new QHeaderView(Qt::Vertical, table);
-            header->
-            table->setVerticalHeader(header);*/
         }
         rowsAllocated += 500;
         // We reset visible the rows that were hidden and need to be use now
@@ -158,11 +152,14 @@ void MultiList::updateHeadersSize(int defaultWidth, int* stretchColumns, int hid
         table->setRowHidden(i, true);
 }
 
+void MultiList::lineEntered(QModelIndex index)
+{
+    rowFocused = index.row();
+}
+
 
 MultiList::~MultiList()
 {
-
-    delete table;
     delete[] stretchColumns;
     delete[] headers;
 }

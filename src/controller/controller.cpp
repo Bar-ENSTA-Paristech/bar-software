@@ -54,7 +54,6 @@ void Controller::mainController()
 
     newText_Search( emptyString );
     newGlobal_Hist();
-
 }
 
 
@@ -189,7 +188,7 @@ void Controller::newClic_ValidateCart(bool isCash)
     database->openDatabase();
     if (curCustomer->getCustomerId()==0)
     {
-        cashTrans=1;
+        cashTrans=true;
     }
     else
     {}
@@ -204,8 +203,11 @@ void Controller::newClic_ValidateCart(bool isCash)
 
             histToBeInserted.setHistCustomerId(curCustomer->getCustomerId());
             histToBeInserted.setHistProductId(db_productInfo.getProductId());
-            histToBeInserted.setHistPrice(db_productInfo.getProductPrice());
-            qDebug()<<"Modifde l'hist";
+            if(cashTrans)
+                histToBeInserted.setHistPrice(0);
+            else
+                histToBeInserted.setHistPrice(db_productInfo.getProductPrice());
+            qDebug()<<"Modif de l'hist";
             database->addHist(histToBeInserted);
         }
 
@@ -225,6 +227,17 @@ void Controller::newClic_ValidateCart(bool isCash)
     }
 
     editedCustomer = database->getCustomerFromId(curCustomer->getCustomerId()).transformIntoCustomerView();
+
+    //update caisse if it is cash
+    if(cashTrans)
+    {
+        db_finop_tuple finopTuple;
+        finopTuple.setOpType(CASH);
+        finopTuple.setOpValue(curCart->getPrice());
+        database->addHistCashier(finopTuple);
+        database->updateAccountValue(curCart->getPrice(), CAISSE);
+    }
+
     database->closeDatabase();
     qDebug()<<"Validated cart";
 
@@ -396,12 +409,15 @@ bool Controller::view_isLoginCorrect(QString login, QString passwd, LoginType lo
     switch (loginType){
     case GLOBAL:
         _login="global";
+        currentLoggedCustomer = "";
         break;
     case ROOT:
         _login="root";
+        currentLoggedCustomer = "";
         break;
     case INDIVIDUAL:
         _login=login.toStdString();
+        currentLoggedCustomer = _login;
         break;
     }
     _truepass= database->getPassword(_login);
@@ -622,20 +638,65 @@ void Controller::receiveCalculatorEntry(float amount, bool isPaidByCard)
     dbTuple.setCustomerCategory(curCustomer->getCategory());
     dbTuple.setCustomerBalance(curCustomer->getBalance());
 
-    // ###### A voir si on envoie isPaidByCash au modele qu'il gère l'affaire, ou que le controlleur gère la caisse etc.
     database->editCustomerAccount(dbTuple);
+
+    // Ajout dans l'historique
+    db_histTuple histToBeInserted;
+    histToBeInserted.setHistCustomerId(curCustomer->getCustomerId());
+    histToBeInserted.setHistProductId(0);
+    histToBeInserted.setHistPrice(amount);
+    qDebug()<<"Modif de l'hist";
+    database->addHist(histToBeInserted);
 
     //Send updated information to view so it can display the new customer info
     newText_Search(curSearch);
     curCustomer->setBalance(curCustomer->getBalance() + amount);
     view_curCustomer->setCustomerBalance(view_curCustomer->getCustomerBalance() + amount);
     view->customerPanel->setCustomer(*view_curCustomer);
+    database->closeDatabase();
+
+    // refresh historique
+    newGlobal_Hist();
+
+    // update caisse / BDE
+    database->openDatabase(); // if merge with the database opening above, crash appears ...
+    db_finop_tuple finopTuple;
+    finopTuple.setOpValue(amount);
+    if(isPaidByCard)
+    {
+        finopTuple.setOpType(CB);
+        database->transferToBDE(finopTuple);
+        database->updateAccountValue(amount, BDE);
+    }
+    else
+    {
+        finopTuple.setOpType(CASH);
+        database->addHistCashier(finopTuple);
+        database->updateAccountValue(amount, CAISSE);
+    }
 
     database->closeDatabase();
+    if(currentLoggedCustomer != "")
+    {
+        std::string log;
+        log = currentLoggedCustomer + " -> " + std::to_string(amount) + "€ to " + curCustomer->getFirstName() + " " + curCustomer->getName()+
+                " (id:"+std::to_string(curCustomer->getCustomerId())+")";
+        appendLog(log);
+    }
 }
 
 void Controller::receiveEditCustomerEntry(view_customerTuple& customer)
 {
+    if(currentLoggedCustomer != "")
+    {
+        std::string log;
+        log = currentLoggedCustomer + " -> changed " + curCustomer->getFirstName() + " " + curCustomer->getName()+ " " + std::to_string(curCustomer->getCategory()) +" (id " +
+                std::to_string(curCustomer->getCustomerId()) + ", login :"+ curCustomer->getLogin() + ") to " + customer.getCustomerFirstName().toStdString()+
+                " " + customer.getCustomerName().toStdString() + " " + std::to_string(customer.getCustomerCategory())+ " (login : " +
+                customer.getCustomerLogin().toStdString()+ ")";
+        appendLog(log);
+    }
+
     curCustomer->setCategory(customer.getCustomerCategory());
     curCustomer->setFirstName(customer.getCustomerFirstName().toStdString());
     curCustomer->setLogin(customer.getCustomerLogin().toStdString());
@@ -698,14 +759,45 @@ void Controller::newClic_NewCustomer()
     currentLoginRequest = NEW_CUSTOMER;
 }
 
-void Controller::receiveNewCustomerEntry(view_customerTuple& customer)
+void Controller::receiveNewCustomerEntry(view_customerTuple& customer, bool isCash)
 {
     db_customerTuple dbTuple;
+    db_finop_tuple finopTuple;
+    finopTuple.setOpValue(customer.getCustomerBalance());
 
     database->openDatabase();
     dbTuple = customer.transformIntoCustomerDb();
     qDebug() << database->createCustomerAccount( dbTuple );
+    // Updating caisse / BDE
+    if(finopTuple.getOpValue() != 0)
+    {
+        if(isCash)
+        {
+            finopTuple.setOpType(CASH);
+            database->addHistCashier(finopTuple);
+            database->updateAccountValue(finopTuple.getOpValue(), CAISSE);
+        }
+        else
+        {
+            finopTuple.setOpType(CB);
+            database->transferToBDE(finopTuple);
+            database->updateAccountValue(finopTuple.getOpValue(), BDE);
+        }
+    }
     database->closeDatabase();
+    if(currentLoggedCustomer != "")
+    {
+        std::string cash;
+        if(isCash)
+            cash="Paid with Cash";
+        else
+            cash = "Paid by Card";
+        std::string log;
+        log = currentLoggedCustomer + " -> created " + customer.getCustomerFirstName().toStdString()+
+                " " + customer.getCustomerName().toStdString() + " " + std::to_string(customer.getCustomerCategory())+ " (login : " +
+                customer.getCustomerLogin().toStdString()+ ") with account of " + std::to_string(customer.getCustomerBalance()) + "€ "+ cash;
+        appendLog(log);
+    }
 }
 
 void Controller::newClic_AddStock()
@@ -719,6 +811,7 @@ void Controller::receiveNewStocks(view_productQueue& products)
 {
     view_productTuple view_tuple;
     db_productTuple db_tuple;
+    std::string stocks = "";
     unsigned n = products.size();
 
     database->openDatabase();
@@ -729,8 +822,16 @@ void Controller::receiveNewStocks(view_productQueue& products)
         db_tuple = database->getProductFromId(view_tuple.getProductId());
         db_tuple.setProductStock(db_tuple.getProductStock() + view_tuple.getProductStock());
         database->editProduct(db_tuple);
+        stocks += " - " + db_tuple.getProductName() + " " + std::to_string(db_tuple.getProductVolume())+ "cL"+ " : "+std::to_string(view_tuple.getProductStock());
     }
     database->closeDatabase();
+
+    if(currentLoggedCustomer != "")
+    {
+        std::string log;
+        log = currentLoggedCustomer + " -> added stocks " + stocks;
+        appendLog(log);
+    }
 }
 
 void Controller::newClic_AddProduct()
@@ -750,6 +851,14 @@ void Controller::receiveNewProduct(view_productTuple& product)
     database->closeDatabase();
     // Par contre un refresh des produits serait pas mal du coup
     this->newClic_ProductTypes(currentConsoTypeIndex);
+
+    if(currentLoggedCustomer != "")
+    {
+        std::string log;
+        log = currentLoggedCustomer + " -> created " + std::to_string(product.getProductCategory()) + " "+product.getProductName().toStdString()+ " "+
+                std::to_string(product.getProductVolume())+ "cL "+ std::to_string(product.getProductPrice())+ "€. Stock : " + std::to_string(product.getProductStock());
+        appendLog(log);
+    }
 }
 
 void Controller::newClic_EditProduct()
@@ -768,6 +877,14 @@ void Controller::receiveEditProduct(view_productTuple& product, bool deleteProdu
     {
         database->deleteProduct(product.getProductId());
         database->closeDatabase();
+
+        if(currentLoggedCustomer != "")
+        {
+            std::string log;
+            log = currentLoggedCustomer + " -> deleted product of category" + std::to_string(product.getProductCategory()) + " with id "+std::to_string(product.getProductId() );
+            appendLog(log);
+        }
+
         return;
     }
     db_tuple = product.transformIntoProductDb();
@@ -775,6 +892,11 @@ void Controller::receiveEditProduct(view_productTuple& product, bool deleteProdu
     database->closeDatabase();
     // refresh de la gui
     this->newClic_ProductTypes(currentConsoTypeIndex);
+
+    std::string log;
+    log = currentLoggedCustomer + " -> edited product of " + std::to_string(product.getProductCategory()) + " with id " + std::to_string(product.getProductId()) + " into " +
+            product.getProductName().toStdString()+ " "+std::to_string(product.getProductVolume())+ "cL "+std::to_string(product.getProductPrice())+ "€.";
+    appendLog(log);
 }
 
 
@@ -832,17 +954,22 @@ void Controller::newClic_Stats()
     view_statsTuple statsTuple;
     db_customerTuple custTuple;
     std::string emptyString;
+    database->openDatabase();
+    db_categoryQueue prodCatQueue = database->getProdCategories();
+    database->closeDatabase();
+    int NUMBER_OF_CATEGORIES = prodCatQueue.size();
     view_productQueue queues[NUMBER_OF_CATEGORIES];
     for(int i=0 ; i<NUMBER_OF_CATEGORIES ; i++)
-        queues[i] = this->getProductsOfCategorie((unsigned)i);
+        queues[i] = this->getProductsOfCategorie((unsigned)i + 1); // 0 is reserved for +/-
     database->openDatabase();
     db_customerQueue custQueue = database->searchCustomer(emptyString);
     db_productQueue prodQueue = database->getAllProducts();
+    statsTuple.moneyInCashRegister = database->getAccountValue(CAISSE);
     database->closeDatabase();
     statsTuple.numberOfCustomers = custQueue.size();
     statsTuple.numberOfProducts = prodQueue.size();
     statsTuple.accountsTotal = 0;
-    for(int i = 0 ; i < statsTuple.numberOfCustomers ; i++)
+    for(unsigned i = 0 ; i < statsTuple.numberOfCustomers ; i++)
     {
         custTuple = custQueue.front();
         custQueue.pop();
@@ -863,6 +990,47 @@ void Controller::newClic_Admin()
 void Controller::receiveAdminInfos(AdminTuple tuple)
 {
     // TO COMPLETE
+    if(tuple.cashTransfered != 0)
+    {
+        db_finop_tuple finopTuple;
+        finopTuple.setOpValue(tuple.cashTransfered);
+        finopTuple.setOpType(CASH);
+        database->openDatabase();
+        database->transferToBDE(finopTuple);
+        database->updateAccountValue(tuple.cashTransfered, BDE);
+        database->updateAccountValue(-tuple.cashTransfered, CAISSE);
+        database->closeDatabase();
+
+        std::string log;
+        log = currentLoggedCustomer + " -> transfered " + std::to_string(tuple.cashTransfered) + "€ to the BDE";
+        appendLog(log);
+    }
+    if(tuple.newCustCategoryName != "")
+    {
+        db_categoryTuple catTuple;
+        catTuple.setCategoryId(tuple.custCategoryID);
+        catTuple.setCategoryName(tuple.newCustCategoryName);
+        database->openDatabase();
+        database->editCustCategory(catTuple);
+        database->openDatabase();
+
+        std::string log;
+        log = currentLoggedCustomer + " -> changed name of customer category (" + std::to_string(catTuple.getCategoryId()) + ") to "+catTuple.getCategoryName();
+        appendLog(log);
+    }
+    if(tuple.newProdCategoryName != "")
+    {
+        db_categoryTuple catTuple;
+        catTuple.setCategoryId(tuple.prodCategoryID);
+        catTuple.setCategoryName(tuple.newProdCategoryName);
+        database->openDatabase();
+        database->editProdCategory(catTuple);
+        database->openDatabase();
+
+        std::string log;
+        log = currentLoggedCustomer + " -> changed name of product category (" + std::to_string(catTuple.getCategoryId()) + ") to "+catTuple.getCategoryName();
+        appendLog(log);
+    }
 }
 
 void Controller::newClic_Category(int id)
@@ -945,4 +1113,95 @@ void Controller::newClic_IndividualHistory_old(int customerId)
 void Controller::newClic_IndividualGraph(int customerId)
 {
     // To define
+}
+
+std::string Controller::xorCrypt(std::string input)
+{
+    // Here is defined the key
+    char key[] = "R@b&";
+    int nKey=0;
+    while(key[nKey] != '\0')
+        nKey++;
+
+    int n = input.size();
+    const char *buffer;
+    char tmpBuffer;
+    char *cryptedBuffer;
+    cryptedBuffer = new char[input.size() + 1]; // +1 for \0
+    buffer = input.c_str();
+    for(int i = 0 ; i < n ; i++)
+    {
+        if(buffer[i] != -1) // If there is a -1 (very rare character), it might be the one inserted because there was a 0 in crypted string. So it is replaced by a 0
+            tmpBuffer = buffer[i];
+        else
+            tmpBuffer = 0;
+        cryptedBuffer[i] = key[i % nKey] ^ tmpBuffer;
+        if(cryptedBuffer[i] == '\0') // To avoid any cut of the string : '\0' means end of the string in char*
+            cryptedBuffer[i] = -1;
+    }
+    cryptedBuffer[n] = '\0';
+    std::string output(cryptedBuffer);
+
+    delete[] cryptedBuffer;
+    return output;
+}
+
+void Controller::appendLog(std::string log)
+{
+    time_t currentTime = time(NULL);
+    tm* timePtr = localtime(&currentTime);
+    char month_year[10];
+    if(timePtr->tm_mon < 9) // tm_mon starts at 0 for january
+        sprintf(month_year, "%d-0%d", timePtr->tm_year + 1900, timePtr->tm_mon+1); // year count start at year 1900 & there is a 0 before month to keep always 2 number. Eg 2014-03 and not 2014-3
+    else
+        sprintf(month_year, "%d-%d", timePtr->tm_year + 1900, timePtr->tm_mon+1); // year count start at year 1900
+    std::string path = GLOBAL_PATH.toStdString();
+    path += "resources/system_files/";
+    path += month_year;
+    path += ".txt";
+    std::string date(asctime(timePtr));
+    date.pop_back(); // suppression du retour à la ligne
+    log = date + " " + log;
+
+    // lecture de l'ensemble pour décryptage afin d'insérer la nouvelle ligne
+    FILE* logFile = fopen(path.c_str(), "r");
+    fseek(logFile,0,SEEK_END);
+    long sizeOfLog = ftell(logFile);
+    char *buffer = (char*) malloc((sizeOfLog+1)*sizeof(char));
+    fseek(logFile,0,SEEK_SET); std::cout << "avant:" << ftell(logFile) << " : " << buffer << std::endl;
+    fread(buffer, sizeof(char), sizeOfLog, logFile);
+    fclose(logFile);
+    buffer[sizeOfLog] = '\0';
+    std::string logCrypted(buffer);std::cout << "apres:" << logCrypted << std::endl;
+    std::string logUncrpyted = xorCrypt(logCrypted);
+    logUncrpyted += log + '\n';
+    logCrypted = xorCrypt(logUncrpyted);
+
+    // Ecriture de l'ensemble crypté dans le fichier
+    logFile = fopen(path.c_str(), "w");
+    fwrite(logCrypted.c_str(), sizeof(char), logCrypted.size(), logFile);
+    fclose(logFile);
+}
+
+QString Controller::getLog(int month, int year)
+{
+    QString log;
+    std::string cryptedLog, path, monthStr;
+    char *buffer;
+    if(month < 10)
+        monthStr = "0" + std::to_string(month);
+    else
+        monthStr = std::to_string(month);
+    path = GLOBAL_PATH.toStdString() + "resources/system_files/" + std::to_string(year) + "-" + monthStr + ".txt";
+    FILE* file = fopen(path.c_str(), "r");
+    fseek(file,0,SEEK_END);
+    long sizeOfLog = ftell(file);
+    buffer = (char*) malloc((sizeOfLog+1)*sizeof(char));
+    fseek(file,0,SEEK_SET);
+    fread(buffer, sizeof(char), sizeOfLog, file);
+    fclose(file);
+    buffer[sizeOfLog] = '\0';
+    cryptedLog.assign(buffer);
+    log = QString::fromStdString(xorCrypt(cryptedLog));
+    return log;
 }

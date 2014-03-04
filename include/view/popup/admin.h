@@ -5,6 +5,8 @@
 #include <QCheckBox>
 #include <QGridLayout>
 #include <QPushButton>
+#include <QFile>
+#include <QTextEdit>
 #include "popup.h"
 #include "controller.h"
 #include "structures.h"
@@ -30,6 +32,15 @@ private:
     //QCheckBox* negativeAllowed;
     QLabel* cashTransferLabel;
     QLineEdit* cashTransfer;
+    QLabel* oldCustCategoryNameLabel;
+    QComboBox* oldCustCategoryName;
+    QLineEdit* newCustCategoryName;
+    QLabel* oldProdCategoryNameLabel;
+    QComboBox* oldProdCategoryName;
+    QLineEdit* newProdCategoryName;
+    QLabel *logLabel;
+    QLineEdit* logYear;
+    QPushButton* viewLog;
 
     
 public slots:
@@ -37,6 +48,7 @@ public slots:
     void clickOnGlobalHistory();
     void clickOnIndividualHistory();
     void clickOnIndividualGraph();
+    void clickOnViewLog();
     
 };
 

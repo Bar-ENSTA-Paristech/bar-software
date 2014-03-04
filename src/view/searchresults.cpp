@@ -47,6 +47,14 @@ void SearchResults::setSearchResults(view_customerQueue & queue)
     // TUPLE : QString name, QString firstName, QString categorie, float balance, unsigned id
     view_customerTuple tuple;
     table->setModel(NULL);
+    db_categoryQueue cat_queue = controller->getCustomerCategories();
+    std::vector <db_categoryTuple> categories;
+    int n = cat_queue.size();
+    for(int i=0 ; i<n ; i++)
+    {
+        categories.push_back(cat_queue.front());
+        cat_queue.pop();
+    }
 
     // Inserting new results
     QBrush negativeSold(Qt::red);
@@ -68,7 +76,7 @@ void SearchResults::setSearchResults(view_customerQueue & queue)
 
         model->item(i,0)->setText(tuple.getCustomerName());
         model->item(i,1)->setText(tuple.getCustomerFirstName());
-        model->item(i,2)->setText(QString::number(tuple.getCustomerCategory()));
+        model->item(i,2)->setText(QString::fromStdString(categories[tuple.getCustomerCategory()].getCategoryName()));
         model->item(i,3)->setText(QString::number(balance));
         model->item(i,4)->setText(QString::number(tuple.getCustomerId()));
     }
@@ -83,4 +91,15 @@ void SearchResults::setSearchResults(view_customerQueue & queue)
 void SearchResults::lineClicked(QModelIndex index)
 {
     controller->newClic_Customer((unsigned) model->item(index.row(),4)->text().toInt());
+}
+
+void SearchResults::setFocus()
+{
+    table->setFocus();
+}
+
+void SearchResults::selectFocusedCustomer()
+{
+    if(table->hasFocus())
+        lineClicked(table->currentIndex());
 }

@@ -3,6 +3,7 @@
 
 #include <QString>
 #include <string>
+#include <cstdio>
 
 #include <memory>
 
@@ -81,7 +82,7 @@ public:
     std::queue<QString> newCustCategoryList();
     void receiveCalculatorEntry(float amount, bool isPaidByCard);
     void receiveEditCustomerEntry(view_customerTuple& customer);
-    void receiveNewCustomerEntry(view_customerTuple& customer);
+    void receiveNewCustomerEntry(view_customerTuple& customer, bool isCash);
     void receiveNewStocks(view_productQueue& products);
     void receiveNewProduct(view_productTuple& product);
     void receiveEditProduct(view_productTuple& product, bool deleteProduct = false);
@@ -101,9 +102,18 @@ public:
     void displayProductGraph(int id, bool consumption);
     void setCurrentLoginRequest(LoginObjects _currentLoginRequest){currentLoginRequest = _currentLoginRequest;}
     db_categoryQueue getConsoTypes(){return consoTypes;}
+    db_categoryQueue getCustomerCategories(){
+        db_categoryQueue queue; database->openDatabase(); queue=database->getCustCategories(); database->closeDatabase(); return queue;}
+    db_categoryQueue getProductsCategories(){
+        db_categoryQueue queue; database->openDatabase(); queue=database->getProdCategories(); database->closeDatabase(); return queue;}
 
     void setDb(sqlite3*);
     sqlite3* getDb();
+
+    std::string xorCrypt(std::string input); // Crypte la sortie avec la méthode xor
+    void appendLog(std::string log); // Ajoute un évenement au log
+    QString getLog(int month, int year);
+
 
 private:
         /* View objects */
@@ -121,6 +131,7 @@ private:
     Customer * curCustomer;
     Cart * curCart;
     QString curSearch;
+    std::string currentLoggedCustomer;
 
         /* Model objects */
     Database* database;
