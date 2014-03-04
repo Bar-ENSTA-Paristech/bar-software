@@ -830,6 +830,7 @@ db_histQueue Database::getLastOperations(int limit)
     delete hist;
     delete queryResultFunction;
     return result;
+    clear(*queryResult);
 
 }
 // hist.conso_price n'est pas dans la db actuellement, il faudra faire avec conso.price
@@ -854,15 +855,15 @@ db_histQueue Database::getCustomerHist(unsigned id, bool old)
         //Utiliser des jointures
         // From client_id -> nom + prénom
         // From conso_id -> conso + prix
-        std::string queryString="SELECT notes.nom, notes.prenom,consos.nom, consos.prix, hist.date_conso ";
-        queryString+="FROM hist ";
+        std::string queryString="SELECT historique.his_id, notes.nom, notes.prenom,consos.nom, consos.prix, historique.date_conso ";
+        queryString+="FROM historique ";
         queryString+="LEFT JOIN consos ";
-        queryString+="ON consos.conso_id = hist.conso_id ";
+        queryString+="ON consos.conso_id = historique.conso_id ";
         queryString+="LEFT JOIN notes ";
-        queryString+="ON notes.client_id=hist.client_id ";
+        queryString+="ON notes.client_id=historique.client_id ";
         queryString+="WHERE notes.client_id=";
         queryString+=id_String;
-        queryString+=" ORDER BY hist.date_conso DESC ;";
+        queryString+=" ORDER BY historique.date_conso DESC ;";
 
         query.setQuery(queryString);
         query.setVerbose(1);
@@ -870,7 +871,7 @@ db_histQueue Database::getCustomerHist(unsigned id, bool old)
     }
     else
     {
-        std::string queryString="SELECT notes.nom, notes.prenom,consos.nom, consos.prix, historique_save.date_conso ";
+        std::string queryString="SELECT historique_save.his_id, notes.nom, notes.prenom,consos.nom, consos.prix, historique_save.date_conso ";
         queryString+="FROM historique_save ";
         queryString+="LEFT JOIN consos ";
         queryString+="ON consos.conso_id = historique_save.conso_id ";
@@ -878,7 +879,7 @@ db_histQueue Database::getCustomerHist(unsigned id, bool old)
         queryString+="ON notes.client_id=historique_save.client_id ";
         queryString+="WHERE notes.client_id=";
         queryString+=id_String;
-        queryString+=" ORDER BY historique.date_conso DESC ;";
+        queryString+=" ORDER BY historique_save.date_conso DESC ;";
 
         query.setQuery(queryString);
         query.setVerbose(1);
@@ -924,6 +925,7 @@ db_histQueue Database::getCustomerHist(unsigned id, bool old)
     delete hist;
     delete queryResultFunction;
     return result;
+    clear(*queryResult);
 
 }
 
@@ -994,6 +996,13 @@ db_histQueue Database::getProductHist(unsigned id,bool old)
         float recuperatedPrice;
         unsigned recuperatedId;
 
+        if (vectorFromQueue.at(4).compare(NULL)==0||vectorFromQueue.at(3).compare(NULL)==0||vectorFromQueue.at(2).compare(NULL)==0||vectorFromQueue.at(1).compare(NULL)==0)
+        {
+            return result;
+        }
+
+        else
+        {
         std::istringstream(vectorFromQueue[4]) >> recuperatedPrice;
         std::istringstream(vectorFromQueue[0]) >> recuperatedId;
 
@@ -1009,8 +1018,10 @@ db_histQueue Database::getProductHist(unsigned id,bool old)
         result.push(*hist);
         j++;
         vectorFromQueue.clear();
+        }
     }
     clear(queue);
+    clear(*queryResult);
     delete hist;
     delete queryResultFunction;
     return result;
@@ -1075,6 +1086,7 @@ db_customerTuple Database::getCustomerFromId(unsigned customerId)
     vectorFromQueue.clear();
     delete queryResultFunction;
     clear(queue);
+    clear(*queryResult);
     return customer;
 }
 
@@ -1099,6 +1111,7 @@ std::string Database::getPassword (std::string &login)
     queryResultFunction->pop();
     delete queryResultFunction;
     clear(queue);
+    clear(*queryResult);
     return result;
 }
 
@@ -1197,7 +1210,7 @@ int Database::editCustomerAccount(db_customerTuple tuple)
     std::cout<<queryString<<std::endl;
     query.setVerbose(1);
     code=executeQuery(query);
-
+    clear(*queryResult);
     return (code);
 }
 
