@@ -976,6 +976,35 @@ void Controller::newClic_Stats()
         statsTuple.accountsTotal += custTuple.getCustomerBalance();
     }
 
+    database->openDatabase();
+    db_finop_queue finopQueue = database->getBDEHist(0);
+    db_finop_tuple finopTuple;
+    unsigned queueSize = finopQueue.size();
+    statsTuple.moneyGivenThisYear = 0;
+    // Calcul de l'argent amené au bde cette année civile
+    for(unsigned i =0 ; i < queueSize ; i++)
+    {
+        finopTuple = finopQueue.front();
+        finopQueue.pop();
+        statsTuple.moneyGivenThisYear += finopTuple.getOpValue();
+    }
+    // close and open maybe useless
+    database->closeDatabase();
+    database->openDatabase();
+    // calcul pour l'année dernière
+    time_t currentTime = time(NULL);
+    tm* timePtr = localtime(&currentTime);
+    finopQueue = database->getBDEHist(timePtr->tm_year +1900 - 1); // year starts at 1900
+    queueSize = finopQueue.size();
+    statsTuple.moneyGivenLastYear = 0;
+    for(unsigned i =0 ; i < queueSize ; i++)
+    {
+        finopTuple = finopQueue.front();
+        finopQueue.pop();
+        statsTuple.moneyGivenLastYear += finopTuple.getOpValue();
+    }
+    database->closeDatabase();
+
     view->stats->launchStats(statsTuple, queues[0], queues[1], queues[2], queues[3], queues[4], queues[5]);
 
 }

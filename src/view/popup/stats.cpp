@@ -20,7 +20,13 @@ Stats::Stats(QWidget *parent) :
 	moneyGivenThisYear = new QLabel(frame);
 	moneyGivenLastYear = new QLabel(frame);
 	totalSoldThisYear = new QLabel(frame);
+    totalTVA_1SoldThisYear = new QLabel(frame);
+    totalTVA_2SoldThisYear = new QLabel(frame);
+    totalTVA_3SoldThisYear = new QLabel(frame);
 	totalSoldLastYear = new QLabel(frame);
+    totalTVA_1SoldLastYear = new QLabel(frame);
+    totalTVA_2SoldLastYear = new QLabel(frame);
+    totalTVA_3SoldLastYear = new QLabel(frame);
 	numberOfCustomers = new QLabel(frame);
 	numberOfProducts = new QLabel(frame);
 
@@ -29,7 +35,13 @@ Stats::Stats(QWidget *parent) :
 	moneyGivenThisYearLabel = new QLabel("Argent amené au bde cette année civile : ", frame);
 	moneyGivenLastYearLabel = new QLabel("Argent amené au bde l'année civile précédente : ", frame);
 	totalSoldThisYearLabel = new QLabel("Total chiffre d'affaire cette année civile : ", frame);
+    totalTVA_1SoldThisYearLabel = new QLabel("Dont TVA à taux réduit", frame);
+    totalTVA_2SoldThisYearLabel = new QLabel("Dont TVA intermédiaire", frame);
+    totalTVA_3SoldThisYearLabel = new QLabel("Dont TVA à taux plein", frame);
 	totalSoldLastYearLabel = new QLabel("Total chiffre d'affaire l'année civile précédente : ", frame);
+    totalTVA_1SoldLastYearLabel = new QLabel("Dont TVA à taux réduit", frame);
+    totalTVA_2SoldLastYearLabel = new QLabel("Dont TVA intermédiaire", frame);
+    totalTVA_3SoldLastYearLabel = new QLabel("Dont TVA à taux plein", frame);
 	numberOfCustomersLabel = new QLabel("Nombre de comptes : ", frame);
 	numberOfProductsLabel = new QLabel("Nombre total de produits : ", frame);
 
@@ -65,18 +77,30 @@ Stats::Stats(QWidget *parent) :
     layout->addWidget(moneyGivenThisYearLabel, 2, 0);
     layout->addWidget(moneyGivenLastYearLabel, 3, 0);
     layout->addWidget(totalSoldThisYearLabel, 4, 0);
-	layout->addWidget(totalSoldLastYearLabel, 5, 0);
-	layout->addWidget(numberOfCustomersLabel, 6, 0);
-	layout->addWidget(numberOfProductsLabel, 7, 0);
+    layout->addWidget(totalTVA_1SoldThisYearLabel, 5, 0);
+    layout->addWidget(totalTVA_2SoldThisYearLabel, 6, 0);
+    layout->addWidget(totalTVA_3SoldThisYearLabel, 7, 0);
+    layout->addWidget(totalSoldLastYearLabel, 8, 0);
+    layout->addWidget(totalTVA_1SoldLastYearLabel, 9, 0);
+    layout->addWidget(totalTVA_2SoldLastYearLabel, 10, 0);
+    layout->addWidget(totalTVA_3SoldLastYearLabel, 11, 0);
+    layout->addWidget(numberOfCustomersLabel, 12, 0);
+    layout->addWidget(numberOfProductsLabel, 13, 0);
 
 	layout->addWidget(accountsTotal, 0, 1);
 	layout->addWidget(moneyInCashRegister, 1, 1);
 	layout->addWidget(moneyGivenThisYear, 2, 1);
 	layout->addWidget(moneyGivenLastYear, 3, 1);
 	layout->addWidget(totalSoldThisYear, 4, 1);
-	layout->addWidget(totalSoldLastYear, 5, 1);
-	layout->addWidget(numberOfCustomers, 6, 1);
-	layout->addWidget(numberOfProducts, 7, 1);
+    layout->addWidget(totalTVA_1SoldThisYear, 5, 1);
+    layout->addWidget(totalTVA_2SoldThisYear, 6, 1);
+    layout->addWidget(totalTVA_3SoldThisYear, 7, 1);
+    layout->addWidget(totalSoldLastYear, 8, 1);
+    layout->addWidget(totalTVA_1SoldLastYear, 9, 1);
+    layout->addWidget(totalTVA_2SoldLastYear, 10, 1);
+    layout->addWidget(totalTVA_3SoldLastYear, 11, 1);
+    layout->addWidget(numberOfCustomers, 12, 1);
+    layout->addWidget(numberOfProducts, 13, 1);
 
     layout->addWidget(stocks0Label, 20, 0, 1, 2, Qt::AlignCenter);
 	layout->addWidget(stocks1Label, 22, 0, 1, 2, Qt::AlignCenter);
@@ -122,7 +146,13 @@ void Stats::launchStats(view_statsTuple& stats, view_productQueue& category0, vi
     moneyGivenThisYear->setText(QString::number(stats.moneyGivenThisYear) + " €");
     moneyGivenLastYear->setText(QString::number(stats.moneyGivenLastYear) + " €");
     totalSoldThisYear->setText(QString::number(stats.totalSoldThisYear) + " €");
+    totalTVA_1SoldThisYear->setText(QString::number(stats.totalSoldThisYearTVA1) + " €");
+    totalTVA_2SoldThisYear->setText(QString::number(stats.totalSoldThisYearTVA2) + " €");
+    totalTVA_3SoldThisYear->setText(QString::number(stats.totalSoldThisYearTVA3) + " €");
     totalSoldLastYear->setText(QString::number(stats.totalSoldLastYear) + " €");
+    totalTVA_1SoldLastYear->setText(QString::number(stats.totalSoldLastYearTVA1) + " €");
+    totalTVA_2SoldLastYear->setText(QString::number(stats.totalSoldLastYearTVA2) + " €");
+    totalTVA_3SoldLastYear->setText(QString::number(stats.totalSoldLastYearTVA3) + " €");
     numberOfCustomers->setText(QString::number(stats.numberOfCustomers));
     numberOfProducts->setText(QString::number(stats.numberOfProducts));
 

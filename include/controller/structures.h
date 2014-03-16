@@ -265,7 +265,13 @@ public:
     float moneyGivenThisYear;
     float moneyGivenLastYear;
     float totalSoldThisYear;
+    float totalSoldThisYearTVA1;
+    float totalSoldThisYearTVA2;
+    float totalSoldThisYearTVA3;
     float totalSoldLastYear;
+    float totalSoldLastYearTVA1;
+    float totalSoldLastYearTVA2;
+    float totalSoldLastYearTVA3;
     unsigned numberOfCustomers;
     unsigned numberOfProducts;
 };
