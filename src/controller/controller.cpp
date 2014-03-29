@@ -399,7 +399,7 @@ bool Controller::view_isLoginCorrect(QString login, QString passwd, LoginType lo
     AdminTuple adminTuple;
     std::vector<QString> categories;
 
-    std::string _login;
+    std::string _login, log;
     std::string _truepass;
     // ######### TO COMPLETE #######
     int isLoginIncorrect, sizeOfQueue;
@@ -455,6 +455,8 @@ bool Controller::view_isLoginCorrect(QString login, QString passwd, LoginType lo
         case DELETE_CUSTOMER :
             view->currentPopup = view->deleteCustomer;
             view->deleteCustomer->printDelete(*view_curCustomer);
+            log = currentLoggedCustomer + " deleted account of customer " + curCustomer->getLogin() + " ("+std::to_string(curCustomer->getBalance())+"€)";
+            appendLog(log);
             database->openDatabase();
             database->deleteCustomerAccount(curCustomer->getCustomerId());
             database->closeDatabase();
@@ -908,6 +910,7 @@ bool Controller::newIndividualPassword(QString login, QString rootPasswd, QStrin
     database->openDatabase();
     std::string _login = "root";
     std::string currentRootPasswd = database->getPassword(_login);
+    //std::string hashedRootPasswd = hashPasswd(rootPasswd.toStdString());
     if(currentRootPasswd != rootPasswd.toStdString()) // Source de bug : A Hacher ?
         return false;
 
@@ -1233,4 +1236,11 @@ QString Controller::getLog(int month, int year)
     cryptedLog.assign(buffer);
     log = QString::fromStdString(xorCrypt(cryptedLog));
     return log;
+}
+
+std::string Controller::hashPasswd(std::string password)
+{
+    std::hash <std::string> hash;
+    unsigned long long hashedPassword = (unsigned long long) hash(password);
+    return std::to_string(hashedPassword);
 }

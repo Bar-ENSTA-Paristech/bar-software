@@ -1604,7 +1604,34 @@ void dumpHistOfDeletedCust (unsigned id)
 
 void Database::setPassword(std::string login, std::string password)
 {
+    int cat_pass;
+    if(login == "root")
+        cat_pass = 1;
+    else if(login == "global")
+        cat_pass = 2;
+    else
+        cat_pass = 3;
 
+    std::string queryString="";
+    Query query;
+
+    if(cat_pass == 1 || cat_pass == 2)
+    {
+        queryString += "UPDATE passwords SET password = '"+password+"' WHERE cat_pass = "+std::to_string(cat_pass)+";";
+    }
+    else // on doit vérifier l'existence ou non du mot de passe pour ce login. afin de savoir si on fait un update ou un insert
+    {
+        delete queryResult;
+        queryResult = new  std::queue<std::string>;
+        queryString += "SELECT login FROM passwords WHERE login = '"+login+"' ;";
+        query.setQuery(queryString);
+        query.setVerbose(1);
+        std::cout << queryString << std::endl;
+        executeQuery(query);
+        qDebug() << "Size : " << queryResult->size();
+    }
+
+    return;
 }
 
 void Database::addHistCashier(db_finop_tuple tuple) //Paiement par Cash/Chèque
