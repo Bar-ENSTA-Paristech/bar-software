@@ -74,6 +74,7 @@ public slots:
     void root_validate();
     void cancel();
     void reset();
+    void individual_loginChanged(QString); // To avoid any change of login after the boss entered the root password
     
 };
 

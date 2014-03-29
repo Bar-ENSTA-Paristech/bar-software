@@ -1605,6 +1605,7 @@ void dumpHistOfDeletedCust (unsigned id)
 void Database::setPassword(std::string login, std::string password)
 {
     int cat_pass;
+    bool loginHasPasswd = false;
     if(login == "root")
         cat_pass = 1;
     else if(login == "global")
@@ -1628,8 +1629,25 @@ void Database::setPassword(std::string login, std::string password)
         query.setVerbose(1);
         std::cout << queryString << std::endl;
         executeQuery(query);
-        qDebug() << "Size : " << queryResult->size();
+        if(queryResult->size() > 1) // because there is at least the \n at end of results
+            loginHasPasswd = true;
     }
+    delete queryResult;
+    queryResult = new  std::queue<std::string>;
+    if(cat_pass == 3 && loginHasPasswd) // Mise à jour du mot de passe
+    {
+        queryString = "UPDATE passwords SET password = '" + password +"' ";
+        queryString +=  "WHERE login = '"+login+"' ;";
+    }
+    else if (cat_pass == 3 && !loginHasPasswd) // Création du mot de passe
+    {
+        queryString = "INSERT INTO passwords (cat_pass, login, password) VALUES (";
+        queryString += std::to_string(cat_pass)+ ", '"+login+"', '"+password+"');";
+    }
+    query.setQuery(queryString);
+    query.setVerbose(1);
+    std::cout << queryString << std::endl;
+    executeQuery(query);
 
     return;
 }

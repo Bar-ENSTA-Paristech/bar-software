@@ -422,8 +422,9 @@ bool Controller::view_isLoginCorrect(QString login, QString passwd, LoginType lo
     }
     _truepass= database->getPassword(_login);
     database->closeDatabase();
+    std::string hashedPasswd = hashPasswd(passwd.toStdString());
 
-    isLoginIncorrect= _truepass.compare(passwd.toStdString());
+    isLoginIncorrect= _truepass.compare(hashedPasswd);
 
     if(isLoginIncorrect)
     {
@@ -910,11 +911,12 @@ bool Controller::newIndividualPassword(QString login, QString rootPasswd, QStrin
     database->openDatabase();
     std::string _login = "root";
     std::string currentRootPasswd = database->getPassword(_login);
-    //std::string hashedRootPasswd = hashPasswd(rootPasswd.toStdString());
-    if(currentRootPasswd != rootPasswd.toStdString()) // Source de bug : A Hacher ?
+    std::string hashedRootPasswd = hashPasswd(rootPasswd.toStdString());
+    if(currentRootPasswd != hashedRootPasswd)
         return false;
 
-    database->setPassword(login.toStdString(), passwd1.toStdString());
+    std::string newHashedPasswd = hashPasswd(passwd1.toStdString());
+    database->setPassword(login.toStdString(), newHashedPasswd);
     database->closeDatabase();
     return true;
 }
@@ -927,10 +929,12 @@ bool Controller::newGlobalPassword(QString globalPasswd, QString passwd1, QStrin
     database->openDatabase();
     std::string _login = "global";
     std::string currentGlobalPasswd = database->getPassword(_login);
-    if(currentGlobalPasswd != globalPasswd.toStdString()) // Source de bug : A Hacher ?
+    std::string hashedGlobalPasswd = hashPasswd(globalPasswd.toStdString());
+    if(currentGlobalPasswd != hashedGlobalPasswd)
         return false;
 
-    database->setPassword(_login, passwd1.toStdString());
+    std::string newHashedPasswd = hashPasswd(passwd1.toStdString());
+    database->setPassword(_login, newHashedPasswd);
     database->closeDatabase();
     return true;
 }
@@ -943,10 +947,12 @@ bool Controller::newRootPassword(QString rootPasswd, QString passwd1, QString pa
     database->openDatabase();
     std::string _login = "root";
     std::string currentRootPasswd = database->getPassword(_login);
-    if(currentRootPasswd != rootPasswd.toStdString()) // Source de bug : A Hacher ?
+    std::string hashedRootPasswd = hashPasswd(rootPasswd.toStdString());
+    if(currentRootPasswd != hashedRootPasswd) // Source de bug : A Hacher ?
         return false;
 
-    database->setPassword(_login, passwd1.toStdString());
+    std::string newHashedPasswd = hashPasswd(passwd1.toStdString());
+    database->setPassword(_login, newHashedPasswd);
     database->closeDatabase();
     return true;
 }
@@ -1240,6 +1246,8 @@ QString Controller::getLog(int month, int year)
 
 std::string Controller::hashPasswd(std::string password)
 {
+    if(password == "")
+        return password;
     std::hash <std::string> hash;
     unsigned long long hashedPassword = (unsigned long long) hash(password);
     return std::to_string(hashedPassword);
