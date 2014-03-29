@@ -33,7 +33,13 @@ private:
     QLabel* moneyGivenThisYear;
     QLabel* moneyGivenLastYear;
     QLabel* totalSoldThisYear;
+    QLabel* totalTVA_1SoldThisYear;
+    QLabel* totalTVA_2SoldThisYear;
+    QLabel* totalTVA_3SoldThisYear;
     QLabel* totalSoldLastYear;
+    QLabel* totalTVA_1SoldLastYear;
+    QLabel* totalTVA_2SoldLastYear;
+    QLabel* totalTVA_3SoldLastYear;
     QLabel* numberOfCustomers;
     QLabel* numberOfProducts;
 
@@ -42,7 +48,13 @@ private:
     QLabel* moneyGivenThisYearLabel;
     QLabel* moneyGivenLastYearLabel;
     QLabel* totalSoldThisYearLabel;
+    QLabel* totalTVA_1SoldThisYearLabel;
+    QLabel* totalTVA_2SoldThisYearLabel;
+    QLabel* totalTVA_3SoldThisYearLabel;
     QLabel* totalSoldLastYearLabel;
+    QLabel* totalTVA_1SoldLastYearLabel;
+    QLabel* totalTVA_2SoldLastYearLabel;
+    QLabel* totalTVA_3SoldLastYearLabel;
     QLabel* numberOfCustomersLabel;
     QLabel* numberOfProductsLabel;
 

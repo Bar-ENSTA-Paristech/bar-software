@@ -111,6 +111,7 @@ public:
     sqlite3* getDb();
 
     std::string xorCrypt(std::string input); // Crypte la sortie avec la méthode xor
+    std::string hashPasswd(std::string password);
     void appendLog(std::string log); // Ajoute un évenement au log
     QString getLog(int month, int year);
 

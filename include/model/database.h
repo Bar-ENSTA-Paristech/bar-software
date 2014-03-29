@@ -89,7 +89,7 @@ public:
 
     void transferToBDE(db_finop_tuple tuple); // Paiement par CB ou Vidage de caisse//Paiement des factures
 
-    db_finop_queue getBDEHist();
+    db_finop_queue getBDEHist(int year=0); // 0 for current year / -1 for all
 
     db_finop_queue getCashierHist();
 

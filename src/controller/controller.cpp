@@ -399,7 +399,7 @@ bool Controller::view_isLoginCorrect(QString login, QString passwd, LoginType lo
     AdminTuple adminTuple;
     std::vector<QString> categories;
 
-    std::string _login;
+    std::string _login, log;
     std::string _truepass;
     // ######### TO COMPLETE #######
     int isLoginIncorrect, sizeOfQueue;
@@ -422,8 +422,9 @@ bool Controller::view_isLoginCorrect(QString login, QString passwd, LoginType lo
     }
     _truepass= database->getPassword(_login);
     database->closeDatabase();
+    std::string hashedPasswd = hashPasswd(passwd.toStdString());
 
-    isLoginIncorrect= _truepass.compare(passwd.toStdString());
+    isLoginIncorrect= _truepass.compare(hashedPasswd);
 
     if(isLoginIncorrect)
     {
@@ -455,6 +456,8 @@ bool Controller::view_isLoginCorrect(QString login, QString passwd, LoginType lo
         case DELETE_CUSTOMER :
             view->currentPopup = view->deleteCustomer;
             view->deleteCustomer->printDelete(*view_curCustomer);
+            log = currentLoggedCustomer + " deleted account of customer " + curCustomer->getLogin() + " ("+std::to_string(curCustomer->getBalance())+"€)";
+            appendLog(log);
             database->openDatabase();
             database->deleteCustomerAccount(curCustomer->getCustomerId());
             database->closeDatabase();
@@ -908,10 +911,12 @@ bool Controller::newIndividualPassword(QString login, QString rootPasswd, QStrin
     database->openDatabase();
     std::string _login = "root";
     std::string currentRootPasswd = database->getPassword(_login);
-    if(currentRootPasswd != rootPasswd.toStdString()) // Source de bug : A Hacher ?
+    std::string hashedRootPasswd = hashPasswd(rootPasswd.toStdString());
+    if(currentRootPasswd != hashedRootPasswd)
         return false;
 
-    database->setPassword(login.toStdString(), passwd1.toStdString());
+    std::string newHashedPasswd = hashPasswd(passwd1.toStdString());
+    database->setPassword(login.toStdString(), newHashedPasswd);
     database->closeDatabase();
     return true;
 }
@@ -924,10 +929,12 @@ bool Controller::newGlobalPassword(QString globalPasswd, QString passwd1, QStrin
     database->openDatabase();
     std::string _login = "global";
     std::string currentGlobalPasswd = database->getPassword(_login);
-    if(currentGlobalPasswd != globalPasswd.toStdString()) // Source de bug : A Hacher ?
+    std::string hashedGlobalPasswd = hashPasswd(globalPasswd.toStdString());
+    if(currentGlobalPasswd != hashedGlobalPasswd)
         return false;
 
-    database->setPassword(_login, passwd1.toStdString());
+    std::string newHashedPasswd = hashPasswd(passwd1.toStdString());
+    database->setPassword(_login, newHashedPasswd);
     database->closeDatabase();
     return true;
 }
@@ -940,10 +947,12 @@ bool Controller::newRootPassword(QString rootPasswd, QString passwd1, QString pa
     database->openDatabase();
     std::string _login = "root";
     std::string currentRootPasswd = database->getPassword(_login);
-    if(currentRootPasswd != rootPasswd.toStdString()) // Source de bug : A Hacher ?
+    std::string hashedRootPasswd = hashPasswd(rootPasswd.toStdString());
+    if(currentRootPasswd != hashedRootPasswd) // Source de bug : A Hacher ?
         return false;
 
-    database->setPassword(_login, passwd1.toStdString());
+    std::string newHashedPasswd = hashPasswd(passwd1.toStdString());
+    database->setPassword(_login, newHashedPasswd);
     database->closeDatabase();
     return true;
 }
@@ -975,6 +984,35 @@ void Controller::newClic_Stats()
         custQueue.pop();
         statsTuple.accountsTotal += custTuple.getCustomerBalance();
     }
+
+    database->openDatabase();
+    db_finop_queue finopQueue = database->getBDEHist(0);
+    db_finop_tuple finopTuple;
+    unsigned queueSize = finopQueue.size();
+    statsTuple.moneyGivenThisYear = 0;
+    // Calcul de l'argent amené au bde cette année civile
+    for(unsigned i =0 ; i < queueSize ; i++)
+    {
+        finopTuple = finopQueue.front();
+        finopQueue.pop();
+        statsTuple.moneyGivenThisYear += finopTuple.getOpValue();
+    }
+    // close and open maybe useless
+    database->closeDatabase();
+    database->openDatabase();
+    // calcul pour l'année dernière
+    time_t currentTime = time(NULL);
+    tm* timePtr = localtime(&currentTime);
+    finopQueue = database->getBDEHist(timePtr->tm_year +1900 - 1); // year starts at 1900
+    queueSize = finopQueue.size();
+    statsTuple.moneyGivenLastYear = 0;
+    for(unsigned i =0 ; i < queueSize ; i++)
+    {
+        finopTuple = finopQueue.front();
+        finopQueue.pop();
+        statsTuple.moneyGivenLastYear += finopTuple.getOpValue();
+    }
+    database->closeDatabase();
 
     view->stats->launchStats(statsTuple, queues[0], queues[1], queues[2], queues[3], queues[4], queues[5]);
 
@@ -1204,4 +1242,13 @@ QString Controller::getLog(int month, int year)
     cryptedLog.assign(buffer);
     log = QString::fromStdString(xorCrypt(cryptedLog));
     return log;
+}
+
+std::string Controller::hashPasswd(std::string password)
+{
+    if(password == "")
+        return password;
+    std::hash <std::string> hash;
+    unsigned long long hashedPassword = (unsigned long long) hash(password);
+    return std::to_string(hashedPassword);
 }

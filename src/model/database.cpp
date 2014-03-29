@@ -1617,7 +1617,52 @@ void dumpHistOfDeletedCust (unsigned id)
 
 void Database::setPassword(std::string login, std::string password)
 {
+    int cat_pass;
+    bool loginHasPasswd = false;
+    if(login == "root")
+        cat_pass = 1;
+    else if(login == "global")
+        cat_pass = 2;
+    else
+        cat_pass = 3;
 
+    std::string queryString="";
+    Query query;
+
+    if(cat_pass == 1 || cat_pass == 2)
+    {
+        queryString += "UPDATE passwords SET password = '"+password+"' WHERE cat_pass = "+std::to_string(cat_pass)+";";
+    }
+    else // on doit vérifier l'existence ou non du mot de passe pour ce login. afin de savoir si on fait un update ou un insert
+    {
+        delete queryResult;
+        queryResult = new  std::queue<std::string>;
+        queryString += "SELECT login FROM passwords WHERE login = '"+login+"' ;";
+        query.setQuery(queryString);
+        query.setVerbose(1);
+        std::cout << queryString << std::endl;
+        executeQuery(query);
+        if(queryResult->size() > 1) // because there is at least the \n at end of results
+            loginHasPasswd = true;
+    }
+    delete queryResult;
+    queryResult = new  std::queue<std::string>;
+    if(cat_pass == 3 && loginHasPasswd) // Mise à jour du mot de passe
+    {
+        queryString = "UPDATE passwords SET password = '" + password +"' ";
+        queryString +=  "WHERE login = '"+login+"' ;";
+    }
+    else if (cat_pass == 3 && !loginHasPasswd) // Création du mot de passe
+    {
+        queryString = "INSERT INTO passwords (cat_pass, login, password) VALUES (";
+        queryString += std::to_string(cat_pass)+ ", '"+login+"', '"+password+"');";
+    }
+    query.setQuery(queryString);
+    query.setVerbose(1);
+    std::cout << queryString << std::endl;
+    executeQuery(query);
+
+    return;
 }
 
 void Database::addHistCashier(db_finop_tuple tuple) //Paiement par Cash/Chèque
@@ -1682,7 +1727,7 @@ void Database::transferToBDE(db_finop_tuple tuple) // Paiement par CB ou Vidage 
     return ;
 }
 
-db_finop_queue Database::getBDEHist()
+db_finop_queue Database::getBDEHist(int year)
 {
     Query query;
 
@@ -1692,14 +1737,29 @@ db_finop_queue Database::getBDEHist()
     unsigned i;
     unsigned j=0;
     db_finop_queue result;
+    delete queryResult;
+    queryResult = new std::queue<std::string>;
 
     std::queue<std::string> *queryResultFunction(0);
     queryResultFunction = new std::queue<std::string> ;
 
     std::vector<std::string> vectorFromQueue;
 
-    std::string queryString="SELECT (op_id,op_value,op_type,op_date) FROM BDE ";
-    queryString+="ORDER BY BDE.op_date DESC;";
+    //std::string queryString="SELECT (op_id,op_value,op_type,op_date) FROM BDE "; // syntax error near ',' -> idea ? waiting a solution i use SELECT *
+    std::string queryString;
+    if(year > 0)
+    {
+        queryString = "SELECT BDE.op_id,BDE.op_value,BDE.op_type,BDE.op_date FROM BDE WHERE op_date >= \'" + std::to_string(year) + "-01-01 00:00:00\' and op_date < \'"+ std::to_string(year+1)+"-01-01 00:00:00\'";
+    }
+    else if(year == 0)
+    {
+        time_t currentTime = time(NULL);
+        tm* timePtr = localtime(&currentTime);
+        return getBDEHist(timePtr->tm_year + 1900); // year start at 1900
+    }
+    else if(year== -1)
+        queryString = "SELECT BDE.op_id,BDE.op_value,BDE.op_type,BDE.op_date FROM BDE";
+    queryString+=" ORDER BY BDE.op_date DESC;";
 
 
     query.setQuery(queryString);
@@ -1707,7 +1767,6 @@ db_finop_queue Database::getBDEHist()
     executeQuery(query);
 
     *queryResultFunction=*queryResult;
-
     for (i=0;i<=queryResultFunction->size();i++)
     {
         while(!queryResultFunction->empty())
@@ -1739,7 +1798,7 @@ db_finop_queue Database::getBDEHist()
     }
     clear(queue);
     delete hist;
-    delete queryResultFunction;
+    delete queryResultFunction;qDebug() << result.size();
     return result;
 }
 

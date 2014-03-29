@@ -107,6 +107,7 @@ EditLogin::EditLogin(QWidget *parent) :
     QObject::connect(global_validateButton, SIGNAL(clicked()), this, SLOT(global_validate()));
     QObject::connect(individual_validateButton, SIGNAL(clicked()), this, SLOT(individual_validate()));
     QObject::connect(root_validateButton, SIGNAL(clicked()), this, SLOT(root_validate()));
+    QObject::connect(individual_login, SIGNAL(textChanged(QString)), this, SLOT(individual_loginChanged(QString)));
 
 }
 
@@ -174,4 +175,9 @@ void EditLogin::reset()
     root_old->clear();
     root_new1->clear();
     root_new2->clear();
+}
+
+void EditLogin::individual_loginChanged(QString toto)
+{
+    individual_root->clear();
 }
