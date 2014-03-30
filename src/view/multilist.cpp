@@ -47,6 +47,7 @@ MultiList::MultiList(QWidget *parent, int column, int row, bool _isSortable)
     model->sort(0, Qt::AscendingOrder);
     //table->setAlternatingRowColors(true);
 
+    QObject::connect(table, SIGNAL(clicked(QModelIndex)), this, SLOT(lineEntered(QModelIndex)));
     QObject::connect(table, SIGNAL(entered(QModelIndex)), this, SLOT(lineEntered(QModelIndex)));
 
     //QObject::connect(table->horizontalHeader(), SIGNAL(sectionClicked(int)), this, SLOT(sortItems(int)));
@@ -155,6 +156,7 @@ void MultiList::updateHeadersSize(int defaultWidth, int* stretchColumns, int hid
 void MultiList::lineEntered(QModelIndex index)
 {
     rowFocused = index.row();
+    emit rowFocusChanged(index);
 }
 
 

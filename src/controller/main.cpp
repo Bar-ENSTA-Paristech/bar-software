@@ -77,6 +77,10 @@ int main(int argc, char *argv[])
     mainWindow.show();
     application.setWindowIcon(QIcon(GLOBAL_PATH + "resources/pictures/icon.png"));
 
+    std::string test = "manouche";
+    test = controller->hashPasswd(test);
+    std::cout << "test : " << test << std::endl;
+
     // ########## TEST GRAPHS ############
     //mainWindow.setGraph(Values, "xTitle", "yTitle", "Title de famille");
     //mainWindow.setGraph(Values_2, "xTitle", "yTitle", "Title de famille");
