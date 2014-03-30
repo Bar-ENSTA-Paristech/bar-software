@@ -193,6 +193,16 @@ void db_productTuple::setProductPrice(float _price)
     price=_price;
 }
 
+void db_productTuple::setProductPriceHT(float _priceHT)
+{
+    priceHT=_priceHT;
+}
+
+void db_productTuple::setProductTVAcat(int _TVA)
+{
+    TVAcat=_TVA;
+}
+
 void db_productTuple::setProductStock(int _stock)
 {
     stock=_stock;
@@ -229,6 +239,17 @@ unsigned db_productTuple::getProductCategory()
     return category;
 }
 
+int db_productTuple::getProductTVAcat()
+{
+    return TVAcat;
+}
+
+float db_productTuple::getProductPriceHT()
+{
+    return priceHT;
+}
+
+
 view_productTuple db_productTuple::transformIntoProductView()
 {
     view_productTuple result;
@@ -238,12 +259,14 @@ view_productTuple db_productTuple::transformIntoProductView()
     result.setProductPrice(price);
     result.setProductStock(stock);
     result.setProductCategory(category);
+    result.setProductPriceHT(priceHT);
+    result.setProductTVAcat (TVAcat);
 
     return result;
 }
 
 // ##################################
-// DB_PRODUCTTUPLE
+// VIEW_PRODUCTTUPLE
 // ##################################
 
 void view_productTuple::setProductId(unsigned _id)
@@ -276,6 +299,16 @@ void view_productTuple::setProductVolume(unsigned _volume)
     volume = _volume;
 }
 
+void view_productTuple::setProductPriceHT(float _priceHT)
+{
+    priceHT=_priceHT;
+}
+
+void view_productTuple::setProductTVAcat(int _TVA)
+{
+    TVAcat=_TVA;
+}
+
 unsigned view_productTuple::getProductId()
 {
     return id;
@@ -306,6 +339,16 @@ unsigned view_productTuple::getProductVolume()
     return volume;
 }
 
+int view_productTuple::getProductTVAcat()
+{
+    return TVAcat;
+}
+
+float view_productTuple::getProductPriceHT()
+{
+    return priceHT;
+}
+
 db_productTuple view_productTuple::transformIntoProductDb()
 {
     db_productTuple result;
@@ -315,6 +358,8 @@ db_productTuple view_productTuple::transformIntoProductDb()
     result.setProductPrice(price);
     result.setProductStock(stock);
     result.setProductCategory(category);
+    result.setProductPriceHT(priceHT);
+    result.setProductTVAcat(TVAcat);
 
     return result;
 }
@@ -621,4 +666,78 @@ float db_finop_tuple::getOpValue ()
 std::string db_finop_tuple::getOpDate()
 {
     return date;
+}
+
+// ##################################
+// DB_COMMANDTUPLE
+// #################################
+void db_commandTuple::setId (int _id)
+{
+    id=_id;
+}
+
+void db_commandTuple::setCom_id (int _com_id)
+{
+    com_id=_com_id;
+}
+
+void db_commandTuple::setProd_id (int _prod_id)
+{
+    prod_id=_prod_id;
+}
+
+void db_commandTuple::setProd_qty (int _prod_qty)
+{
+    prod_qty=_prod_qty;
+}
+
+void db_commandTuple::setPrixHT (float _prixHT)
+{
+    prixHT=_prixHT;
+}
+
+void db_commandTuple::setDate (std::string _date)
+{
+    date=_date;
+}
+
+void db_commandTuple::setInfo (std::string _info)
+{
+    info=_info;
+}
+
+
+int db_commandTuple::getId()
+{
+    return id;
+}
+
+int db_commandTuple::getCom_id()
+{
+    return com_id;
+}
+
+int db_commandTuple::getProd_id()
+{
+    return prod_id;
+}
+
+int db_commandTuple::getProd_qty ()
+{
+    return prod_qty;
+}
+
+float db_commandTuple::getPrixHT()
+{
+    return prixHT;
+}
+
+std::string db_commandTuple::getDate()
+{
+    return date;
+}
+
+std::string db_commandTuple::getInfo()
+{
+    return info;
 }
