@@ -1187,6 +1187,8 @@ std::string Controller::xorCrypt(std::string input)
 
 void Controller::appendLog(std::string log)
 {
+    QDir dir;
+    dir.mkpath(GLOBAL_PATH + "resources/system_files/");
     time_t currentTime = time(NULL);
     tm* timePtr = localtime(&currentTime);
     char month_year[10];
@@ -1249,7 +1251,8 @@ std::string Controller::hashPasswd(std::string password)
 {
     if(password == "")
         return password;
-    std::hash <std::string> hash;
-    unsigned long long hashedPassword = (unsigned long long) hash(password);
-    return std::to_string(hashedPassword);
+    QCryptographicHash hash(QCryptographicHash::Sha224);
+    hash.addData(password.c_str());
+    QString output(hash.result().toHex());
+    return output.toStdString();
 }

@@ -29,17 +29,7 @@ SearchResults::SearchResults(QWidget *parent) :
     hiddenColumn = 4;
     updateHeadersSize(defaultHeaderWidth, stretchColumns, hiddenColumn);
 
-    QObject::connect(table, SIGNAL(clicked(QModelIndex)), this, SLOT(lineClicked(QModelIndex)));
-
-    // ####### TEST #######
-    /*std::queue< std::tuple< QString, QString, QString, float, unsigned > > toto;
-    std::tuple< QString, QString, QString, float, unsigned > titi("Chat", "Mehdi", "2015", -2, 1);
-    std::tuple< QString, QString, QString, float, unsigned > titi2("Diallo", "Guytoof", "2015", 3.5, 2);
-    toto.push(titi);
-    toto.push(titi2);
-    this->setSearchResults(toto);*/
-    // ####### FIN TEST #######
-
+    QObject::connect(this, SIGNAL(rowFocusChanged(QModelIndex)), this, SLOT(lineClicked(QModelIndex)));
 }
 
 void SearchResults::setSearchResults(view_customerQueue & queue)
@@ -78,6 +68,7 @@ void SearchResults::setSearchResults(view_customerQueue & queue)
         model->item(i,1)->setText(tuple.getCustomerFirstName());
         model->item(i,2)->setText(QString::fromStdString(categories[tuple.getCustomerCategory()].getCategoryName()));
         model->item(i,3)->setText(QString::number(balance));
+        //model->item(i,3)->setData(QVariant(balance)); essai d'envoi du nombre pour corriger le problème du tri. rien ne s'affiche ...
         model->item(i,4)->setText(QString::number(tuple.getCustomerId()));
     }
     qDebug() << "Fin setText" << 10000-timer.remainingTime() << "ms";

@@ -28,6 +28,10 @@ public:
     void setRows(int numberOfRows);
     void setController(Controller* _controller){controller = _controller;}
 
+
+signals:
+    void rowFocusChanged(QModelIndex);
+
 private slots:
     void sortItems(int index);
     void lineEntered(QModelIndex index);
