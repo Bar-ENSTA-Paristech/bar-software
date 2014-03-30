@@ -996,29 +996,23 @@ db_histQueue Database::getProductHist(unsigned id,bool old)
         float recuperatedPrice;
         unsigned recuperatedId;
 
-        /*if (vectorFromQueue.at(4).compare(NULL)==0||vectorFromQueue.at(3).compare(NULL)==0||vectorFromQueue.at(2).compare(NULL)==0||vectorFromQueue.at(1).compare(NULL)==0)
-        {
-            return result;
-        }
 
-        else
-        {*/
-            std::istringstream(vectorFromQueue[4]) >> recuperatedPrice;
-            std::istringstream(vectorFromQueue[0]) >> recuperatedId;
+        std::istringstream(vectorFromQueue[4]) >> recuperatedPrice;
+        std::istringstream(vectorFromQueue[0]) >> recuperatedId;
 
-            //*hist = std::make_tuple (vectorFromQueue[1],vectorFromQueue[2],vectorFromQueue[3],vectorFromQueue[5],recuperatedPrice,recuperatedId);
-            hist->setHistId(recuperatedId);
-            hist->setHistName(vectorFromQueue[1]);
-            hist->setHistFirstName(vectorFromQueue[2]);
-            hist->setHistDate(vectorFromQueue[5]);
-            hist->setHistPrice(recuperatedPrice);
-            hist->setHistOperation(vectorFromQueue[3]);
+        //*hist = std::make_tuple (vectorFromQueue[1],vectorFromQueue[2],vectorFromQueue[3],vectorFromQueue[5],recuperatedPrice,recuperatedId);
+        hist->setHistId(recuperatedId);
+        hist->setHistName(vectorFromQueue[1]);
+        hist->setHistFirstName(vectorFromQueue[2]);
+        hist->setHistDate(vectorFromQueue[5]);
+        hist->setHistPrice(recuperatedPrice);
+        hist->setHistOperation(vectorFromQueue[3]);
 
-            queryResultFunction->pop();
-            result.push(*hist);
-            j++;
-            vectorFromQueue.clear();
-       // }
+        queryResultFunction->pop();
+        result.push(*hist);
+        j++;
+        vectorFromQueue.clear();
+
     }
     clear(queue);
     clear(*queryResult);

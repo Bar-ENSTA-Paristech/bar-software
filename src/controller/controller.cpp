@@ -820,6 +820,7 @@ void Controller::receiveNewStocks(view_productQueue& products)
     database->openDatabase();
     for(unsigned i = 0 ; i < n ; i++)
     {
+        //TODO : Rajouter 1 Ligne par produit dans commande pour laisser une trace des achats explicite
         view_tuple = products.front();
         products.pop();
         db_tuple = database->getProductFromId(view_tuple.getProductId());
