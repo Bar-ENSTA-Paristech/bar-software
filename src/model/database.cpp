@@ -2250,10 +2250,10 @@ db_saleQueue Database::getSalesOfYear (int _year)
 
 
     std::string queryString;
-    queryString = "SELECT historique.his_id,historique.conso_price,consos.TVAType,historique.date FROM historique ";
+    queryString = "SELECT historique.his_id,historique.conso_price,consos.TVAType,historique.date_conso,consos.nom FROM historique ";
     queryString+="LEFT JOIN consos ";
     queryString+="ON consos.conso_id = historique.conso_id ";
-    queryString+="WHERE historique.date >= \'" + std::to_string(_year) + "-01-01 00:00:00\' and historique.date < \'"+ std::to_string(_year+1)+"-01-01 00:00:00\'";
+    queryString+="WHERE historique.date_conso >= \'" + std::to_string(_year) + "-01-01 00:00:00\' and historique.date_conso < \'"+ std::to_string(_year+1)+"-01-01 00:00:00\'";
 
     query.setQuery(queryString);
     query.setVerbose(1);
@@ -2272,15 +2272,22 @@ db_saleQueue Database::getSalesOfYear (int _year)
         int recuperatedId;
         float recuperatedTTC;
         int recuperatedTVAindex;
+        std::string recuperatedDate;
+        std::string recuperatedName;
 
         std::istringstream(vectorFromQueue[0]) >> recuperatedId;
         std::istringstream(vectorFromQueue[1]) >> recuperatedTTC;
         std::istringstream(vectorFromQueue[2]) >> recuperatedTVAindex;
+        std::istringstream(vectorFromQueue[3]) >> recuperatedDate;
+        std::istringstream(vectorFromQueue[4]) >> recuperatedName;
+
+
 
         cat->setId(recuperatedId);
         cat->setTTC(recuperatedTTC);
         cat->setTVAIndex(recuperatedTVAindex);
-        cat->setDate(vectorFromQueue[3]);
+        cat->setDate(recuperatedDate);
+        cat->setProductName(recuperatedName);
 
         queryResultFunction->pop();
         result.push(*cat);
@@ -2295,10 +2302,10 @@ db_saleQueue Database::getSalesOfYear (int _year)
     queryResultFunction = new std::queue<std::string> ;
 
 
-    queryString = "SELECT historique_save.his_id,historique_save.conso_price,consos.TVAType,historique_save.date,consos.name FROM historique_save ";
+    queryString = "SELECT historique_save.his_id,historique_save.conso_price,consos.TVAType,historique_save.date_conso,consos.nom FROM historique_save ";
     queryString+="LEFT JOIN consos ";
     queryString+="ON consos.conso_id = historique_save.conso_id ";
-    queryString+="WHERE historique_save.date >= \'" + std::to_string(_year) + "-01-01 00:00:00\' and historique_save.date < \'"+ std::to_string(_year+1)+"-01-01 00:00:00\'";
+    queryString+="WHERE historique_save.date_conso >= \'" + std::to_string(_year) + "-01-01 00:00:00\' and historique_save.date_conso < \'"+ std::to_string(_year+1)+"-01-01 00:00:00\'";
 
     query.setQuery(queryString);
     query.setVerbose(1);
@@ -2317,16 +2324,22 @@ db_saleQueue Database::getSalesOfYear (int _year)
         int recuperatedId;
         float recuperatedTTC;
         int recuperatedTVAindex;
+        std::string recuperatedDate;
+        std::string recuperatedName;
 
         std::istringstream(vectorFromQueue[0]) >> recuperatedId;
         std::istringstream(vectorFromQueue[1]) >> recuperatedTTC;
         std::istringstream(vectorFromQueue[2]) >> recuperatedTVAindex;
+        std::istringstream(vectorFromQueue[3]) >> recuperatedDate;
+        std::istringstream(vectorFromQueue[4]) >> recuperatedName;
+
+
 
         cat->setId(recuperatedId);
         cat->setTTC(recuperatedTTC);
         cat->setTVAIndex(recuperatedTVAindex);
-        cat->setDate(vectorFromQueue[3]);
-        cat->setProductName(vectorFromQueue[4]);
+        cat->setDate(recuperatedDate);
+        cat->setProductName(recuperatedName);
 
         queryResultFunction->pop();
         result.push(*cat);
@@ -2341,10 +2354,10 @@ db_saleQueue Database::getSalesOfYear (int _year)
     queryResultFunction = new std::queue<std::string> ;
 
 
-    queryString = "SELECT historique_deleted_account.his_id,historique_deleted_account.conso_price,consos.TVAType,historique_deleted_account.date FROM historique_deleted_account ";
+    queryString = "SELECT historique_deleted_account.his_id,historique_deleted_account.conso_price,consos.TVAType,historique_deleted_account.date_conso,consos.nom FROM historique_deleted_account ";
     queryString+="LEFT JOIN consos ";
     queryString+="ON consos.conso_id = historique_deleted_account.conso_id ";
-    queryString+="WHERE historique_deleted_account.date >= \'" + std::to_string(_year) + "-01-01 00:00:00\' and historique_deleted_account.date < \'"+ std::to_string(_year+1)+"-01-01 00:00:00\'";
+    queryString+="WHERE historique_deleted_account.date_conso >= \'" + std::to_string(_year) + "-01-01 00:00:00\' and historique_deleted_account.date_conso < \'"+ std::to_string(_year+1)+"-01-01 00:00:00\'";
 
     query.setQuery(queryString);
     query.setVerbose(1);
@@ -2363,15 +2376,22 @@ db_saleQueue Database::getSalesOfYear (int _year)
         int recuperatedId;
         float recuperatedTTC;
         int recuperatedTVAindex;
+        std::string recuperatedDate;
+        std::string recuperatedName;
 
         std::istringstream(vectorFromQueue[0]) >> recuperatedId;
         std::istringstream(vectorFromQueue[1]) >> recuperatedTTC;
         std::istringstream(vectorFromQueue[2]) >> recuperatedTVAindex;
+        std::istringstream(vectorFromQueue[3]) >> recuperatedDate;
+        std::istringstream(vectorFromQueue[4]) >> recuperatedName;
+
+
 
         cat->setId(recuperatedId);
         cat->setTTC(recuperatedTTC);
         cat->setTVAIndex(recuperatedTVAindex);
-        cat->setDate(vectorFromQueue[3]);
+        cat->setDate(recuperatedDate);
+        cat->setProductName(recuperatedName);
 
         queryResultFunction->pop();
         result.push(*cat);
