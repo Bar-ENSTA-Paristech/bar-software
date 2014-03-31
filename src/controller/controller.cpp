@@ -420,8 +420,7 @@ bool Controller::view_isLoginCorrect(QString login, QString passwd, LoginType lo
     _truepass= database->getPassword(_login);
     database->closeDatabase();
     std::string hashedPasswd = hashPasswd(passwd.toStdString());
-    // Pour DEBUG
-    isLoginIncorrect= _truepass.compare(hashedPasswd); isLoginIncorrect = false;
+    isLoginIncorrect= _truepass.compare(hashedPasswd);
 
     if(isLoginIncorrect)
     {
@@ -1080,6 +1079,16 @@ void Controller::receiveAdminInfos(AdminTuple tuple)
 
         std::string log;
         log = currentLoggedCustomer + " -> changed name of product category (" + std::to_string(catTuple.getCategoryId()) + ") to "+catTuple.getCategoryName();
+        appendLog(log);
+    }
+    if(tuple.tvaTuple.getRate() > 0)
+    {
+        database->openDatabase();
+        database->editTvaRate(tuple.tvaTuple);
+        database->closeDatabase();
+        std::string log;
+        log = currentLoggedCustomer + " -> changed rate of tva category "+std::to_string(tuple.tvaTuple.getId()+1)+"(maintenant : ";
+        log += std::to_string(tuple.tvaTuple.getRate()) + "%)";
         appendLog(log);
     }
 }
