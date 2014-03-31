@@ -143,7 +143,7 @@ public:
 
     db_comQueue getCommandsOfYear (int _year);
 
-    db_histQueue getSalesOfYear (int _year);
+    db_saleQueue getSalesOfYear (int _year);
 
     void convertToPointDecimal(std::string &str); // Remplace les éventuelles virgules d'un décimal par des points, compréhensible par SQLite
 

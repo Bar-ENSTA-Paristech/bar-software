@@ -365,6 +365,28 @@ private:
     std::string info;
 };
 
+class db_saleTuple
+{
+public:
+    void setId (int _id){id= _id;}
+    void setTVAIndex (int _TVAIndex){TVAIndex= _TVAIndex;}
+    void setTVA(float _TVA){TVA = _TVA;}
+    void setTTC(float _TTC){TTC = _TTC;}
+    void setDate(std::string _date){date = _date;}
+
+    int getId (){return id;}
+    int getTVAIndex (){return TVAIndex;}
+    float getTVA(){return TVA;}
+    float getTTC(){return TTC;}
+    std::string getDate(){return date;}
+
+private:
+    int id;
+    float TTC;
+    float TVA;
+    int TVAIndex;
+    std::string date;
+};
 
 typedef std::queue<db_histTuple> db_histQueue;
 typedef std::queue<db_customerTuple> db_customerQueue;
@@ -379,6 +401,7 @@ typedef std::queue<db_finop_tuple> db_finop_queue;
 typedef std::queue<db_commandTuple> db_commandQueue;
 typedef std::queue<db_TVAcategoryTuple> db_TVAcategoryQueue;
 typedef std::queue<db_comTuple> db_comQueue;
+typedef std::queue<db_saleTuple> db_saleQueue;
 
 typedef std::pair< std::vector< double > , std::vector< double > > db_dataarray;
 
