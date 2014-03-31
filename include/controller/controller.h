@@ -86,7 +86,7 @@ public:
     void receiveCalculatorEntry(float amount, bool isPaidByCard);
     void receiveEditCustomerEntry(view_customerTuple& customer);
     void receiveNewCustomerEntry(view_customerTuple& customer, bool isCash);
-    void receiveNewStocks(view_productQueue& products, float totalTVA, float totalTTC);
+    void receiveNewStocks(view_productQueue& products, float totalTVA, float totalTTC, QString infos);
     void receiveNewProduct(view_productTuple& product);
     void receiveEditProduct(view_productTuple& product, bool deleteProduct = false);
     void receiveAdminInfos(AdminTuple tuple);

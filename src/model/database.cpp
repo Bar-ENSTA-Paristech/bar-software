@@ -2013,7 +2013,7 @@ int Database::addStockedit(db_commandQueue _com)
     return (code);
 }
 
-int Database::addCommande(db_comTuple command_tuple)
+int Database::addCommand(db_comTuple command_tuple)
 {
     int code=0;
     std::string queryString="";

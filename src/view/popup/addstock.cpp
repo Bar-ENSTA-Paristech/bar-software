@@ -18,8 +18,12 @@ AddStock::AddStock(QWidget *parent) :
     ttcTotalLabel = new QLabel("Total ttc de la commande (€] : ", this);
     tvaTotal = new QLineEdit(this);
     ttcTotal = new QLineEdit(this);
+    infosLabel = new QLabel("Remarques : ", this);
+    infos = new QLineEdit(this);
     layout->addWidget(tvaTotalLabel, 0,0);
     layout->addWidget(tvaTotal, 0,1);
+    layout->addWidget(infosLabel, 0,3);
+    layout->addWidget(infos, 1, 3);
     layout->addWidget(ttcTotalLabel, 1,0);
     layout->addWidget(ttcTotal, 1,1);
     layout->addWidget(scrollArea, 2,0,1,4);
@@ -172,7 +176,7 @@ void AddStock::validate()
         return;
     float tva = tvaTotal->text().toFloat();
     float ttc = ttcTotal->text().toFloat();
-    controller->receiveNewStocks(queue,tva, ttc);
+    controller->receiveNewStocks(queue,tva, ttc, infos->text());
     this->reset();
     this->hide();
 
