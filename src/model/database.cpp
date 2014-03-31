@@ -2028,9 +2028,9 @@ int Database::addCommand(db_comTuple command_tuple)
     queryString+= TTCString ;
     queryString+=", ";
     queryString+= TVAString ;
-    queryString+=", ";
+    queryString+=", '";
     queryString+= command_tuple.getInfo() ;
-    queryString+=");";
+    queryString+="');";
 
     query.setQuery(queryString);
     query.setVerbose(1);

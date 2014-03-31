@@ -270,14 +270,14 @@ public:
     float moneyInCashRegister;
     float moneyGivenThisYear;
     float moneyGivenLastYear;
-    float totalSoldThisYear;
+    /*float totalSoldThisYear;
     float totalSoldThisYearTVA1;
     float totalSoldThisYearTVA2;
     float totalSoldThisYearTVA3;
     float totalSoldLastYear;
     float totalSoldLastYearTVA1;
     float totalSoldLastYearTVA2;
-    float totalSoldLastYearTVA3;
+    float totalSoldLastYearTVA3; maintenant implémenté dans l'impression de pdf*/
     unsigned numberOfCustomers;
     unsigned numberOfProducts;
 };
