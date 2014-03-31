@@ -129,6 +129,8 @@ public:
 
     int addToBar (std::pair<std::string,std::string>);
 
+    TvaRateQueue getTvaRates(){}
+
     int autoDumpHist();
 
     void convertToPointDecimal(std::string &str); // Remplace les éventuelles virgules d'un décimal par des points, compréhensible par SQLite

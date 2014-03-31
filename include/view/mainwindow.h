@@ -42,6 +42,7 @@ public:
     void resizeEvent(QResizeEvent *event);
     void setController(Controller *controllerParam);
     void setGraph(db_dataarray& data, QString xTitle, QString yTitle, QString title);
+    void setSplashscreen(QLabel* splash);
 
 
 private:
@@ -60,11 +61,14 @@ private slots:
     void launchEditProduct();
     void launchStats();
     void launchAdmin();
+    void stopSplashscreen();
 
 private:
     Controller* controller;
     QTimer* timerSearch;
     QTimer* timerAtStart;
+    QTimer* timerSplashscreen;
+    QLabel* splashscreen;
     QString search;
     RightPart *rightPart;
     LeftPart *leftPart;

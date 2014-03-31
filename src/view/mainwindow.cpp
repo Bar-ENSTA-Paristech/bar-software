@@ -138,6 +138,11 @@ MainWindow::MainWindow()
     timerAtStart->setSingleShot(true);
     timerAtStart->start(500);
 
+    // Init of timer to stop splashscreen
+    timerSplashscreen = new QTimer();
+    timerSplashscreen->setSingleShot(true);
+    timerSplashscreen->start(2000);
+
     // ShortCuts
     setShortcut();
 
@@ -161,6 +166,7 @@ MainWindow::MainWindow()
     QObject::connect(searchText, SIGNAL(textEdited(const QString &)), this, SLOT(searchChanged(const QString &)));
     QObject::connect(timerSearch, SIGNAL(timeout()), this, SLOT(sendSearch()));
     QObject::connect(timerAtStart, SIGNAL(timeout()), this, SLOT(updateSize()));
+    QObject::connect(timerSplashscreen, SIGNAL(timeout()), this, SLOT(stopSplashscreen()));
     QObject::connect(globalHistory, SIGNAL(clicked()), this, SLOT(launchGlobalHistory()));
     QObject::connect(newCustomer, SIGNAL(clicked()), this, SLOT(launchNewCustomer()));
     QObject::connect(addStock, SIGNAL(clicked()), this, SLOT(launchAddStock()));
@@ -392,4 +398,20 @@ void MainWindow::launchStats()
 void MainWindow::launchAdmin()
 {
     controller->newClic_Admin();
+}
+
+void MainWindow::stopSplashscreen()
+{
+    this->show();
+    try
+    {
+        delete splashscreen;
+    }
+    catch(int e)
+    {}
+}
+
+void MainWindow::setSplashscreen(QLabel* splash)
+{
+    splashscreen = splash;
 }

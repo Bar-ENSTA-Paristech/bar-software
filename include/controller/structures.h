@@ -108,7 +108,9 @@ public:
     void setProductStock (int stock);
     void setProductVolume(unsigned _volume){volume=_volume;}
     void setProductCategory (unsigned category);
+    void setTvaType(int type){tvaType = type;}
 
+    int getTvaType(){return tvaType;}
     unsigned getProductId ();
     std::string getProductName();
     float getProductPrice();
@@ -119,6 +121,7 @@ public:
     view_productTuple transformIntoProductView();
 
 private:
+    int tvaType;
     unsigned id;
     std::string name;
     float price;
@@ -136,7 +139,9 @@ public:
     void setProductStock (int stock);
     void setProductCategory (unsigned category);
     void setProductVolume(unsigned _volume);
+    void setTvaType(int type){tvaType = type;}
 
+    int getTvaType(){return tvaType;}
     unsigned getProductId ();
     QString getProductName();
     float getProductPrice();
@@ -147,6 +152,7 @@ public:
     db_productTuple transformIntoProductDb();
 
 private:
+    int tvaType;
     unsigned id;
     QString name;
     float price;
@@ -296,6 +302,11 @@ private:
     std::string date;
 };
 
+typedef struct{
+    float rate;
+    std::string name;
+}TvaRate;
+
 typedef std::queue<db_histTuple> db_histQueue;
 typedef std::queue<db_customerTuple> db_customerQueue;
 typedef std::queue<view_customerTuple> view_customerQueue;
@@ -306,6 +317,7 @@ typedef std::queue<view_histTuple> view_histQueue;
 typedef std::queue<db_histTuple> db_histQueue;
 typedef std::queue<view_cartTuple> view_cartQueue;
 typedef std::queue<db_finop_tuple> db_finop_queue;
+typedef std::queue<TvaRate> TvaRateQueue;
 
 typedef std::pair< std::vector< double > , std::vector< double > > db_dataarray;
 

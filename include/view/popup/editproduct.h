@@ -29,12 +29,14 @@ private:
     QLabel* priceLabel;
     QLabel* categorieLabel;
     QLabel* stockLabel;
+    QLabel* tvaLabel;
     QLineEdit* newName;
     QLineEdit* volume;
     QLineEdit* price;
     QComboBox* name;
     QLineEdit* stock;
     QComboBox* categorie;
+    QComboBox* tva;
     QGridLayout* layout;
     QPushButton* validateButton;
     QPushButton* cancelButton;

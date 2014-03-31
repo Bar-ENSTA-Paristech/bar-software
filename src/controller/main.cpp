@@ -7,6 +7,7 @@
 #include <QFile>
 #include <QDir>
 #include <QDebug>
+#include <unistd.h>
 
 #include "../model/plotting.h"
 #include "qcustomplot.h"
@@ -65,22 +66,30 @@ int main(int argc, char *argv[])
     DB.getAllProducts ();
     DB.closeDatabase();
 */
+    QApplication application(argc, argv);
+    application.setWindowIcon(QIcon(GLOBAL_PATH + "resources/pictures/icon.png"));
+
+    QMovie splashscreen(GLOBAL_PATH + "resources/pictures/splashscreen.gif");
+    QLabel* splashWidget = new QLabel;
+    splashWidget->setMovie(&splashscreen);
+    splashscreen.start();
+    splashWidget->setWindowFlags(Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
+    splashWidget->show();
+
+
     //Test graph
     Controller * controller = new Controller; qDebug() << "Controlleur : " << controller;
-    QApplication application(argc, argv);
     QFile css(GLOBAL_PATH + "resources/design/mainDesign.css");
     if(css.open(QIODevice::ReadOnly)) {
         application.setStyleSheet(css.readAll());
     }
     MainWindow mainWindow;
     mainWindow.setController(controller);
-    mainWindow.show();
-    application.setWindowIcon(QIcon(GLOBAL_PATH + "resources/pictures/icon.png"));
+    mainWindow.setSplashscreen(splashWidget);
 
-    std::string test = "manouche";
-    test = controller->hashPasswd(test);
-    std::cout << "test : " << test << std::endl;
+    // Mainwindow will be shown after a timer defined in MainWindow and the splashcreen will be destroyed at the same time
 
+    //delete w;
     // ########## TEST GRAPHS ############
     //mainWindow.setGraph(Values, "xTitle", "yTitle", "Title de famille");
     //mainWindow.setGraph(Values_2, "xTitle", "yTitle", "Title de famille");

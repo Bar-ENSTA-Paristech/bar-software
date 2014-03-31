@@ -11,11 +11,13 @@ AddProduct::AddProduct(QWidget *parent) :
     volumeLabel = new QLabel("Volume (cL) :", this);
     priceLabel = new QLabel("Prix en € :", this);
     stockLabel = new QLabel("Stock :", this);
+    tvaLabel = new QLabel("TVA : ", this);
     name = new QLineEdit(this);
     volume = new QLineEdit(this);
     price = new QLineEdit(this);
     stock = new QLineEdit("0", this);
     categorie = new QComboBox(this);
+    tva = new QComboBox(this);
     validateButton = new QPushButton("Valider", this);
     cancelButton = new QPushButton("Annuler", this);
     layout = new QGridLayout(this);
@@ -33,13 +35,15 @@ AddProduct::AddProduct(QWidget *parent) :
     layout->addWidget(volumeLabel, 2, 0);
     layout->addWidget(priceLabel, 3, 0);
     layout->addWidget(stockLabel, 4, 0);
-    layout->addWidget(validateButton, 5, 0);
+    layout->addWidget(tvaLabel, 5,0);
+    layout->addWidget(validateButton, 6, 0);
     layout->addWidget(categorie, 0, 1);
     layout->addWidget(name, 1, 1);
     layout->addWidget(volume, 2, 1);
     layout->addWidget(price, 3, 1);
     layout->addWidget(stock, 4, 1);
-    layout->addWidget(cancelButton, 5, 1);
+    layout->addWidget(tva, 5,1);
+    layout->addWidget(cancelButton, 6, 1);
 
     QObject::connect(validateButton, SIGNAL(clicked()), this, SLOT(validate()));
     QObject::connect(cancelButton, SIGNAL(clicked()), this, SLOT(cancel()));
@@ -51,12 +55,24 @@ void AddProduct::launchAddProduct()
 {
     db_categoryQueue catQueue = controller->getProductsCategories();
     db_categoryTuple catTuple;
+    //Appel au controlleur pour avoir les taux de tva
+    TvaRateQueue tvaQueue = controller->getTvaRates();
+    TvaRate tvaTuple;
+    categorie->clear();
+    tva->clear();
     int n = catQueue.size();
     for(int i = 0 ; i < n ; i++)
     {
         catTuple = catQueue.front();
         catQueue.pop();
         categorie->addItem(QString::fromStdString(catTuple.getCategoryName()));
+    }
+    n = tvaQueue.size();
+    for(int i = 0 ; i < n ; i++)
+    {
+        tvaTuple = tvaQueue.front();
+        tvaQueue.pop();
+        tva->addItem(QString::number(tvaTuple.rate)+"% : "+QString::fromStdString(tvaTuple.name));
     }
 
     this->show();
@@ -77,6 +93,7 @@ void AddProduct::validate()
     tuple.setProductPrice(price->text().toFloat());
     tuple.setProductStock(stock->text().toInt());
     tuple.setProductVolume(volume->text().toUInt());
+    tuple.setTvaType(tva->currentIndex()+1);
     controller->receiveNewProduct(tuple);
 
     this->reset();

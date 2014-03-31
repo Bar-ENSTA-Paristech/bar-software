@@ -238,6 +238,8 @@ view_productTuple db_productTuple::transformIntoProductView()
     result.setProductPrice(price);
     result.setProductStock(stock);
     result.setProductCategory(category);
+    result.setTvaType(tvaType);
+    result.setProductVolume(volume);
 
     return result;
 }
@@ -315,6 +317,8 @@ db_productTuple view_productTuple::transformIntoProductDb()
     result.setProductPrice(price);
     result.setProductStock(stock);
     result.setProductCategory(category);
+    result.setTvaType(tvaType);
+    result.setProductVolume(volume);
 
     return result;
 }

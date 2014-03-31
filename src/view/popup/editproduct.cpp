@@ -11,39 +11,37 @@ EditProduct::EditProduct(QWidget *parent) :
     volumeLabel = new QLabel("Volume (cL) :", this);
     priceLabel = new QLabel("Prix en € :", this);
     stockLabel = new QLabel("Stock :", this);
+    tvaLabel = new QLabel("TVA : ", this);
     newName = new QLineEdit(this);
     volume = new QLineEdit(this);
     price = new QLineEdit(this);
     stock = new QLineEdit("0", this);
     categorie = new QComboBox(this);
     name = new QComboBox(this);
+    tva = new QComboBox(this);
     deleteProduct = new QCheckBox("Supprimer cette consommation", this);
     validateButton = new QPushButton("Valider", this);
     cancelButton = new QPushButton("Annuler", this);
     layout = new QGridLayout(this);
 
-    // Asking the DB for current categories at each launch
-    /*categorie->addItem("Bières");
-    categorie->addItem("Pression");
-    categorie->addItem("Vin");
-    categorie->addItem("Salé");
-    categorie->addItem("Sucré");
-    categorie->addItem("Divers");*/
+    // Class asks the DB for current categories at each launch
 
     layout->addWidget(categorieLabel, 0, 0);
     layout->addWidget(newNameLabel, 2, 0);
     layout->addWidget(volumeLabel, 3, 0);
     layout->addWidget(priceLabel, 4, 0);
     layout->addWidget(stockLabel, 5, 0);
-    layout->addWidget(deleteProduct, 6,0,1,2);
-    layout->addWidget(validateButton, 7, 0);
+    layout->addWidget(tvaLabel, 6,0);
+    layout->addWidget(deleteProduct, 7,0,1,2);
+    layout->addWidget(validateButton, 8, 0);
     layout->addWidget(categorie, 0, 1);
     layout->addWidget(name, 1,1);
     layout->addWidget(newName, 2, 1);
     layout->addWidget(volume, 3, 1);
     layout->addWidget(price, 4, 1);
     layout->addWidget(stock, 5, 1);
-    layout->addWidget(cancelButton, 7, 1);
+    layout->addWidget(tva, 6,1);
+    layout->addWidget(cancelButton, 8, 1);
 
     QObject::connect(validateButton, SIGNAL(clicked()), this, SLOT(validate()));
     QObject::connect(cancelButton, SIGNAL(clicked()), this, SLOT(cancel()));
@@ -57,6 +55,11 @@ void EditProduct::launchEditProduct()
 {
     db_categoryQueue catQueue = controller->getProductsCategories();
     db_categoryTuple catTuple;
+    //Appel au controlleur pour avoir les taux de tva
+    TvaRateQueue tvaQueue = controller->getTvaRates();
+    TvaRate tvaTuple;
+    categorie->clear();
+    tva->clear();
     int n = catQueue.size();
     for(int i = 0 ; i < n ; i++)
     {
@@ -64,7 +67,15 @@ void EditProduct::launchEditProduct()
         catQueue.pop();
         categorie->addItem(QString::fromStdString(catTuple.getCategoryName()));
     }
+    n = tvaQueue.size();
+    for(int i = 0 ; i < n ; i++)
+    {
+        tvaTuple = tvaQueue.front();
+        tvaQueue.pop();
+        tva->addItem(QString::number(tvaTuple.rate)+"% : "+QString::fromStdString(tvaTuple.name));
+    }
 
+    // to update consos to fit this category
     categorieSelected(categorie->currentIndex());
     this->show();
 }
@@ -84,6 +95,7 @@ void EditProduct::validate()
     tmpProduct.setProductStock(stock->text().toInt());
     tmpProduct.setProductId(ID);
     tmpProduct.setProductVolume(volume->text().toUInt());
+    tmpProduct.setTvaType(tva->currentIndex() + 1);
     controller->receiveEditProduct(tmpProduct, deleteProduct->isChecked());
 
     this->reset();
@@ -135,12 +147,12 @@ void EditProduct::productSelected(int index)
         else
             return;
     }
-
     tmpProduct = tmpProductVector[index];
     newName->setText(tmpProduct.getProductName());
     price->setText(QString::number(tmpProduct.getProductPrice()));
     volume->setText(QString::number(tmpProduct.getProductVolume()));
     stock->setText(QString::number(tmpProduct.getProductStock()));
+    tva->setCurrentIndex(tmpProduct.getTvaType()-1);
     ID = tmpProduct.getProductId();
     deleteProduct->setChecked(false);
 }
