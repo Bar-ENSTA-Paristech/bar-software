@@ -38,6 +38,9 @@ Admin::Admin(QWidget *parent) :
     tvaEditLabel = new QLabel("Changement taux TVA : ", this);
     tvaEdit = new QComboBox(this);
     tvaEditNewValue = new QLineEdit(this);
+    tvaPdfLabel = new QLabel("Année Tva", this);
+    tvaPdf = new QLineEdit(this);
+    tvaPdfButton = new QPushButton("Générer Pdf", this);
 
     logLabel = new QLabel("Mois (AAAA-MM) : ", this);
     logYear = new QLineEdit(this);
@@ -62,6 +65,9 @@ Admin::Admin(QWidget *parent) :
     layout->addWidget(tvaEditLabel,5,0);
     layout->addWidget(tvaEdit, 5,1 );
     layout->addWidget(tvaEditNewValue, 5,2);
+    layout->addWidget(tvaPdfLabel, 6,0);
+    layout->addWidget(tvaPdf, 6,1);
+    layout->addWidget(tvaPdfButton, 6,2);
     layout->addWidget(cashTransferLabel, 10,0);
     layout->addWidget(cashTransfer, 10,1);
     layout->addWidget(validateButton, 20,0);
@@ -73,6 +79,7 @@ Admin::Admin(QWidget *parent) :
     QObject::connect(oldIndividualHistory, SIGNAL(clicked()), this, SLOT(clickOnIndividualHistory()));
     QObject::connect(individualGraphButton, SIGNAL(clicked()), this, SLOT(clickOnIndividualGraph()));
     QObject::connect(viewLog, SIGNAL(clicked()), this, SLOT(clickOnViewLog()));
+    QObject::connect(tvaPdfButton, SIGNAL(clicked()), this, SLOT(createTvaPdf()));
 }
 
 void Admin::launchAdmin(AdminTuple& tuple)
@@ -190,4 +197,10 @@ void Admin::clickOnViewLog()
     text->setText(logText);
     text->setReadOnly(true);
     log->show();
+}
+
+void Admin::createTvaPdf()
+{
+    if(isUInteger(tvaPdf->text()))
+        controller->PrintTvaPdf(tvaPdf->text().toInt());
 }

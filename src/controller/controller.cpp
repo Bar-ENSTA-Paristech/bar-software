@@ -1289,26 +1289,37 @@ void Controller::PrintTvaPdf(int year)
 {
     // Appel à la database pour avoir les transactions de l'année
     database->openDatabase();
-    db_histQueue histQueue = database->getSalesOfYear();
+    db_comQueue comQueue;// = database->getCommandsOfYear(year);
+    db_comTuple comTuple;
+
+    database->closeDatabase();
+    double totalTvaSold=0, totalTtcSold=0, totalTvaBought=0, totalTtcBought=0;
+    int n = comQueue.size();
+    //db_histQueue histQueue = database->getSalesOfYear();
 
 
     QTextDocument doc;
     QString tvaHtml = "<h1>Comptabilité du bar sur l'année "+QString::number(year)+"</h1>";
     tvaHtml+="<h3>Total Achats</h3>";
     tvaHtml+="<table> <tr><td>Date</td><td>Commande</td><td>Valeur TVA</td><td>Valeur TTC</td></tr>";
-    /*for(int i = 0 ; i < n ; i++)
+    for(int i = 0 ; i < n ; i++)
     {
-        //Ajout des lignes correspondants aux achats
-    }*/
+        comTuple = comQueue.front();
+        comQueue.pop();
+        tvaHtml+="<tr><td>"+QString::fromStdString(comTuple.getDate())+"</td><td>"+QString::fromStdString(comTuple.getInfo())+"</td>";
+        tvaHtml+="<td>" + QString::number(comTuple.getTVA()) + "</td><td>" + QString::number(comTuple.getTTC()) + "</td></tr>";
+        totalTvaBought += comTuple.getTVA();
+        totalTtcBought += comTuple.getTTC();
+    }
     tvaHtml+="</table> <h3> Total Ventes</h3><table><tr><td>Date</td><td>Vente</td><td>Valeur TVA</td><td>Valeur TTC</td></tr>";
     /*for(int i = 0 ; i < n ; i++)
     {
         //Ajout des lignes correspondants aux ventes
     }*/
     tvaHtml+="</table>";
-    tvaHtml+="<h5>Total Achats HT :  €</h5>";
-    tvaHtml+="<h5>Total Achats TVA :  €</h5>";
-    tvaHtml+="<h5>Total Ventes HT :  €</h5>";
+    tvaHtml+="<h5>Total Achats TTC : "+ QString::number(totalTtcBought) +" €</h5>";
+    tvaHtml+="<h5>Total Achats TVA : "+ QString::number(totalTvaBought) +" €</h5>";
+    tvaHtml+="<h5>Total Ventes TTC :  €</h5>";
     tvaHtml+="<h5>Total Ventes TVA :  €</h5>";
 
 
@@ -1318,4 +1329,8 @@ void Controller::PrintTvaPdf(int year)
     printer.setOutputFormat(QPrinter::PdfFormat);
     doc.print(&printer);
     printer.newPage();
+
+    //QLabel* tmp = new QLabel("Le pdf a été écrit dans le dossier " + GLOBAL_PATH + "toto.pdf");
+    //tmp->setWindowFlags(Qt::);
+
 }

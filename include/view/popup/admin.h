@@ -43,6 +43,9 @@ private:
     QLabel* tvaEditLabel;
     QComboBox* tvaEdit;
     QLineEdit* tvaEditNewValue;
+    QLabel* tvaPdfLabel;
+    QLineEdit* tvaPdf;
+    QPushButton* tvaPdfButton;
 
     
 public slots:
@@ -51,6 +54,7 @@ public slots:
     void clickOnIndividualHistory();
     void clickOnIndividualGraph();
     void clickOnViewLog();
+    void createTvaPdf();
     
 };
 
