@@ -29,7 +29,6 @@ private:
     QPushButton* individualGraphButton;
     QPushButton* validateButton;
     QPushButton* cancelButton;
-    //QCheckBox* negativeAllowed;
     QLabel* cashTransferLabel;
     QLineEdit* cashTransfer;
     QLabel* oldCustCategoryNameLabel;
@@ -41,6 +40,9 @@ private:
     QLabel *logLabel;
     QLineEdit* logYear;
     QPushButton* viewLog;
+    QLabel* tvaEditLabel;
+    QComboBox* tvaEdit;
+    QLineEdit* tvaEditNewValue;
 
     
 public slots:

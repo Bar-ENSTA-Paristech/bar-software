@@ -35,6 +35,9 @@ Admin::Admin(QWidget *parent) :
     oldProdCategoryNameLabel = new QLabel("Changer le nom de cette catégorie", this);
     oldProdCategoryName = new QComboBox(this);
     newProdCategoryName = new QLineEdit(this);
+    tvaEditLabel = new QLabel("Changement taux TVA : ", this);
+    tvaEdit = new QComboBox(this);
+    tvaEditNewValue = new QLineEdit(this);
 
     logLabel = new QLabel("Mois (AAAA-MM) : ", this);
     logYear = new QLineEdit(this);
@@ -56,6 +59,9 @@ Admin::Admin(QWidget *parent) :
     layout->addWidget(logLabel, 4,0);
     layout->addWidget(logYear, 4,1);
     layout->addWidget(viewLog, 4,2);
+    layout->addWidget(tvaEditLabel,5,0);
+    layout->addWidget(tvaEdit, 5,1 );
+    layout->addWidget(tvaEditNewValue, 5,2);
     layout->addWidget(cashTransferLabel, 10,0);
     layout->addWidget(cashTransfer, 10,1);
     layout->addWidget(validateButton, 20,0);
@@ -74,10 +80,15 @@ void Admin::launchAdmin(AdminTuple& tuple)
     //negativeAllowed->setChecked(tuple.isNegativeAllowed);
     db_categoryQueue catQueue;
     db_categoryTuple catTuple;
+    db_TVAcategoryQueue tvaQueue;
+    db_TVAcategoryTuple tvaTuple;
     oldCustCategoryName->clear();
     oldProdCategoryName->clear();
+    tvaEdit->clear();
+    cashTransfer->setText("0");
 
     catQueue = controller->getCustomerCategories();
+    tvaQueue = controller->getTvaRates();
     int n = catQueue.size() - 1;
     catQueue.pop(); // on enlève la catégorie visiteur.
     for(int i =0 ; i < n ; i++)
@@ -95,6 +106,13 @@ void Admin::launchAdmin(AdminTuple& tuple)
         catQueue.pop();
         oldProdCategoryName->addItem(QString::fromStdString(catTuple.getCategoryName()));
     }
+    n = tvaQueue.size();
+    for(int i =0 ; i < n ; i++)
+    {
+        tvaTuple = tvaQueue.front();
+        tvaQueue.pop();
+        tvaEdit->addItem(QString::fromStdString(tvaTuple.getInfo()));
+    }
 
     this->show();
 }
@@ -103,13 +121,16 @@ void Admin::validate()
 {
     if(!isBalanceCorrect(cashTransfer->text()))
         return;
+    if(!isFloat(tvaEditNewValue->text()))
+        return;
     AdminTuple tuple;
-    //tuple.isNegativeAllowed = negativeAllowed->isChecked();
     tuple.cashTransfered = cashTransfer->text().toFloat();
     tuple.newCustCategoryName = newCustCategoryName->text().toStdString();
     tuple.custCategoryID = oldCustCategoryName->currentIndex() + 1; // because visitor not displayed
     tuple.newProdCategoryName = newProdCategoryName->text().toStdString();
     tuple.prodCategoryID = oldProdCategoryName->currentIndex() + 1; // because id 0 is reserved for cash transactions
+    tuple.tvaTuple.setValue(tvaEditNewValue->text().toFloat());
+    tuple.tvaTuple.setId(tvaEdit->currentIndex()+1);
     controller->receiveAdminInfos(tuple);
 
     newCustCategoryName->clear();

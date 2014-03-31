@@ -335,7 +335,7 @@ class db_TVAcategoryTuple
 {
 public:
     void setId (int _id){id= _id;}
-    void setValue (int _value){value = _value;}
+    void setValue (float _value){value = _value;}
     //Les catégories de TVA ne devraient pas changer sous peu ...
 
     int getId (){return id;}
@@ -430,6 +430,7 @@ typedef struct{
     int prodCategoryID;
     std::string newCustCategoryName;
     std::string newProdCategoryName;
+    db_TVAcategoryTuple tvaTuple;
 }AdminTuple;
 
 #endif // STRUCTURES_H
