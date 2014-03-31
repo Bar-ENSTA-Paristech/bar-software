@@ -39,6 +39,8 @@ private:
     QScrollArea* scrollArea;
     QLabel* tvaTotalLabel;
     QLabel* ttcTotalLabel;
+    QLabel* infosLabel;
+    QLineEdit* infos;
     QLineEdit* tvaTotal;
     QLineEdit* ttcTotal;
 

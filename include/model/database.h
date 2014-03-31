@@ -135,7 +135,7 @@ public:
 
     int addStockedit (db_commandQueue _com);
 
-    int addCommande (db_comTuple);
+    int addCommand (db_comTuple);
 
     db_commandQueue getCommandFromProdId (int id);
 

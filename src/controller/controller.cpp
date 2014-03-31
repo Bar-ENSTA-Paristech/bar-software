@@ -806,7 +806,7 @@ void Controller::newClic_AddStock()
     currentLoginRequest = ADD_STOCK;
 }
 
-void Controller::receiveNewStocks(view_productQueue& products, float totalTVA, float totalTTC)
+void Controller::receiveNewStocks(view_productQueue& products, float totalTVA, float totalTTC, QString infos)
 {
     view_productTuple view_tuple;
     db_productTuple db_tuple;
@@ -835,6 +835,13 @@ void Controller::receiveNewStocks(view_productQueue& products, float totalTVA, f
 
         db_com.push(db_com_tuple);
     }
+    database->closeDatabase();
+    database->openDatabase();
+    db_comTuple comTuple;
+    comTuple.setTTC(totalTTC);
+    comTuple.setTVA(totalTVA);
+    comTuple.setInfo(infos.toStdString());
+    database->addCommand(comTuple);
     database->closeDatabase();
 
     if(currentLoggedCustomer != "")
@@ -1281,15 +1288,19 @@ std::string Controller::hashPasswd(std::string password)
 void Controller::PrintTvaPdf(int year)
 {
     // Appel à la database pour avoir les transactions de l'année
+    database->openDatabase();
+    db_histQueue histQueue = database->getSalesOfYear();
+
+
     QTextDocument doc;
     QString tvaHtml = "<h1>Comptabilité du bar sur l'année "+QString::number(year)+"</h1>";
     tvaHtml+="<h3>Total Achats</h3>";
-    tvaHtml+="<table>";
+    tvaHtml+="<table> <tr><td>Date</td><td>Commande</td><td>Valeur TVA</td><td>Valeur TTC</td></tr>";
     /*for(int i = 0 ; i < n ; i++)
     {
         //Ajout des lignes correspondants aux achats
     }*/
-    tvaHtml+="</table> <h3> Total Ventes</h3><table>";
+    tvaHtml+="</table> <h3> Total Ventes</h3><table><tr><td>Date</td><td>Vente</td><td>Valeur TVA</td><td>Valeur TTC</td></tr>";
     /*for(int i = 0 ; i < n ; i++)
     {
         //Ajout des lignes correspondants aux ventes
