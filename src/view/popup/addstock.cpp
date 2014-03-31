@@ -14,11 +14,23 @@ AddStock::AddStock(QWidget *parent) :
     cancelButton = new QPushButton("Annuler", this);
     layout = new QGridLayout(this);
     frameLayout = new QGridLayout(listFrame);
-    layout->addWidget(scrollArea, 0,0,1,4);
-    layout->addWidget(addLineButton, 1,0);
-    layout->addWidget(resetButton, 1,1);
-    layout->addWidget(validateButton, 1, 2);
-    layout->addWidget(cancelButton, 1,3);
+    tvaTotalLabel = new QLabel("Total tva de la commande (€) : ", this);
+    ttcTotalLabel = new QLabel("Total ttc de la commande (€] : ", this);
+    tvaTotal = new QLineEdit(this);
+    ttcTotal = new QLineEdit(this);
+    layout->addWidget(tvaTotalLabel, 0,0);
+    layout->addWidget(tvaTotal, 0,1);
+    layout->addWidget(ttcTotalLabel, 1,0);
+    layout->addWidget(ttcTotal, 1,1);
+    layout->addWidget(scrollArea, 2,0,1,4);
+    layout->addWidget(addLineButton, 3,0);
+    layout->addWidget(resetButton, 3,1);
+    layout->addWidget(validateButton, 3, 2);
+    layout->addWidget(cancelButton, 3,3);
+    layout->setColumnStretch(0,1);
+    layout->setColumnStretch(1,1);
+    layout->setColumnStretch(2,1);
+    layout->setColumnStretch(3,1);
     this->setLayout(layout);
 
     numberOfLines = 0;
@@ -156,7 +168,11 @@ void AddStock::validate()
         queue.push(tuple);
         delete[] lines[i]->productID;
     }
-    controller->receiveNewStocks(queue);
+    if(!isFloat(tvaTotal->text()) || !isFloat(ttcTotal->text()))
+        return;
+    float tva = tvaTotal->text().toFloat();
+    float ttc = ttcTotal->text().toFloat();
+    controller->receiveNewStocks(queue,tva, ttc);
     this->reset();
     this->hide();
 

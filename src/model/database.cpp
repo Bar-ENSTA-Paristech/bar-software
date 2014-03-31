@@ -855,7 +855,7 @@ db_histQueue Database::getCustomerHist(unsigned id, bool old)
         //Utiliser des jointures
         // From client_id -> nom + prénom
         // From conso_id -> conso + prix
-        std::string queryString="SELECT historique.his_id, notes.nom, notes.prenom,consos.nom, consos.prix, historique.date_conso ";
+        std::string queryString="SELECT historique.his_id, notes.nom, notes.prenom,consos.nom, historique.conso_price, historique.date_conso ";
         queryString+="FROM historique ";
         queryString+="LEFT JOIN consos ";
         queryString+="ON consos.conso_id = historique.conso_id ";
@@ -871,7 +871,7 @@ db_histQueue Database::getCustomerHist(unsigned id, bool old)
     }
     else
     {
-        std::string queryString="SELECT historique_save.his_id, notes.nom, notes.prenom,consos.nom, consos.prix, historique_save.date_conso ";
+        std::string queryString="SELECT historique_save.his_id, notes.nom, notes.prenom,consos.nom, historique.conso_price, historique_save.date_conso ";
         queryString+="FROM historique_save ";
         queryString+="LEFT JOIN consos ";
         queryString+="ON consos.conso_id = historique_save.conso_id ";
@@ -924,9 +924,8 @@ db_histQueue Database::getCustomerHist(unsigned id, bool old)
     clear(queue);
     delete hist;
     delete queryResultFunction;
-    return result;
     clear(*queryResult);
-
+    return result;
 }
 
 db_histQueue Database::getProductHist(unsigned id,bool old)

@@ -129,7 +129,7 @@ public:
 
     int addToBar (std::pair<std::string,std::string>);
 
-    db_TVAcategoryQueue getTvaRates(){}
+    db_TVAcategoryQueue getTvaRates(){db_TVAcategoryQueue queue; return queue;}
 
     int autoDumpHist();
 

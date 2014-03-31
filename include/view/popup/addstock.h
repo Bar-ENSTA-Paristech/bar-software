@@ -37,6 +37,10 @@ private:
     QGridLayout* layout;
     QGridLayout* frameLayout;
     QScrollArea* scrollArea;
+    QLabel* tvaTotalLabel;
+    QLabel* ttcTotalLabel;
+    QLineEdit* tvaTotal;
+    QLineEdit* ttcTotal;
 
     std::vector<ConsoLine*> lines;
     unsigned numberOfLines;

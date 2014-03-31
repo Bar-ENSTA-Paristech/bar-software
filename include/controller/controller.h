@@ -2,6 +2,8 @@
 #define CONTROLLER_H
 
 #include <QString>
+#include <QTextDocument>
+#include <QPrinter>
 #include <string>
 #include <cstdio>
 #include <QCryptographicHash>
@@ -84,7 +86,7 @@ public:
     void receiveCalculatorEntry(float amount, bool isPaidByCard);
     void receiveEditCustomerEntry(view_customerTuple& customer);
     void receiveNewCustomerEntry(view_customerTuple& customer, bool isCash);
-    void receiveNewStocks(view_productQueue& products);
+    void receiveNewStocks(view_productQueue& products, float totalTVA, float totalTTC);
     void receiveNewProduct(view_productTuple& product);
     void receiveEditProduct(view_productTuple& product, bool deleteProduct = false);
     void receiveAdminInfos(AdminTuple tuple);
@@ -116,6 +118,7 @@ public:
     std::string hashPasswd(std::string password);
     void appendLog(std::string log); // Ajoute un évenement au log
     QString getLog(int month, int year);
+    void PrintTvaPdf(int year);
 
 
 private:

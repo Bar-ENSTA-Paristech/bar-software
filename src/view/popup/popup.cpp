@@ -53,6 +53,20 @@ bool Popup::isInteger(QString value)
     return true;
 }
 
+bool Popup::isFloat(QString value)
+{
+    const QRegExp regex ("^-?[0-9]+(\.[0-9]*)?$");
+    if(value.contains(regex))
+    {
+        return true;
+    }
+    else
+    {
+        error->showMessage("Cette quantité d'argent n'est pas valide ! La virgule doit être représentée par un point. Si la somme est négative, coller la virgule à la partie entière. Ne pas mettre le symbole €. Exemple : -15.53");
+        return false;
+    }
+}
+
 void Popup::setController(Controller* _controller)
 {
     controller = _controller;

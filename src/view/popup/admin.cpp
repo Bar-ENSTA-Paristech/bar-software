@@ -74,6 +74,8 @@ void Admin::launchAdmin(AdminTuple& tuple)
     //negativeAllowed->setChecked(tuple.isNegativeAllowed);
     db_categoryQueue catQueue;
     db_categoryTuple catTuple;
+    oldCustCategoryName->clear();
+    oldProdCategoryName->clear();
 
     catQueue = controller->getCustomerCategories();
     int n = catQueue.size() - 1;

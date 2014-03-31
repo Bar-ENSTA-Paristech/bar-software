@@ -82,7 +82,7 @@ void GlobalHistoryList::launchGlobalHistory(view_histQueue &queue)
         if(price > 0 || tuple.getHistOperation() == "DEBIT/CREDIT")
             model->item(i,4)->setText(QString::number(price));
         else
-            model->item(i,4)->setText("Cash");
+            model->item(i,4)->setText("Cash (" + QString::number(-price)+")");
 
         QBrush negativeColor(QColor(242,222,222)), positiveColor(QColor(159, 255, 140)), normalColor(QColor(255,255,255));
         QBrush *color;

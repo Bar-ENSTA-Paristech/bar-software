@@ -17,6 +17,7 @@ public:
     bool isBalanceCorrect(QString value);
     bool isUInteger(QString value);
     bool isInteger(QString value);
+    bool isFloat(QString value);
     void setController(Controller* controller);
     
 signals:

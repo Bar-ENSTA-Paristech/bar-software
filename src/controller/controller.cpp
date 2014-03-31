@@ -16,7 +16,7 @@ Controller::Controller()
     plotting = new Plotting;
     database->openDatabase();
     consoTypes = database->getProdCategories();
-    database->closeDatabase();
+    database->closeDatabase();PrintTvaPdf(2014);
 }
 
 void Controller::setDb(sqlite3* handle)
@@ -163,9 +163,6 @@ void Controller::newClic_Customer(unsigned int customerId)
 
 void Controller::newClic_ValidateCart(bool isCash)
 {
-    // ###################### TO COMPLETE : cashModification #######################
-    //
-    //
     qDebug()<<"Received click to validate cart. Cash : " << isCash;
 
     //Inputs and outputs
@@ -203,8 +200,8 @@ void Controller::newClic_ValidateCart(bool isCash)
 
             histToBeInserted.setHistCustomerId(curCustomer->getCustomerId());
             histToBeInserted.setHistProductId(db_productInfo.getProductId());
-            if(cashTrans)
-                histToBeInserted.setHistPrice(0);
+            if(cashTrans) // si la somme est négative c'est une transaction cash
+                histToBeInserted.setHistPrice(-db_productInfo.getProductPrice());
             else
                 histToBeInserted.setHistPrice(db_productInfo.getProductPrice());
             qDebug()<<"Modif de l'hist";
@@ -423,8 +420,8 @@ bool Controller::view_isLoginCorrect(QString login, QString passwd, LoginType lo
     _truepass= database->getPassword(_login);
     database->closeDatabase();
     std::string hashedPasswd = hashPasswd(passwd.toStdString());
-
-    isLoginIncorrect= _truepass.compare(hashedPasswd);
+    // Pour DEBUG
+    isLoginIncorrect= _truepass.compare(hashedPasswd); isLoginIncorrect = false;
 
     if(isLoginIncorrect)
     {
@@ -810,7 +807,7 @@ void Controller::newClic_AddStock()
     currentLoginRequest = ADD_STOCK;
 }
 
-void Controller::receiveNewStocks(view_productQueue& products)
+void Controller::receiveNewStocks(view_productQueue& products, float totalTVA, float totalTTC)
 {
     view_productTuple view_tuple;
     db_productTuple db_tuple;
@@ -1270,4 +1267,35 @@ std::string Controller::hashPasswd(std::string password)
     hash.addData(password.c_str());
     QString output(hash.result().toHex());
     return output.toStdString();
+}
+
+void Controller::PrintTvaPdf(int year)
+{
+    // Appel à la database pour avoir les transactions de l'année
+    QTextDocument doc;
+    QString tvaHtml = "<h1>Comptabilité du bar sur l'année "+QString::number(year)+"</h1>";
+    tvaHtml+="<h3>Total Achats</h3>";
+    tvaHtml+="<table>";
+    /*for(int i = 0 ; i < n ; i++)
+    {
+        //Ajout des lignes correspondants aux achats
+    }*/
+    tvaHtml+="</table> <h3> Total Ventes</h3><table>";
+    /*for(int i = 0 ; i < n ; i++)
+    {
+        //Ajout des lignes correspondants aux ventes
+    }*/
+    tvaHtml+="</table>";
+    tvaHtml+="<h5>Total Achats HT :  €</h5>";
+    tvaHtml+="<h5>Total Achats TVA :  €</h5>";
+    tvaHtml+="<h5>Total Ventes HT :  €</h5>";
+    tvaHtml+="<h5>Total Ventes TVA :  €</h5>";
+
+
+    doc.setHtml(tvaHtml);
+    QPrinter printer;
+    printer.setOutputFileName(GLOBAL_PATH + "toto.pdf");
+    printer.setOutputFormat(QPrinter::PdfFormat);
+    doc.print(&printer);
+    printer.newPage();
 }
