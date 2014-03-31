@@ -447,6 +447,7 @@ typedef struct{
     int prodCategoryID;
     std::string newCustCategoryName;
     std::string newProdCategoryName;
+    db_TVAcategoryTuple tvaTuple;
 }AdminTuple;
 
 #endif // STRUCTURES_H
