@@ -845,7 +845,7 @@ void Controller::receiveNewStocks(view_productQueue& products, float totalTVA, f
         appendLog(log);
     }
     database->openDatabase();
-    database->addCommand(db_com);
+    database->addStockedit(db_com);
     database->closeDatabase();
 
 }

@@ -133,11 +133,17 @@ public:
 
     int autoDumpHist();
 
-    int addCommand (db_commandQueue _com);
+    int addStockedit (db_commandQueue _com);
+
+    int addCommande (db_comTuple);
 
     db_commandQueue getCommandFromProdId (int id);
 
     void editTvaRate(db_TVAcategoryTuple tuple);
+
+    db_comQueue getCommandsOfYear (int _year);
+
+    db_histQueue getSalesOfYear (int _year);
 
     void convertToPointDecimal(std::string &str); // Remplace les éventuelles virgules d'un décimal par des points, compréhensible par SQLite
 
