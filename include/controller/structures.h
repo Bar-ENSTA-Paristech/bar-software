@@ -108,23 +108,23 @@ public:
     void setProductStock (int stock);
     void setProductVolume(unsigned _volume){volume=_volume;}
     void setProductCategory (unsigned category);
-    void setTvaType(int type){tvaType = type;}
+    void setProductTVAcat (int _TVA);
 
-    int getTvaType(){return tvaType;}
     unsigned getProductId ();
     std::string getProductName();
     float getProductPrice();
     int getProductStock();
     unsigned getProductVolume(){return volume;}
     unsigned getProductCategory();
+    int getProductTVAcat();
 
     view_productTuple transformIntoProductView();
 
 private:
-    int tvaType;
     unsigned id;
     std::string name;
     float price;
+    int TVAcat;
     int stock;
     unsigned volume;
     unsigned category;
@@ -139,26 +139,26 @@ public:
     void setProductStock (int stock);
     void setProductCategory (unsigned category);
     void setProductVolume(unsigned _volume);
-    void setTvaType(int type){tvaType = type;}
+    void setProductTVAcat (int _TVA);
 
-    int getTvaType(){return tvaType;}
     unsigned getProductId ();
     QString getProductName();
     float getProductPrice();
     int getProductStock();
     unsigned getProductCategory();
     unsigned getProductVolume();
+    int getProductTVAcat();
 
     db_productTuple transformIntoProductDb();
 
 private:
-    int tvaType;
     unsigned id;
     QString name;
     float price;
     int stock;
     unsigned volume;
     unsigned category;
+    int TVAcat;
 };
 
 class db_categoryTuple
@@ -302,10 +302,52 @@ private:
     std::string date;
 };
 
-typedef struct{
-    float rate;
-    std::string name;
-}TvaRate;
+class db_commandTuple
+{
+public:
+    void setId (int _id);
+    void setCom_id (int _com_id);
+    void setProd_id (int _prod_id);
+    void setProd_qty (int _prod_qty);
+    void setPrixHT (float _prixHT);
+    void setDate (std::string _date);
+    void setInfo (std::string _info);
+
+    int getId();
+    int getCom_id();
+    int getProd_id();
+    int getProd_qty ();
+    float getPrixHT();
+    std::string getDate();
+    std::string getInfo();
+
+private:
+    int id;
+    int com_id;
+    int prod_id;
+    int prod_qty;
+    float prixHT;
+    std::string date;
+    std::string info;
+};
+
+class db_TVAcategoryTuple
+{
+public:
+    void setId (int _id){id= _id;}
+    void setValue (int _value){value = _value;}
+    //Les catégories de TVA ne devraient pas changer sous peu ...
+
+    int getId (){return id;}
+    float getValue(){return value;}
+    std::string getInfo(){return info;}
+
+private:
+    int id;
+    float value;
+    std::string info;
+};
+
 
 typedef std::queue<db_histTuple> db_histQueue;
 typedef std::queue<db_customerTuple> db_customerQueue;
@@ -317,7 +359,9 @@ typedef std::queue<view_histTuple> view_histQueue;
 typedef std::queue<db_histTuple> db_histQueue;
 typedef std::queue<view_cartTuple> view_cartQueue;
 typedef std::queue<db_finop_tuple> db_finop_queue;
-typedef std::queue<TvaRate> TvaRateQueue;
+typedef std::queue<db_commandTuple> db_commandQueue;
+typedef std::queue<db_TVAcategoryTuple> db_TVAcategoryQueue;
+
 
 typedef std::pair< std::vector< double > , std::vector< double > > db_dataarray;
 

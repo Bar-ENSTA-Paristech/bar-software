@@ -814,19 +814,30 @@ void Controller::receiveNewStocks(view_productQueue& products)
 {
     view_productTuple view_tuple;
     db_productTuple db_tuple;
+
+    db_commandQueue db_com;
+
     std::string stocks = "";
     unsigned n = products.size();
 
     database->openDatabase();
     for(unsigned i = 0 ; i < n ; i++)
     {
-        //TODO : Rajouter 1 Ligne par produit dans commande pour laisser une trace des achats explicite
+        db_commandTuple db_com_tuple;
+
         view_tuple = products.front();
         products.pop();
+
+        db_com_tuple.setProd_id(view_tuple.getProductId());
+        //db_com_tuple.setPrixHT(view_tuple.getProductPriceHT());  //Récupére le prix d'achat HT via le view_Producttuple
+        db_com_tuple.setProd_qty(view_tuple.getProductStock());
+
         db_tuple = database->getProductFromId(view_tuple.getProductId());
         db_tuple.setProductStock(db_tuple.getProductStock() + view_tuple.getProductStock());
         database->editProduct(db_tuple);
         stocks += " - " + db_tuple.getProductName() + " " + std::to_string(db_tuple.getProductVolume())+ "cL"+ " : "+std::to_string(view_tuple.getProductStock());
+
+        db_com.push(db_com_tuple);
     }
     database->closeDatabase();
 
@@ -836,6 +847,10 @@ void Controller::receiveNewStocks(view_productQueue& products)
         log = currentLoggedCustomer + " -> added stocks " + stocks;
         appendLog(log);
     }
+    database->openDatabase();
+    database->addCommand(db_com);
+    database->closeDatabase();
+
 }
 
 void Controller::newClic_AddProduct()

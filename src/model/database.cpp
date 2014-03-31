@@ -1606,7 +1606,7 @@ void Database::dumpProductToDelete(db_productTuple tuple)
 
 void dumpHistOfDeletedCust (unsigned id)
 {
-
+    //TODO
 }
 
 void Database::setPassword(std::string login, std::string password)
@@ -1980,4 +1980,199 @@ void Database::editCustCategory(db_categoryTuple tuple)
     executeQuery(query);
 
     return;
+}
+
+int Database::addCommand(db_commandQueue _com)
+{
+    int code=0;
+    while (!_com.empty())
+    {
+        db_commandTuple command_tuple=_com.front();
+
+        std::string queryString="";
+
+        Query query;
+
+        //On récupère le dernier numéro de commande:
+        std::string CommandIdString=std::to_string(this->getLastCommandId()+1);
+        std::string PrixHTString=std::to_string(command_tuple.getPrixHT());
+        std::string ProdQtyString=std::to_string(command_tuple.getProd_qty());
+        std::string ProdIdString =std::to_string(command_tuple.getProd_id());
+
+        queryString+="INSERT INTO commandes(id_com,product,quantity,prixHT) VALUES (";
+        queryString+=CommandIdString;
+        queryString+=", ";
+        queryString+= ProdIdString ;
+        queryString+=", ";
+        queryString+= ProdQtyString ;
+        queryString+=", ";
+        queryString+= PrixHTString ;
+        queryString+=");";
+
+        query.setQuery(queryString);
+        query.setVerbose(1);
+        code+=executeQuery(query);
+
+        _com.pop();
+    }
+
+    return (code);
+}
+
+db_commandQueue Database::getCommandFromProdId (int id)
+{
+    int code=0;
+    db_commandQueue commande;
+    std::queue<std::string> *queryResultFunction(0);
+    queryResultFunction = new std::queue<std::string> ;
+
+    Query query;
+
+    std::string queryString="SELECT * FROM commandes WHERE product=";
+    queryString+=std::to_string(id);
+    queryString+="ORDER BY date DESC;";
+
+    query.setQuery(queryString);
+    query.setVerbose(1);
+    code+=executeQuery(query);
+
+    float recuperatedPriceHT;
+    int recuperatedComId;
+    int recuperatedId;
+    int recuperatedProdQty;
+
+    *queryResultFunction=*queryResult;
+
+    std::vector<std::string> vectorFromQueue;
+
+    if (queryResultFunction->size()!=0)
+    {
+        db_commandTuple com_item;
+        while (queryResultFunction->front()!= "\n"&&queryResultFunction->size()>1)
+        {
+            vectorFromQueue.push_back(queryResultFunction->front());
+            queryResultFunction->pop();
+        }
+        std::istringstream(vectorFromQueue[0]) >> recuperatedId;
+        std::istringstream(vectorFromQueue[1]) >> recuperatedComId;
+        std::istringstream(vectorFromQueue[3]) >> recuperatedProdQty;
+        std::istringstream(vectorFromQueue[4]) >> recuperatedPriceHT;
+
+        com_item.setCom_id(recuperatedComId);
+        com_item.setDate(vectorFromQueue[5]);
+        com_item.setId(recuperatedId);
+        com_item.setPrixHT(recuperatedPriceHT);
+        com_item.setProd_id(id);
+        com_item.setProd_qty(recuperatedProdQty);
+        com_item.setInfo(vectorFromQueue[6]);
+
+        commande.push(com_item);
+
+        queryResultFunction->pop();
+    }
+    else
+    {
+    }
+    clear(queue);
+    delete queryResultFunction;
+    vectorFromQueue.clear();
+    return (commande);
+}
+
+db_commandQueue Database::getCommandFromComId (int id)
+{
+    int code =0;
+    db_commandQueue commande;
+    std::queue<std::string> *queryResultFunction(0);
+    queryResultFunction = new std::queue<std::string> ;
+
+    Query query;
+
+    std::string queryString="SELECT * FROM commandes WHERE product=";
+    queryString+=std::to_string(id);
+    queryString+="ORDER BY date DESC;";
+
+    query.setQuery(queryString);
+    query.setVerbose(1);
+    code+=executeQuery(query);
+
+    float recuperatedPriceHT;
+    int recuperatedProdId;
+    int recuperatedId;
+    int recuperatedProdQty;
+
+    *queryResultFunction=*queryResult;
+
+    std::vector<std::string> vectorFromQueue;
+
+    if (queryResultFunction->size()!=0)
+    {
+        db_commandTuple com_item;
+        while (queryResultFunction->front()!= "\n"&&queryResultFunction->size()>1)
+        {
+            vectorFromQueue.push_back(queryResultFunction->front());
+            queryResultFunction->pop();
+        }
+        std::istringstream(vectorFromQueue[0]) >> recuperatedId;
+        std::istringstream(vectorFromQueue[2]) >> recuperatedProdId;
+        std::istringstream(vectorFromQueue[3]) >> recuperatedProdQty;
+        std::istringstream(vectorFromQueue[4]) >> recuperatedPriceHT;
+
+        com_item.setCom_id(id);
+        com_item.setDate(vectorFromQueue[5]);
+        com_item.setId(recuperatedId);
+        com_item.setPrixHT(recuperatedPriceHT);
+        com_item.setProd_id(recuperatedProdId);
+        com_item.setProd_qty(recuperatedProdQty);
+        com_item.setInfo(vectorFromQueue[6]);
+
+        commande.push(com_item);
+
+        queryResultFunction->pop();
+    }
+    else
+    {
+    }
+    clear(queue);
+    delete queryResultFunction;
+    vectorFromQueue.clear();
+    return (commande);
+
+}
+
+int Database::getLastCommandId()
+{
+    int id;
+    std::string idString;
+    std::queue<std::string> *queryResultFunction(0);
+    queryResultFunction = new std::queue<std::string> ;
+
+    Query query;
+
+    std::string queryString="SELECT id_com FROM commandes ";
+    queryString+="ORDER BY id_com DESC;";
+
+    query.setQuery(queryString);
+    query.setVerbose(1);
+
+
+    *queryResultFunction=*queryResult;
+
+    std::vector<std::string> vectorFromQueue;
+
+    if (queryResultFunction->size()!=0)
+    {
+        vectorFromQueue.push_back(queryResultFunction->front());
+        std::istringstream(vectorFromQueue[0]) >> id;
+    }
+    else
+    {
+        id=-1;
+    }
+    clear(queue);
+    delete queryResultFunction;
+    vectorFromQueue.clear();
+    return (id);
+
+
 }

@@ -129,9 +129,17 @@ public:
 
     int addToBar (std::pair<std::string,std::string>);
 
-    TvaRateQueue getTvaRates(){}
+    db_TVAcategoryQueue getTvaRates(){}
 
     int autoDumpHist();
+
+    int addCommand (db_commandQueue _com);
+
+    db_commandQueue getCommandFromProdId (int id);
+
+    db_commandQueue getCommandFromComId (int id);
+
+    int getLastCommandId();
 
     void convertToPointDecimal(std::string &str); // Remplace les éventuelles virgules d'un décimal par des points, compréhensible par SQLite
 

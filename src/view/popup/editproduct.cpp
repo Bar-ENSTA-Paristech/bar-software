@@ -56,8 +56,8 @@ void EditProduct::launchEditProduct()
     db_categoryQueue catQueue = controller->getProductsCategories();
     db_categoryTuple catTuple;
     //Appel au controlleur pour avoir les taux de tva
-    TvaRateQueue tvaQueue = controller->getTvaRates();
-    TvaRate tvaTuple;
+    db_TVAcategoryQueue tvaQueue = controller->getTvaRates();
+    db_TVAcategoryTuple tvaTuple;
     categorie->clear();
     tva->clear();
     int n = catQueue.size();
@@ -72,7 +72,7 @@ void EditProduct::launchEditProduct()
     {
         tvaTuple = tvaQueue.front();
         tvaQueue.pop();
-        tva->addItem(QString::number(tvaTuple.rate)+"% : "+QString::fromStdString(tvaTuple.name));
+        tva->addItem(QString::number(tvaTuple.getValue())+"% : "+QString::fromStdString(tvaTuple.getInfo()));
     }
 
     // to update consos to fit this category
@@ -95,7 +95,7 @@ void EditProduct::validate()
     tmpProduct.setProductStock(stock->text().toInt());
     tmpProduct.setProductId(ID);
     tmpProduct.setProductVolume(volume->text().toUInt());
-    tmpProduct.setTvaType(tva->currentIndex() + 1);
+    tmpProduct.setProductTVAcat(tva->currentIndex() + 1);
     controller->receiveEditProduct(tmpProduct, deleteProduct->isChecked());
 
     this->reset();
@@ -152,7 +152,7 @@ void EditProduct::productSelected(int index)
     price->setText(QString::number(tmpProduct.getProductPrice()));
     volume->setText(QString::number(tmpProduct.getProductVolume()));
     stock->setText(QString::number(tmpProduct.getProductStock()));
-    tva->setCurrentIndex(tmpProduct.getTvaType()-1);
+    tva->setCurrentIndex(tmpProduct.getProductTVAcat()-1);
     ID = tmpProduct.getProductId();
     deleteProduct->setChecked(false);
 }

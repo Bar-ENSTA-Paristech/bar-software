@@ -56,8 +56,8 @@ void AddProduct::launchAddProduct()
     db_categoryQueue catQueue = controller->getProductsCategories();
     db_categoryTuple catTuple;
     //Appel au controlleur pour avoir les taux de tva
-    TvaRateQueue tvaQueue = controller->getTvaRates();
-    TvaRate tvaTuple;
+    db_TVAcategoryQueue tvaQueue = controller->getTvaRates();
+    db_TVAcategoryTuple tvaTuple;
     categorie->clear();
     tva->clear();
     int n = catQueue.size();
@@ -72,7 +72,7 @@ void AddProduct::launchAddProduct()
     {
         tvaTuple = tvaQueue.front();
         tvaQueue.pop();
-        tva->addItem(QString::number(tvaTuple.rate)+"% : "+QString::fromStdString(tvaTuple.name));
+        tva->addItem(QString::number(tvaTuple.getValue())+"% : "+QString::fromStdString(tvaTuple.getInfo()));
     }
 
     this->show();
@@ -93,7 +93,7 @@ void AddProduct::validate()
     tuple.setProductPrice(price->text().toFloat());
     tuple.setProductStock(stock->text().toInt());
     tuple.setProductVolume(volume->text().toUInt());
-    tuple.setTvaType(tva->currentIndex()+1);
+    tuple.setProductTVAcat(tva->currentIndex()+1);
     controller->receiveNewProduct(tuple);
 
     this->reset();
