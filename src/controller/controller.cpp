@@ -1296,17 +1296,26 @@ void Controller::PrintTvaPdf(int year)
     db_saleQueue saleQueue = database->getSalesOfYear(year);
     db_saleTuple saleTuple;
 
+    db_TVAcategoryQueue tvaQueue = database->getTvaRates();
+    db_TVAcategoryTuple tvaTuple;
 
     database->closeDatabase();
+    int n = tvaQueue.size();
     double totalTvaSold=0, totalTtcSold=0, totalTvaBought=0, totalTtcBought=0;
-    int n = comQueue.size();
-
-
 
     QTextDocument doc;
     QString tvaHtml = "<h1>Comptabilité du bar sur l'année "+QString::number(year)+"</h1>";
+    tvaHtml += "<h2>Pour les taux réduits-intérmédiaires-pleins à ";
+    for(int i =0 ; i < n ; i++)
+    {
+        tvaTuple = tvaQueue.front();
+        tvaQueue.pop();
+        tvaHtml += QString::number(tvaTuple.getRate()) +"% ";
+    }
+    tvaHtml+="</h2>";
     tvaHtml+="<h3>Total Achats</h3>";
     tvaHtml+="<table> <tr><td>Date</td><td>Commande</td><td>Valeur TVA</td><td>Valeur TTC</td></tr>";
+    n = comQueue.size();
     for(int i = 0 ; i < n ; i++)
     {
         comTuple = comQueue.front();
