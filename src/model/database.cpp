@@ -2295,7 +2295,7 @@ db_saleQueue Database::getSalesOfYear (int _year)
     queryResultFunction = new std::queue<std::string> ;
 
 
-    queryString = "SELECT historique_save.his_id,historique_save.conso_price,consos.TVAType,historique_save.date FROM historique_save ";
+    queryString = "SELECT historique_save.his_id,historique_save.conso_price,consos.TVAType,historique_save.date,consos.name FROM historique_save ";
     queryString+="LEFT JOIN consos ";
     queryString+="ON consos.conso_id = historique_save.conso_id ";
     queryString+="WHERE historique_save.date >= \'" + std::to_string(_year) + "-01-01 00:00:00\' and historique_save.date < \'"+ std::to_string(_year+1)+"-01-01 00:00:00\'";
@@ -2326,6 +2326,7 @@ db_saleQueue Database::getSalesOfYear (int _year)
         cat->setTTC(recuperatedTTC);
         cat->setTVAIndex(recuperatedTVAindex);
         cat->setDate(vectorFromQueue[3]);
+        cat->setProductName(vectorFromQueue[4]);
 
         queryResultFunction->pop();
         result.push(*cat);

@@ -373,11 +373,13 @@ public:
     void setTVA(float _TVA){TVA = _TVA;}
     void setTTC(float _TTC){TTC = _TTC;}
     void setDate(std::string _date){date = _date;}
+    void setProductName(std::string _productName){ProductName = _productName;}
 
     int getId (){return id;}
     int getTVAIndex (){return TVAIndex;}
     float getTVA(){return TVA;}
     float getTTC(){return TTC;}
+    std::string getProductName(){return ProductName;}
     std::string getDate(){return date;}
 
 private:
@@ -386,6 +388,7 @@ private:
     float TVA;
     int TVAIndex;
     std::string date;
+    std::string ProductName;
 };
 
 typedef std::queue<db_histTuple> db_histQueue;
