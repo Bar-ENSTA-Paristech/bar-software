@@ -655,11 +655,6 @@ void db_commandTuple::setId (int _id)
     id=_id;
 }
 
-void db_commandTuple::setCom_id (int _com_id)
-{
-    com_id=_com_id;
-}
-
 void db_commandTuple::setProd_id (int _prod_id)
 {
     prod_id=_prod_id;
@@ -670,30 +665,14 @@ void db_commandTuple::setProd_qty (int _prod_qty)
     prod_qty=_prod_qty;
 }
 
-void db_commandTuple::setPrixHT (float _prixHT)
-{
-    prixHT=_prixHT;
-}
-
 void db_commandTuple::setDate (std::string _date)
 {
     date=_date;
 }
 
-void db_commandTuple::setInfo (std::string _info)
-{
-    info=_info;
-}
-
-
 int db_commandTuple::getId()
 {
     return id;
-}
-
-int db_commandTuple::getCom_id()
-{
-    return com_id;
 }
 
 int db_commandTuple::getProd_id()
@@ -706,17 +685,14 @@ int db_commandTuple::getProd_qty ()
     return prod_qty;
 }
 
-float db_commandTuple::getPrixHT()
-{
-    return prixHT;
-}
 
 std::string db_commandTuple::getDate()
 {
     return date;
 }
 
-std::string db_commandTuple::getInfo()
-{
-    return info;
-}
+
+// ##################################
+// DB_TVACATEGORYTUPLE
+// #################################
+//Est en inline

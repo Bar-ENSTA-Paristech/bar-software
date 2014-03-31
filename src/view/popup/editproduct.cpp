@@ -72,7 +72,7 @@ void EditProduct::launchEditProduct()
     {
         tvaTuple = tvaQueue.front();
         tvaQueue.pop();
-        tva->addItem(QString::number(tvaTuple.getValue())+"% : "+QString::fromStdString(tvaTuple.getInfo()));
+        tva->addItem(QString::number(tvaTuple.getRate())+"% : "+QString::fromStdString(tvaTuple.getInfo()));
     }
 
     // to update consos to fit this category

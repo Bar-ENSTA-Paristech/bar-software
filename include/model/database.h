@@ -129,7 +129,7 @@ public:
 
     int addToBar (std::pair<std::string,std::string>);
 
-    db_TVAcategoryQueue getTvaRates(){db_TVAcategoryQueue queue; return queue;}
+    db_TVAcategoryQueue getTvaRates();
 
     int autoDumpHist();
 
@@ -137,9 +137,7 @@ public:
 
     db_commandQueue getCommandFromProdId (int id);
 
-    db_commandQueue getCommandFromComId (int id);
-
-    int getLastCommandId();
+    void editTvaRate(db_TVAcategoryTuple tuple);
 
     void convertToPointDecimal(std::string &str); // Remplace les éventuelles virgules d'un décimal par des points, compréhensible par SQLite
 
