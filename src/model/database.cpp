@@ -1981,7 +1981,7 @@ void Database::editCustCategory(db_categoryTuple tuple)
     return;
 }
 
-int Database::addCommand(db_commandQueue _com)
+int Database::addStockedit(db_commandQueue _com)
 {
     int code=0;
     while (!_com.empty())
@@ -2011,6 +2011,31 @@ int Database::addCommand(db_commandQueue _com)
     }
 
     return (code);
+}
+
+int Database::addCommande(db_comTuple command_tuple)
+{
+    int code=0;
+    std::string queryString="";
+
+    Query query;
+
+    //On récupère le dernier numéro de commande:
+    std::string TVAString=std::to_string(command_tuple.getTVA());
+    std::string TTCString=std::to_string(command_tuple.getTTC());
+
+    queryString+="INSERT INTO commandes(prixTTC,coutTVA,info) VALUES (";
+    queryString+= TTCString ;
+    queryString+=", ";
+    queryString+= TVAString ;
+    queryString+=", ";
+    queryString+= command_tuple.getInfo() ;
+    queryString+=");";
+
+    query.setQuery(queryString);
+    query.setVerbose(1);
+    code+=executeQuery(query);
+return code;
 }
 
 db_commandQueue Database::getCommandFromProdId (int id)
@@ -2145,4 +2170,65 @@ void Database::editTvaRate(db_TVAcategoryTuple tuple)
     executeQuery(query);
 
     return;
+}
+
+db_comQueue Database::getCommandsOfYear(int _year)
+{
+    db_comQueue result;
+
+    Query query;
+
+    db_comTuple *cat(0);
+    cat=new db_comTuple;
+
+    unsigned i;
+    unsigned j=0;
+
+    std::queue<std::string> *queryResultFunction(0);
+    queryResultFunction = new std::queue<std::string> ;
+
+    std::vector<std::string> vectorFromQueue;
+
+    std::string queryString;
+    queryString = "SELECT * FROM commandes WHERE op_date >= \'" + std::to_string(_year) + "-01-01 00:00:00\' and op_date < \'"+ std::to_string(_year+1)+"-01-01 00:00:00\'";
+
+    query.setQuery(queryString);
+    query.setVerbose(1);
+    executeQuery(query);
+
+    *queryResultFunction=*queryResult;
+
+
+    while(!queryResultFunction->empty())
+    {
+        while (queryResultFunction->front()!= "\n"&&!queryResultFunction->empty())
+        {
+            vectorFromQueue.push_back(queryResultFunction->front());
+            queryResultFunction->pop();
+        }
+        int recuperatedId;
+        float recuperatedTTC;
+        float recuperatedTVA;
+
+        std::istringstream(vectorFromQueue[0]) >> recuperatedId;
+        std::istringstream(vectorFromQueue[1]) >> recuperatedTTC;
+        std::istringstream(vectorFromQueue[2]) >> recuperatedTVA;
+
+        cat->setId(recuperatedId);
+        cat->setTTC(recuperatedTTC);
+        cat->setTVA(recuperatedTVA);
+        cat->setDate(vectorFromQueue[3]);
+        cat->setInfo(vectorFromQueue[4]);
+
+        queryResultFunction->pop();
+        result.push(*cat);
+
+        j++;
+        vectorFromQueue.clear();
+    }
+    clear(queue);
+    delete cat;
+    delete queryResultFunction;
+
+    return result;
 }

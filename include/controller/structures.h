@@ -327,7 +327,7 @@ class db_TVAcategoryTuple
 {
 public:
     void setId (int _id){id= _id;}
-    void setRate(int _value){value = _value;}
+    void setRate(float _value){value = _value;}
     void setInfo(std::string _info){info = _info;}
 
     int getId (){return id;}
@@ -337,6 +337,31 @@ public:
 private:
     int id;
     float value;
+    std::string info;
+};
+
+class db_comTuple
+{
+public:
+    void setId (int _id){id= _id;}
+    void setTVA(float _TVA){TVA = _TVA;}
+    void setTTC(float _TTC){TTC = _TTC;}
+    void setInfo(std::string _info){info = _info;}
+    void setDate(std::string _date){date = _date;}
+
+
+    int getId (){return id;}
+    float getTVA(){return TVA;}
+    float getTTC(){return TTC;}
+    std::string getInfo(){return info;}
+    std::string getDate(){return date;}
+
+
+private:
+    int id;
+    float TVA;
+    float TTC;
+    std::string date;
     std::string info;
 };
 
@@ -353,7 +378,7 @@ typedef std::queue<view_cartTuple> view_cartQueue;
 typedef std::queue<db_finop_tuple> db_finop_queue;
 typedef std::queue<db_commandTuple> db_commandQueue;
 typedef std::queue<db_TVAcategoryTuple> db_TVAcategoryQueue;
-
+typedef std::queue<db_comTuple> db_comQueue;
 
 typedef std::pair< std::vector< double > , std::vector< double > > db_dataarray;
 
