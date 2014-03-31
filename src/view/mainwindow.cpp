@@ -141,7 +141,7 @@ MainWindow::MainWindow()
     // Init of timer to stop splashscreen
     timerSplashscreen = new QTimer();
     timerSplashscreen->setSingleShot(true);
-    timerSplashscreen->start(2000);
+    timerSplashscreen->start(2500);
 
     // ShortCuts
     setShortcut();

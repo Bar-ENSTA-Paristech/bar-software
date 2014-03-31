@@ -306,40 +306,32 @@ class db_commandTuple
 {
 public:
     void setId (int _id);
-    void setCom_id (int _com_id);
     void setProd_id (int _prod_id);
     void setProd_qty (int _prod_qty);
-    void setPrixHT (float _prixHT);
     void setDate (std::string _date);
-    void setInfo (std::string _info);
 
     int getId();
-    int getCom_id();
     int getProd_id();
     int getProd_qty ();
-    float getPrixHT();
     std::string getDate();
-    std::string getInfo();
 
 private:
     int id;
-    int com_id;
     int prod_id;
     int prod_qty;
-    float prixHT;
     std::string date;
-    std::string info;
+
 };
 
 class db_TVAcategoryTuple
 {
 public:
     void setId (int _id){id= _id;}
-    void setValue (float _value){value = _value;}
-    //Les catégories de TVA ne devraient pas changer sous peu ...
+    void setRate(int _value){value = _value;}
+    void setInfo(std::string _info){info = _info;}
 
     int getId (){return id;}
-    float getValue(){return value;}
+    float getRate(){return value;}
     std::string getInfo(){return info;}
 
 private:

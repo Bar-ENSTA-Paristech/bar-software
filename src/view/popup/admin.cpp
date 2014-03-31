@@ -129,7 +129,7 @@ void Admin::validate()
     tuple.custCategoryID = oldCustCategoryName->currentIndex() + 1; // because visitor not displayed
     tuple.newProdCategoryName = newProdCategoryName->text().toStdString();
     tuple.prodCategoryID = oldProdCategoryName->currentIndex() + 1; // because id 0 is reserved for cash transactions
-    tuple.tvaTuple.setValue(tvaEditNewValue->text().toFloat());
+    tuple.tvaTuple.setRate(tvaEditNewValue->text().toFloat());
     tuple.tvaTuple.setId(tvaEdit->currentIndex()+1);
     controller->receiveAdminInfos(tuple);
 
