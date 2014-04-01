@@ -218,7 +218,7 @@ void Controller::newClic_ValidateCart(bool isCash)
 
         qDebug()<<"Modification des stocks";
         productToBeEdited = db_productInfo;
-        productToBeEdited.setProductStock(productToBeEdited.getProductStock()-currentCartController[i].second);
+        productToBeEdited.setProductStock(productToBeEdited.getProductStock()-currentCartController[i].second*productToBeEdited.getProductVolume());
         database->editProduct(productToBeEdited);
 
     }

@@ -326,11 +326,17 @@ db_productQueue Database::getAllProducts()
             unsigned recuperatedId;
             unsigned recuperatedStock;
             unsigned recuperatedCategory;
+            unsigned recuperatedTVA;
+            int recuperatedVolume;
 
             std::istringstream(vectorFromQueue[3]) >> recuperatedPrice;
             std::istringstream(vectorFromQueue[0]) >> recuperatedId;
             std::istringstream(vectorFromQueue[4]) >> recuperatedStock;
             std::istringstream(vectorFromQueue[2]) >> recuperatedCategory;
+            std::istringstream(vectorFromQueue[5]) >> recuperatedTVA;
+            std::istringstream(vectorFromQueue[6]) >> recuperatedVolume;
+
+
 
             //conso = std::make_tuple (vectorFromQueue[1],recuperatedCategory,recuperatedPrice,recuperatedStock,recuperatedId);
             conso->setProductId(recuperatedId);
@@ -338,6 +344,8 @@ db_productQueue Database::getAllProducts()
             conso->setProductPrice(recuperatedPrice);
             conso->setProductStock(recuperatedStock);
             conso->setProductCategory(recuperatedCategory);
+            conso->setProductTVAcat(recuperatedTVA);
+            conso->setProductVolume(recuperatedVolume);
 
             result.push(*conso);
             queryResultFunction->pop();
@@ -596,12 +604,14 @@ db_productQueue Database::getProductsFromCategory(int categorie)
             int recuperatedStock;
             int recuperatedCategory;
             int tvaCat;
+            int recuperatedVolume;
 
             std::istringstream(vectorFromQueue[3]) >> recuperatedPrice;
             std::istringstream(vectorFromQueue[0]) >> recuperatedId;
             std::istringstream(vectorFromQueue[4]) >> recuperatedStock;
             std::istringstream(vectorFromQueue[2]) >> recuperatedCategory;
             std::istringstream(vectorFromQueue[5]) >> tvaCat;
+            std::istringstream(vectorFromQueue[6]) >> recuperatedVolume;
 
             //*conso = std::make_tuple (vectorFromQueue[1],recuperatedCategory,recuperatedPrice,recuperatedStock,recuperatedId);
             conso->setProductId(recuperatedId);
@@ -610,6 +620,7 @@ db_productQueue Database::getProductsFromCategory(int categorie)
             conso->setProductStock(recuperatedStock);
             conso->setProductCategory(recuperatedCategory);
             conso->setProductTVAcat(tvaCat);
+            conso->setProductVolume(recuperatedVolume);
 
             queryResultFunction->pop();
             result.push(*conso);
@@ -664,20 +675,22 @@ db_productTuple Database::getProductFromId(unsigned id)
         unsigned recuperatedStock;
         int recuperatedCategory;
         int tvaCat;
+        int recuperatedVolume;
 
-        std::istringstream(vectorFromQueue[3]) >> recuperatedPrice;
         std::istringstream(vectorFromQueue[0]) >> recuperatedId;
-        std::istringstream(vectorFromQueue[4]) >> recuperatedStock;
         std::istringstream(vectorFromQueue[2]) >> recuperatedCategory;
+        std::istringstream(vectorFromQueue[3]) >> recuperatedPrice;
+        std::istringstream(vectorFromQueue[4]) >> recuperatedStock;
         std::istringstream(vectorFromQueue[5]) >> tvaCat;
+        std::istringstream(vectorFromQueue[6]) >> recuperatedVolume;
 
-        //*conso = std::make_tuple (vectorFromQueue[1],recuperatedCategory,recuperatedPrice,recuperatedStock,recuperatedId);
         conso.setProductId(recuperatedId);
         conso.setProductName(vectorFromQueue[1]);
         conso.setProductPrice(recuperatedPrice);
         conso.setProductStock(recuperatedStock);
         conso.setProductCategory(recuperatedCategory);
         conso.setProductTVAcat(tvaCat);
+        conso.setProductVolume(recuperatedVolume);
 
         queryResultFunction->pop();
     }
@@ -1301,6 +1314,7 @@ int Database::editProduct(db_productTuple tuple)
     convertToPointDecimal(priceString); // peut contenir une virgule (notemment sous linux)
     std::string idString = std::to_string(id);
     std::string tvaCatString = std::to_string(tvaCat);
+    std::string volumeString=std::to_string(tuple.getProductVolume());
 
     queryString+="UPDATE consos ";
     queryString+="SET nom=";
@@ -1315,6 +1329,8 @@ int Database::editProduct(db_productTuple tuple)
     queryString+=stockString;
     queryString+=", TVAtype=";
     queryString+=tvaCatString;
+    queryString+=", volume=";
+    queryString+=volumeString;
     queryString+=" WHERE conso_id=";
     queryString+=idString;
     queryString+=";";
