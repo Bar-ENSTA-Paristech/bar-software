@@ -605,6 +605,7 @@ db_productQueue Database::getProductsFromCategory(int categorie)
             int recuperatedCategory;
             int tvaCat;
             int recuperatedVolume;
+            int recuperatedLinkStock;
 
             std::istringstream(vectorFromQueue[3]) >> recuperatedPrice;
             std::istringstream(vectorFromQueue[0]) >> recuperatedId;
@@ -612,6 +613,7 @@ db_productQueue Database::getProductsFromCategory(int categorie)
             std::istringstream(vectorFromQueue[2]) >> recuperatedCategory;
             std::istringstream(vectorFromQueue[5]) >> tvaCat;
             std::istringstream(vectorFromQueue[6]) >> recuperatedVolume;
+            std::istringstream(vectorFromQueue[7]) >> recuperatedLinkStock;
 
             //*conso = std::make_tuple (vectorFromQueue[1],recuperatedCategory,recuperatedPrice,recuperatedStock,recuperatedId);
             conso->setProductId(recuperatedId);
@@ -621,6 +623,8 @@ db_productQueue Database::getProductsFromCategory(int categorie)
             conso->setProductCategory(recuperatedCategory);
             conso->setProductTVAcat(tvaCat);
             conso->setProductVolume(recuperatedVolume);
+            conso->setProductLinkStock(recuperatedLinkStock);
+
 
             queryResultFunction->pop();
             result.push(*conso);
@@ -676,6 +680,7 @@ db_productTuple Database::getProductFromId(unsigned id)
         int recuperatedCategory;
         int tvaCat;
         int recuperatedVolume;
+        int recuperatedLinkStock;
 
         std::istringstream(vectorFromQueue[0]) >> recuperatedId;
         std::istringstream(vectorFromQueue[2]) >> recuperatedCategory;
@@ -683,6 +688,7 @@ db_productTuple Database::getProductFromId(unsigned id)
         std::istringstream(vectorFromQueue[4]) >> recuperatedStock;
         std::istringstream(vectorFromQueue[5]) >> tvaCat;
         std::istringstream(vectorFromQueue[6]) >> recuperatedVolume;
+        std::istringstream(vectorFromQueue[7]) >> recuperatedLinkStock;
 
         conso.setProductId(recuperatedId);
         conso.setProductName(vectorFromQueue[1]);
@@ -691,6 +697,7 @@ db_productTuple Database::getProductFromId(unsigned id)
         conso.setProductCategory(recuperatedCategory);
         conso.setProductTVAcat(tvaCat);
         conso.setProductVolume(recuperatedVolume);
+        conso.setProductLinkStock(recuperatedLinkStock);
 
         queryResultFunction->pop();
     }
@@ -1315,6 +1322,7 @@ int Database::editProduct(db_productTuple tuple)
     std::string idString = std::to_string(id);
     std::string tvaCatString = std::to_string(tvaCat);
     std::string volumeString=std::to_string(tuple.getProductVolume());
+    std::string LinkStockString=std::to_string(tuple.getProductLinkStock());
 
     queryString+="UPDATE consos ";
     queryString+="SET nom=";
@@ -1331,6 +1339,8 @@ int Database::editProduct(db_productTuple tuple)
     queryString+=tvaCatString;
     queryString+=", volume=";
     queryString+=volumeString;
+    queryString+=", link_stock=";
+    queryString+=LinkStockString;
     queryString+=" WHERE conso_id=";
     queryString+=idString;
     queryString+=";";

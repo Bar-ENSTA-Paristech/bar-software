@@ -109,6 +109,7 @@ public:
     void setProductVolume(unsigned _volume){volume=_volume;}
     void setProductCategory (unsigned category);
     void setProductTVAcat (int _TVA);
+    void setProductLinkStock (int _LinkStock){linkStock=_LinkStock;}
 
     unsigned getProductId ();
     std::string getProductName();
@@ -117,6 +118,7 @@ public:
     unsigned getProductVolume(){return volume;}
     unsigned getProductCategory();
     int getProductTVAcat();
+    int getProductLinkStock(){return linkStock;}
 
     view_productTuple transformIntoProductView();
 
@@ -128,6 +130,7 @@ private:
     int stock;
     unsigned volume;
     unsigned category;
+    int linkStock;
 };
 
 class view_productTuple
@@ -140,6 +143,7 @@ public:
     void setProductCategory (unsigned category);
     void setProductVolume(unsigned _volume);
     void setProductTVAcat (int _TVA);
+    void setProductLinkStock (int _LinkStock){linkStock=_LinkStock;}
 
     unsigned getProductId ();
     QString getProductName();
@@ -148,6 +152,7 @@ public:
     unsigned getProductCategory();
     unsigned getProductVolume();
     int getProductTVAcat();
+    int getProductLinkStock(){return linkStock;}
 
     db_productTuple transformIntoProductDb();
 
@@ -159,6 +164,7 @@ private:
     unsigned volume;
     unsigned category;
     int TVAcat;
+    int linkStock;
 };
 
 class db_categoryTuple

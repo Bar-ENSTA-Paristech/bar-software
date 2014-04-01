@@ -339,6 +339,7 @@ db_productTuple view_productTuple::transformIntoProductDb()
     result.setProductCategory(category);
     result.setProductVolume(volume);
     result.setProductTVAcat(TVAcat);
+    result.setProductLinkStock(linkStock);
 
     return result;
 }

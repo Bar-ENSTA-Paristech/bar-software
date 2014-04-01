@@ -139,7 +139,15 @@ void AddStock::consoTypeChanged(int index)
     for(i = 0 ; i < queueSize ; i++)
     {
         tuple = queue.front();
-        lines[line]->product.addItem(tuple.getProductName());
+        if (index==1)
+        {
+            lines[line]->product.addItem(tuple.getProductName()+": "+QString::number(tuple.getProductVolume())+"cL");
+        }
+        else
+        {
+            lines[line]->product.addItem(tuple.getProductName());
+
+        }
         lines[line]->productID[i] = tuple.getProductId();
         queue.pop();
     }qDebug() << lines[0]->productID;

@@ -217,10 +217,20 @@ void Controller::newClic_ValidateCart(bool isCash)
         }
 
         qDebug()<<"Modification des stocks";
-        productToBeEdited = db_productInfo;
-        productToBeEdited.setProductStock(productToBeEdited.getProductStock()-currentCartController[i].second*productToBeEdited.getProductVolume());
-        database->editProduct(productToBeEdited);
+        if (productToBeEdited.getProductId()==productToBeEdited.getProductLinkStock()) // Le stock à baisser est bien celui de ce produit
+        {
+            productToBeEdited = db_productInfo;
+            productToBeEdited.setProductStock(productToBeEdited.getProductStock()-currentCartController[i].second*productToBeEdited.getProductVolume());
+            database->editProduct(productToBeEdited);
+        }
+        else //Sinon on modifie le stock du produit lié par link_stock
+        {
+            db_productTuple productToBeEdited_new = database->getProductFromId(productToBeEdited.getProductLinkStock());
+            productToBeEdited_new.setProductStock(productToBeEdited_new.getProductStock()-currentCartController[i].second*productToBeEdited.getProductVolume());
+            database->editProduct(productToBeEdited);
 
+
+        }
     }
 
     editedCustomer = database->getCustomerFromId(curCustomer->getCustomerId()).transformIntoCustomerView();

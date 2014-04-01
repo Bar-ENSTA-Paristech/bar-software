@@ -101,7 +101,6 @@ public:
 
     void setPassword(std::string login, std::string password); // edit le mdp ou le crée si le login est inconnu
 
-
     // ######
     int editCustomerAccount (db_customerTuple); //Méthode générique qui met à jour TOUTES les informations du client
     //Implémentée / fonctionne
