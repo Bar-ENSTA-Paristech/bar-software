@@ -25,8 +25,8 @@ int main(int argc, char *argv[])
     //QCoreApplication::addLibraryPath(QCoreApplication::applicationDirPath()); for deployement ?
 /********************* FOR DEV ********************/
 #ifdef Q_OS_LINUX //pour linux
-    currentDir.cdUp();
-    currentDir.cd("bar-software");
+    //currentDir.cdUp();
+    //currentDir.cd("bar-software");
 #endif
 #ifdef Q_OS_MAC // Pour MAC
     currentDir.cd("../../../../bar-software");

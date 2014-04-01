@@ -526,7 +526,7 @@ void Controller::newClic_Calculator()
     else
     {
         view->currentPopup = view->login;
-        view->login->checkGlobal();
+        view->login->checkIndividual();
         currentLoginRequest = CALCULATOR;
     }
 }
