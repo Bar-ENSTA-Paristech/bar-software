@@ -2299,6 +2299,7 @@ db_saleQueue Database::getSalesOfYear (int _year)
     delete cat;
     delete queryResultFunction;
 
+    cat=new db_saleTuple;
     queryResultFunction = new std::queue<std::string> ;
 
 
@@ -2351,6 +2352,7 @@ db_saleQueue Database::getSalesOfYear (int _year)
     delete cat;
     delete queryResultFunction;
 
+    cat=new db_saleTuple;
     queryResultFunction = new std::queue<std::string> ;
 
 
