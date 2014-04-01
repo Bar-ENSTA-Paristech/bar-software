@@ -595,11 +595,13 @@ db_productQueue Database::getProductsFromCategory(int categorie)
             int recuperatedId;
             int recuperatedStock;
             int recuperatedCategory;
+            int tvaCat;
 
             std::istringstream(vectorFromQueue[3]) >> recuperatedPrice;
             std::istringstream(vectorFromQueue[0]) >> recuperatedId;
             std::istringstream(vectorFromQueue[4]) >> recuperatedStock;
             std::istringstream(vectorFromQueue[2]) >> recuperatedCategory;
+            std::istringstream(vectorFromQueue[5]) >> tvaCat;
 
             //*conso = std::make_tuple (vectorFromQueue[1],recuperatedCategory,recuperatedPrice,recuperatedStock,recuperatedId);
             conso->setProductId(recuperatedId);
@@ -607,6 +609,7 @@ db_productQueue Database::getProductsFromCategory(int categorie)
             conso->setProductPrice(recuperatedPrice);
             conso->setProductStock(recuperatedStock);
             conso->setProductCategory(recuperatedCategory);
+            conso->setProductTVAcat(tvaCat);
 
             queryResultFunction->pop();
             result.push(*conso);
@@ -660,11 +663,13 @@ db_productTuple Database::getProductFromId(unsigned id)
         unsigned recuperatedId;
         unsigned recuperatedStock;
         int recuperatedCategory;
+        int tvaCat;
 
         std::istringstream(vectorFromQueue[3]) >> recuperatedPrice;
         std::istringstream(vectorFromQueue[0]) >> recuperatedId;
         std::istringstream(vectorFromQueue[4]) >> recuperatedStock;
         std::istringstream(vectorFromQueue[2]) >> recuperatedCategory;
+        std::istringstream(vectorFromQueue[5]) >> tvaCat;
 
         //*conso = std::make_tuple (vectorFromQueue[1],recuperatedCategory,recuperatedPrice,recuperatedStock,recuperatedId);
         conso.setProductId(recuperatedId);
@@ -672,6 +677,7 @@ db_productTuple Database::getProductFromId(unsigned id)
         conso.setProductPrice(recuperatedPrice);
         conso.setProductStock(recuperatedStock);
         conso.setProductCategory(recuperatedCategory);
+        conso.setProductTVAcat(tvaCat);
 
         queryResultFunction->pop();
     }
@@ -1232,6 +1238,7 @@ int Database::createProduct(db_productTuple tuple)
     float prix;
     int stock=0;
     int categorie;
+    int tvaCat;
     std::string queryString="";
     Query query;
 
@@ -1239,14 +1246,16 @@ int Database::createProduct(db_productTuple tuple)
     categorie=tuple.getProductCategory();
     prix=tuple.getProductPrice();
     stock=tuple.getProductStock();
+    tvaCat = tuple.getProductTVAcat();
 
     //Il faut transfomer les int et float en std::string
     std::string stockString = std::to_string(stock);
     std::string categorieString = std::to_string(categorie);
+    std::string tvaCatString = std::to_string(tvaCat);
     std::string priceString = std::to_string(prix);
     convertToPointDecimal(priceString); // peut contenir une virgule (notemment sous linux)
 
-    queryString+="INSERT INTO consos (nom,type,prix,stock) VALUES (";
+    queryString+="INSERT INTO consos (nom,type,prix,stock,TVAtype) VALUES (";
     queryString+="'";
     queryString+=nom;
     queryString+="'";
@@ -1256,6 +1265,8 @@ int Database::createProduct(db_productTuple tuple)
     queryString+=priceString;
     queryString+=", ";
     queryString+=stockString;
+    queryString+=", ";
+    queryString+=tvaCatString;
     queryString+=");";
 
     query.setQuery(queryString);
@@ -1272,6 +1283,7 @@ int Database::editProduct(db_productTuple tuple)
     unsigned id;
     int stock;
     int categorie;
+    int tvaCat;
     float price;
     std::string queryString="";
     Query query;
@@ -1281,12 +1293,14 @@ int Database::editProduct(db_productTuple tuple)
     price=tuple.getProductPrice();
     stock=tuple.getProductStock();
     id=tuple.getProductId();
+    tvaCat = tuple.getProductTVAcat();
 
     std::string categorieString = std::to_string(categorie);
     std::string stockString = std::to_string(stock);
     std::string priceString = std::to_string(price);
     convertToPointDecimal(priceString); // peut contenir une virgule (notemment sous linux)
     std::string idString = std::to_string(id);
+    std::string tvaCatString = std::to_string(tvaCat);
 
     queryString+="UPDATE consos ";
     queryString+="SET nom=";
@@ -1299,6 +1313,8 @@ int Database::editProduct(db_productTuple tuple)
     queryString+=priceString;
     queryString+=", stock=";
     queryString+=stockString;
+    queryString+=", TVAtype=";
+    queryString+=tvaCatString;
     queryString+=" WHERE conso_id=";
     queryString+=idString;
     queryString+=";";
@@ -2253,7 +2269,8 @@ db_saleQueue Database::getSalesOfYear (int _year)
     queryString = "SELECT historique.his_id,historique.conso_price,consos.TVAType,historique.date_conso,consos.nom FROM historique ";
     queryString+="LEFT JOIN consos ";
     queryString+="ON consos.conso_id = historique.conso_id ";
-    queryString+="WHERE historique.date_conso >= \'" + std::to_string(_year) + "-01-01 00:00:00\' and historique.date_conso < \'"+ std::to_string(_year+1)+"-01-01 00:00:00\'";
+    queryString+="WHERE historique.date_conso >= \'" + std::to_string(_year) + "-01-01 00:00:00\' and historique.date_conso < \'"+
+            std::to_string(_year+1)+"-01-01 00:00:00\' and consos.conso_id <> 0";
 
     query.setQuery(queryString);
     query.setVerbose(1);
@@ -2306,7 +2323,8 @@ db_saleQueue Database::getSalesOfYear (int _year)
     queryString = "SELECT historique_save.his_id,historique_save.conso_price,consos.TVAType,historique_save.date_conso,consos.nom FROM historique_save ";
     queryString+="LEFT JOIN consos ";
     queryString+="ON consos.conso_id = historique_save.conso_id ";
-    queryString+="WHERE historique_save.date_conso >= \'" + std::to_string(_year) + "-01-01 00:00:00\' and historique_save.date_conso < \'"+ std::to_string(_year+1)+"-01-01 00:00:00\'";
+    queryString+="WHERE historique_save.date_conso >= \'" + std::to_string(_year) + "-01-01 00:00:00\' and historique_save.date_conso < \'"+
+            std::to_string(_year+1)+"-01-01 00:00:00\' and consos.conso_id <> 0";
 
     query.setQuery(queryString);
     query.setVerbose(1);
@@ -2359,7 +2377,8 @@ db_saleQueue Database::getSalesOfYear (int _year)
     queryString = "SELECT historique_deleted_account.his_id,historique_deleted_account.conso_price,consos.TVAType,historique_deleted_account.date_conso,consos.nom FROM historique_deleted_account ";
     queryString+="LEFT JOIN consos ";
     queryString+="ON consos.conso_id = historique_deleted_account.conso_id ";
-    queryString+="WHERE historique_deleted_account.date_conso >= \'" + std::to_string(_year) + "-01-01 00:00:00\' and historique_deleted_account.date_conso < \'"+ std::to_string(_year+1)+"-01-01 00:00:00\'";
+    queryString+="WHERE historique_deleted_account.date_conso >= \'" + std::to_string(_year) +
+            "-01-01 00:00:00\' and historique_deleted_account.date_conso < \'"+ std::to_string(_year+1)+"-01-01 00:00:00\' and consos.conso_id <> 0";
 
     query.setQuery(queryString);
     query.setVerbose(1);

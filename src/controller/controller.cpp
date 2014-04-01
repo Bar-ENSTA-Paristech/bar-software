@@ -16,7 +16,7 @@ Controller::Controller()
     plotting = new Plotting;
     database->openDatabase();
     consoTypes = database->getProdCategories();
-    database->closeDatabase();PrintTvaPdf(2014);
+    database->closeDatabase();
 }
 
 void Controller::setDb(sqlite3* handle)
@@ -1298,6 +1298,7 @@ void Controller::PrintTvaPdf(int year)
 
     db_TVAcategoryQueue tvaQueue = database->getTvaRates();
     db_TVAcategoryTuple tvaTuple;
+    std::vector<db_TVAcategoryTuple> tvaVector;
 
     database->closeDatabase();
     int n = tvaQueue.size();
@@ -1310,6 +1311,7 @@ void Controller::PrintTvaPdf(int year)
     {
         tvaTuple = tvaQueue.front();
         tvaQueue.pop();
+        tvaVector.push_back(tvaTuple);
         tvaHtml += QString::number(tvaTuple.getRate()) +"% ";
     }
     tvaHtml+="</h2>";
@@ -1331,6 +1333,7 @@ void Controller::PrintTvaPdf(int year)
     {
         saleTuple = saleQueue.front();
         saleQueue.pop();
+        saleTuple.setTVA(saleTuple.getTTC() * tvaVector[saleTuple.getTVAIndex()-1].getRate()*0.01); // TVA = TTC*TVArate
         tvaHtml+="<tr><td>"+QString::fromStdString(saleTuple.getDate())+"</td><td>"+QString::fromStdString(saleTuple.getProductName())+"</td>";
         tvaHtml+="<td>" + QString::number(saleTuple.getTVA()) + "</td><td>" + QString::number(saleTuple.getTTC()) + "</td></tr>";
         totalTvaSold += saleTuple.getTVA();
@@ -1345,12 +1348,12 @@ void Controller::PrintTvaPdf(int year)
 
     doc.setHtml(tvaHtml);
     QPrinter printer;
-    printer.setOutputFileName(GLOBAL_PATH + "toto.pdf");
+    printer.setOutputFileName(GLOBAL_PATH + QString::number(year)+ "_TVA.pdf");
     printer.setOutputFormat(QPrinter::PdfFormat);
     doc.print(&printer);
     printer.newPage();
 
-    QLabel* tmp = new QLabel("Le pdf a été écrit dans le dossier " + GLOBAL_PATH + "toto.pdf");
+    QLabel* tmp = new QLabel("Le pdf a été écrit dans le dossier " + GLOBAL_PATH + QString::number(year) + "_TVA.pdf");
     tmp->setAttribute(Qt::WA_DeleteOnClose);
     tmp->show();
 }
