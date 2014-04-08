@@ -1293,6 +1293,17 @@ int Database::createProduct(db_productTuple tuple)
     query.setVerbose(1);
     code=executeQuery(query);
 
+    queryString="";
+    queryString+="UPDATE consos SET link_stock=conso_id WHERE nom=" ;
+    queryString+="'";
+    queryString+=nom;
+    queryString+="'";
+    queryString+=";";
+
+    query.setQuery(queryString);
+    query.setVerbose(1);
+    code=executeQuery(query);
+
     return (code);
 }
 
