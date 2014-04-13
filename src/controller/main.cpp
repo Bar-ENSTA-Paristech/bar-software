@@ -78,13 +78,13 @@ int main(int argc, char *argv[])
 
 
     //Test graph
-    Controller * controller = new Controller; qDebug() << "Controlleur : " << controller;
+    Controller controller; qDebug() << "Controlleur : " << &controller;
     QFile css(GLOBAL_PATH + "resources/design/mainDesign.css");
     if(css.open(QIODevice::ReadOnly)) {
         application.setStyleSheet(css.readAll());
     }
     MainWindow mainWindow;
-    mainWindow.setController(controller);
+    mainWindow.setController(&controller);
     mainWindow.setSplashscreen(splashWidget);
 
     // Mainwindow will be shown after a timer defined in MainWindow and the splashcreen will be destroyed at the same time

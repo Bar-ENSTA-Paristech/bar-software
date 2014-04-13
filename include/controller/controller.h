@@ -7,6 +7,11 @@
 #include <string>
 #include <cstdio>
 #include <QCryptographicHash>
+#include <QFile>
+#include <QDir>
+#include <QTimer>
+#include <QThread>
+#include <cmath>
 
 #include <memory>
 
@@ -38,6 +43,8 @@
 #include "../model/database.h"
 #include "plotting.h"
 
+#define MSEC_BETWEEN_BACKUP 14400000
+
 
 class SearchResults;
 class CustomerPanel;
@@ -50,10 +57,12 @@ class Database;
 class Stock;
 
 
-class Controller
+class Controller : public QObject
 {
+    Q_OBJECT
 public:
     Controller();
+    ~Controller();
 
     void mainController();
 
@@ -119,6 +128,11 @@ public:
     void appendLog(std::string log); // Ajoute un évenement au log
     QString getLog(int month, int year);
     void PrintTvaPdf(int year);
+    void deleteOldBackups();
+    static float absolute(float val);
+
+public slots:
+    bool saveBackup();
 
 
 private:
@@ -138,6 +152,7 @@ private:
     Cart * curCart;
     QString curSearch;
     std::string currentLoggedCustomer;
+    QTimer* backupTimer;
 
         /* Model objects */
     Database* database;

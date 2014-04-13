@@ -9,6 +9,9 @@
 Controller::Controller()
 {
     /*Call here functions for the default display : allCustomers, history, productTypes ... */
+    backupTimer = new QTimer;
+    backupTimer->setTimerType(Qt::VeryCoarseTimer);
+    saveBackup();
     curCart = new Cart;
     curCustomer = new Customer;
     view_curCustomer = new view_customerTuple;
@@ -17,6 +20,19 @@ Controller::Controller()
     database->openDatabase();
     consoTypes = database->getProdCategories();
     database->closeDatabase();
+    QObject::connect(backupTimer, SIGNAL(timeout()), this, SLOT(saveBackup()));
+}
+
+Controller::~Controller()
+{
+    deleteOldBackups();
+    saveBackup();
+    delete curCart;
+    delete curCustomer;
+    delete view_curCustomer;
+    delete database;
+    delete plotting;
+    delete backupTimer;
 }
 
 void Controller::setDb(sqlite3* handle)
@@ -31,11 +47,6 @@ sqlite3* Controller::getDb()
 
 void Controller::setViewPointers(ViewObjects* viewObjects)
 {
-    /*viewSearchResults = par1;
-    viewCustomerPanel = par2;
-    viewCartDisplay = par3;
-    viewHistory = par5;*/
-
     view = viewObjects;
 
     //mp_stock = new Stock( this, &database, par4 );
@@ -1261,6 +1272,7 @@ void Controller::appendLog(std::string log)
     logFile = fopen(path.c_str(), "w");
     fwrite(logCrypted.c_str(), sizeof(char), logCrypted.size(), logFile);
     fclose(logFile);
+    free(timePtr);
 }
 
 QString Controller::getLog(int month, int year)
@@ -1298,6 +1310,13 @@ std::string Controller::hashPasswd(std::string password)
 
 void Controller::PrintTvaPdf(int year)
 {
+    QLabel* labelInfos = new QLabel("Génération du pdf ...");
+    labelInfos->setAttribute(Qt::WA_DeleteOnClose);
+    labelInfos->setWindowFlags(Qt::WindowStaysOnTopHint);
+    labelInfos->setFixedWidth(600);
+    labelInfos->show();
+    labelInfos->update();
+
     // Appel à la database pour avoir les transactions de l'année
     database->openDatabase();
     db_comQueue comQueue = database->getCommandsOfYear(year);
@@ -1344,6 +1363,8 @@ void Controller::PrintTvaPdf(int year)
     {
         saleTuple = saleQueue.front();
         saleQueue.pop();
+        saleTuple.setTTC(absolute(saleTuple.getTTC()));
+        saleTuple.setTVA(absolute(saleTuple.getTVA()));
         saleTuple.setTVA(saleTuple.getTTC() * tvaVector[saleTuple.getTVAIndex()-1].getRate()*0.01); // TVA = TTC*TVArate
         tvaHtml+="<tr><td>"+QString::fromStdString(saleTuple.getDate())+"</td><td>"+QString::fromStdString(saleTuple.getProductName())+"</td>";
         tvaHtml+="<td>" + QString::number(saleTuple.getTVA()) + "</td><td>" + QString::number(saleTuple.getTTC()) + "</td></tr>";
@@ -1364,7 +1385,44 @@ void Controller::PrintTvaPdf(int year)
     doc.print(&printer);
     printer.newPage();
 
-    QLabel* tmp = new QLabel("Le pdf a été écrit dans le dossier " + GLOBAL_PATH + QString::number(year) + "_TVA.pdf");
-    tmp->setAttribute(Qt::WA_DeleteOnClose);
-    tmp->show();
+    labelInfos->setText("Le pdf a été écrit dans le dossier " + GLOBAL_PATH + QString::number(year) + "_TVA.pdf");
+}
+
+float Controller::absolute(float val)
+{
+    if(val < 0)
+        return -val;
+    return val;
+}
+
+bool Controller::saveBackup()
+{
+    backupTimer->stop();
+    backupTimer->start(MSEC_BETWEEN_BACKUP);
+    QString backupPath = "C:/system_backup/";
+    QString backupPath2 = "D:/bar_backup/";
+    QString timestamp;
+    time_t currentTime = time(NULL);
+    tm* timePtr = localtime(&currentTime);
+    timestamp = QString::number(timePtr->tm_year+1900) +"-"+ QString::number(timePtr->tm_mon+1)+"-"+QString::number(timePtr->tm_mday)+"-";
+    timestamp += QString::number(timePtr->tm_hour)+"h"+QString::number(timePtr->tm_min)+"m"+QString::number(timePtr->tm_sec)+".db";
+    backupPath += timestamp;
+    backupPath2 += timestamp;
+    QDir dir("C:/");
+    if(!dir.exists("C:/system_backup"))
+        dir.mkdir("system_backup");
+    if(!QFile::copy(GLOBAL_PATH+"resources/BDD/bar.db",backupPath))
+        return false;
+    QDir dir2("D:/");
+    if(!dir2.exists("D:/bar_backup"))
+        dir2.mkdir("bar_backup");
+    if(!QFile::copy(GLOBAL_PATH+"resources/BDD/bar.db",backupPath2))
+        return false;
+    free(timePtr);
+    return true;
+}
+
+void Controller::deleteOldBackups()
+{
+
 }
