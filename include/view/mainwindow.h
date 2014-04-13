@@ -62,6 +62,7 @@ private slots:
     void launchStats();
     void launchAdmin();
     void stopSplashscreen();
+    void launchFullscreen();
 
 private:
     Controller* controller;
@@ -102,6 +103,7 @@ private:
     QPushButton* editLogin;
     QPushButton* stats;
     QPushButton* admin;
+    QPushButton* fullscreen;
 
 };
 

@@ -107,6 +107,12 @@ MainWindow::MainWindow()
     admin->setIconSize(QSize(32,32));
     admin->setStyleSheet("background: none;");
     admin->setToolTip("Panneau d'administration");
+    fullscreen =new QPushButton(QIcon(GLOBAL_PATH + "resources/pictures/fullscreen.png"), "", menuButtons);
+    fullscreen->setFlat(true);
+    fullscreen->setCursor(Qt::PointingHandCursor);
+    fullscreen->setIconSize(QSize(32,32));
+    fullscreen->setStyleSheet("background: none;");
+    fullscreen->setToolTip("Switcher de mode d'affichage");
     buttonsLayout->addWidget(globalHistory,0,0);
     buttonsLayout->addWidget(newCustomer, 0,1);
     buttonsLayout->addWidget(addStock, 0,2);
@@ -115,6 +121,7 @@ MainWindow::MainWindow()
     buttonsLayout->addWidget(editLogin, 0,5);
     buttonsLayout->addWidget(stats, 0,6);
     buttonsLayout->addWidget(admin, 0,7);
+    buttonsLayout->addWidget(fullscreen,0,8);
     buttonsLayout->setContentsMargins(0,0,0,0);
     menuButtons->setLayout(buttonsLayout);
 
@@ -175,6 +182,7 @@ MainWindow::MainWindow()
     QObject::connect(editLogin, SIGNAL(clicked()), VIEW.editLogin, SLOT(launchEditLogin()));
     QObject::connect(stats, SIGNAL(clicked()), this, SLOT(launchStats()));
     QObject::connect(admin, SIGNAL(clicked()), this, SLOT(launchAdmin()));
+    QObject::connect(fullscreen,SIGNAL(clicked()),this,SLOT(launchFullscreen()));
 
 
     // DESIGN
@@ -409,6 +417,20 @@ void MainWindow::stopSplashscreen()
     }
     catch(int e)
     {}
+}
+
+void MainWindow::launchFullscreen()
+{
+    if (this->isFullScreen())
+    {
+        this->window()->setWindowState(Qt::WindowActive);
+        this->update();
+    }
+    else
+    {
+        this->window()->setWindowState(Qt::WindowFullScreen);
+        this->update();
+    }
 }
 
 void MainWindow::setSplashscreen(QLabel* splash)

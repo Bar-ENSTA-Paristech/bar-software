@@ -207,13 +207,16 @@ db_customerQueue Database::searchCustomer(std::string &string,int cat)
 
     if (cat==-1)
     {
-        queryString+=" SELECT * FROM notes WHERE nom LIKE '";
+        queryString+=" SELECT * FROM notes WHERE lower(nom) LIKE lower('";
         queryString+=searchString;
         queryString+="%";
-        queryString+="' OR prenom LIKE '";
+        queryString+="') OR lower(prenom) LIKE lower('";
         queryString+=searchString;
         queryString+="%";
-        queryString+="' ORDER BY nom ASC;";
+        queryString+="') OR lower(login) LIKE lower('";
+        queryString+=searchString;
+        queryString+="%";
+        queryString+="') ORDER BY nom ASC;";
     }
     else
     {
