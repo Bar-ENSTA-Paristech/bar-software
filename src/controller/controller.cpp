@@ -1424,5 +1424,19 @@ bool Controller::saveBackup()
 
 void Controller::deleteOldBackups()
 {
-
+    QDir dir1("D:/bar_backup"), dir2("C:/system_backup");
+    QFileInfoList fileList1 = dir1.entryInfoList(QDir::Files | QDir::NoDotAndDotDot, QDir::Time); // most recent are at beginning
+    QFileInfoList fileList2 = dir2.entryInfoList(QDir::Files | QDir::NoDotAndDotDot, QDir::Time);
+    int i0 = 10;
+    for(int i = i0; i < fileList1.size() ; i++)
+    {
+        if(!QFile::remove(fileList1[i].absoluteFilePath()))
+            qDebug() << "Error : unable to delete " + fileList1[i].absoluteFilePath();
+    }
+    for(int i = i0; i < fileList2.size() ; i++)
+    {
+        if(!QFile::remove(fileList2[i].absoluteFilePath()))
+            qDebug() << "Error : unable to delete " + fileList2[i].absoluteFilePath();
+    }
+    return;
 }
