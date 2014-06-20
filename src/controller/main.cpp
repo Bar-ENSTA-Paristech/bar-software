@@ -16,6 +16,8 @@
 #include "cart.h"
 #include "product.h"
 
+//#define DEBUG
+
 QString GLOBAL_PATH;
 
 int main(int argc, char *argv[])
@@ -24,18 +26,20 @@ int main(int argc, char *argv[])
     QDir currentDir(QDir::currentPath());
     //QCoreApplication::addLibraryPath(QCoreApplication::applicationDirPath()); for deployement ?
 /********************* FOR DEV ********************/
-#ifdef Q_OS_LINUX //pour linux
-    //currentDir.cdUp();
-    //currentDir.cd("bar-software");
+#ifdef DEBUG
+    #ifdef Q_OS_LINUX //pour linux
+        currentDir.cdUp();
+        currentDir.cd("bar-software");
+    #endif
+    #ifdef Q_OS_MAC // Pour MAC
+        currentDir.cd("../../../../bar-software");
+    #endif
+    #ifdef Q_OS_WIN32 // Pour Windows
+        currentDir.cd("../bar-software");
+    #endif
+        GLOBAL_PATH = currentDir.absolutePath()+"/";
+        qDebug() << "GLOBAL_PATH :" << GLOBAL_PATH;
 #endif
-#ifdef Q_OS_MAC // Pour MAC
-    currentDir.cd("../../../../bar-software");
-#endif
-#ifdef Q_OS_WIN32 // Pour Windows
-    currentDir.cd("../bar-software");
-#endif
-    GLOBAL_PATH = currentDir.absolutePath()+"/";
-    qDebug() << "GLOBAL_PATH :" << GLOBAL_PATH;
 /**********************************************
     std::pair<std::string,std::string> name = {"Woody","Rousseau"};
 
@@ -69,12 +73,14 @@ int main(int argc, char *argv[])
     QApplication application(argc, argv);
     application.setWindowIcon(QIcon(GLOBAL_PATH + "resources/pictures/icon.png"));
 
-    QMovie splashscreen(GLOBAL_PATH + "resources/pictures/splashscreen.gif");
     QLabel* splashWidget = new QLabel;
+#ifndef DEBUG
+    QMovie splashscreen(GLOBAL_PATH + "resources/pictures/splashscreen.gif");
     splashWidget->setMovie(&splashscreen);
     splashscreen.start();
     splashWidget->setWindowFlags(Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
     splashWidget->show();
+#endif
 
 
     //Test graph

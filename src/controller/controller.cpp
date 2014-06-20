@@ -1191,6 +1191,26 @@ void Controller::displayProductGraph(int id, bool consumption)
 
 void Controller::newClic_GlobalHistory_old()
 {
+    view->currentPopup = view->globalHistory_old;
+    // CALL TO DB TO DEFINE
+    view_histQueue viewQueue;
+    db_histQueue dbQueue;
+    view_histTuple viewTuple;
+    db_histTuple dbTuple;
+    // GO FETCH THE CONTENT OF THE HIST TABLE (ONLY CONTENTS AROUND 1000 ROWS WITH THE AUTODUMP)
+    database->openDatabase();
+    dbQueue=database->getFullHist(true);
+    database->closeDatabase();
+
+    while (!dbQueue.empty())
+    {
+        dbTuple=dbQueue.front();
+        viewTuple=dbTuple.transformIntoHistView();
+        viewQueue.push(viewTuple);
+
+        dbQueue.pop();
+    }
+    view->globalHistory_old->launchGlobalHistory(viewQueue);
     // To define
 }
 

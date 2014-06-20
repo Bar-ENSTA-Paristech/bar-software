@@ -376,6 +376,8 @@ db_categoryQueue Database::getProdCategories()
 
     std::queue<std::string> *queryResultFunction(0);
     queryResultFunction = new std::queue<std::string> ;
+    delete queryResult;
+    queryResult = new std::queue<std::string> ;   //queryResult n'est alloué que dans les fonctions l'utilisant
 
     std::vector<std::string> vectorFromQueue;
 
@@ -433,6 +435,8 @@ db_categoryQueue Database::getCustCategories()
 
     std::queue<std::string> *queryResultFunction(0);
     queryResultFunction = new std::queue<std::string> ;
+    delete queryResult;
+    queryResult = new std::queue<std::string> ;   //queryResult n'est alloué que dans les fonctions l'utilisant
 
     std::vector<std::string> vectorFromQueue;
 
@@ -714,7 +718,7 @@ db_productTuple Database::getProductFromId(unsigned id)
 
 }
 
-db_histQueue Database::getFullHist()
+db_histQueue Database::getFullHist(bool old)
 {
     Query query;
 
@@ -727,20 +731,35 @@ db_histQueue Database::getFullHist()
 
     std::queue<std::string> *queryResultFunction(0);
     queryResultFunction = new std::queue<std::string> ;
+    delete queryResult;
+    queryResult = new std::queue<std::string> ;   //queryResult n'est alloué que dans les fonctions l'utilisant
 
     std::vector<std::string> vectorFromQueue;
 
     //Utiliser des jointures
     // From client_id -> nom + prénom
     // From conso_id -> conso + prix
-    std::string queryString="SELECT historique.his_id, notes.nom, notes.prenom,consos.nom, historique.conso_price, historique.date_conso, historique.client_id,historique.conso_id ";
-    queryString+="FROM historique ";
-    queryString+="LEFT JOIN consos ";
-    queryString+="ON consos.conso_id = historique.conso_id ";
-    queryString+="LEFT JOIN notes ";
-    queryString+="ON notes.client_id=historique.client_id ";
-    queryString+="ORDER BY historique.date_conso DESC;";
-
+    std::string queryString;
+    if(old)
+    {
+        queryString="SELECT *, notes.nom, notes.prenom,consos.nom";//historique_save.his_id, notes.nom, notes.prenom,consos.nom, historique_save.conso_price, historique_save.date_conso, historique_save.client_id,historique_save.conso_id ";
+        queryString+="FROM historique_save ";
+        queryString+="LEFT JOIN consos ";
+        queryString+="ON consos.conso_id = historique_save.conso_id ";
+        queryString+="LEFT JOIN notes ";
+        queryString+="ON notes.client_id=historique_save.client_id ";
+        queryString+=" ORDER BY historique_save.date_conso DESC ;";
+    }
+    else
+    {
+        queryString="SELECT historique.his_id, notes.nom, notes.prenom,consos.nom, historique.conso_price, historique.date_conso, historique.client_id,historique.conso_id ";
+        queryString+="FROM historique ";
+        queryString+="LEFT JOIN consos ";
+        queryString+="ON consos.conso_id = historique.conso_id ";
+        queryString+="LEFT JOIN notes ";
+        queryString+="ON notes.client_id=historique.client_id ";
+        queryString+="ORDER BY historique.date_conso DESC;";
+    }
 
     query.setQuery(queryString);
     query.setVerbose(1);
@@ -803,6 +822,8 @@ db_histQueue Database::getLastOperations(int limit)
 
     std::queue<std::string> *queryResultFunction(0);
     queryResultFunction = new std::queue<std::string> ;
+    delete queryResult;
+    queryResult = new std::queue<std::string> ;   //queryResult n'est alloué que dans les fonctions l'utilisant
 
     std::vector<std::string> vectorFromQueue;
 
@@ -878,6 +899,8 @@ db_histQueue Database::getCustomerHist(unsigned id, bool old)
 
     std::queue<std::string> *queryResultFunction(0);
     queryResultFunction = new std::queue<std::string> ;
+    delete queryResult;
+    queryResult = new std::queue<std::string> ;   //queryResult n'est alloué que dans les fonctions l'utilisant
 
     if (old!=true)
     {
@@ -971,6 +994,8 @@ db_histQueue Database::getProductHist(unsigned id,bool old)
 
     std::queue<std::string> *queryResultFunction(0);
     queryResultFunction = new std::queue<std::string> ;
+    delete queryResult;
+    queryResult = new std::queue<std::string> ;   //queryResult n'est alloué que dans les fonctions l'utilisant
 
     if (old!=true)
     {
@@ -1119,6 +1144,8 @@ std::string Database::getPassword (std::string &login)
     Query query;
     std::queue<std::string> *queryResultFunction(0);  //
     queryResultFunction = new std::queue<std::string> ;
+    delete queryResult;
+    queryResult = new std::queue<std::string> ;   //queryResult n'est alloué que dans les fonctions l'utilisant
 
     queryString+=" SELECT password FROM passwords WHERE login LIKE '";
     queryString+=login;
@@ -1864,6 +1891,8 @@ db_finop_queue Database::getCashierHist()
 
     std::queue<std::string> *queryResultFunction(0);
     queryResultFunction = new std::queue<std::string> ;
+    delete queryResult;
+    queryResult = new std::queue<std::string> ;   //queryResult n'est alloué que dans les fonctions l'utilisant
 
     std::vector<std::string> vectorFromQueue;
 
@@ -2100,6 +2129,8 @@ db_commandQueue Database::getCommandFromProdId (int id)
     db_commandQueue commande;
     std::queue<std::string> *queryResultFunction(0);
     queryResultFunction = new std::queue<std::string> ;
+    delete queryResult;
+    queryResult = new std::queue<std::string> ;   //queryResult n'est alloué que dans les fonctions l'utilisant
 
     Query query;
 
@@ -2161,6 +2192,8 @@ db_TVAcategoryQueue Database::getTvaRates()
 
     std::queue<std::string> *queryResultFunction(0);
     queryResultFunction = new std::queue<std::string> ;
+    delete queryResult;
+    queryResult = new std::queue<std::string> ;   //queryResult n'est alloué que dans les fonctions l'utilisant
 
     std::vector<std::string> vectorFromQueue;
 
@@ -2242,6 +2275,8 @@ db_comQueue Database::getCommandsOfYear(int _year)
 
     std::queue<std::string> *queryResultFunction(0);
     queryResultFunction = new std::queue<std::string> ;
+    delete queryResult;
+    queryResult = new std::queue<std::string> ;   //queryResult n'est alloué que dans les fonctions l'utilisant
 
     std::vector<std::string> vectorFromQueue;
 
@@ -2303,6 +2338,8 @@ db_saleQueue Database::getSalesOfYear (int _year)
     cat=new db_saleTuple;
     std::queue<std::string> *queryResultFunction(0);
     queryResultFunction = new std::queue<std::string> ;
+    delete queryResult;
+    queryResult = new std::queue<std::string> ;   //queryResult n'est alloué que dans les fonctions l'utilisant
 
 
     std::string queryString;
@@ -2358,6 +2395,8 @@ db_saleQueue Database::getSalesOfYear (int _year)
 
     cat=new db_saleTuple;
     queryResultFunction = new std::queue<std::string> ;
+    delete queryResult;
+    queryResult = new std::queue<std::string> ;   //queryResult n'est alloué que dans les fonctions l'utilisant
 
 
     queryString = "SELECT historique_save.his_id,historique_save.conso_price,consos.TVAType,historique_save.date_conso,consos.nom FROM historique_save ";
@@ -2412,6 +2451,8 @@ db_saleQueue Database::getSalesOfYear (int _year)
 
     cat=new db_saleTuple;
     queryResultFunction = new std::queue<std::string> ;
+    delete queryResult;
+    queryResult = new std::queue<std::string> ;   //queryResult n'est alloué que dans les fonctions l'utilisant
 
 
     queryString = "SELECT historique_deleted_account.his_id,historique_deleted_account.conso_price,consos.TVAType,historique_deleted_account.date_conso,consos.nom FROM historique_deleted_account ";

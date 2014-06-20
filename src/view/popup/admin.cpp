@@ -15,7 +15,7 @@ Admin::Admin(QWidget *parent) :
     oldHistory->setCursor(Qt::PointingHandCursor);
     oldHistory->setIconSize(QSize(32,32));
     oldHistory->setStyleSheet("background: none;");
-    oldHistory->setToolTip("Voir le vieux historique");
+    oldHistory->setToolTip("Voir le vieil historique");
     oldIndividualHistory = new QPushButton(QIcon(GLOBAL_PATH + "resources/pictures/history_individual_old.png"), "", this);
     oldIndividualHistory->setFlat(true);
     oldIndividualHistory->setCursor(Qt::PointingHandCursor);
