@@ -3,8 +3,9 @@
 #include <tuple>
 #include "structures.h"
 
-Plotting::Plotting()
+Plotting::Plotting(Database* _db)
 {
+    db = _db;
 }
 
 /* Dans toutes les méthodes de recherche, l'arg "scale" correspond à l'échelle du graphe en jours:
@@ -12,12 +13,12 @@ Plotting::Plotting()
 
 db_dataarray Plotting::customerConsumption(int id, int scale, int numberOfPoints, int type)
 {
-    db.openDatabase();
-    db_histQueue customer_hist = db.getCustomerHist(id,false);
-    db.closeDatabase();
-    db.openDatabase();
-    db_histQueue customer_hist_old = db.getCustomerHist(id,true);
-    db.closeDatabase();
+    db->openDatabase();
+    db_histQueue customer_hist = db->getCustomerHist(id,false);
+    db->closeDatabase();
+    db->openDatabase();
+    db_histQueue customer_hist_old = db->getCustomerHist(id,true);
+    db->closeDatabase();
     db_histTuple customer_operation;
     QString format="yyyy-MM-dd hh:mm:ss";
     QDateTime qtime=QDateTime::currentDateTime();
@@ -87,15 +88,15 @@ db_dataarray Plotting::customerConsumption(int id, int scale, int numberOfPoints
 
 db_dataarray Plotting::customerBalance(int id, int scale, int numberOfPoints)
 {
-    db.openDatabase();
-    db_histQueue customer_hist_old = db.getCustomerHist(id,true);
-    db.closeDatabase();
-    db.openDatabase();
-    db_histQueue customer_hist = db.getCustomerHist(id,false);
-    db.closeDatabase();
-    db.openDatabase();
-    db_customerTuple customer_data =db.getCustomerFromId(id);
-    db.closeDatabase();
+    db->openDatabase();
+    db_histQueue customer_hist_old = db->getCustomerHist(id,true);
+    db->closeDatabase();
+    db->openDatabase();
+    db_histQueue customer_hist = db->getCustomerHist(id,false);
+    db->closeDatabase();
+    db->openDatabase();
+    db_customerTuple customer_data =db->getCustomerFromId(id);
+    db->closeDatabase();
     db_histTuple customer_operation;
     QString format="yyyy-MM-dd hh:mm:ss";
     QDateTime qtime=QDateTime::currentDateTime();
@@ -184,11 +185,11 @@ db_dataarray Plotting::customerBalance(int id, int scale, int numberOfPoints)
 
 db_dataarray Plotting::productConsumption(int id, int scale, int numberOfPoints)
 {
-    db_histQueue product_hist_old = db.getProductHist(id,true);
-    db.closeDatabase();
-    db.openDatabase();
-    db_histQueue product_hist = db.getProductHist(id,false);
-    db.closeDatabase();
+    db_histQueue product_hist_old = db->getProductHist(id,true);
+    db->closeDatabase();
+    db->openDatabase();
+    db_histQueue product_hist = db->getProductHist(id,false);
+    db->closeDatabase();
 
     db_histTuple product_operation;
     QString format="yyyy-MM-dd hh:mm:ss";
@@ -258,20 +259,20 @@ db_dataarray Plotting::productConsumption(int id, int scale, int numberOfPoints)
 db_dataarray Plotting::productStock(int id, int scale, int numberOfPoints)
 {
 
-    db.openDatabase();
+    db->openDatabase();
     std::cout<<"Teststock";
-    db_histQueue product_hist = db.getProductHist(id,false);
-    db.closeDatabase();
-    db.openDatabase();
-    db_histQueue product_hist_old = db.getProductHist(id,true);
-    db.closeDatabase();
-    db.openDatabase();
+    db_histQueue product_hist = db->getProductHist(id,false);
+    db->closeDatabase();
+    db->openDatabase();
+    db_histQueue product_hist_old = db->getProductHist(id,true);
+    db->closeDatabase();
+    db->openDatabase();
     //TODO : la méthode qui renvoie les modifs de stock sous la forme d'un db_commandQueue
-    db_commandQueue product_hist_stocks = db.getCommandFromProdId(id);
-    db.closeDatabase();
-    db.openDatabase();
-    db_productTuple product_data =db.getProductFromId(id);
-    db.closeDatabase();
+    db_commandQueue product_hist_stocks = db->getCommandFromProdId(id);
+    db->closeDatabase();
+    db->openDatabase();
+    db_productTuple product_data =db->getProductFromId(id);
+    db->closeDatabase();
     db_histTuple product_operation;
     db_commandTuple command_operation;
     QString format="yyyy-MM-dd hh:mm:ss";
@@ -402,9 +403,9 @@ db_dataarray Plotting::productStock(int id, int scale, int numberOfPoints)
 
 db_dataarray Plotting::totalConsumption(int scale,int numberOfPoints, int type)
 {
-    db.openDatabase();
-    db_histQueue hist = db.getFullHist();
-    db.closeDatabase();
+    db->openDatabase();
+    db_histQueue hist = db->getFullHist();
+    db->closeDatabase();
     db_histTuple operation;
     QString format="yyyy-MM-dd hh:mm:ss";
 
@@ -453,12 +454,12 @@ db_dataarray Plotting::totalConsumption(int scale,int numberOfPoints, int type)
 
 void Plotting::setDb(sqlite3* handle)
 {
-    db.setHandle(handle);
+    db->setHandle(handle);
 }
 
 sqlite3* Plotting::getDb()
 {
-    return db.getHandle();
+    return db->getHandle();
 }
 
 //methode de test : ne dois PAS se situer dans le vue !!

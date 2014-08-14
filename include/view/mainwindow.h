@@ -37,7 +37,7 @@ class MainWindow : public QMainWindow
 {
     Q_OBJECT
 public:
-    MainWindow();
+    MainWindow(Controller* _controller);
     ~MainWindow();
     void resizeEvent(QResizeEvent *event);
     void setController(Controller *controllerParam);

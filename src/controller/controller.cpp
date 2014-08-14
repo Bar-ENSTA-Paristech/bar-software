@@ -16,10 +16,12 @@ Controller::Controller()
     curCustomer = new Customer;
     view_curCustomer = new view_customerTuple;
     database = new Database;
-    plotting = new Plotting;
+    plotting = new Plotting(database);
+    qDebug() <<"Size (constr Controller) " << database->getQueryResult()->size();
     database->openDatabase();
     consoTypes = database->getProdCategories();
     database->closeDatabase();
+    qDebug() <<"Size (constr Controller) " << database->getQueryResult()->size();
     QObject::connect(backupTimer, SIGNAL(timeout()), this, SLOT(saveBackup()));
 }
 
@@ -46,23 +48,22 @@ sqlite3* Controller::getDb()
 }
 
 void Controller::setViewPointers(ViewObjects* viewObjects)
-{
-    view = viewObjects;
-
+{qDebug() <<"Size (setViewPointers) " << database->getQueryResult()->size();
+    view = viewObjects;qDebug() <<"Size (setViewPointers) " << database->getQueryResult()->size();
     //mp_stock = new Stock( this, &database, par4 );
-    mp_stock = new Stock( this, database, view->productChoices );
+    mp_stock = new Stock( this, database, view->productChoices );qDebug() <<"Size (setViewPointers) " << database->getQueryResult()->size();
 }
 
 void Controller::mainController()
 {
     QString emptyString;
     // Initialize view fields
-
     //TEST : Autodump de la BDD
+    qDebug() <<"Size (mainController) " << database->getQueryResult()->size();
     database->openDatabase();
     database->autoDumpHist();
     database->closeDatabase();
-
+    qDebug() <<"Size (mainController) " << database->getQueryResult()->size();
     newText_Search( emptyString );
     newGlobal_Hist();
 }

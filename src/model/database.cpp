@@ -4,7 +4,7 @@
 
 //La déclaration du pointeur vers le résultat de la requête doit se faire dans l'espage global
 //car la fonction callback ne peut être incorporée à une classe et l'on ne peut toucher à ses arguments.
-std::queue<std::string> *queryResult(0);
+//std::queue<std::string> *queryResult(0);
 
 //On définit de même queue dans l'espace global pour que celle-ci ne soit pas locale du callback.
 //
@@ -16,11 +16,12 @@ std::queue<std::string> queue;
 
 Database::Database()
 {
-    queryResult = new std::queue<std::string> ;
+    queryResult = new std::deque<std::string> ;
+    std::cout << "queryResult Constructeur " << queryResult <<std::endl;
 }
 
 int Database::openDatabase()
-{
+{qDebug() <<"Size (openDatabase) " << queryResult->size();
     //Modification de la configuration de sqlite pour accepter les URI (gestion des repertoires)
     sqlite3_config(SQLITE_CONFIG_URI,1);
 
@@ -61,43 +62,67 @@ int Database::closeDatabase()
         std::cout<<"The database could not close properly."<<std::endl;
     else
         std::cout<<"The database has been properly closed."<<std::endl;
-
+    qDebug() <<"Size (closeDatabase) " << queryResult->size();
     return coderesult;
 }
 
-static int callback(void *NotUsed, int argc, char **argv, char **azColName){
+int Database::callback(void *arg, int argc, char **argv, char **azColName){
     int i;
-
+    Database* database = (Database*) arg;
+    std::cout<<"begin Callback ... ";
+    std::deque<std::string>* queryResultBis = database->getQueryResult();
     for(i=0; i<argc; i++)
     {
         //printf("%s = %s\n", azColName[i], argv[i] ? argv[i] : "NULL");
         //queue.push(azColName[i]);
-
-        queue.push(argv[i] ? argv[i] : "NULL");
+        queryResultBis->push_back(argv[i] ? argv[i] : "NULL");
+        //queue.push(argv[i] ? argv[i] : "NULL");
     }
     //printf("\n");
-
-    queue.push("\n");
-
-    *queryResult=queue;
+    if(argc > 0)
+        queryResultBis->push_back("\n");
+    std::cout<<"Done"<<std::endl;
+    qDebug() << "queryResult Size :" << queryResultBis->size();
+    //queue.push("\n");
+    //*queryResultBis=queue;
     return 0;
 }
 
-void clear( std::queue<std::string> &q )
+/*void clear( std::queue<std::string> &q )
 {
     std::queue<std::string> empty;
     std::swap( q, empty );
+}*/
+
+void Database::printQueryResult(bool debug)
+{
+    qDebug()<<"Starting print of queryResult";
+    qDebug()<<"queryResult Adress : " << (void*)queryResult;
+    qDebug()<<"queryResult Size : " << queryResult->size();
+    for (unsigned i = 0 ; i < queryResult->size() ; i++)
+    {
+        if(debug)
+            qDebug() << QString::fromStdString(queryResult->at(i));
+        else
+            std::cout << queryResult->at(i) <<std::endl;
+    }
 }
 
 int Database::executeQuery(Query &_query)
-{
+{qDebug()<<"TACHATTE ... ";
+    std::cout << "queryResult Exec " << queryResult <<std::endl;
+    qDebug() <<"Size" << queryResult->size();
+    qDebug() <<"Max Size"<< queryResult->max_size();
+    if(queryResult->size() != 0)
+    queryResult->clear();
+    qDebug()<<"DONE";
     const char* query_string=_query.getQuery();
     bool verbose=_query.getVerbose();
 
     int coderesult;
-    char*zErrMsg;
-
-    coderesult = sqlite3_exec(handle, query_string, callback, 0, &zErrMsg);
+    char* zErrMsg;
+    std::cout<<"Database adress : "<<this<<std::endl;
+    coderesult = sqlite3_exec(handle, query_string, this->callback, this, (char**)&zErrMsg);
 
     if(verbose==true)
     {
@@ -185,16 +210,13 @@ db_customerQueue Database::searchCustomer(std::string &string,int cat)
 
     Query query; //Initialisation de la requête
 
-    std::queue<std::string> *queryResultFunction(0);  //
-    queryResultFunction = new std::queue<std::string> ;
-    delete queryResult;
-    queryResult = new std::queue<std::string> ;   //queryResult n'est alloué que dans les fonctions l'utilisant
 
     /*
      * Remarque sur queryResultFunction et queryResult
      *    queryResult est définie en dehors de toute méthode. Cela est du a la syntaxe "fermée" de sqlite3_exec et de son argument callback.
      *    Par la suite queryResultFunction est définie comme pointant vers la même adresse que queryResult. Cela revient à un passage par adresse
      *    un peu dégeu mais cette solution fonctionne.
+     *    Mehdi, t'es un gros porc ! Signé Shimone
     */
     unsigned i;
     unsigned j=0;
@@ -234,55 +256,40 @@ db_customerQueue Database::searchCustomer(std::string &string,int cat)
     query.setVerbose(1);
     executeQuery(query);
 
-    *queryResultFunction=*queryResult;    //Récupération des données renvoyées par la db que l'on met dans une queue<string>
-
-    /*Il faut désormais caster le queue <string> dans un queue<tuple< // >> que l'on va return
+     /*Il faut désormais caster le queue <string> dans un queue<tuple< // >> que l'on va return
     Pour cela on utilise un vector de string */
-
     std::vector<std::string> vectorFromQueue;
 
-    if (queryResultFunction->size()!=0) //Boucle sur tout le resultat
+    for( i =0 ; i<queryResult->size() ; i++)
     {
-        for (i=0;i<=queryResultFunction->size();i++)
+        std::string itemFromQuery = queryResult->at(i);
+        if(itemFromQuery == "\n") // End of line, we store chat we gather
         {
-            while(!queryResultFunction->empty())
-            {
-                //Remplissage de Result
-                while (queryResultFunction->front()!= "\n"&& !queryResultFunction->empty())
-                {
-                    vectorFromQueue.push_back(queryResultFunction->front()); // Pour chaque individu, on récupère les informations dans le vector vectorFromQueue
-                    queryResultFunction->pop();      //On supprime l'élément qui vient d'être extrait.
-                }
+            //On transforme les std::string en float et unsigned pour les champs Balance et Id
+            float recuperatedBalance;
+            int recuperatedId;
+            unsigned recuperatedCategory;
 
-                //On transforme les std::string en float et unsigned pour les champs Balance et Id
-                float recuperatedBalance;
-                int recuperatedId;
-                unsigned recuperatedCategory;
+            std::istringstream(vectorFromQueue[4]) >> recuperatedCategory;
+            std::istringstream(vectorFromQueue[5]) >> recuperatedBalance;
+            std::istringstream(vectorFromQueue[0]) >> recuperatedId;
 
-                std::istringstream(vectorFromQueue[4]) >> recuperatedCategory;
-                std::istringstream(vectorFromQueue[5]) >> recuperatedBalance;
-                std::istringstream(vectorFromQueue[0]) >> recuperatedId;
+            //*customer = std::make_tuple (vectorFromQueue[1],vectorFromQueue[2],vectorFromQueue[4],recuperatedBalance,recuperatedId,vectorFromQueue[3]);
+            customer.setCustomerId(recuperatedId);
+            customer.setCustomerName(vectorFromQueue[1]);
+            customer.setCustomerFirstname(vectorFromQueue[2]);
+            customer.setCustomerLogin(vectorFromQueue[3]);
+            customer.setCustomerCategory(recuperatedCategory);
+            customer.setCustomerBalance(recuperatedBalance);
 
-                //*customer = std::make_tuple (vectorFromQueue[1],vectorFromQueue[2],vectorFromQueue[4],recuperatedBalance,recuperatedId,vectorFromQueue[3]);
-                customer.setCustomerId(recuperatedId);
-                customer.setCustomerName(vectorFromQueue[1]);
-                customer.setCustomerFirstname(vectorFromQueue[2]);
-                customer.setCustomerLogin(vectorFromQueue[3]);
-                customer.setCustomerCategory(recuperatedCategory);
-                customer.setCustomerBalance(recuperatedBalance);
-
-                queryResultFunction->pop();      //On supprime le dernier element du résultat unique , le parser '\n'
-
-                result.push(customer);
-                j++; // L'int j correspond à l'index dans la queue , il est incrémenté a chaque boucle sur une personne
-                vectorFromQueue.clear(); // Ne pas oublier de vider le vecteur à chaque individu
-            }
+            result.push(customer);
+            j++; // L'int j correspond à l'index dans la queue , il est incrémenté a chaque boucle sur une personne
+            vectorFromQueue.clear(); // Ne pas oublier de vider le vecteur à chaque individu
         }
+        else
+            vectorFromQueue.push_back(itemFromQuery);
     }
-    clear(queue); // queue étant défini en dehors de la fonction, par précaution on la vide à la fin de l'appel
-    delete queryResultFunction;
     return result;
-
 }
 
 db_productQueue Database::getAllProducts()
@@ -291,16 +298,8 @@ db_productQueue Database::getAllProducts()
     Query query;
 
     db_productQueue result;
-
     db_productTuple *conso(0);
     conso=new db_productTuple;
-
-    std::queue<std::string> *queryResultFunction(0);
-    queryResultFunction = new std::queue<std::string> ;
-
-    delete queryResult;
-    queryResult = new std::queue<std::string> ;
-
     unsigned i;
     unsigned j=0;
 
@@ -311,20 +310,13 @@ db_productQueue Database::getAllProducts()
     query.setVerbose(1);
     executeQuery(query);
 
-    *queryResultFunction=*queryResult;
-
     std::vector<std::string> vectorFromQueue;
 
-    for (i=0;i<=queryResultFunction->size();i++)
+    for(unsigned i =0 ; i<queryResult->size() ; i++)
     {
-        while(!queryResultFunction->empty())
+        std::string itemFromQuery = queryResult->at(i);
+        if(itemFromQuery == "\n") // End of line, we store chat we gather
         {
-            while (queryResultFunction->front()!= "\n"&&!queryResultFunction->empty())
-            {
-                vectorFromQueue.push_back(queryResultFunction->front());
-                queryResultFunction->pop();
-            }
-
             float recuperatedPrice;
             unsigned recuperatedId;
             unsigned recuperatedStock;
@@ -339,8 +331,6 @@ db_productQueue Database::getAllProducts()
             std::istringstream(vectorFromQueue[5]) >> recuperatedTVA;
             std::istringstream(vectorFromQueue[6]) >> recuperatedVolume;
 
-
-
             //conso = std::make_tuple (vectorFromQueue[1],recuperatedCategory,recuperatedPrice,recuperatedStock,recuperatedId);
             conso->setProductId(recuperatedId);
             conso->setProductName(vectorFromQueue[1]);
@@ -351,34 +341,25 @@ db_productQueue Database::getAllProducts()
             conso->setProductVolume(recuperatedVolume);
 
             result.push(*conso);
-            queryResultFunction->pop();
             j++;
             vectorFromQueue.clear();
-
         }
+        else
+            vectorFromQueue.push_back(itemFromQuery);
     }
     delete conso;
-    delete queryResultFunction;
-    clear(queue);
     return result;
 }
 
 db_categoryQueue Database::getProdCategories()
 {
     Query query;
-
     db_categoryTuple *cat(0);
     cat=new db_categoryTuple;
 
     unsigned i;
     unsigned j=0;
     db_categoryQueue result;
-
-    std::queue<std::string> *queryResultFunction(0);
-    queryResultFunction = new std::queue<std::string> ;
-    delete queryResult;
-    queryResult = new std::queue<std::string> ;   //queryResult n'est alloué que dans les fonctions l'utilisant
-
     std::vector<std::string> vectorFromQueue;
 
     std::string queryString =" SELECT * FROM categ_consos";
@@ -389,36 +370,23 @@ db_categoryQueue Database::getProdCategories()
     query.setVerbose(1);
     executeQuery(query);
 
-    *queryResultFunction=*queryResult;
-
-    for (i=0;i<=queryResultFunction->size();i++)
+    for(unsigned i =0 ; i<queryResult->size() ; i++)
     {
-        while(!queryResultFunction->empty())
+        std::string itemFromQuery = queryResult->at(i);
+        if(itemFromQuery == "\n") // End of line, we store chat we gather
         {
-            while (queryResultFunction->front()!= "\n"&&!queryResultFunction->empty())
-            {
-                vectorFromQueue.push_back(queryResultFunction->front());
-                queryResultFunction->pop();
-            }
             unsigned recuperatedId;
-
             std::istringstream(vectorFromQueue[0]) >> recuperatedId;
-
-            //*cat = std::make_tuple (vectorFromQueue[1],recuperatedId);
-
             cat->setCategoryId(recuperatedId);
             cat->setCategoryName(vectorFromQueue[1]);
-
-            queryResultFunction->pop();
             result.push(*cat);
-
             j++;
             vectorFromQueue.clear();
         }
+        else
+            vectorFromQueue.push_back(itemFromQuery);
     }
-    clear(queue);
     delete cat;
-    delete queryResultFunction;
     return result;
 }
 
@@ -432,12 +400,6 @@ db_categoryQueue Database::getCustCategories()
     unsigned i;
     unsigned j=0;
     db_categoryQueue result;
-
-    std::queue<std::string> *queryResultFunction(0);
-    queryResultFunction = new std::queue<std::string> ;
-    delete queryResult;
-    queryResult = new std::queue<std::string> ;   //queryResult n'est alloué que dans les fonctions l'utilisant
-
     std::vector<std::string> vectorFromQueue;
 
     std::string queryString =" SELECT * FROM categ_cust";
@@ -448,34 +410,23 @@ db_categoryQueue Database::getCustCategories()
     query.setVerbose(1);
     executeQuery(query);
 
-    *queryResultFunction=*queryResult;
-
-    for (i=0;i<=queryResultFunction->size();i++)
+    for(unsigned i =0 ; i<queryResult->size() ; i++)
     {
-        while(!queryResultFunction->empty())
+        std::string itemFromQuery = queryResult->at(i);
+        if(itemFromQuery == "\n") // End of line, we store chat we gather
         {
-            while (queryResultFunction->front()!= "\n"&&!queryResultFunction->empty())
-            {
-                vectorFromQueue.push_back(queryResultFunction->front());
-                queryResultFunction->pop();
-            }
             int recuperatedId;
-
             std::istringstream(vectorFromQueue[0]) >> recuperatedId;
-
             cat->setCategoryId(recuperatedId);
             cat->setCategoryName(vectorFromQueue[1]);
-
-            queryResultFunction->pop();
             result.push(*cat);
-
             j++;
             vectorFromQueue.clear();
         }
+        else
+            vectorFromQueue.push_back(itemFromQuery);
     }
-    clear(queue);
     delete cat;
-    delete queryResultFunction;
     return result;
 }
 
@@ -486,13 +437,6 @@ db_customerQueue Database::getCustomerFromCategory(int id)
 
     std::string queryString="";
     Query query; //Initialisation de la requête
-
-    std::queue<std::string> *queryResultFunction(0);  //
-    queryResultFunction = new std::queue<std::string> ;
-
-    delete queryResult;
-    queryResult = new std::queue<std::string> ;
-
     unsigned i;
     unsigned j=0;
     db_customerQueue result; //On initialise la queue de tuple qui sera retournée à la fin au controlleur
@@ -511,56 +455,41 @@ db_customerQueue Database::getCustomerFromCategory(int id)
     query.setVerbose(1);
     executeQuery(query);
 
-    *queryResultFunction=*queryResult;    //Récupération des données renvoyées par la db que l'on met dans une queue<string>
-
     /*Il faut désormais caster le queue <string> dans un queue<tuple< // >> que l'on va return
     Pour cela on utilise un vector de string */
 
     std::vector<std::string> vectorFromQueue;
 
-    if (queryResultFunction->size()!=0) //Boucle sur tout le resultat
+    for(unsigned i =0 ; i<queryResult->size() ; i++)
     {
-        for (i=0;i<=queryResultFunction->size();i++)
+        std::string itemFromQuery = queryResult->at(i);
+        if(itemFromQuery == "\n") // End of line, we store chat we gather
         {
-            while(!queryResultFunction->empty())
-            {
-                //Remplissage de Result
-                while (queryResultFunction->front()!= "\n"&& !queryResultFunction->empty())
-                {
-                    vectorFromQueue.push_back(queryResultFunction->front()); // Pour chaque individu, on récupère les informations dans le vector vectorFromQueue
-                    queryResultFunction->pop();      //On supprime l'élément qui vient d'être extrait.
-                }
+            //On transforme les std::string en float et unsigned pour les champs Balance et Id
+            float recuperatedBalance;
+            int recuperatedId;
+            int recuperatedCategory;
 
-                //On transforme les std::string en float et unsigned pour les champs Balance et Id
-                float recuperatedBalance;
-                int recuperatedId;
-                int recuperatedCategory;
+            std::istringstream(vectorFromQueue[4]) >> recuperatedCategory;
+            std::istringstream(vectorFromQueue[5]) >> recuperatedBalance;
+            std::istringstream(vectorFromQueue[0]) >> recuperatedId;
 
-                std::istringstream(vectorFromQueue[4]) >> recuperatedCategory;
-                std::istringstream(vectorFromQueue[5]) >> recuperatedBalance;
-                std::istringstream(vectorFromQueue[0]) >> recuperatedId;
+            //*customer = std::make_tuple (vectorFromQueue[1],vectorFromQueue[2],vectorFromQueue[4],recuperatedBalance,recuperatedId,vectorFromQueue[3]);
+            customer.setCustomerId(recuperatedId);
+            customer.setCustomerName(vectorFromQueue[1]);
+            customer.setCustomerFirstname(vectorFromQueue[2]);
+            customer.setCustomerLogin(vectorFromQueue[3]);
+            customer.setCustomerCategory(recuperatedCategory);
+            customer.setCustomerBalance(recuperatedBalance);
 
-                //*customer = std::make_tuple (vectorFromQueue[1],vectorFromQueue[2],vectorFromQueue[4],recuperatedBalance,recuperatedId,vectorFromQueue[3]);
-                customer.setCustomerId(recuperatedId);
-                customer.setCustomerName(vectorFromQueue[1]);
-                customer.setCustomerFirstname(vectorFromQueue[2]);
-                customer.setCustomerLogin(vectorFromQueue[3]);
-                customer.setCustomerCategory(recuperatedCategory);
-                customer.setCustomerBalance(recuperatedBalance);
-
-                queryResultFunction->pop();      //On supprime le dernier element du résultat unique , le parser '\n'
-
-                result.push(customer);
-                j++; // L'int j correspond à l'index dans la queue , il est incrémenté a chaque boucle sur une personne
-                vectorFromQueue.clear(); // Ne pas oublier de vider le vecteur à chaque individu
-            }
+            result.push(customer);
+            j++; // L'int j correspond à l'index dans la queue , il est incrémenté a chaque boucle sur une personne
+            vectorFromQueue.clear(); // Ne pas oublier de vider le vecteur à chaque individu
         }
+        else
+            vectorFromQueue.push_back(itemFromQuery);
     }
-    clear(queue); // queue étant défini en dehors de la fonction, par précaution on la vide à la fin de l'appel
-    delete queryResultFunction;
     return result;
-
-
 }
 
 db_productQueue Database::getProductsFromCategory(int categorie)
@@ -574,13 +503,6 @@ db_productQueue Database::getProductsFromCategory(int categorie)
 
     db_productTuple *conso(0);
     conso=new db_productTuple;
-
-    std::queue<std::string> *queryResultFunction(0);
-    queryResultFunction = new std::queue<std::string> ;
-
-    delete queryResult;
-    queryResult = new std::queue<std::string> ;
-
     int i;
     int j=0;
 
@@ -592,20 +514,12 @@ db_productQueue Database::getProductsFromCategory(int categorie)
     query.setVerbose(1);
     executeQuery(query);
 
-    *queryResultFunction=*queryResult;
-
     std::vector<std::string> vectorFromQueue;
-
-    for (i=0;i<=queryResultFunction->size();i++)
+    for(unsigned i =0 ; i<queryResult->size() ; i++)
     {
-        while(!queryResultFunction->empty())
+        std::string itemFromQuery = queryResult->at(i);
+        if(itemFromQuery == "\n") // End of line, we store chat we gather
         {
-            while (queryResultFunction->front()!= "\n"&&!queryResultFunction->empty())
-            {
-                vectorFromQueue.push_back(queryResultFunction->front());
-                queryResultFunction->pop();
-            }
-
             float recuperatedPrice;
             int recuperatedId;
             int recuperatedStock;
@@ -632,17 +546,14 @@ db_productQueue Database::getProductsFromCategory(int categorie)
             conso->setProductVolume(recuperatedVolume);
             conso->setProductLinkStock(recuperatedLinkStock);
 
-
-            queryResultFunction->pop();
             result.push(*conso);
             j++;
             vectorFromQueue.clear();
-
         }
+        else
+            vectorFromQueue.push_back(itemFromQuery);
     }
-    clear(queue);
     delete conso;
-    delete queryResultFunction;
     return result;
 }
 
@@ -655,67 +566,48 @@ db_productTuple Database::getProductFromId(unsigned id)
 
     db_productTuple conso;
 
-    std::queue<std::string> *queryResultFunction(0);
-    queryResultFunction = new std::queue<std::string> ;
-
-    delete queryResult;
-    queryResult = new std::queue<std::string> ;
-
     queryString+=" SELECT * FROM consos WHERE conso_id=";
     queryString+=idString;
     queryString+=" ORDER BY nom ASC;";
     query.setQuery(queryString);
     query.setVerbose(1);
     executeQuery(query);
-
-
-    *queryResultFunction=*queryResult;
-
     std::vector<std::string> vectorFromQueue;
-
-    if (queryResultFunction->size()!=0)
+    for(unsigned i =0 ; i<queryResult->size() ; i++)
     {
-        while (queryResultFunction->front()!= "\n"&&queryResultFunction->size()>1)
+        std::string itemFromQuery = queryResult->at(i);
+        if(itemFromQuery == "\n") // End of line, we store chat we gather
         {
-            vectorFromQueue.push_back(queryResultFunction->front());
-            queryResultFunction->pop();
+            float recuperatedPrice;
+            unsigned recuperatedId;
+            unsigned recuperatedStock;
+            int recuperatedCategory;
+            int tvaCat;
+            int recuperatedVolume;
+            int recuperatedLinkStock;
+
+            std::istringstream(vectorFromQueue[0]) >> recuperatedId;
+            std::istringstream(vectorFromQueue[2]) >> recuperatedCategory;
+            std::istringstream(vectorFromQueue[3]) >> recuperatedPrice;
+            std::istringstream(vectorFromQueue[4]) >> recuperatedStock;
+            std::istringstream(vectorFromQueue[5]) >> tvaCat;
+            std::istringstream(vectorFromQueue[6]) >> recuperatedVolume;
+            std::istringstream(vectorFromQueue[7]) >> recuperatedLinkStock;
+
+            conso.setProductId(recuperatedId);
+            conso.setProductName(vectorFromQueue[1]);
+            conso.setProductPrice(recuperatedPrice);
+            conso.setProductStock(recuperatedStock);
+            conso.setProductCategory(recuperatedCategory);
+            conso.setProductTVAcat(tvaCat);
+            conso.setProductVolume(recuperatedVolume);
+            conso.setProductLinkStock(recuperatedLinkStock);
+            break; // One result expected only
         }
-
-        float recuperatedPrice;
-        unsigned recuperatedId;
-        unsigned recuperatedStock;
-        int recuperatedCategory;
-        int tvaCat;
-        int recuperatedVolume;
-        int recuperatedLinkStock;
-
-        std::istringstream(vectorFromQueue[0]) >> recuperatedId;
-        std::istringstream(vectorFromQueue[2]) >> recuperatedCategory;
-        std::istringstream(vectorFromQueue[3]) >> recuperatedPrice;
-        std::istringstream(vectorFromQueue[4]) >> recuperatedStock;
-        std::istringstream(vectorFromQueue[5]) >> tvaCat;
-        std::istringstream(vectorFromQueue[6]) >> recuperatedVolume;
-        std::istringstream(vectorFromQueue[7]) >> recuperatedLinkStock;
-
-        conso.setProductId(recuperatedId);
-        conso.setProductName(vectorFromQueue[1]);
-        conso.setProductPrice(recuperatedPrice);
-        conso.setProductStock(recuperatedStock);
-        conso.setProductCategory(recuperatedCategory);
-        conso.setProductTVAcat(tvaCat);
-        conso.setProductVolume(recuperatedVolume);
-        conso.setProductLinkStock(recuperatedLinkStock);
-
-        queryResultFunction->pop();
+        else
+            vectorFromQueue.push_back(itemFromQuery);
     }
-    else
-    {
-    }
-    clear(queue);
-    delete queryResultFunction;
-    vectorFromQueue.clear();
     return conso;
-
 }
 
 db_histQueue Database::getFullHist(bool old)
@@ -728,12 +620,6 @@ db_histQueue Database::getFullHist(bool old)
     unsigned i;
     unsigned j=0;
     db_histQueue result;
-
-    std::queue<std::string> *queryResultFunction(0);
-    queryResultFunction = new std::queue<std::string> ;
-    delete queryResult;
-    queryResult = new std::queue<std::string> ;   //queryResult n'est alloué que dans les fonctions l'utilisant
-
     std::vector<std::string> vectorFromQueue;
 
     //Utiliser des jointures
@@ -765,18 +651,11 @@ db_histQueue Database::getFullHist(bool old)
     query.setVerbose(1);
     executeQuery(query);
 
-    *queryResultFunction=*queryResult;
-
-    for (i=0;i<=queryResultFunction->size();i++)
+    for(unsigned i =0 ; i<queryResult->size() ; i++)
     {
-        while(!queryResultFunction->empty())
+        std::string itemFromQuery = queryResult->at(i);
+        if(itemFromQuery == "\n") // End of line, we store chat we gather
         {
-            while (queryResultFunction->front()!= "\n"&&!queryResultFunction->empty())
-            {
-                vectorFromQueue.push_back(queryResultFunction->front());
-                queryResultFunction->pop();
-            }
-
             float recuperatedPrice;
             unsigned recuperatedId;
             unsigned recuperatedClientId;
@@ -787,7 +666,6 @@ db_histQueue Database::getFullHist(bool old)
             std::istringstream(vectorFromQueue[6]) >> recuperatedClientId;
             std::istringstream(vectorFromQueue[7]) >> recuperatedProductId;
 
-            //*hist = std::make_tuple (vectorFromQueue[1],vectorFromQueue[2],vectorFromQueue[3],vectorFromQueue[5],recuperatedPrice,recuperatedId);
             hist->setHistId(recuperatedId);
             hist->setHistName(vectorFromQueue[1]);
             hist->setHistFirstName(vectorFromQueue[2]);
@@ -798,14 +676,13 @@ db_histQueue Database::getFullHist(bool old)
             hist->setHistProductId(recuperatedProductId);
 
             result.push(*hist);
-            queryResultFunction->pop();
             j++;
             vectorFromQueue.clear();
         }
+        else
+            vectorFromQueue.push_back(itemFromQuery);
     }
-    clear(queue);
     delete hist;
-    delete queryResultFunction;
     return result;
 }
 
@@ -819,12 +696,6 @@ db_histQueue Database::getLastOperations(int limit)
     unsigned i;
     unsigned j=0;
     db_histQueue result;
-
-    std::queue<std::string> *queryResultFunction(0);
-    queryResultFunction = new std::queue<std::string> ;
-    delete queryResult;
-    queryResult = new std::queue<std::string> ;   //queryResult n'est alloué que dans les fonctions l'utilisant
-
     std::vector<std::string> vectorFromQueue;
 
     //Utiliser des jointures
@@ -844,18 +715,11 @@ db_histQueue Database::getLastOperations(int limit)
     query.setVerbose(1);
     executeQuery(query);
 
-    *queryResultFunction=*queryResult;
-
-    for (i=0;i<=queryResultFunction->size();i++)
+    for(unsigned i =0 ; i<queryResult->size() ; i++)
     {
-        while(!queryResultFunction->empty())
+        std::string itemFromQuery = queryResult->at(i);
+        if(itemFromQuery == "\n") // End of line, we store chat we gather
         {
-            while (queryResultFunction->front()!= "\n"&&!queryResultFunction->empty())
-            {
-                vectorFromQueue.push_back(queryResultFunction->front());
-                queryResultFunction->pop();
-            }
-
             float recuperatedPrice;
             unsigned recuperatedId;
 
@@ -871,17 +735,14 @@ db_histQueue Database::getLastOperations(int limit)
             hist->setHistOperation(vectorFromQueue[3]);
 
             result.push(*hist);
-            queryResultFunction->pop();
             j++;
             vectorFromQueue.clear();
         }
+        else
+            vectorFromQueue.push_back(itemFromQuery);
     }
-    clear(queue);
     delete hist;
-    delete queryResultFunction;
     return result;
-    clear(*queryResult);
-
 }
 // hist.conso_price n'est pas dans la db actuellement, il faudra faire avec conso.price
 //en réalité, on utilisera conso.price pour hist_older=avant la maj
@@ -896,11 +757,6 @@ db_histQueue Database::getCustomerHist(unsigned id, bool old)
     unsigned i;
     unsigned j=0;
     db_histQueue result;
-
-    std::queue<std::string> *queryResultFunction(0);
-    queryResultFunction = new std::queue<std::string> ;
-    delete queryResult;
-    queryResult = new std::queue<std::string> ;   //queryResult n'est alloué que dans les fonctions l'utilisant
 
     if (old!=true)
     {
@@ -938,28 +794,19 @@ db_histQueue Database::getCustomerHist(unsigned id, bool old)
         executeQuery(query);
 
     }
-
-
-    *queryResultFunction=*queryResult;
     std::vector<std::string> vectorFromQueue;
 
-    for (i=0;i<=queryResultFunction->size();i++)
+    for(unsigned i =0 ; i<queryResult->size() ; i++)
     {
-        while(!queryResultFunction->empty())
+        std::string itemFromQuery = queryResult->at(i);
+        if(itemFromQuery == "\n") // End of line, we store chat we gather
         {
-
-            while (queryResultFunction->front()!= "\n"&&!queryResultFunction->empty())
-            {
-                vectorFromQueue.push_back(queryResultFunction->front());
-                queryResultFunction->pop();
-            }
             float recuperatedPrice;
             unsigned recuperatedId;
 
             std::istringstream(vectorFromQueue[4]) >> recuperatedPrice;
             std::istringstream(vectorFromQueue[0]) >> recuperatedId;
 
-            //*hist = std::make_tuple (vectorFromQueue[1],vectorFromQueue[2],vectorFromQueue[3],vectorFromQueue[5],recuperatedPrice,recuperatedId);
             hist->setHistId(recuperatedId);
             hist->setHistName(vectorFromQueue[1]);
             hist->setHistFirstName(vectorFromQueue[2]);
@@ -967,16 +814,14 @@ db_histQueue Database::getCustomerHist(unsigned id, bool old)
             hist->setHistPrice(recuperatedPrice);
             hist->setHistOperation(vectorFromQueue[3]);
 
-            queryResultFunction->pop();
             result.push(*hist);
             j++;
             vectorFromQueue.clear();
         }
+        else
+            vectorFromQueue.push_back(itemFromQuery);
     }
-    clear(queue);
     delete hist;
-    delete queryResultFunction;
-    clear(*queryResult);
     return result;
 }
 
@@ -991,11 +836,6 @@ db_histQueue Database::getProductHist(unsigned id,bool old)
     unsigned i;
     unsigned j=0;
     db_histQueue result;
-
-    std::queue<std::string> *queryResultFunction(0);
-    queryResultFunction = new std::queue<std::string> ;
-    delete queryResult;
-    queryResult = new std::queue<std::string> ;   //queryResult n'est alloué que dans les fonctions l'utilisant
 
     if (old!=true)
     {
@@ -1033,44 +873,33 @@ db_histQueue Database::getProductHist(unsigned id,bool old)
         query.setVerbose(1);
         executeQuery(query);
     }
-
-
-    *queryResultFunction=*queryResult;
     std::vector<std::string> vectorFromQueue;
-
-    while(!queryResultFunction->empty())
+    for(unsigned i =0 ; i<queryResult->size() ; i++)
     {
-
-        while (queryResultFunction->front()!= "\n")
+        std::string itemFromQuery = queryResult->at(i);
+        if(itemFromQuery == "\n") // End of line, we store chat we gather
         {
-            vectorFromQueue.push_back(queryResultFunction->front());
-            queryResultFunction->pop();
+            float recuperatedPrice;
+            unsigned recuperatedId;
+
+            std::istringstream(vectorFromQueue[4]) >> recuperatedPrice;
+            std::istringstream(vectorFromQueue[0]) >> recuperatedId;
+
+            hist->setHistId(recuperatedId);
+            hist->setHistName(vectorFromQueue[1]);
+            hist->setHistFirstName(vectorFromQueue[2]);
+            hist->setHistDate(vectorFromQueue[5]);
+            hist->setHistPrice(recuperatedPrice);
+            hist->setHistOperation(vectorFromQueue[3]);
+
+            result.push(*hist);
+            j++;
+            vectorFromQueue.clear();
         }
-        float recuperatedPrice;
-        unsigned recuperatedId;
-
-
-        std::istringstream(vectorFromQueue[4]) >> recuperatedPrice;
-        std::istringstream(vectorFromQueue[0]) >> recuperatedId;
-
-        //*hist = std::make_tuple (vectorFromQueue[1],vectorFromQueue[2],vectorFromQueue[3],vectorFromQueue[5],recuperatedPrice,recuperatedId);
-        hist->setHistId(recuperatedId);
-        hist->setHistName(vectorFromQueue[1]);
-        hist->setHistFirstName(vectorFromQueue[2]);
-        hist->setHistDate(vectorFromQueue[5]);
-        hist->setHistPrice(recuperatedPrice);
-        hist->setHistOperation(vectorFromQueue[3]);
-
-        queryResultFunction->pop();
-        result.push(*hist);
-        j++;
-        vectorFromQueue.clear();
-
+        else
+            vectorFromQueue.push_back(itemFromQuery);
     }
-    clear(queue);
-    clear(*queryResult);
     delete hist;
-    delete queryResultFunction;
     return result;
 }
 
@@ -1081,13 +910,6 @@ db_customerTuple Database::getCustomerFromId(unsigned customerId)
     //On doit transformer l'int customerId en string pour effectuer la requête
     std::string idString = std::to_string(customerId);
     Query query;
-    std::queue<std::string> *queryResultFunction(0);
-
-    queryResultFunction = new std::queue<std::string> ;
-    delete queryResult;
-    queryResult = new std::queue<std::string> ;
-
-
     db_customerTuple customer;
 
     queryString+=" SELECT * FROM notes WHERE client_id=";
@@ -1099,53 +921,39 @@ db_customerTuple Database::getCustomerFromId(unsigned customerId)
     query.setVerbose(1);
     executeQuery(query);
 
-    *queryResultFunction=*queryResult;
-
     std::vector<std::string> vectorFromQueue;
-
-    if (queryResultFunction->size()!=0)
+    for(unsigned i =0 ; i<queryResult->size() ; i++)
     {
-
-        while (queryResultFunction->front()!= "\n"&& !queryResultFunction->empty())
+        std::string itemFromQuery = queryResult->at(i);
+        if(itemFromQuery == "\n") // End of line, we store chat we gather
         {
-            vectorFromQueue.push_back(queryResultFunction->front());
-            queryResultFunction->pop();
+            float recuperatedBalance;
+            int recuperatedId, recuperatedCategory;
+
+            std::istringstream(vectorFromQueue[5]) >> recuperatedBalance;
+            std::istringstream(vectorFromQueue[0]) >> recuperatedId;
+            std::istringstream(vectorFromQueue[4]) >> recuperatedCategory;
+
+            //*customer = std::make_tuple (vectorFromQueue[1],vectorFromQueue[2],vectorFromQueue[4],recuperatedBalance,recuperatedId,vectorFromQueue[3]);
+            customer.setCustomerId(recuperatedId);
+            customer.setCustomerName(vectorFromQueue[1]);
+            customer.setCustomerFirstname(vectorFromQueue[2]);
+            customer.setCustomerLogin(vectorFromQueue[3]);
+            customer.setCustomerCategory(recuperatedCategory);
+            customer.setCustomerBalance(recuperatedBalance);
+            break;
         }
-
-        float recuperatedBalance;
-        int recuperatedId, recuperatedCategory;
-
-        std::istringstream(vectorFromQueue[5]) >> recuperatedBalance;
-        std::istringstream(vectorFromQueue[0]) >> recuperatedId;
-        std::istringstream(vectorFromQueue[4]) >> recuperatedCategory;
-
-        //*customer = std::make_tuple (vectorFromQueue[1],vectorFromQueue[2],vectorFromQueue[4],recuperatedBalance,recuperatedId,vectorFromQueue[3]);
-        customer.setCustomerId(recuperatedId);
-        customer.setCustomerName(vectorFromQueue[1]);
-        customer.setCustomerFirstname(vectorFromQueue[2]);
-        customer.setCustomerLogin(vectorFromQueue[3]);
-        customer.setCustomerCategory(recuperatedCategory);
-        customer.setCustomerBalance(recuperatedBalance);
-
-
-        queryResultFunction->pop();
+        else
+            vectorFromQueue.push_back(itemFromQuery);
     }
-    vectorFromQueue.clear();
-    delete queryResultFunction;
-    clear(queue);
-    clear(*queryResult);
     return customer;
 }
 
 
 std::string Database::getPassword (std::string &login)
 {
-    std::string queryString,result;
+    std::string queryString;
     Query query;
-    std::queue<std::string> *queryResultFunction(0);  //
-    queryResultFunction = new std::queue<std::string> ;
-    delete queryResult;
-    queryResult = new std::queue<std::string> ;   //queryResult n'est alloué que dans les fonctions l'utilisant
 
     queryString+=" SELECT password FROM passwords WHERE login LIKE '";
     queryString+=login;
@@ -1154,26 +962,14 @@ std::string Database::getPassword (std::string &login)
     query.setQuery(queryString);
     query.setVerbose(1);
     executeQuery(query);
-
-    *queryResultFunction=*queryResult;
-    result=queryResultFunction->front();
-    queryResultFunction->pop();
-    delete queryResultFunction;
-    clear(queue);
-    clear(*queryResult);
-    return result;
+    return queryResult->front();
 }
-
-
-
 
 int Database::createCustomerAccount(db_customerTuple tuple)
 {
     std::string nom,prenom,login;
     int code,categorie;
     float balance;
-
-
     std::string queryString="";
     Query query;
 
@@ -1205,14 +1001,12 @@ int Database::createCustomerAccount(db_customerTuple tuple)
     std::cout << queryString << std::endl;
     query.setVerbose(1);
     code=executeQuery(query);
-
     return (code);
 }
 
 int Database::editCustomerAccount(db_customerTuple tuple)
 {
     int code;
-
     std::string nom,prenom,login;
     unsigned id, categorie;
     float balance;
@@ -1259,7 +1053,6 @@ int Database::editCustomerAccount(db_customerTuple tuple)
     std::cout<<queryString<<std::endl;
     query.setVerbose(1);
     code=executeQuery(query);
-    clear(*queryResult);
     return (code);
 }
 
@@ -1277,7 +1070,6 @@ int Database::deleteCustomerAccount(int id)
     query.setQuery(queryString);
     query.setVerbose(1);
     code=executeQuery(query);
-
     return (code);
 }
 
@@ -1333,7 +1125,6 @@ int Database::createProduct(db_productTuple tuple)
     query.setQuery(queryString);
     query.setVerbose(1);
     code=executeQuery(query);
-
     return (code);
 }
 
@@ -1390,7 +1181,6 @@ int Database::editProduct(db_productTuple tuple)
     std::cout<<queryString<<std::endl;
     query.setVerbose(1);
     code=executeQuery(query);
-
     return (code);
 }
 
@@ -1408,7 +1198,6 @@ int Database::deleteProduct(int id)
     query.setQuery(queryString);
     query.setVerbose(1);
     code=executeQuery(query);
-
     return (code);
 }
 
@@ -1416,15 +1205,11 @@ int Database::createProdCategory(db_categoryTuple tuple)
 {
     std::string nom;
     int code;
-
     std::string queryString="";
     Query query;
 
     nom=tuple.getCategoryName();
-
     //Il faut transfomer les int et float en std::string
-
-
     queryString+="INSERT INTO types_conso (nom_type) VALUES (";
     queryString+=nom;
     queryString+=");";
@@ -1432,7 +1217,6 @@ int Database::createProdCategory(db_categoryTuple tuple)
     query.setQuery(queryString);
     query.setVerbose(1);
     code=executeQuery(query);
-
     return (code);
 }
 
@@ -1450,25 +1234,19 @@ int Database::deleteCategory(int id)
     query.setQuery(queryString);
     query.setVerbose(1);
     code=executeQuery(query);
-
     return (code);
 }
 
 int Database::addHist(db_histTuple tuple,bool to_old)
 {
-
     std::string timestamp;
     float price;
     int product_id;
     int client_id;
-
     int code;
-
     std::string queryString="";
     Query query;
-
     QString const format="yyyy-MM-dd hh:mm:ss\0";
-
 
     price=tuple.getHistPrice();
     client_id = tuple.getHistCustomerId();
@@ -1479,8 +1257,6 @@ int Database::addHist(db_histTuple tuple,bool to_old)
     std::string priceString = std::to_string(price);
     convertToPointDecimal(priceString); // peut contenir une virgule (notemment sous linux)
     std::string clientIdString = std::to_string(client_id);
-
-    //
     if (to_old ==false)
     {
         queryString+="INSERT INTO historique (client_id,conso_id,conso_price,date_conso) VALUES (";
@@ -1496,7 +1272,6 @@ int Database::addHist(db_histTuple tuple,bool to_old)
     else
     {
         QDateTime DateTime=QDateTime::fromString(QString::fromStdString(tuple.getHistDate()),format);
-
         timestamp = QString::number(DateTime.toTime_t()).toStdString();
 
         queryString+="INSERT INTO historique_save (client_id,conso_id,conso_price,date_conso) VALUES (";
@@ -1513,7 +1288,6 @@ int Database::addHist(db_histTuple tuple,bool to_old)
     query.setQuery(queryString);
     query.setVerbose(1);
     code=executeQuery(query);
-
     return (code);
 }
 
@@ -1532,18 +1306,15 @@ int Database::addToBar(std::pair<std::string,std::string> datas)
     query.setQuery(queryString);
     query.setVerbose(1);
     code=executeQuery(query);
-
     return (code);
 }
 
 int Database::autoDumpHist()
 {
-    int code;
-
+    int code=0;
     db_histQueue hist=this->getFullHist();
     db_histTuple tuple;
     db_histQueue toDump;
-
     int size=hist.size();
     int cur_hist_id;
     std::string idstring;
@@ -1590,7 +1361,6 @@ int Database::autoDumpHist()
         query.setVerbose(1);
         code=executeQuery(query);
     }
-
     return code;
 }
 
@@ -1609,8 +1379,6 @@ void Database::dumpCustomerToDelete(db_customerTuple tuple)
     std::string nom,prenom,login;
     int code,categorie;
     float balance;
-
-
     std::string queryString="";
     Query query;
 
@@ -1642,7 +1410,6 @@ void Database::dumpCustomerToDelete(db_customerTuple tuple)
     std::cout << queryString << std::endl;
     query.setVerbose(1);
     code=executeQuery(query);
-
     return ;
 }
 
@@ -1682,7 +1449,6 @@ void Database::dumpProductToDelete(db_productTuple tuple)
     query.setQuery(queryString);
     query.setVerbose(1);
     code=executeQuery(query);
-
     return ;
 }
 
@@ -1711,18 +1477,14 @@ void Database::setPassword(std::string login, std::string password)
     }
     else // on doit vérifier l'existence ou non du mot de passe pour ce login. afin de savoir si on fait un update ou un insert
     {
-        delete queryResult;
-        queryResult = new  std::queue<std::string>;
         queryString += "SELECT login FROM passwords WHERE login = '"+login+"' ;";
         query.setQuery(queryString);
         query.setVerbose(1);
         std::cout << queryString << std::endl;
         executeQuery(query);
-        if(queryResult->size() > 1) // because there is at least the \n at end of results
+        if(queryResult->size() > 0)
             loginHasPasswd = true;
     }
-    delete queryResult;
-    queryResult = new  std::queue<std::string>;
     if(cat_pass == 3 && loginHasPasswd) // Mise à jour du mot de passe
     {
         queryString = "UPDATE passwords SET password = '" + password +"' ";
@@ -1737,18 +1499,14 @@ void Database::setPassword(std::string login, std::string password)
     query.setVerbose(1);
     std::cout << queryString << std::endl;
     executeQuery(query);
-
     return;
 }
 
 void Database::addHistCashier(db_finop_tuple tuple) //Paiement par Cash/Chèque
 {
-
     float value=tuple.getOpValue();
     PaymentType type=tuple.getOpType();
-
     int code;
-
     std::string queryString="";
     Query query;
 
@@ -1768,18 +1526,14 @@ void Database::addHistCashier(db_finop_tuple tuple) //Paiement par Cash/Chèque
     query.setQuery(queryString);
     query.setVerbose(1);
     code=executeQuery(query);
-
     return ;
 }
 
 void Database::transferToBDE(db_finop_tuple tuple) // Paiement par CB ou Vidage de caisse - Encaissement de facture
 {
-
     float value=tuple.getOpValue();
     PaymentType type=tuple.getOpType();
-
     int code;
-
     std::string queryString="";
     Query query;
 
@@ -1799,25 +1553,17 @@ void Database::transferToBDE(db_finop_tuple tuple) // Paiement par CB ou Vidage 
     query.setQuery(queryString);
     query.setVerbose(1);
     code=executeQuery(query);
-
     return ;
 }
 
 db_finop_queue Database::getBDEHist(int year)
 {
     Query query;
-
     db_finop_tuple *hist(0);
     hist=new db_finop_tuple;
-
     unsigned i;
     unsigned j=0;
     db_finop_queue result;
-    delete queryResult;
-    queryResult = new std::queue<std::string>;
-
-    std::queue<std::string> *queryResultFunction(0);
-    queryResultFunction = new std::queue<std::string> ;
 
     std::vector<std::string> vectorFromQueue;
 
@@ -1841,18 +1587,11 @@ db_finop_queue Database::getBDEHist(int year)
     query.setQuery(queryString);
     query.setVerbose(1);
     executeQuery(query);
-
-    *queryResultFunction=*queryResult;
-    for (i=0;i<=queryResultFunction->size();i++)
+    for(unsigned i =0 ; i<queryResult->size() ; i++)
     {
-        while(!queryResultFunction->empty())
+        std::string itemFromQuery = queryResult->at(i);
+        if(itemFromQuery == "\n") // End of line, we store chat we gather
         {
-            while (queryResultFunction->front()!= "\n"&&!queryResultFunction->empty())
-            {
-                vectorFromQueue.push_back(queryResultFunction->front());
-                queryResultFunction->pop();
-            }
-
             float recuperatedValue;
             unsigned recuperatedId;
             int recuperatedType;
@@ -1867,14 +1606,13 @@ db_finop_queue Database::getBDEHist(int year)
             hist->setOpDate(vectorFromQueue[3]);
 
             result.push(*hist);
-            queryResultFunction->pop();
             j++;
             vectorFromQueue.clear();
         }
+        else
+            vectorFromQueue.push_back(itemFromQuery);
     }
-    clear(queue);
     delete hist;
-    delete queryResultFunction;qDebug() << result.size();
     return result;
 }
 
@@ -1888,12 +1626,6 @@ db_finop_queue Database::getCashierHist()
     unsigned i;
     unsigned j=0;
     db_finop_queue result;
-
-    std::queue<std::string> *queryResultFunction(0);
-    queryResultFunction = new std::queue<std::string> ;
-    delete queryResult;
-    queryResult = new std::queue<std::string> ;   //queryResult n'est alloué que dans les fonctions l'utilisant
-
     std::vector<std::string> vectorFromQueue;
 
     std::string queryString="SELECT (op_id,op_value,op_type,op_date) FROM caisse ";
@@ -1903,19 +1635,11 @@ db_finop_queue Database::getCashierHist()
     query.setQuery(queryString);
     query.setVerbose(1);
     executeQuery(query);
-
-    *queryResultFunction=*queryResult;
-
-    for (i=0;i<=queryResultFunction->size();i++)
+    for(unsigned i =0 ; i<queryResult->size() ; i++)
     {
-        while(!queryResultFunction->empty())
+        std::string itemFromQuery = queryResult->at(i);
+        if(itemFromQuery == "\n") // End of line, we store chat we gather
         {
-            while (queryResultFunction->front()!= "\n"&&!queryResultFunction->empty())
-            {
-                vectorFromQueue.push_back(queryResultFunction->front());
-                queryResultFunction->pop();
-            }
-
             float recuperatedValue;
             unsigned recuperatedId;
             int recuperatedType;
@@ -1930,14 +1654,13 @@ db_finop_queue Database::getCashierHist()
             hist->setOpDate(vectorFromQueue[3]);
 
             result.push(*hist);
-            queryResultFunction->pop();
             j++;
             vectorFromQueue.clear();
         }
+        else
+            vectorFromQueue.push_back(itemFromQuery);
     }
-    clear(queue);
     delete hist;
-    delete queryResultFunction;
     return result;
 }
 
@@ -1948,12 +1671,6 @@ float Database::getAccountValue(Account cpt)
     std::string queryString;
     Query query;
 
-    std::queue<std::string> *queryResultFunction(0);
-    queryResultFunction = new std::queue<std::string> ;
-
-    delete queryResult;
-    queryResult = new std::queue<std::string> ;
-
     queryString+="SELECT cpt_value FROM comptes WHERE cpt_id=";
     queryString+=idString;
     queryString+=";";
@@ -1963,27 +1680,8 @@ float Database::getAccountValue(Account cpt)
     executeQuery(query);
     float recuperatedPrice;
 
-    *queryResultFunction=*queryResult;
-
-    std::vector<std::string> vectorFromQueue;
-
-    if (queryResultFunction->size()!=0)
-    {
-        while (queryResultFunction->front()!= "\n"&&queryResultFunction->size()>1)
-        {
-            vectorFromQueue.push_back(queryResultFunction->front());
-            queryResultFunction->pop();
-        }
-
-        std::istringstream(vectorFromQueue[0]) >> recuperatedPrice;
-        queryResultFunction->pop();
-    }
-    else
-    {
-    }
-    clear(queue);
-    delete queryResultFunction;
-    vectorFromQueue.clear();
+    try{std::istringstream(queryResult->front()) >> recuperatedPrice;}
+    catch(std::exception e){std::cerr << "ERREUR (getAccountValue) : " << e.what() << std::endl;}
     return (recuperatedPrice);
 }
 
@@ -1991,19 +1689,15 @@ float Database::getAccountValue(Account cpt)
 
 void Database::updateAccountValue(float addedValue,Account cpt)
 {
-
     int id=static_cast<int>(cpt);
     float value=this->getAccountValue(cpt)+addedValue;
-
     std::string queryString="";
     Query query;
-
     std::string valueString = std::to_string(value);
     convertToPointDecimal(valueString); // peut contenir une virgule (notemment sous linux)
     std::string idString = std::to_string(id);
 
     queryString+="UPDATE comptes ";
-
     queryString+="SET cpt_value=";
     queryString+=valueString;
     queryString+=" WHERE cpt_id=";
@@ -2014,7 +1708,6 @@ void Database::updateAccountValue(float addedValue,Account cpt)
     std::cout<<queryString<<std::endl;
     query.setVerbose(1);
     executeQuery(query);
-
     return;
 }
 
@@ -2022,12 +1715,10 @@ void Database::editProdCategory(db_categoryTuple tuple)
 {
     std::string queryString="";
     Query query;
-
     std::string nameString = tuple.getCategoryName();
     std::string idString = std::to_string(tuple.getCategoryId());
 
     queryString+="UPDATE categ_consos ";
-
     queryString+="SET name='";
     queryString+=nameString + "'";
     queryString+=" WHERE id=";
@@ -2038,7 +1729,6 @@ void Database::editProdCategory(db_categoryTuple tuple)
     std::cout<<queryString<<std::endl;
     query.setVerbose(1);
     executeQuery(query);
-
     return;
 }
 
@@ -2046,12 +1736,10 @@ void Database::editCustCategory(db_categoryTuple tuple)
 {
     std::string queryString="";
     Query query;
-
     std::string nameString = tuple.getCategoryName();
     std::string idString = std::to_string(tuple.getCategoryId());
 
     queryString+="UPDATE categ_cust ";
-
     queryString+="SET name='";
     queryString+=nameString +"'";
     queryString+=" WHERE id=";
@@ -2062,7 +1750,6 @@ void Database::editCustCategory(db_categoryTuple tuple)
     std::cout<<queryString<<std::endl;
     query.setVerbose(1);
     executeQuery(query);
-
     return;
 }
 
@@ -2072,17 +1759,13 @@ int Database::addStockedit(db_commandQueue _com)
     while (!_com.empty())
     {
         db_commandTuple command_tuple=_com.front();
-
         std::string queryString="";
-
         Query query;
-
         //On récupère le dernier numéro de commande:
         std::string ProdQtyString=std::to_string(command_tuple.getProd_qty());
         std::string ProdIdString =std::to_string(command_tuple.getProd_id());
 
         queryString+="INSERT INTO stock_edit(product,quantity) VALUES (";
-
         queryString+= ProdIdString ;
         queryString+=", ";
         queryString+= ProdQtyString ;
@@ -2094,7 +1777,6 @@ int Database::addStockedit(db_commandQueue _com)
 
         _com.pop();
     }
-
     return (code);
 }
 
@@ -2102,9 +1784,7 @@ int Database::addCommand(db_comTuple command_tuple)
 {
     int code=0;
     std::string queryString="";
-
     Query query;
-
     //On récupère le dernier numéro de commande:
     std::string TVAString=std::to_string(command_tuple.getTVA());
     std::string TTCString=std::to_string(command_tuple.getTTC());
@@ -2127,13 +1807,7 @@ db_commandQueue Database::getCommandFromProdId (int id)
 {
     int code=0;
     db_commandQueue commande;
-    std::queue<std::string> *queryResultFunction(0);
-    queryResultFunction = new std::queue<std::string> ;
-    delete queryResult;
-    queryResult = new std::queue<std::string> ;   //queryResult n'est alloué que dans les fonctions l'utilisant
-
     Query query;
-
     std::string queryString="SELECT * FROM stock_edit WHERE product=";
     queryString+=std::to_string(id);
     queryString+="ORDER BY date DESC;";
@@ -2145,96 +1819,68 @@ db_commandQueue Database::getCommandFromProdId (int id)
     int recuperatedId;
     int recuperatedProdQty;
 
-    *queryResultFunction=*queryResult;
-
     std::vector<std::string> vectorFromQueue;
-
-    if (queryResultFunction->size()!=0)
+    for(unsigned i =0 ; i<queryResult->size() ; i++)
     {
-        db_commandTuple com_item;
-        while (queryResultFunction->front()!= "\n"&&queryResultFunction->size()>1)
+        std::string itemFromQuery = queryResult->at(i);
+        if(itemFromQuery == "\n") // End of line, we store chat we gather
         {
-            vectorFromQueue.push_back(queryResultFunction->front());
-            queryResultFunction->pop();
+            db_commandTuple com_item;
+            std::istringstream(vectorFromQueue[0]) >> recuperatedId;
+            std::istringstream(vectorFromQueue[2]) >> recuperatedProdQty;
+
+            com_item.setDate(vectorFromQueue[3]);
+            com_item.setId(recuperatedId);
+            com_item.setProd_id(id);
+            com_item.setProd_qty(recuperatedProdQty);
+
+            commande.push(com_item);
         }
-        std::istringstream(vectorFromQueue[0]) >> recuperatedId;
-        std::istringstream(vectorFromQueue[2]) >> recuperatedProdQty;
-
-        com_item.setDate(vectorFromQueue[3]);
-        com_item.setId(recuperatedId);
-        com_item.setProd_id(id);
-        com_item.setProd_qty(recuperatedProdQty);
-
-        commande.push(com_item);
-
-        queryResultFunction->pop();
+        else
+            vectorFromQueue.push_back(itemFromQuery);
     }
-    else
-    {
-    }
-    clear(queue);
-    delete queryResultFunction;
-    vectorFromQueue.clear();
     return (commande);
 }
 
 db_TVAcategoryQueue Database::getTvaRates()
 {
     db_TVAcategoryQueue result;
-
     Query query;
-
     db_TVAcategoryTuple *cat(0);
     cat=new db_TVAcategoryTuple;
 
     unsigned i;
     unsigned j=0;
-
-    std::queue<std::string> *queryResultFunction(0);
-    queryResultFunction = new std::queue<std::string> ;
-    delete queryResult;
-    queryResult = new std::queue<std::string> ;   //queryResult n'est alloué que dans les fonctions l'utilisant
-
     std::vector<std::string> vectorFromQueue;
 
     std::string queryString =" SELECT * FROM TVA";
     queryString+=" ORDER BY id ASC;";
 
-
     query.setQuery(queryString);
     query.setVerbose(1);
     executeQuery(query);
-
-    *queryResultFunction=*queryResult;
-
-
-    while(!queryResultFunction->empty())
+    for(unsigned i =0 ; i<queryResult->size() ; i++)
     {
-        while (queryResultFunction->front()!= "\n"&&!queryResultFunction->empty())
+        std::string itemFromQuery = queryResult->at(i);
+        if(itemFromQuery == "\n") // End of line, we store chat we gather
         {
-            vectorFromQueue.push_back(queryResultFunction->front());
-            queryResultFunction->pop();
+            int recuperatedId;
+            float recuperatedRate;
+
+            std::istringstream(vectorFromQueue[0]) >> recuperatedId;
+            std::istringstream(vectorFromQueue[1]) >> recuperatedRate;
+
+            cat->setId(recuperatedId);
+            cat->setRate(recuperatedRate);
+            cat->setInfo(vectorFromQueue[2]);
+            result.push(*cat);
+            j++;
+            vectorFromQueue.clear();
         }
-        int recuperatedId;
-        float recuperatedRate;
-
-        std::istringstream(vectorFromQueue[0]) >> recuperatedId;
-        std::istringstream(vectorFromQueue[1]) >> recuperatedRate;
-
-        cat->setId(recuperatedId);
-        cat->setRate(recuperatedRate);
-        cat->setInfo(vectorFromQueue[2]);
-
-        queryResultFunction->pop();
-        result.push(*cat);
-
-        j++;
-        vectorFromQueue.clear();
+        else
+            vectorFromQueue.push_back(itemFromQuery);
     }
-    clear(queue);
     delete cat;
-    delete queryResultFunction;
-
     return result;
 }
 
@@ -2242,12 +1888,10 @@ void Database::editTvaRate(db_TVAcategoryTuple tuple)
 {
     std::string queryString="";
     Query query;
-
     std::string valueString = std::to_string(tuple.getRate());
     std::string idString = std::to_string(tuple.getId());
 
     queryString+="UPDATE TVA ";
-
     queryString+="SET value='";
     queryString+=valueString +"'";
     queryString+=" WHERE id=";
@@ -2257,26 +1901,17 @@ void Database::editTvaRate(db_TVAcategoryTuple tuple)
     query.setQuery(queryString);
     query.setVerbose(1);
     executeQuery(query);
-
     return;
 }
 
 db_comQueue Database::getCommandsOfYear(int _year)
 {
     db_comQueue result;
-
     Query query;
-
     db_comTuple *cat(0);
     cat=new db_comTuple;
-
     unsigned i;
     unsigned j=0;
-
-    std::queue<std::string> *queryResultFunction(0);
-    queryResultFunction = new std::queue<std::string> ;
-    delete queryResult;
-    queryResult = new std::queue<std::string> ;   //queryResult n'est alloué que dans les fonctions l'utilisant
 
     std::vector<std::string> vectorFromQueue;
 
@@ -2286,61 +1921,44 @@ db_comQueue Database::getCommandsOfYear(int _year)
     query.setQuery(queryString);
     query.setVerbose(1);
     executeQuery(query);
-
-    *queryResultFunction=*queryResult;
-
-
-    while(!queryResultFunction->empty())
+    for(unsigned i =0 ; i<queryResult->size() ; i++)
     {
-        while (queryResultFunction->front()!= "\n"&&!queryResultFunction->empty())
+        std::string itemFromQuery = queryResult->at(i);
+        if(itemFromQuery == "\n") // End of line, we store chat we gather
         {
-            vectorFromQueue.push_back(queryResultFunction->front());
-            queryResultFunction->pop();
+            int recuperatedId;
+            float recuperatedTTC;
+            float recuperatedTVA;
+
+            std::istringstream(vectorFromQueue[0]) >> recuperatedId;
+            std::istringstream(vectorFromQueue[1]) >> recuperatedTTC;
+            std::istringstream(vectorFromQueue[2]) >> recuperatedTVA;
+
+            cat->setId(recuperatedId);
+            cat->setTTC(recuperatedTTC);
+            cat->setTVA(recuperatedTVA);
+            cat->setDate(vectorFromQueue[3]);
+            cat->setInfo(vectorFromQueue[4]);
+            result.push(*cat);
+            j++;
+            vectorFromQueue.clear();
         }
-        int recuperatedId;
-        float recuperatedTTC;
-        float recuperatedTVA;
-
-        std::istringstream(vectorFromQueue[0]) >> recuperatedId;
-        std::istringstream(vectorFromQueue[1]) >> recuperatedTTC;
-        std::istringstream(vectorFromQueue[2]) >> recuperatedTVA;
-
-        cat->setId(recuperatedId);
-        cat->setTTC(recuperatedTTC);
-        cat->setTVA(recuperatedTVA);
-        cat->setDate(vectorFromQueue[3]);
-        cat->setInfo(vectorFromQueue[4]);
-
-        queryResultFunction->pop();
-        result.push(*cat);
-
-        j++;
-        vectorFromQueue.clear();
+        else
+            vectorFromQueue.push_back(itemFromQuery);
     }
-    clear(queue);
     delete cat;
-    delete queryResultFunction;
-
     return result;
 }
 
 db_saleQueue Database::getSalesOfYear (int _year)
 {
     db_saleQueue result;
-
     Query query;
     unsigned i;
     unsigned j=0;
     std::vector<std::string> vectorFromQueue;
-
-
     db_saleTuple *cat(0);
     cat=new db_saleTuple;
-    std::queue<std::string> *queryResultFunction(0);
-    queryResultFunction = new std::queue<std::string> ;
-    delete queryResult;
-    queryResult = new std::queue<std::string> ;   //queryResult n'est alloué que dans les fonctions l'utilisant
-
 
     std::string queryString;
     queryString = "SELECT historique.his_id,historique.conso_price,consos.TVAType,historique.date_conso,consos.nom FROM historique ";
@@ -2352,52 +1970,39 @@ db_saleQueue Database::getSalesOfYear (int _year)
     query.setQuery(queryString);
     query.setVerbose(1);
     executeQuery(query);
-
-    *queryResultFunction=*queryResult;
-
-
-    while(!queryResultFunction->empty())
+    for(i =0 ; i<queryResult->size() ; i++)
     {
-        while (queryResultFunction->front()!= "\n"&&!queryResultFunction->empty())
+        std::string itemFromQuery = queryResult->at(i);
+        if(itemFromQuery == "\n") // End of line, we store chat we gather
         {
-            vectorFromQueue.push_back(queryResultFunction->front());
-            queryResultFunction->pop();
+            int recuperatedId;
+            float recuperatedTTC;
+            int recuperatedTVAindex;
+            std::string recuperatedDate;
+            std::string recuperatedName;
+
+            std::istringstream(vectorFromQueue[0]) >> recuperatedId;
+            std::istringstream(vectorFromQueue[1]) >> recuperatedTTC;
+            std::istringstream(vectorFromQueue[2]) >> recuperatedTVAindex;
+            std::istringstream(vectorFromQueue[3]) >> recuperatedDate;
+            std::istringstream(vectorFromQueue[4]) >> recuperatedName;
+
+            cat->setId(recuperatedId);
+            cat->setTTC(recuperatedTTC);
+            cat->setTVAIndex(recuperatedTVAindex);
+            cat->setDate(recuperatedDate);
+            cat->setProductName(recuperatedName);
+
+            result.push(*cat);
+            j++;
+            vectorFromQueue.clear();
         }
-        int recuperatedId;
-        float recuperatedTTC;
-        int recuperatedTVAindex;
-        std::string recuperatedDate;
-        std::string recuperatedName;
-
-        std::istringstream(vectorFromQueue[0]) >> recuperatedId;
-        std::istringstream(vectorFromQueue[1]) >> recuperatedTTC;
-        std::istringstream(vectorFromQueue[2]) >> recuperatedTVAindex;
-        std::istringstream(vectorFromQueue[3]) >> recuperatedDate;
-        std::istringstream(vectorFromQueue[4]) >> recuperatedName;
-
-
-
-        cat->setId(recuperatedId);
-        cat->setTTC(recuperatedTTC);
-        cat->setTVAIndex(recuperatedTVAindex);
-        cat->setDate(recuperatedDate);
-        cat->setProductName(recuperatedName);
-
-        queryResultFunction->pop();
-        result.push(*cat);
-
-        j++;
-        vectorFromQueue.clear();
+        else
+            vectorFromQueue.push_back(itemFromQuery);
     }
-    clear(queue);
     delete cat;
-    delete queryResultFunction;
 
     cat=new db_saleTuple;
-    queryResultFunction = new std::queue<std::string> ;
-    delete queryResult;
-    queryResult = new std::queue<std::string> ;   //queryResult n'est alloué que dans les fonctions l'utilisant
-
 
     queryString = "SELECT historique_save.his_id,historique_save.conso_price,consos.TVAType,historique_save.date_conso,consos.nom FROM historique_save ";
     queryString+="LEFT JOIN consos ";
@@ -2408,52 +2013,37 @@ db_saleQueue Database::getSalesOfYear (int _year)
     query.setQuery(queryString);
     query.setVerbose(1);
     executeQuery(query);
-
-    *queryResultFunction=*queryResult;
-
-
-    while(!queryResultFunction->empty())
+    for(i =0 ; i<queryResult->size() ; i++)
     {
-        while (queryResultFunction->front()!= "\n"&&!queryResultFunction->empty())
+        std::string itemFromQuery = queryResult->at(i);
+        if(itemFromQuery == "\n") // End of line, we store chat we gather
         {
-            vectorFromQueue.push_back(queryResultFunction->front());
-            queryResultFunction->pop();
+            int recuperatedId;
+            float recuperatedTTC;
+            int recuperatedTVAindex;
+            std::string recuperatedDate;
+            std::string recuperatedName;
+
+            std::istringstream(vectorFromQueue[0]) >> recuperatedId;
+            std::istringstream(vectorFromQueue[1]) >> recuperatedTTC;
+            std::istringstream(vectorFromQueue[2]) >> recuperatedTVAindex;
+            std::istringstream(vectorFromQueue[3]) >> recuperatedDate;
+            std::istringstream(vectorFromQueue[4]) >> recuperatedName;
+
+            cat->setId(recuperatedId);
+            cat->setTTC(recuperatedTTC);
+            cat->setTVAIndex(recuperatedTVAindex);
+            cat->setDate(recuperatedDate);
+            cat->setProductName(recuperatedName);
+            result.push(*cat);
+            j++;
+            vectorFromQueue.clear();
         }
-        int recuperatedId;
-        float recuperatedTTC;
-        int recuperatedTVAindex;
-        std::string recuperatedDate;
-        std::string recuperatedName;
-
-        std::istringstream(vectorFromQueue[0]) >> recuperatedId;
-        std::istringstream(vectorFromQueue[1]) >> recuperatedTTC;
-        std::istringstream(vectorFromQueue[2]) >> recuperatedTVAindex;
-        std::istringstream(vectorFromQueue[3]) >> recuperatedDate;
-        std::istringstream(vectorFromQueue[4]) >> recuperatedName;
-
-
-
-        cat->setId(recuperatedId);
-        cat->setTTC(recuperatedTTC);
-        cat->setTVAIndex(recuperatedTVAindex);
-        cat->setDate(recuperatedDate);
-        cat->setProductName(recuperatedName);
-
-        queryResultFunction->pop();
-        result.push(*cat);
-
-        j++;
-        vectorFromQueue.clear();
+        else
+            vectorFromQueue.push_back(itemFromQuery);
     }
-    clear(queue);
     delete cat;
-    delete queryResultFunction;
-
     cat=new db_saleTuple;
-    queryResultFunction = new std::queue<std::string> ;
-    delete queryResult;
-    queryResult = new std::queue<std::string> ;   //queryResult n'est alloué que dans les fonctions l'utilisant
-
 
     queryString = "SELECT historique_deleted_account.his_id,historique_deleted_account.conso_price,consos.TVAType,historique_deleted_account.date_conso,consos.nom FROM historique_deleted_account ";
     queryString+="LEFT JOIN consos ";
@@ -2464,46 +2054,39 @@ db_saleQueue Database::getSalesOfYear (int _year)
     query.setQuery(queryString);
     query.setVerbose(1);
     executeQuery(query);
-
-    *queryResultFunction=*queryResult;
-
-
-    while(!queryResultFunction->empty())
+    for(i =0 ; i<queryResult->size() ; i++)
     {
-        while (queryResultFunction->front()!= "\n"&&!queryResultFunction->empty())
+        std::string itemFromQuery = queryResult->at(i);
+        if(itemFromQuery == "\n") // End of line, we store chat we gather
         {
-            vectorFromQueue.push_back(queryResultFunction->front());
-            queryResultFunction->pop();
+            int recuperatedId;
+            float recuperatedTTC;
+            int recuperatedTVAindex;
+            std::string recuperatedDate;
+            std::string recuperatedName;
+
+            std::istringstream(vectorFromQueue[0]) >> recuperatedId;
+            std::istringstream(vectorFromQueue[1]) >> recuperatedTTC;
+            std::istringstream(vectorFromQueue[2]) >> recuperatedTVAindex;
+            std::istringstream(vectorFromQueue[3]) >> recuperatedDate;
+            std::istringstream(vectorFromQueue[4]) >> recuperatedName;
+
+
+
+            cat->setId(recuperatedId);
+            cat->setTTC(recuperatedTTC);
+            cat->setTVAIndex(recuperatedTVAindex);
+            cat->setDate(recuperatedDate);
+            cat->setProductName(recuperatedName);
+
+            result.push(*cat);
+
+            j++;
+            vectorFromQueue.clear();
         }
-        int recuperatedId;
-        float recuperatedTTC;
-        int recuperatedTVAindex;
-        std::string recuperatedDate;
-        std::string recuperatedName;
-
-        std::istringstream(vectorFromQueue[0]) >> recuperatedId;
-        std::istringstream(vectorFromQueue[1]) >> recuperatedTTC;
-        std::istringstream(vectorFromQueue[2]) >> recuperatedTVAindex;
-        std::istringstream(vectorFromQueue[3]) >> recuperatedDate;
-        std::istringstream(vectorFromQueue[4]) >> recuperatedName;
-
-
-
-        cat->setId(recuperatedId);
-        cat->setTTC(recuperatedTTC);
-        cat->setTVAIndex(recuperatedTVAindex);
-        cat->setDate(recuperatedDate);
-        cat->setProductName(recuperatedName);
-
-        queryResultFunction->pop();
-        result.push(*cat);
-
-        j++;
-        vectorFromQueue.clear();
+        else
+            vectorFromQueue.push_back(itemFromQuery);
     }
-    clear(queue);
     delete cat;
-    delete queryResultFunction;
-
     return result;
 }

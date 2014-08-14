@@ -153,7 +153,7 @@ private:
     QString curSearch;
     std::string currentLoggedCustomer;
     QTimer* backupTimer;
-
+public:
         /* Model objects */
     Database* database;
     Plotting* plotting;

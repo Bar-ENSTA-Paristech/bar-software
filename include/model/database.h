@@ -14,6 +14,7 @@
 #include "sqlite3.h"
 #include "query.h"
 #include "queue"
+#include "deque"
 #include "tuple"
 #include "structures.h"
 
@@ -146,8 +147,12 @@ public:
 
     void convertToPointDecimal(std::string &str); // Remplace les éventuelles virgules d'un décimal par des points, compréhensible par SQLite
 
+    static int callback(void *arg, int argc, char **argv, char **azColName);
+    std::deque<std::string>* getQueryResult(){return queryResult;}
+    void printQueryResult(bool debug=true);
 private:
     sqlite3* handle; //Pointeur vers la BDD
+    std::deque<std::string>* queryResult;
 };
 
 #endif // DATABASE_H

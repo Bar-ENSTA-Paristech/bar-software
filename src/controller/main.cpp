@@ -8,6 +8,7 @@
 #include <QDir>
 #include <QDebug>
 #include <unistd.h>
+#include <ctime>
 
 #include "../model/plotting.h"
 #include "qcustomplot.h"
@@ -16,7 +17,7 @@
 #include "cart.h"
 #include "product.h"
 
-//#define DEBUG
+#define DEV
 
 QString GLOBAL_PATH;
 
@@ -26,7 +27,7 @@ int main(int argc, char *argv[])
     QDir currentDir(QDir::currentPath());
     //QCoreApplication::addLibraryPath(QCoreApplication::applicationDirPath()); for deployement ?
 /********************* FOR DEV ********************/
-#ifdef DEBUG
+#ifdef DEV
     #ifdef Q_OS_LINUX //pour linux
         currentDir.cdUp();
         currentDir.cd("bar-software");
@@ -74,7 +75,7 @@ int main(int argc, char *argv[])
     application.setWindowIcon(QIcon(GLOBAL_PATH + "resources/pictures/icon.png"));
 
     QLabel* splashWidget = new QLabel;
-#ifndef DEBUG
+#ifndef DEV
     QMovie splashscreen(GLOBAL_PATH + "resources/pictures/splashscreen.gif");
     splashWidget->setMovie(&splashscreen);
     splashscreen.start();
@@ -89,7 +90,10 @@ int main(int argc, char *argv[])
     if(css.open(QIODevice::ReadOnly)) {
         application.setStyleSheet(css.readAll());
     }
-    MainWindow mainWindow;
+    sleep(10);
+    qDebug() <<"Size (main) " << controller.database->getQueryResult()->size();
+    MainWindow mainWindow(&controller);
+    qDebug() <<"Size (main) " << controller.database->getQueryResult()->size();
     mainWindow.setController(&controller);
     mainWindow.setSplashscreen(splashWidget);
 

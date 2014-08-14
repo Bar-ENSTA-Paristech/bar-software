@@ -14,7 +14,7 @@ class Database;
 class Plotting
 {
 public:
-    Plotting();
+    Plotting(Database* _db);
 
     db_dataarray customerConsumption (int id, int scale, int numberOfPoints, int type=0);
     db_dataarray customerBalance (int id,int scale, int numberOfPoints);
@@ -34,7 +34,7 @@ public:
     sqlite3* getDb();
 
 private:
-Database db;
+Database* db;
 };
 
 #endif // PLOTTING_H
