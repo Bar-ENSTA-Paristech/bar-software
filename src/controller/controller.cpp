@@ -202,7 +202,7 @@ void Controller::newClic_ValidateCart(bool isCash)
     {
         db_productInfo=database->getProductFromId(currentCartController[i].first);
 
-        for (unsigned j=0;j<currentCartController.first().second;j++)
+        for (unsigned j=0;j<currentCartController[i].second;j++)
         {
             qDebug()<<"Creating a histTuple to insert into the database";
 
@@ -612,14 +612,19 @@ bool Controller::isCustomerInNegative()
 
 void Controller::setCurCustomer(view_customerTuple &tuple)
 {
+    float balance = tuple.getCustomerBalance()*1000;
+    balance = round(balance);
+    balance /= 1000;
+    //if(absolute(balance) < 0.005)
+    //    balance = 0;
     curCustomer->setCustomerId((tuple.getCustomerId()));
-    curCustomer->setBalance(tuple.getCustomerBalance());
+    curCustomer->setBalance(balance);
     curCustomer->setFirstName(tuple.getCustomerFirstName().QString::toStdString());
     curCustomer->setCategory(tuple.getCustomerCategory());
     curCustomer->setName(tuple.getCustomerName().QString::toStdString());
     curCustomer->setLogin(tuple.getCustomerLogin().QString::toStdString());
     view_curCustomer->setCustomerId((tuple.getCustomerId()));
-    view_curCustomer->setCustomerBalance(tuple.getCustomerBalance());
+    view_curCustomer->setCustomerBalance(balance);
     view_curCustomer->setCustomerFirstName(tuple.getCustomerFirstName());
     view_curCustomer->setCustomerCategory(tuple.getCustomerCategory());
     view_curCustomer->setCustomerName(tuple.getCustomerName());

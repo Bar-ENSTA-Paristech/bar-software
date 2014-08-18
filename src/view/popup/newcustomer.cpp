@@ -47,6 +47,7 @@ NewCustomer::NewCustomer(QWidget *parent) :
 
 void NewCustomer::launchNewCustomer(std::vector<QString> categories)
 {
+    //categorie->clear();
     for(unsigned i = 1 ; i < categories.size() ; i++) // Avoid guest at i=0
         categorie->addItem(categories[i]);
 

@@ -166,23 +166,23 @@ int Database::initializeDatabaseForm()
     coderesult+=executeQuery(test_q);
     test_q.setQuery("CREATE TABLE IF NOT EXISTS `consos` (`conso_id` INTEGER PRIMARY KEY,`nom` varchar(25) NOT NULL DEFAULT 'NULL',`type` int(11) DEFAULT NULL,`prix` float DEFAULT NULL,`stock` int(11) DEFAULT NULL);");
     coderesult+=executeQuery(test_q);
-    test_q.setQuery("CREATE TABLE IF NOT EXISTS `historique` (`his_id` INTEGER PRIMARY KEY,`client_id` int(11) NOT NULL,`conso_id` int(11) NOT NULL,`conso_price` float DEFAULT NULL,`date_conso` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP);");
+    test_q.setQuery("CREATE TABLE IF NOT EXISTS `historique` (`his_id` INTEGER PRIMARY KEY,`client_id` int(11) NOT NULL,`conso_id` int(11) NOT NULL,`conso_price` float DEFAULT NULL,`date_conso` timestamp NOT NULL DEFAULT datetime('now', 'localtime'));");
     coderesult+=executeQuery(test_q);
-    test_q.setQuery("CREATE TABLE IF NOT EXISTS `historique_save` (`his_id` INTEGER PRIMARY KEY,`client_id` int(11) NOT NULL,`conso_id` int(11) NOT NULL,`conso_price` float DEFAULT NULL,`date_conso` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP);");
+    test_q.setQuery("CREATE TABLE IF NOT EXISTS `historique_save` (`his_id` INTEGER PRIMARY KEY,`client_id` int(11) NOT NULL,`conso_id` int(11) NOT NULL,`conso_price` float DEFAULT NULL,`date_conso` timestamp NOT NULL DEFAULT datetime('now', 'localtime'));");
     coderesult+=executeQuery(test_q);
-    test_q.setQuery("CREATE TABLE IF NOT EXISTS `historique_deleted_account` (`his_id` INTEGER PRIMARY KEY,`client_id` int(11) NOT NULL,`conso_id` int(11) NOT NULL,`conso_price` float DEFAULT NULL,`date_conso` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP);");
+    test_q.setQuery("CREATE TABLE IF NOT EXISTS `historique_deleted_account` (`his_id` INTEGER PRIMARY KEY,`client_id` int(11) NOT NULL,`conso_id` int(11) NOT NULL,`conso_price` float DEFAULT NULL,`date_conso` timestamp NOT NULL DEFAULT datetime('now', 'localtime'));");
     coderesult+=executeQuery(test_q);
     test_q.setQuery("CREATE TABLE IF NOT EXISTS `notes` (`client_id` INTEGER PRIMARY KEY,`nom` varchar(25) NOT NULL,`prenom` varchar(25) NOT NULL,`login` varchar(25) NOT NULL,`type` int(11) NOT NULL,`compte` float NOT NULL,`vip` tinyint(1)) ;");
     coderesult+=executeQuery(test_q);
-    test_q.setQuery("CREATE TABLE IF NOT EXISTS `prix_consos` (`id_conso` INTEGER PRIMARY KEY,`prix_precedent` float DEFAULT NULL,`date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP);");
+    test_q.setQuery("CREATE TABLE IF NOT EXISTS `prix_consos` (`id_conso` INTEGER PRIMARY KEY,`prix_precedent` float DEFAULT NULL,`date` timestamp NOT NULL DEFAULT datetime('now', 'localtime'));");
     coderesult+=executeQuery(test_q);
     test_q.setQuery("CREATE TABLE IF NOT EXISTS `types_conso` (`type_conso_id` INTEGER PRIMARY KEY,`nom_type` varchar(25) NOT NULL);");
     coderesult+=executeQuery(test_q);
-    test_q.setQuery("CREATE TABLE IF NOT EXISTS `vidage_caisse` (`type_vidage` tinyint(1) NOT NULL,`valeur` float NOT NULL,`date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP);");
+    test_q.setQuery("CREATE TABLE IF NOT EXISTS `vidage_caisse` (`type_vidage` tinyint(1) NOT NULL,`valeur` float NOT NULL,`date` timestamp NOT NULL DEFAULT datetime('now', 'localtime'));");
     coderesult+=executeQuery(test_q);
-    test_q.setQuery("CREATE TABLE IF NOT EXISTS `commande` (`commande_id` INTEGER PRIMARY KEY,`valeur` float NOT NULL,`libelle` varchar(100) ,`date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP);");
+    test_q.setQuery("CREATE TABLE IF NOT EXISTS `commande` (`commande_id` INTEGER PRIMARY KEY,`valeur` float NOT NULL,`libelle` varchar(100) ,`date` timestamp NOT NULL DEFAULT datetime('now', 'localtime'));");
     coderesult+=executeQuery(test_q);
-    test_q.setQuery("CREATE TABLE IF NOT EXISTS `achats` (`commande_id` INTEGER PRIMARY KEY,`conso_id` int(11) NOT NULL,`quantite` int(11),`prix_unitaire` float(11) ,`date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP);");
+    test_q.setQuery("CREATE TABLE IF NOT EXISTS `achats` (`commande_id` INTEGER PRIMARY KEY,`conso_id` int(11) NOT NULL,`quantite` int(11),`prix_unitaire` float(11) ,`date` timestamp NOT NULL DEFAULT datetime('now', 'localtime'));");
     coderesult+=executeQuery(test_q);
 
 
@@ -1262,7 +1262,7 @@ int Database::addHist(db_histTuple tuple,bool to_old)
         queryString+=", ";
         queryString+=priceString;
         queryString+=", ";
-        queryString+="CURRENT_TIMESTAMP";
+        queryString+="datetime('now', 'localtime')";
         queryString+=");";
     }
     else
@@ -1516,7 +1516,7 @@ void Database::addHistCashier(db_finop_tuple tuple) //Paiement par Cash/Chèque
     queryString+=", ";
     queryString+=typeString;
     queryString+=", ";
-    queryString+="CURRENT_TIMESTAMP";
+    queryString+="datetime('now', 'localtime')";
     queryString+=");";
 
     query.setQuery(queryString);
@@ -1543,7 +1543,7 @@ void Database::transferToBDE(db_finop_tuple tuple) // Paiement par CB ou Vidage 
     queryString+=", ";
     queryString+=typeString;
     queryString+=", ";
-    queryString+="CURRENT_TIMESTAMP";
+    queryString+="datetime('now', 'localtime')";
     queryString+=");";
 
     query.setQuery(queryString);

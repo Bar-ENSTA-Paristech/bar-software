@@ -66,7 +66,8 @@ void SearchResults::setSearchResults(view_customerQueue & queue)
 
         model->item(i,0)->setText(tuple.getCustomerName());
         model->item(i,1)->setText(tuple.getCustomerFirstName());
-        model->item(i,2)->setText(QString::fromStdString(categories[tuple.getCustomerCategory()].getCategoryName()));
+        if (tuple.getCustomerCategory() < categories.size())
+            model->item(i,2)->setText(QString::fromStdString(categories[tuple.getCustomerCategory()].getCategoryName()));
         model->item(i,3)->setText(QString::number(balance));
         //model->item(i,3)->setData(QVariant(balance)); essai d'envoi du nombre pour corriger le problème du tri. rien ne s'affiche ...
         model->item(i,4)->setText(QString::number(tuple.getCustomerId()));
