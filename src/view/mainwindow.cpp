@@ -15,7 +15,7 @@ MainWindow::MainWindow(Controller *_controller)
     this->setWindowTitle("RAB WareSoft");
     this->setMinimumSize(900, 600);
     this->setStyle(QStyleFactory::create("fusion"));
-qDebug() <<"Size (constr MainWindow) " << _controller->database->getQueryResult()->size();
+qDebug() <<"Size (constr MainWindow) " << _controller->database->getqueryResult()->size();
     // Creating main widgets (menu at top and the remaining
     mainWindowLayout = new QGridLayout(centralWidget);
     menu = new QFrame(centralWidget);
@@ -29,24 +29,31 @@ qDebug() <<"Size (constr MainWindow) " << _controller->database->getQueryResult(
     mainWindowLayout->setRowStretch(1, 20);
     mainWindowLayout->setContentsMargins(0,0,0,0);
     centralWidget->setLayout(mainWindowLayout);
-qDebug() <<"Size (constr MainWindow t1) " << _controller->database->getQueryResult()->size();
+qDebug() <<"Size (constr MainWindow t1) " << _controller->database->getqueryResult()->size();
     // Adding content of the top menu (searchbar and configuration buttons)
     searchBar = new QFrame(menu);
-    menuButtons = new QFrame(menu);qDebug() <<"Size (constr MainWindow t2) " << _controller->database->getQueryResult()->size();
-    menuButtons->setObjectName("menuButtons");qDebug() <<"Size (constr MainWindow t3) " << _controller->database->getQueryResult()->size();
-    logo = new QLabel(menu);qDebug() <<"Size (constr MainWindow t4) " << _controller->database->getQueryResult()->size();
-    qDebug() <<"logo"<< logo;_controller->database->printQueryResult();
-    logo->setPixmap(QPixmap(GLOBAL_PATH + "resources/pictures/logo.png"));//qDebug() <<"Size (constr MainWindow t5) " << _controller->database->getQueryResult()->size();
-    _controller->database->printQueryResult();
-    menuLayout = new QGridLayout(menu);qDebug() <<"Size (constr MainWindow t6) " << _controller->database->getQueryResult()->size();
-    menuLayout->addWidget(searchBar, 0, 0);qDebug() <<"Size (constr MainWindow t10) " << _controller->database->getQueryResult()->size();
+    menuButtons = new QFrame(menu);qDebug() <<"Size (constr MainWindow t2) " << _controller->database->getqueryResult()->size();
+    menuButtons->setObjectName("menuButtons");qDebug() <<"Size (constr MainWindow t3) " << _controller->database->getqueryResult()->size();
+    logo = new QLabel(menu);qDebug() <<"Size (constr MainWindow t4) " << _controller->database->getqueryResult()->size();
+    qDebug() << GLOBAL_PATH;
+    qDebug() <<"logo"<< logo;_controller->database->printqueryResult();
+    //QString toto2 = GLOBAL_PATH + "resources/pictures/logo.png";
+    QString toto2 = "G:/Simon/Documents/programmation/logiciel bar/bar-software/resources/pictures/logo.png";
+    QPixmap* toto = new QPixmap(toto2, "PNG");
+    logo->setPixmap(*toto);//qDebug() <<"Size (constr MainWindow t5) " << _controller->database->getqueryResult()->size();
+    //QPicture toto;
+    //toto.load(toto2);
+    //logo->setPicture(toto);//qDebug() <<"Size (constr MainWindow t5) " << _controller->database->getqueryResult()->size();
+
+    //_controller->database->printqueryResult();
+    menuLayout = new QGridLayout(menu);//qDebug() <<"Size (constr MainWindow t6) " << _controller->database->getqueryResult()->size();
+    menuLayout->addWidget(searchBar, 0, 0);//qDebug() <<"Size (constr MainWindow t10) " << _controller->database->getqueryResult()->size();
     menuLayout->addWidget(menuButtons, 0, 2);
     menuLayout->addWidget(logo, 0, 4);
     menu->setLayout(menuLayout);
     menuLayout->setContentsMargins(0,0,0,0);
     menuLayout->setColumnStretch(1,1);
     menuLayout->setColumnStretch(3,1);
-qDebug() <<"Size (constr MainWindow) " << _controller->database->getQueryResult()->size();
     // SEARCH PART
     searchIcon = new QLabel(searchBar);
     searchIcon->setPixmap(QPixmap(GLOBAL_PATH + "resources/pictures/search.png"));
@@ -58,7 +65,6 @@ qDebug() <<"Size (constr MainWindow) " << _controller->database->getQueryResult(
     searchBarLayout->addWidget(searchIcon);
     searchBarLayout->addWidget(searchText);
     searchBar->setLayout(searchBarLayout);
-qDebug() <<"Size (constr MainWindow) " << _controller->database->getQueryResult()->size();
     // MENU BUTTONS
     buttonsLayout = new QGridLayout(menuButtons);
     globalHistory = new QPushButton(QIcon(GLOBAL_PATH + "resources/pictures/history.png"), "", menuButtons);
@@ -126,7 +132,6 @@ qDebug() <<"Size (constr MainWindow) " << _controller->database->getQueryResult(
     buttonsLayout->addWidget(fullscreen,0,8);
     buttonsLayout->setContentsMargins(0,0,0,0);
     menuButtons->setLayout(buttonsLayout);
-qDebug() <<"Size (constr MainWindow) " << _controller->database->getQueryResult()->size();
     // Adding the left and right frames
     rightPart = new RightPart(mainPart);
     leftPart = new LeftPart(mainPart);
@@ -139,7 +144,6 @@ qDebug() <<"Size (constr MainWindow) " << _controller->database->getQueryResult(
     mainPartLayout->addWidget(rightPart, 0, 1);
     mainPartLayout->setContentsMargins(0,0,0,0);
     mainPart->setLayout(mainPartLayout);
-qDebug() <<"Size (constr MainWindow) " << _controller->database->getQueryResult()->size();
     // Will be used not to spam controller with new search : not more than one request each 250ms
     timerSearch = new QTimer();
     timerSearch->setSingleShot(true);
@@ -151,7 +155,6 @@ qDebug() <<"Size (constr MainWindow) " << _controller->database->getQueryResult(
     timerSplashscreen = new QTimer();
     timerSplashscreen->setSingleShot(true);
     timerSplashscreen->start(2500);
-qDebug() <<"Size (constr MainWindow) " << _controller->database->getQueryResult()->size();
     // ShortCuts
     setShortcut();
 
@@ -171,7 +174,6 @@ qDebug() <<"Size (constr MainWindow) " << _controller->database->getQueryResult(
     VIEW.editLogin = new EditLogin();
     VIEW.stats = new Stats();
     VIEW.admin = new Admin();
-qDebug() <<"Size (constr MainWindow) " << _controller->database->getQueryResult()->size();
     QObject::connect(searchText, SIGNAL(textEdited(const QString &)), this, SLOT(searchChanged(const QString &)));
     QObject::connect(timerSearch, SIGNAL(timeout()), this, SLOT(sendSearch()));
     QObject::connect(timerAtStart, SIGNAL(timeout()), this, SLOT(updateSize()));
@@ -185,13 +187,11 @@ qDebug() <<"Size (constr MainWindow) " << _controller->database->getQueryResult(
     QObject::connect(stats, SIGNAL(clicked()), this, SLOT(launchStats()));
     QObject::connect(admin, SIGNAL(clicked()), this, SLOT(launchAdmin()));
     QObject::connect(fullscreen,SIGNAL(clicked()),this,SLOT(launchFullscreen()));
-qDebug() <<"Size (constr MainWindow) " << _controller->database->getQueryResult()->size();
 
     // DESIGN
     menu->setStyleSheet("background : url("+GLOBAL_PATH+"resources/pictures/menu_background.png);");
     //this->setStyleSheet("background-color: black;");
 
-qDebug() <<"Size (constr MainWindow) " << _controller->database->getQueryResult()->size();
     //tmpLayout->addWidget(VIEW.individualHistory, 0,0);
     //widget->setLayout(tmpLayout);
     //VIEW.individualHistory->show();

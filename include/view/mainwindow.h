@@ -9,6 +9,8 @@
 #include <QTimer>
 #include <QShortcut>
 #include <QVector>
+#include <QPixmap>
+#include <QPicture>
 #include <queue>
 #include "leftpart.h"
 #include "rightpart.h"

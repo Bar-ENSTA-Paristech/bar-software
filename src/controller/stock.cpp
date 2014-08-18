@@ -4,11 +4,9 @@
 
 Stock::Stock(Controller * parent, Database * database, ProductsChoices * viewProductChoices) :
     mep_controller( parent ), mep_database( database), mep_viewProductChoices(viewProductChoices)
-{std::cout << "queryResult size Stock() " << database->getQueryResult()->size() <<std::endl;
+{
     initializeInventory();
-    std::cout << "queryResult size Stock() " << database->getQueryResult()->size() <<std::endl;
     displayStock();
-    std::cout << "queryResult size Stock() " << database->getQueryResult()->size() <<std::endl;
 }
 
 Stock::~Stock()

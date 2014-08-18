@@ -90,10 +90,7 @@ int main(int argc, char *argv[])
     if(css.open(QIODevice::ReadOnly)) {
         application.setStyleSheet(css.readAll());
     }
-    sleep(10);
-    qDebug() <<"Size (main) " << controller.database->getQueryResult()->size();
     MainWindow mainWindow(&controller);
-    qDebug() <<"Size (main) " << controller.database->getQueryResult()->size();
     mainWindow.setController(&controller);
     mainWindow.setSplashscreen(splashWidget);
 

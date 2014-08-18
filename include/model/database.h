@@ -33,6 +33,7 @@ class Database
 {
 public:
     Database();
+    ~Database();
     int openDatabase(); //Cette méthode ne prend pas d'argument car la BDD à ouvrir est unique et fixée
     int executeQuery (Query &query);
     int closeDatabase();
@@ -148,10 +149,13 @@ public:
     void convertToPointDecimal(std::string &str); // Remplace les éventuelles virgules d'un décimal par des points, compréhensible par SQLite
 
     static int callback(void *arg, int argc, char **argv, char **azColName);
-    std::deque<std::string>* getQueryResult(){return queryResult;}
-    void printQueryResult(bool debug=true);
+    std::deque<std::string>* getqueryResult(){return queryResult;}
+    void printqueryResult(bool debug=true);
 private:
     sqlite3* handle; //Pointeur vers la BDD
+    int toto;
+    // Do Not Delete pointer doNotDelete : Otherwise Qt deletes queryResult allocation during QPixMap constructor and the program crash -> conflict between std::deque and QPixmap ?
+    std::deque<std::string>* doNotDelete;
     std::deque<std::string>* queryResult;
 };
 

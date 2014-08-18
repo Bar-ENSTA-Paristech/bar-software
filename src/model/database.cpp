@@ -11,13 +11,19 @@
 // queue correspond à la file des résultats renvoyés par la BDD, si celle-ci n'est pas vide lors de l'execution d'une nouvelle requête,
 //cela signifie que toutes les informations n'ont pas encore été remises au controleur (sécurité à implémenter)
 //
-std::queue<std::string> queue;
+//std::queue<std::string> queue;
 
 
 Database::Database()
 {
+    doNotDelete = new std::deque<std::string> ;
     queryResult = new std::deque<std::string> ;
     std::cout << "queryResult Constructeur " << queryResult <<std::endl;
+}
+
+Database::~Database()
+{
+    delete queryResult;
 }
 
 int Database::openDatabase()
@@ -55,6 +61,8 @@ int Database::openDatabase()
 
 int Database::closeDatabase()
 {
+    if(queryResult->size() != 0)
+        queryResult->clear();
     std::cout<<"Tentative de fermeture de db"<<std::endl;
     int coderesult=sqlite3_close_v2(handle);
 
@@ -70,21 +78,14 @@ int Database::callback(void *arg, int argc, char **argv, char **azColName){
     int i;
     Database* database = (Database*) arg;
     std::cout<<"begin Callback ... ";
-    std::deque<std::string>* queryResultBis = database->getQueryResult();
+    std::deque<std::string>* queryResultBis = database->getqueryResult();
     for(i=0; i<argc; i++)
     {
-        //printf("%s = %s\n", azColName[i], argv[i] ? argv[i] : "NULL");
-        //queue.push(azColName[i]);
         queryResultBis->push_back(argv[i] ? argv[i] : "NULL");
-        //queue.push(argv[i] ? argv[i] : "NULL");
     }
-    //printf("\n");
     if(argc > 0)
         queryResultBis->push_back("\n");
     std::cout<<"Done"<<std::endl;
-    qDebug() << "queryResult Size :" << queryResultBis->size();
-    //queue.push("\n");
-    //*queryResultBis=queue;
     return 0;
 }
 
@@ -94,7 +95,7 @@ int Database::callback(void *arg, int argc, char **argv, char **azColName){
     std::swap( q, empty );
 }*/
 
-void Database::printQueryResult(bool debug)
+void Database::printqueryResult(bool debug)
 {
     qDebug()<<"Starting print of queryResult";
     qDebug()<<"queryResult Adress : " << (void*)queryResult;
@@ -109,19 +110,14 @@ void Database::printQueryResult(bool debug)
 }
 
 int Database::executeQuery(Query &_query)
-{qDebug()<<"TACHATTE ... ";
-    std::cout << "queryResult Exec " << queryResult <<std::endl;
-    qDebug() <<"Size" << queryResult->size();
-    qDebug() <<"Max Size"<< queryResult->max_size();
+{
     if(queryResult->size() != 0)
-    queryResult->clear();
-    qDebug()<<"DONE";
+        queryResult->clear();
     const char* query_string=_query.getQuery();
     bool verbose=_query.getVerbose();
 
     int coderesult;
     char* zErrMsg;
-    std::cout<<"Database adress : "<<this<<std::endl;
     coderesult = sqlite3_exec(handle, query_string, this->callback, this, (char**)&zErrMsg);
 
     if(verbose==true)
