@@ -1315,30 +1315,27 @@ int Database::autoDumpHist()
     int cur_hist_id;
     std::string idstring;
 
-    if (size>=1000)
+    int limitOfHist = 1000;
+    if (size>=limitOfHist)
     {
         for(int i=0;i<size;i++)
         {
-            if(i<1000)
+            if(i<limitOfHist) // keep in history
             {
                 hist.pop();
             }
-            else
+            else if(i == limitOfHist) // getting limit id (before it we delete)
             {
-                if(i==1000)
-                {
-                    hist.pop();
-                    tuple=hist.front();
-                    cur_hist_id=tuple.getHistId();
-                    idstring=std::to_string(cur_hist_id);
-                    toDump.push(tuple);
-                }
-                else
-                {
-                    tuple=hist.front();
-                    this->addHist(tuple,true);
-                    hist.pop();
-                }
+                tuple = hist.front();
+                cur_hist_id = tuple.getHistId();
+                idstring = std::to_string(cur_hist_id);
+                hist.pop();
+            }
+            else // Copying them to archive
+            {
+                tuple=hist.front();
+                this->addHist(tuple,true);
+                hist.pop();
             }
         }
 

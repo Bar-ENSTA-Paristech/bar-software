@@ -615,8 +615,7 @@ void Controller::setCurCustomer(view_customerTuple &tuple)
     float balance = tuple.getCustomerBalance()*1000;
     balance = round(balance);
     balance /= 1000;
-    //if(absolute(balance) < 0.005)
-    //    balance = 0;
+
     curCustomer->setCustomerId((tuple.getCustomerId()));
     curCustomer->setBalance(balance);
     curCustomer->setFirstName(tuple.getCustomerFirstName().QString::toStdString());
