@@ -24,6 +24,8 @@ signals:
 private:
     QGridLayout* layout;
     QPushButton* oldHistory;
+    QLabel* oldHistoryBeginLabel;
+    QLineEdit* oldHistoryBegin;
     QPushButton* oldIndividualHistory;
     QComboBox* oldIndividualCustomer;
     QPushButton* individualGraphButton;

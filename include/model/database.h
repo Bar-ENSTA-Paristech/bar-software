@@ -74,7 +74,7 @@ public:
 
     void editCustCategory(db_categoryTuple tuple); // Fonctionne
 
-    db_histQueue getFullHist(bool old=false);
+    db_histQueue getFullHist(bool old=false, int begin=0);
 
     db_histQueue getProductHist (unsigned id,bool old);
 

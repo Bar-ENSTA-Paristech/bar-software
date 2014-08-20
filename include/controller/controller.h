@@ -88,7 +88,7 @@ public:
     void newClic_Admin();
     void newClic_Category(int id); // 0 for no filter (category TOUS), else id is the category id
     void newGlobal_Hist();
-    void newClic_GlobalHistory_old();
+    void newClic_GlobalHistory_old(int yearBegin);
     void newClic_IndividualHistory_old(int customerId);
     void newClic_IndividualGraph(int customerId);
     std::queue<QString> newCustCategoryList();

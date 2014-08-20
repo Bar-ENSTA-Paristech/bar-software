@@ -1190,7 +1190,7 @@ void Controller::displayProductGraph(int id, bool consumption)
     }
 }
 
-void Controller::newClic_GlobalHistory_old()
+void Controller::newClic_GlobalHistory_old(int yearBegin)
 {
     view->currentPopup = view->globalHistory_old;
     // CALL TO DB TO DEFINE
@@ -1200,7 +1200,7 @@ void Controller::newClic_GlobalHistory_old()
     db_histTuple dbTuple;
     // GO FETCH THE CONTENT OF THE HIST TABLE (ONLY CONTENTS AROUND 1000 ROWS WITH THE AUTODUMP)
     database->openDatabase();
-    dbQueue=database->getFullHist(true);
+    dbQueue=database->getFullHist(true, yearBegin);
     database->closeDatabase();
 
     while (!dbQueue.empty())

@@ -118,6 +118,7 @@ int Database::executeQuery(Query &_query)
 
     int coderesult;
     char* zErrMsg;
+    std::cout << "Executing the following query : " << query_string << std::endl;
     coderesult = sqlite3_exec(handle, query_string, this->callback, this, (char**)&zErrMsg);
 
     if(verbose==true)
@@ -606,17 +607,17 @@ db_productTuple Database::getProductFromId(unsigned id)
     return conso;
 }
 
-db_histQueue Database::getFullHist(bool old)
+db_histQueue Database::getFullHist(bool old, int begin)
 {
     Query query;
 
     db_histTuple *hist(0);
     hist=new db_histTuple;
 
-    unsigned i;
     unsigned j=0;
     db_histQueue result;
     std::vector<std::string> vectorFromQueue;
+    std::string beginCondition = "";
 
     //Utiliser des jointures
     // From client_id -> nom + prénom
@@ -624,22 +625,29 @@ db_histQueue Database::getFullHist(bool old)
     std::string queryString;
     if(old)
     {
-        queryString="SELECT *, notes.nom, notes.prenom,consos.nom";//historique_save.his_id, notes.nom, notes.prenom,consos.nom, historique_save.conso_price, historique_save.date_conso, historique_save.client_id,historique_save.conso_id ";
+        if(begin != 0)
+            beginCondition = " WHERE historique_save.date_conso >= '"+std::to_string(begin)+"-01-01' ";
+        queryString="SELECT historique_save.his_id, notes.nom, notes.prenom,consos.nom, historique_save.conso_price, historique_save.date_conso, historique_save.client_id,historique_save.conso_id ";
+        //historique_save.his_id, notes.nom, notes.prenom,consos.nom, historique_save.conso_price, historique_save.date_conso, historique_save.client_id,historique_save.conso_id ";
         queryString+="FROM historique_save ";
         queryString+="LEFT JOIN consos ";
         queryString+="ON consos.conso_id = historique_save.conso_id ";
         queryString+="LEFT JOIN notes ";
         queryString+="ON notes.client_id=historique_save.client_id ";
+        queryString+= beginCondition;
         queryString+=" ORDER BY historique_save.date_conso DESC ;";
     }
     else
     {
+        if(begin != 0)
+            beginCondition = " WHERE historique.date_conso >= '"+std::to_string(begin)+"-01-01' ";
         queryString="SELECT historique.his_id, notes.nom, notes.prenom,consos.nom, historique.conso_price, historique.date_conso, historique.client_id,historique.conso_id ";
         queryString+="FROM historique ";
         queryString+="LEFT JOIN consos ";
         queryString+="ON consos.conso_id = historique.conso_id ";
         queryString+="LEFT JOIN notes ";
         queryString+="ON notes.client_id=historique.client_id ";
+        queryString+= beginCondition;
         queryString+="ORDER BY historique.date_conso DESC;";
     }
 
@@ -650,7 +658,7 @@ db_histQueue Database::getFullHist(bool old)
     for(unsigned i =0 ; i<queryResult->size() ; i++)
     {
         std::string itemFromQuery = queryResult->at(i);
-        if(itemFromQuery == "\n") // End of line, we store chat we gather
+        if(itemFromQuery == "\n") // End of line, we store what we gather
         {
             float recuperatedPrice;
             unsigned recuperatedId;
@@ -689,7 +697,6 @@ db_histQueue Database::getLastOperations(int limit)
     db_histTuple *hist(0);
     hist=new db_histTuple;
 
-    unsigned i;
     unsigned j=0;
     db_histQueue result;
     std::vector<std::string> vectorFromQueue;
@@ -750,7 +757,6 @@ db_histQueue Database::getCustomerHist(unsigned id, bool old)
     db_histTuple *hist(0);
     hist=new db_histTuple;
 
-    unsigned i;
     unsigned j=0;
     db_histQueue result;
 
@@ -829,7 +835,6 @@ db_histQueue Database::getProductHist(unsigned id,bool old)
     db_histTuple *hist(0);
     hist=new db_histTuple;
 
-    unsigned i;
     unsigned j=0;
     db_histQueue result;
 
@@ -1554,7 +1559,6 @@ db_finop_queue Database::getBDEHist(int year)
     Query query;
     db_finop_tuple *hist(0);
     hist=new db_finop_tuple;
-    unsigned i;
     unsigned j=0;
     db_finop_queue result;
 
@@ -1616,7 +1620,6 @@ db_finop_queue Database::getCashierHist()
     db_finop_tuple *hist(0);
     hist=new db_finop_tuple;
 
-    unsigned i;
     unsigned j=0;
     db_finop_queue result;
     std::vector<std::string> vectorFromQueue;
@@ -1842,7 +1845,6 @@ db_TVAcategoryQueue Database::getTvaRates()
     db_TVAcategoryTuple *cat(0);
     cat=new db_TVAcategoryTuple;
 
-    unsigned i;
     unsigned j=0;
     std::vector<std::string> vectorFromQueue;
 
@@ -1903,7 +1905,6 @@ db_comQueue Database::getCommandsOfYear(int _year)
     Query query;
     db_comTuple *cat(0);
     cat=new db_comTuple;
-    unsigned i;
     unsigned j=0;
 
     std::vector<std::string> vectorFromQueue;

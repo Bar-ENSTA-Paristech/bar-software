@@ -16,6 +16,8 @@ Admin::Admin(QWidget *parent) :
     oldHistory->setIconSize(QSize(32,32));
     oldHistory->setStyleSheet("background: none;");
     oldHistory->setToolTip("Voir le vieil historique");
+    oldHistoryBeginLabel = new QLabel("Afficher depuis année ", this);
+    oldHistoryBegin = new QLineEdit(this);
     oldIndividualHistory = new QPushButton(QIcon(GLOBAL_PATH + "resources/pictures/history_individual_old.png"), "", this);
     oldIndividualHistory->setFlat(true);
     oldIndividualHistory->setCursor(Qt::PointingHandCursor);
@@ -49,7 +51,9 @@ Admin::Admin(QWidget *parent) :
     validateButton = new QPushButton("Valider", this);
     cancelButton = new QPushButton("Annuler", this);
 
-    layout->addWidget(oldHistory, 0,0);
+    layout->addWidget(oldHistoryBeginLabel, 0,0);
+    layout->addWidget(oldHistoryBegin, 0,1);
+    layout->addWidget(oldHistory, 0,2);
     layout->addWidget(oldIndividualCustomer, 1,0);
     layout->addWidget(oldIndividualHistory, 1,1);
     layout->addWidget(individualGraphButton, 1,2);
@@ -148,7 +152,17 @@ void Admin::validate()
 
 void Admin::clickOnGlobalHistory()
 {
-    controller->newClic_GlobalHistory_old();
+    int year;
+    QString yearText = oldHistoryBegin->text();
+    if (yearText == "")
+        year = 0;
+    else
+    {
+        if (!isUInteger(yearText))
+            return;
+        year = yearText.toInt();
+    }
+    controller->newClic_GlobalHistory_old(year);
 }
 
 void Admin::clickOnIndividualHistory()
