@@ -17,7 +17,7 @@ public:
     explicit ProductsChoices(QWidget *parent = 0);
 
     // receive product choices from controller
-    void setProductsChoices(view_productQueue queue);
+    void setProductsChoices(view_productQueue queue, bool printVolume=true);
     void setFocus();
     void addFocusedProduct();
 

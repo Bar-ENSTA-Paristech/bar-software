@@ -113,12 +113,12 @@ public:
 
     void displayProductGraph(int id, bool consumption);
     void setCurrentLoginRequest(LoginObjects _currentLoginRequest){currentLoginRequest = _currentLoginRequest;}
-    db_categoryQueue getConsoTypes(){return consoTypes;}
+    db_categoryVector getConsoTypes(){return consoTypes;}
     db_TVAcategoryQueue getTvaRates(){db_TVAcategoryQueue queue; database->openDatabase(); queue=database->getTvaRates(); database->closeDatabase(); return queue;}
     db_categoryQueue getCustomerCategories(){
         db_categoryQueue queue; database->openDatabase(); queue=database->getCustCategories(); database->closeDatabase(); return queue;}
-    db_categoryQueue getProductsCategories(){
-        db_categoryQueue queue; database->openDatabase(); queue=database->getProdCategories(); database->closeDatabase(); return queue;}
+    db_categoryVector getProductsCategories(){
+        db_categoryVector queue; database->openDatabase(); queue=database->getProdCategories(); database->closeDatabase(); return queue;}
 
     void setDb(sqlite3*);
     sqlite3* getDb();
@@ -157,7 +157,7 @@ public:
         /* Model objects */
     Database* database;
     Plotting* plotting;
-    db_categoryQueue consoTypes;
+    db_categoryVector consoTypes;
 
 
 

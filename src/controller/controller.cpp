@@ -226,8 +226,9 @@ void Controller::newClic_ValidateCart(bool isCash)
 
         qDebug()<<"Modification des stocks";
         productToBeEdited = db_productInfo;
-
-        if (productToBeEdited.getProductId()==productToBeEdited.getProductLinkStock()) // Le stock à baisser est bien celui de ce produit
+        productToBeEdited.setProductStock(productToBeEdited.getProductStock()-currentCartController[i].second*productToBeEdited.getProductVolume());
+        database->editProductStock(productToBeEdited);
+        /*if (productToBeEdited.getProductId()==productToBeEdited.getProductLinkStock()) // Le stock à baisser est bien celui de ce produit
         {
             productToBeEdited.setProductStock(productToBeEdited.getProductStock()-currentCartController[i].second*productToBeEdited.getProductVolume());
             database->editProduct(productToBeEdited);
@@ -239,7 +240,7 @@ void Controller::newClic_ValidateCart(bool isCash)
             database->editProduct(productToBeEdited_new);
 
 
-        }
+        }*/
     }
 
     editedCustomer = database->getCustomerFromId(curCustomer->getCustomerId()).transformIntoCustomerView();
@@ -298,12 +299,18 @@ void Controller::newClic_CancelCart()
 
 void Controller::newClic_ProductTypes(unsigned view_productTypeId)
 {
+    bool printVolume;
+    consoTypes = getProductsCategories();
+    std::string name = consoTypes[view_productTypeId-1].getCategoryName();
+    if(name == "Pression" || name == "pression")
+        printVolume = true;
+    else
+        printVolume = false;
     qDebug() << "Supposed to send only product of categorie" << view_productTypeId;
-
     view_productQueue viewQueue = getProductsOfCategorie(view_productTypeId);
 
     // Sent result to view
-    view->productChoices->setProductsChoices(viewQueue);
+    view->productChoices->setProductsChoices(viewQueue, printVolume);
     currentConsoTypeIndex = view_productTypeId;
 
     //Emptying the view queue
@@ -442,10 +449,7 @@ bool Controller::view_isLoginCorrect(QString login, QString passwd, LoginType lo
     isLoginIncorrect= _truepass.compare(hashedPasswd);
 
     if(isLoginIncorrect)
-    {
         return false;
-    }
-
     else
     {
         switch(currentLoginRequest) {
@@ -465,8 +469,6 @@ bool Controller::view_isLoginCorrect(QString login, QString passwd, LoginType lo
             }
             //categories.push_back("BAR");categories.push_back("2014");categories.push_back("2015");
             view->editCustomer->launchEditCustomer(*view_curCustomer, categories);
-
-
             break;
         case DELETE_CUSTOMER :
             view->currentPopup = view->deleteCustomer;
@@ -489,7 +491,6 @@ bool Controller::view_isLoginCorrect(QString login, QString passwd, LoginType lo
                 dbQueue.pop();
             }
             view->newCustomer->launchNewCustomer(categories);
-
             break;
         case ADD_STOCK :
             view->addStock->launchAddStock();
@@ -853,8 +854,8 @@ void Controller::receiveNewStocks(view_productQueue& products, float totalTVA, f
 
         db_tuple = database->getProductFromId(view_tuple.getProductId());
         db_tuple.setProductStock(db_tuple.getProductStock() + view_tuple.getProductStock());
-        database->editProduct(db_tuple);
-        stocks += " - " + db_tuple.getProductName() + " " + std::to_string(db_tuple.getProductVolume())+ "cL"+ " : "+std::to_string(view_tuple.getProductStock());
+        database->editProductStock(db_tuple);
+        stocks += " - " + db_tuple.getProductName() + " : "+std::to_string(view_tuple.getProductStock());
 
         db_com.push(db_com_tuple);
     }
@@ -1006,7 +1007,7 @@ void Controller::newClic_Stats()
     db_customerTuple custTuple;
     std::string emptyString;
     database->openDatabase();
-    db_categoryQueue prodCatQueue = database->getProdCategories();
+    db_categoryVector prodCatQueue = database->getProdCategories();
     database->closeDatabase();
     int NUMBER_OF_CATEGORIES = prodCatQueue.size();
     view_productQueue queues[NUMBER_OF_CATEGORIES];
@@ -1117,7 +1118,7 @@ void Controller::receiveAdminInfos(AdminTuple tuple)
         database->editTvaRate(tuple.tvaTuple);
         database->closeDatabase();
         std::string log;
-        log = currentLoggedCustomer + " -> changed rate of tva category "+std::to_string(tuple.tvaTuple.getId()+1)+"(maintenant : ";
+        log = currentLoggedCustomer + " -> changed rate of tva category "+std::to_string(tuple.tvaTuple.getId())+"(now : ";
         log += std::to_string(tuple.tvaTuple.getRate()) + "%)";
         appendLog(log);
     }

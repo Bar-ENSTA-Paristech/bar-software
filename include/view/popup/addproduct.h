@@ -39,10 +39,13 @@ private:
     QPushButton* validateButton;
     QPushButton* cancelButton;
 
+    db_categoryVector catVector;
+
 public slots:
     void validate();
     void cancel();
     void reset();
+    void categorySelected(int index);
     
 };
 

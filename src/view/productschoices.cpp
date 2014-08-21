@@ -20,7 +20,7 @@ ProductsChoices::ProductsChoices(QWidget *parent) :
     QObject::connect(table, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(lineClicked(QModelIndex)));
 }
 
-void ProductsChoices::setProductsChoices(view_productQueue queue)
+void ProductsChoices::setProductsChoices(view_productQueue queue, bool printVolume)
 {
     //déconnexion du modèle et de la vue (optimisation)
     table->setModel(NULL);
@@ -41,7 +41,10 @@ void ProductsChoices::setProductsChoices(view_productQueue queue)
             }
         }
         model->item(i,0)->setText(tuple.getProductName());
-        model->item(i,1)->setText(QString::number(tuple.getProductVolume()));    // Confusion between the stock (given) and the volume (expected)
+        if(printVolume)
+            model->item(i,1)->setText(QString::number(tuple.getProductVolume()));
+        else
+            model->item(i,1)->setText("-");
         model->item(i,2)->setText(QString::number(tuple.getProductPrice()));
         model->item(i,3)->setText(QString::number(tuple.getProductId()));
         queue.pop();

@@ -90,6 +90,7 @@ void Admin::launchAdmin(AdminTuple& tuple)
 {
     //negativeAllowed->setChecked(tuple.isNegativeAllowed);
     db_categoryQueue catQueue;
+    db_categoryVector catVector;
     db_categoryTuple catTuple;
     db_TVAcategoryQueue tvaQueue;
     db_TVAcategoryTuple tvaTuple;
@@ -109,12 +110,11 @@ void Admin::launchAdmin(AdminTuple& tuple)
         oldCustCategoryName->addItem(QString::fromStdString(catTuple.getCategoryName()));
     }
 
-    catQueue = controller->getProductsCategories();
-    n = catQueue.size();
+    catVector = controller->getProductsCategories();
+    n = catVector.size();
     for(int i =0 ; i < n ; i++)
     {
-        catTuple = catQueue.front();
-        catQueue.pop();
+        catTuple = catVector[i];
         oldProdCategoryName->addItem(QString::fromStdString(catTuple.getCategoryName()));
     }
     n = tvaQueue.size();

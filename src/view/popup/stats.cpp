@@ -156,25 +156,25 @@ void Stats::launchStats(view_statsTuple& stats, view_productQueue& category0, vi
     numberOfCustomers->setText(QString::number(stats.numberOfCustomers));
     numberOfProducts->setText(QString::number(stats.numberOfProducts));
 
-    db_categoryQueue catQueue = controller->getProductsCategories();
+    db_categoryVector catVector = controller->getProductsCategories();
     db_categoryTuple catTuple;
-    int n = catQueue.size();
+    int n = catVector.size();
     if(n < 6)
     {
         error->showMessage("Nombre de catégorie de produit insuffisant, rétablissez le bon nombre de catégorie, ou remaniez la classe Stats ...");
         return;
     }
-    catTuple = catQueue.front();catQueue.pop();
+    catTuple = catVector[0];
     stocks0Label->setText(stocks0Label->text() + QString::fromStdString(catTuple.getCategoryName()) + " : ");
-    catTuple = catQueue.front();catQueue.pop();
+    catTuple = catVector[1];
     stocks1Label->setText(stocks1Label->text() + QString::fromStdString(catTuple.getCategoryName()) + " : ");
-    catTuple = catQueue.front();catQueue.pop();
+    catTuple = catVector[2];
     stocks2Label->setText(stocks2Label->text() + QString::fromStdString(catTuple.getCategoryName()) + " : ");
-    catTuple = catQueue.front();catQueue.pop();
+    catTuple = catVector[3];
     stocks3Label->setText(stocks3Label->text() + QString::fromStdString(catTuple.getCategoryName()) + " : ");
-    catTuple = catQueue.front();catQueue.pop();
+    catTuple = catVector[4];
     stocks4Label->setText(stocks4Label->text() + QString::fromStdString(catTuple.getCategoryName()) + " : ");
-    catTuple = catQueue.front();catQueue.pop();
+    catTuple = catVector[5];
     stocks5Label->setText(stocks5Label->text() + QString::fromStdString(catTuple.getCategoryName()) + " : ");
 
     category0Stocks->setStocks(category0);

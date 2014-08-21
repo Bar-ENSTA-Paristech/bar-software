@@ -47,24 +47,24 @@ AddProduct::AddProduct(QWidget *parent) :
 
     QObject::connect(validateButton, SIGNAL(clicked()), this, SLOT(validate()));
     QObject::connect(cancelButton, SIGNAL(clicked()), this, SLOT(cancel()));
+    QObject::connect(categorie, SIGNAL(currentIndexChanged(int)), this, SLOT(categorySelected(int)));
 
     this->setLayout(layout);
 }
 
 void AddProduct::launchAddProduct()
 {
-    db_categoryQueue catQueue = controller->getProductsCategories();
+    catVector = controller->getProductsCategories();
     db_categoryTuple catTuple;
     //Appel au controlleur pour avoir les taux de tva
     db_TVAcategoryQueue tvaQueue = controller->getTvaRates();
     db_TVAcategoryTuple tvaTuple;
     categorie->clear();
     tva->clear();
-    int n = catQueue.size();
+    int n = catVector.size();
     for(int i = 0 ; i < n ; i++)
     {
-        catTuple = catQueue.front();
-        catQueue.pop();
+        catTuple = catVector[i];
         categorie->addItem(QString::fromStdString(catTuple.getCategoryName()));
     }
     n = tvaQueue.size();
@@ -117,4 +117,17 @@ void AddProduct::reset()
 void AddProduct::setController(Controller* _controller)
 {
     controller = _controller;
+    catVector = controller->getProductsCategories();
+}
+
+void AddProduct::categorySelected(int index)
+{
+    bool isPression = QString::fromStdString(catVector[index].getCategoryName()).toLower()== "pression";
+    if(isPression)
+        volume->setReadOnly(false);
+    else
+    {
+        volume->setText("1");
+        volume->setReadOnly(true);
+    }
 }

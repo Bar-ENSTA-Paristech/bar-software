@@ -30,7 +30,6 @@ private:
     QLabel* categorieLabel;
     QLabel* stockLabel;
     QLabel* tvaLabel;
-    QLabel* linkstockLabel;
     QLineEdit* newName;
     QLineEdit* volume;
     QLineEdit* price;
@@ -38,17 +37,16 @@ private:
     QLineEdit* stock;
     QComboBox* categorie;
     QComboBox* tva;
-    QComboBox* linkstock;
     QGridLayout* layout;
     QPushButton* validateButton;
     QPushButton* cancelButton;
     QCheckBox* deleteProduct;
 
     unsigned ID;
-    unsigned linkstockID;
     view_productTuple tmpProduct;
-    view_productTuple tmpLinkProduct;
     std::vector<view_productTuple> tmpProductVector;
+    db_categoryVector catPrdVector;
+    bool isPression;
 
 public slots:
     void validate();
@@ -56,8 +54,6 @@ public slots:
     void reset();
     void categorieSelected(int index);
     void productSelected(int index);
-    void LinkStockSelected (int index);
-
     
 };
 

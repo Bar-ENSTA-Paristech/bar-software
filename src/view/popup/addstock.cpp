@@ -56,13 +56,12 @@ AddStock::AddStock(QWidget *parent) :
 void AddStock::launchAddStock()
 {
     productCatQueue.clear();
-    db_categoryQueue _productCatQueue = controller->getProductsCategories();
+    db_categoryVector _productCatVector = controller->getProductsCategories();
     db_categoryTuple catTuple;
-    int n = _productCatQueue.size();
+    int n = _productCatVector.size();
     for(int i = 0 ; i < n ; i++)
     {
-        catTuple = _productCatQueue.front();
-        _productCatQueue.pop();
+        catTuple = _productCatVector[i];
         productCatQueue.push_back(catTuple);
     }
     this->show();

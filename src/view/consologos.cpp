@@ -96,13 +96,12 @@ void ConsoLogos::newCategorieToController(int id)
 void ConsoLogos::setController(Controller *_controller)
 {
     controller = _controller;
-    db_categoryQueue catQueue = controller->getProductsCategories();
+    db_categoryVector catVector = controller->getProductsCategories();
     db_categoryTuple catTuple;
-    int n = catQueue.size();
+    int n = catVector.size();
     for (int i = 0 ; i < n ; i ++)
     {
-        catTuple = catQueue.front();
-        catQueue.pop();
+        catTuple = catVector[i];
         logosLabels[i].setText(QString::fromStdString(catTuple.getCategoryName()));
     }
 

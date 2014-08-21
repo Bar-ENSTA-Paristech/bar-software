@@ -265,7 +265,7 @@ void view_productTuple::setProductId(unsigned _id)
 
 void view_productTuple::setProductName(QString _name)
 {
-    name=_name;
+    name=_name.replace(QRegularExpression(" *(.*) *"), "\\1");
 }
 
 void view_productTuple::setProductPrice(float _price)
@@ -339,7 +339,6 @@ db_productTuple view_productTuple::transformIntoProductDb()
     result.setProductCategory(category);
     result.setProductVolume(volume);
     result.setProductTVAcat(TVAcat);
-    result.setProductLinkStock(linkStock);
 
     return result;
 }
