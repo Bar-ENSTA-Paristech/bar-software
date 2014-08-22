@@ -61,7 +61,7 @@ public:
     void editCustCategory(db_categoryTuple tuple); // Fonctionne
     db_histQueue getFullHist(bool old=false, int begin=0);
     db_histQueue getProductHist (unsigned id,bool old);
-    db_histQueue getCustomerHist(unsigned id,bool old);//Renvoie l'historique d'un client en ayant recu son id
+    db_histQueue getCustomerHist(unsigned id,bool old, db_histQueue* queueToComplete=NULL);//Renvoie l'historique d'un client en ayant recu son id
     //OK (Fonctionne - a tester plus en profondeur)
     std::string getPassword (std::string &login);//Retourne le password correspondant au login recherché
     void dumpCustomerToDelete(db_customerTuple tuple);//

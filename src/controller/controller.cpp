@@ -560,7 +560,8 @@ void Controller::newClic_IndividualHistory()
         db_histTuple dbCustomerHistTuple;
 
         database->openDatabase();
-        dbCustomerHist = database->getCustomerHist(id,false);
+        dbCustomerHist = database->getCustomerHist(id,false,NULL);
+        database->getCustomerHist(id, true, &dbCustomerHist);
 
         if ( !dbCustomerHist.empty() ){
 

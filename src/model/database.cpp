@@ -743,7 +743,7 @@ db_histQueue Database::getLastOperations(int limit)
 }
 // hist.conso_price n'est pas dans la db actuellement, il faudra faire avec conso.price
 //en réalité, on utilisera conso.price pour hist_older=avant la maj
-db_histQueue Database::getCustomerHist(unsigned id, bool old)
+db_histQueue Database::getCustomerHist(unsigned id, bool old, db_histQueue *queueToComplete)
 {
     Query query;
     std::string id_String = std::to_string(id);
@@ -775,7 +775,7 @@ db_histQueue Database::getCustomerHist(unsigned id, bool old)
     }
     else
     {
-        std::string queryString="SELECT historique_save.his_id, notes.nom, notes.prenom,consos.nom, historique.conso_price, historique_save.date_conso ";
+        std::string queryString="SELECT historique_save.his_id, notes.nom, notes.prenom,consos.nom, historique_save.conso_price, historique_save.date_conso ";
         queryString+="FROM historique_save ";
         queryString+="LEFT JOIN consos ";
         queryString+="ON consos.conso_id = historique_save.conso_id ";
@@ -809,8 +809,10 @@ db_histQueue Database::getCustomerHist(unsigned id, bool old)
             hist->setHistDate(vectorFromQueue[5]);
             hist->setHistPrice(recuperatedPrice);
             hist->setHistOperation(vectorFromQueue[3]);
-
-            result.push(*hist);
+            if(queueToComplete != NULL)
+                queueToComplete->push(*hist);
+            else
+                result.push(*hist);
             j++;
             vectorFromQueue.clear();
         }
