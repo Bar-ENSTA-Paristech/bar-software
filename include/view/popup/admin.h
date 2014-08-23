@@ -49,7 +49,7 @@ private:
     QLineEdit* tvaPdf;
     QPushButton* tvaPdfButton;
 
-    
+    QList<unsigned int> oldCustomersIds;
 public slots:
     void validate();
     void clickOnGlobalHistory();

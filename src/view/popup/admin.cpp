@@ -94,9 +94,12 @@ void Admin::launchAdmin(AdminTuple& tuple)
     db_categoryTuple catTuple;
     db_TVAcategoryQueue tvaQueue;
     db_TVAcategoryTuple tvaTuple;
+    view_customerTuple custTuple;
     oldCustCategoryName->clear();
     oldProdCategoryName->clear();
     tvaEdit->clear();
+    oldCustomersIds.clear();
+    oldIndividualCustomer->clear();
     cashTransfer->setText("0");
 
     catQueue = controller->getCustomerCategories();
@@ -123,6 +126,14 @@ void Admin::launchAdmin(AdminTuple& tuple)
         tvaTuple = tvaQueue.front();
         tvaQueue.pop();
         tvaEdit->addItem(QString::fromStdString(tvaTuple.getInfo()));
+    }
+    n = tuple.oldCustomers.size();
+    for(int i = 0 ; i < n ; i++)
+    {
+        custTuple = tuple.oldCustomers.front();
+        tuple.oldCustomers.pop();
+        oldIndividualCustomer->addItem(custTuple.getCustomerName()+"_"+custTuple.getCustomerFirstName());
+        oldCustomersIds.append(custTuple.getCustomerId());
     }
 
     this->show();
@@ -167,8 +178,8 @@ void Admin::clickOnGlobalHistory()
 
 void Admin::clickOnIndividualHistory()
 {
-    // id to define
-    int id=0;
+    int index = oldIndividualCustomer->currentIndex();
+    int id = oldCustomersIds[index];
     controller->newClic_IndividualHistory_old(id);
 }
 

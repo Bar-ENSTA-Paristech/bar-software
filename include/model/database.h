@@ -47,7 +47,7 @@ public:
     //OK (Fonctionne - a tester plus en profondeur)
     db_customerQueue getCustomerFromCategory(int id); // Méthode renvoyant les clients d'une certaine catégorie
     db_productQueue getProductsFromCategory(int cat);//Méthode recevant un unsigned correspondant à une catégorie de conso et renvoie toutes les consos correspondates
-    db_customerQueue getOldCustomers(){db_customerQueue a; return a;} // Methode renvoyant les clients ayant été supprimés
+    db_customerQueue getOldCustomers(); // Methode renvoyant les clients ayant été supprimés
     // ########## A IMPLEMENTER ########
  //OK (Fonctionne - a tester plus en profondeur
     db_productQueue getAllProducts ();//
@@ -62,9 +62,10 @@ public:
     db_histQueue getFullHist(bool old=false, int begin=0);
     db_histQueue getProductHist (unsigned id,bool old);
     db_histQueue getCustomerHist(unsigned id,bool old, db_histQueue* queueToComplete=NULL);//Renvoie l'historique d'un client en ayant recu son id
+    db_histQueue getDeletedCustomerHist(unsigned id);//Renvoie l'historique d'un client supprimé en ayant recu son id
     //OK (Fonctionne - a tester plus en profondeur)
     std::string getPassword (std::string &login);//Retourne le password correspondant au login recherché
-    void dumpCustomerToDelete(db_customerTuple tuple);//
+    void dumpCustomerToDelete(db_customerTuple tuple);// DEPRECATED use only deleteCustomerAccount
     void dumpProductToDelete(db_productTuple tuple); //Cas d'un stock non nul a gérer dans le controlleur
     void addHistCashier(db_finop_tuple tuple); //Paiement par Cash/Chèque
     void transferToBDE(db_finop_tuple tuple); // Paiement par CB ou Vidage de caisse//Paiement des factures

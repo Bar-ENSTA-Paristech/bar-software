@@ -173,7 +173,9 @@ int Database::initializeDatabaseForm()
     coderesult+=executeQuery(test_q);
     test_q.setQuery("CREATE TABLE IF NOT EXISTS `historique_deleted_account` (`his_id` INTEGER PRIMARY KEY,`client_id` int(11) NOT NULL,`conso_id` int(11) NOT NULL,`conso_price` float DEFAULT NULL,`date_conso` timestamp NOT NULL DEFAULT datetime('now', 'localtime'));");
     coderesult+=executeQuery(test_q);
-    test_q.setQuery("CREATE TABLE IF NOT EXISTS `notes` (`client_id` INTEGER PRIMARY KEY,`nom` varchar(25) NOT NULL,`prenom` varchar(25) NOT NULL,`login` varchar(25) NOT NULL,`type` int(11) NOT NULL,`compte` float NOT NULL,`vip` tinyint(1)) ;");
+    test_q.setQuery("CREATE TABLE IF NOT EXISTS `notes` (`client_id` INTEGER PRIMARY KEY,`nom` varchar(25) NOT NULL,`prenom` varchar(25) NOT NULL,`login` varchar(25) NOT NULL,`type` int(11) NOT NULL,`compte` float NOT NULL) ;");
+    coderesult+=executeQuery(test_q);
+    test_q.setQuery("CREATE TABLE IF NOT EXISTS `notes_deleted_account` (`client_id` INTEGER PRIMARY KEY,`nom` varchar(25) NOT NULL,`prenom` varchar(25) NOT NULL,`login` varchar(25) NOT NULL,`type` int(11) NOT NULL,`compte` float NOT NULL) ;");
     coderesult+=executeQuery(test_q);
     test_q.setQuery("CREATE TABLE IF NOT EXISTS `prix_consos` (`id_conso` INTEGER PRIMARY KEY,`prix_precedent` float DEFAULT NULL,`date` timestamp NOT NULL DEFAULT datetime('now', 'localtime'));");
     coderesult+=executeQuery(test_q);
@@ -434,7 +436,6 @@ db_customerQueue Database::getCustomerFromCategory(int id)
 
     std::string queryString="";
     Query query; //Initialisation de la requête
-    unsigned i;
     unsigned j=0;
     db_customerQueue result; //On initialise la queue de tuple qui sera retournée à la fin au controlleur
 
@@ -446,6 +447,62 @@ db_customerQueue Database::getCustomerFromCategory(int id)
     queryString+=" SELECT * FROM notes WHERE type='";
     queryString+=idstring;
     queryString+="' ORDER BY nom ASC;";
+
+    //Implémentation de la query et execution de celle ci
+    query.setQuery(queryString);
+    query.setVerbose(1);
+    executeQuery(query);
+
+    /*Il faut désormais caster le queue <string> dans un queue<tuple< // >> que l'on va return
+    Pour cela on utilise un vector de string */
+
+    std::vector<std::string> vectorFromQueue;
+
+    for(unsigned i =0 ; i<queryResult->size() ; i++)
+    {
+        std::string itemFromQuery = queryResult->at(i);
+        if(itemFromQuery == "\n") // End of line, we store chat we gather
+        {
+            //On transforme les std::string en float et unsigned pour les champs Balance et Id
+            float recuperatedBalance;
+            int recuperatedId;
+            int recuperatedCategory;
+
+            std::istringstream(vectorFromQueue[4]) >> recuperatedCategory;
+            std::istringstream(vectorFromQueue[5]) >> recuperatedBalance;
+            std::istringstream(vectorFromQueue[0]) >> recuperatedId;
+
+            //*customer = std::make_tuple (vectorFromQueue[1],vectorFromQueue[2],vectorFromQueue[4],recuperatedBalance,recuperatedId,vectorFromQueue[3]);
+            customer.setCustomerId(recuperatedId);
+            customer.setCustomerName(vectorFromQueue[1]);
+            customer.setCustomerFirstname(vectorFromQueue[2]);
+            customer.setCustomerLogin(vectorFromQueue[3]);
+            customer.setCustomerCategory(recuperatedCategory);
+            customer.setCustomerBalance(recuperatedBalance);
+
+            result.push(customer);
+            j++; // L'int j correspond à l'index dans la queue , il est incrémenté a chaque boucle sur une personne
+            vectorFromQueue.clear(); // Ne pas oublier de vider le vecteur à chaque individu
+        }
+        else
+            vectorFromQueue.push_back(itemFromQuery);
+    }
+    return result;
+}
+
+db_customerQueue Database::getOldCustomers()
+{
+    std::string queryString="";
+    Query query; //Initialisation de la requête
+    unsigned j=0;
+    db_customerQueue result; //On initialise la queue de tuple qui sera retournée à la fin au controlleur
+
+    //On initialise aussi le tuple correspondant
+    db_customerTuple customer;
+
+    //Formation du string de query adapté
+
+    queryString+="SELECT * FROM notes_deleted_account;";
 
     //Implémentation de la query et execution de celle ci
     query.setQuery(queryString);
@@ -823,6 +880,62 @@ db_histQueue Database::getCustomerHist(unsigned id, bool old, db_histQueue *queu
     return result;
 }
 
+db_histQueue Database::getDeletedCustomerHist(unsigned id)
+{
+    Query query;
+    std::string id_String = std::to_string(id);
+
+    db_histTuple *hist(0);
+    hist=new db_histTuple;
+
+    unsigned j=0;
+    db_histQueue result;
+
+    //Utiliser des jointures
+    // From client_id -> nom + prénom
+    // From conso_id -> conso + prix
+    std::string queryString="SELECT historique_deleted_account.his_id, notes_deleted_account.nom, notes_deleted_account.prenom,consos.nom, historique_deleted_account.conso_price, historique_deleted_account.date_conso ";
+    queryString+="FROM historique_deleted_account ";
+    queryString+="LEFT JOIN consos ";
+    queryString+="ON consos.conso_id = historique_deleted_account.conso_id ";
+    queryString+="LEFT JOIN notes_deleted_account ";
+    queryString+="ON notes_deleted_account.client_id=historique_deleted_account.client_id ";
+    queryString+="WHERE notes_deleted_account.client_id=";
+    queryString+=id_String;
+    queryString+=" ORDER BY historique_deleted_account.date_conso DESC ;";
+
+    query.setQuery(queryString);
+    query.setVerbose(1);
+    executeQuery(query);
+    std::vector<std::string> vectorFromQueue;
+    for(unsigned i =0 ; i<queryResult->size() ; i++)
+    {
+        std::string itemFromQuery = queryResult->at(i);
+        if(itemFromQuery == "\n") // End of line, we store chat we gather
+        {
+            float recuperatedPrice;
+            unsigned recuperatedId;
+
+            std::istringstream(vectorFromQueue[4]) >> recuperatedPrice;
+            std::istringstream(vectorFromQueue[0]) >> recuperatedId;
+
+            hist->setHistId(recuperatedId);
+            hist->setHistName(vectorFromQueue[1]);
+            hist->setHistFirstName(vectorFromQueue[2]);
+            hist->setHistDate(vectorFromQueue[5]);
+            hist->setHistPrice(recuperatedPrice);
+            hist->setHistOperation(vectorFromQueue[3]);
+            result.push(*hist);
+            j++;
+            vectorFromQueue.clear();
+        }
+        else
+            vectorFromQueue.push_back(itemFromQuery);
+    }
+    delete hist;
+    return result;
+}
+
 db_histQueue Database::getProductHist(unsigned id,bool old)
 {
     Query query;
@@ -1060,10 +1173,32 @@ int Database::deleteCustomerAccount(int id)
     std::string queryString="";
     std::string idString = std::to_string(id);
 
-    queryString+="DELETE FROM notes WHERE client_id=";
-    queryString+=idString;
-    queryString+=";";
+    queryString="INSERT INTO historique_deleted_account (his_id, client_id, conso_id, conso_price, date_conso) SELECT his_id, client_id, conso_id, conso_price, date_conso FROM historique WHERE client_id="+idString+" ORDER BY date_conso ASC;";
+    query.setQuery(queryString);
+    query.setVerbose(1);
+    code=executeQuery(query);
 
+    queryString="INSERT INTO historique_deleted_account (his_id, client_id, conso_price, conso_id, date_conso) SELECT his_id, client_id, conso_price, conso_id, date_conso FROM historique_save WHERE client_id="+idString+" ORDER BY date_conso ASC;";
+    query.setQuery(queryString);
+    query.setVerbose(1);
+    code+=executeQuery(query);
+
+    queryString="INSERT INTO notes_deleted_account SELECT * FROM notes WHERE client_id="+idString+";";
+    query.setQuery(queryString);
+    query.setVerbose(1);
+    code+=executeQuery(query);
+
+    queryString="DELETE FROM historique WHERE client_id="+idString+";";
+    query.setQuery(queryString);
+    query.setVerbose(1);
+    code=executeQuery(query);
+
+    queryString="DELETE FROM historique_save WHERE client_id="+idString+";";
+    query.setQuery(queryString);
+    query.setVerbose(1);
+    code=executeQuery(query);
+
+    queryString="DELETE FROM notes WHERE client_id="+idString+";";
     query.setQuery(queryString);
     query.setVerbose(1);
     code=executeQuery(query);

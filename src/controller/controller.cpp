@@ -1195,7 +1195,6 @@ void Controller::displayProductGraph(int id, bool consumption)
 void Controller::newClic_GlobalHistory_old(int yearBegin)
 {
     view->currentPopup = view->globalHistory_old;
-    // CALL TO DB TO DEFINE
     view_histQueue viewQueue;
     db_histQueue dbQueue;
     view_histTuple viewTuple;
@@ -1219,7 +1218,19 @@ void Controller::newClic_GlobalHistory_old(int yearBegin)
 
 void Controller::newClic_IndividualHistory_old(int customerId)
 {
-    // To define
+    database->openDatabase();
+    db_histQueue histQueue = database->getDeletedCustomerHist((unsigned)customerId);
+    database->closeDatabase();
+    view_histQueue viewHistQueue;
+    db_histTuple tuple;
+    int n = histQueue.size();
+    for(int i = 0 ; i < n ; i++)
+    {
+        tuple = histQueue.front();
+        histQueue.pop();
+        viewHistQueue.push(tuple.transformIntoHistView());
+    }
+    view->individualHistory_old->launchIndividualHistory(viewHistQueue);
 }
 
 void Controller::newClic_IndividualGraph(int customerId)
