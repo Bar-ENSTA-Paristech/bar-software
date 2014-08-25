@@ -10,8 +10,9 @@
 #include <QFile>
 #include <QDir>
 #include <QTimer>
-#include <QThread>
 #include <cmath>
+#include <thread>
+
 
 #include <memory>
 
@@ -136,6 +137,8 @@ public:
 
 public slots:
     bool saveBackup();
+    void tvaGenerated();
+    static void generateTvaPdf(int year, Database *database, Controller *controller);
 
 
 private:

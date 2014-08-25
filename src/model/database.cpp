@@ -2208,8 +2208,6 @@ db_saleQueue Database::getSalesOfYear (int _year)
             std::istringstream(vectorFromQueue[3]) >> recuperatedDate;
             std::istringstream(vectorFromQueue[4]) >> recuperatedName;
 
-
-
             cat->setId(recuperatedId);
             cat->setTTC(recuperatedTTC);
             cat->setTVAIndex(recuperatedTVAindex);

@@ -1401,13 +1401,27 @@ std::string Controller::hashPasswd(std::string password)
 
 void Controller::PrintTvaPdf(int year)
 {
-    QLabel* labelInfos = new QLabel("Génération du pdf ...");
+    QLabel* labelInfos = new QLabel("Génération du pdf ... cela peut prendre du temps");
     labelInfos->setAttribute(Qt::WA_DeleteOnClose);
     labelInfos->setWindowFlags(Qt::WindowStaysOnTopHint);
     labelInfos->setFixedWidth(600);
     labelInfos->show();
     labelInfos->update();
+    //std::thread thread (&Controller::generateTvaPdf, year, database, this);
+    generateTvaPdf(year, database, this);
+}
 
+void Controller::tvaGenerated()
+{
+    QLabel* labelInfos = new QLabel("Le pdf a été écrit dans le dossier " + GLOBAL_PATH);
+    labelInfos->setAttribute(Qt::WA_DeleteOnClose);
+    labelInfos->setWindowFlags(Qt::WindowStaysOnTopHint);
+    labelInfos->setFixedWidth(600);
+    labelInfos->show();
+}
+
+void Controller::generateTvaPdf(int year, Database* database, Controller* controller)
+{
     // Appel à la database pour avoir les transactions de l'année
     database->openDatabase();
     db_comQueue comQueue = database->getCommandsOfYear(year);
@@ -1454,13 +1468,16 @@ void Controller::PrintTvaPdf(int year)
     {
         saleTuple = saleQueue.front();
         saleQueue.pop();
-        saleTuple.setTTC(absolute(saleTuple.getTTC()));
-        saleTuple.setTVA(absolute(saleTuple.getTVA()));
-        saleTuple.setTVA(saleTuple.getTTC() * tvaVector[saleTuple.getTVAIndex()-1].getRate()*0.01); // TVA = TTC*TVArate
+        // TVA = TTC*TVArate/(1+TVArate) déduit de TTC = (1+TVArate)*HT et TVA = HT*TVArate
+        double TTC = absolute(saleTuple.getTTC());
+        double TVArate = ((double)tvaVector[saleTuple.getTVAIndex()-1].getRate()) *0.01;
+        double TVA = TTC*TVArate/(1+TVArate);
+        //saleTuple.setTTC(TTC);
+        //saleTuple.setTVA(TVA);
         tvaHtml+="<tr><td>"+QString::fromStdString(saleTuple.getDate())+"</td><td>"+QString::fromStdString(saleTuple.getProductName())+"</td>";
-        tvaHtml+="<td>" + QString::number(saleTuple.getTVA()) + "</td><td>" + QString::number(saleTuple.getTTC()) + "</td></tr>";
-        totalTvaSold += saleTuple.getTVA();
-        totalTtcSold += saleTuple.getTTC();
+        tvaHtml+="<td>" + QString::number(TVA) + "</td><td>" + QString::number(TTC) + "</td></tr>";
+        totalTvaSold += TVA;
+        totalTtcSold += TTC;
     }
     tvaHtml+="</table>";
     tvaHtml+="<h5>Total Achats TTC : "+ QString::number(totalTtcBought) +" €</h5>";
@@ -1475,8 +1492,7 @@ void Controller::PrintTvaPdf(int year)
     printer.setOutputFormat(QPrinter::PdfFormat);
     doc.print(&printer);
     printer.newPage();
-
-    labelInfos->setText("Le pdf a été écrit dans le dossier " + GLOBAL_PATH + QString::number(year) + "_TVA.pdf");
+    controller->tvaGenerated();
 }
 
 float Controller::absolute(float val)
