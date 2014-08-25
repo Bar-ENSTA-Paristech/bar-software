@@ -18,6 +18,8 @@ public:
     bool isUInteger(QString value);
     bool isInteger(QString value);
     bool isFloat(QString value);
+    bool isNegative(QString value);
+    bool isPositive(QString value);
     void setController(Controller* controller);
     
 signals:

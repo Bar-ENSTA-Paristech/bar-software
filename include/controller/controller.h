@@ -33,6 +33,7 @@
 #include "editproduct.h"
 #include "stats.h"
 #include "admin.h"
+#include "moneytransfer.h"
 
 
 #include "customer.h"
@@ -91,6 +92,7 @@ public:
     void newClic_GlobalHistory_old(int yearBegin);
     void newClic_IndividualHistory_old(int customerId);
     void newClic_IndividualGraph(int customerId);
+    void newClic_moneyTransfer();
     std::queue<QString> newCustCategoryList();
     void receiveCalculatorEntry(float amount, bool isPaidByCard);
     void receiveEditCustomerEntry(view_customerTuple& customer);
@@ -99,6 +101,7 @@ public:
     void receiveNewProduct(view_productTuple& product);
     void receiveEditProduct(view_productTuple& product, bool deleteProduct = false);
     void receiveAdminInfos(AdminTuple tuple);
+    void receiveMoneyTransfer(int fromCustomerId, int toCustomerId, float moneyToTransfer, QString &label);
     //void setViewPointers(SearchResults* par1, CustomerPanel* par2, CartDisplay* par3, ProductsChoices* par4, History* par5);
     void setViewPointers(ViewObjects *viewObjects);
     void setCurCustomer(view_customerTuple &tuple);

@@ -19,7 +19,7 @@ IndividualHistory::IndividualHistory(QWidget *parent) :
     layout->setRowStretch(2, 1);
     layout->addWidget(history, 2, 0, 1, 3);
     this->setLayout(layout);
-    this->setGeometry(200, 60, 500, 800);
+    this->setGeometry(200, 60, 600, 800);
 }
 
 void IndividualHistory::launchIndividualHistory(view_histQueue &queue)
@@ -53,17 +53,19 @@ void IndividualHistory::setTotalConsummed(QString total)
 // ############## LIST ############
 
 IndividualHistoryList::IndividualHistoryList(QWidget *parent) :
-    MultiList(parent, 4, 0, false)
+    MultiList(parent, 5, 0, false)
 {
     headers[0]->setText("Opération");
     headers[1]->setText("Date");
     headers[2]->setText("Montant");
     headers[3]->setText("Void");
+    headers[4]->setText("Libellé");
 
-    stretchColumns = new int[3];
+    stretchColumns = new int[4];
     stretchColumns[0]=0;
     stretchColumns[1]=1;
-    stretchColumns[2]=-1;
+    stretchColumns[2]=4;
+    stretchColumns[3]=-1;
     defaultHeaderWidth = 100;
     hiddenColumn = 3;
     // ####### BUG ######
@@ -94,6 +96,8 @@ void IndividualHistoryList::launchIndividualHistory(view_histQueue &queue)
 
         model->item(i,0)->setText(tuple.getHistOperation());
         model->item(i,1)->setText(tuple.getHistDate());
+        if(tuple.getHistLabel().toLower() != "null")
+            model->item(i,4)->setText(tuple.getHistLabel());
         if(price >= 0 || tuple.getHistOperation() == "DEBIT/CREDIT")
             model->item(i,2)->setText(QString::number(price));
         else

@@ -1125,6 +1125,42 @@ void Controller::receiveAdminInfos(AdminTuple tuple)
     }
 }
 
+void Controller::receiveMoneyTransfer(int fromCustomerId, int toCustomerId, float moneyToTransfer, QString& label)
+{
+    if(fromCustomerId == toCustomerId)
+        return;
+    database->openDatabase();
+    db_customerTuple fromCustomer = database->getCustomerFromId(fromCustomerId);
+    db_customerTuple toCustomer = database->getCustomerFromId(toCustomerId);
+    database->closeDatabase();
+    fromCustomer.setCustomerBalance(fromCustomer.getCustomerBalance() - moneyToTransfer);
+    toCustomer.setCustomerBalance(toCustomer.getCustomerBalance() + moneyToTransfer);
+    db_histTuple fromCustHist, toCustHist;
+    fromCustHist.setHistCustomerId(fromCustomerId);
+    fromCustHist.setHistProductId(0);
+    fromCustHist.setHistPrice(-moneyToTransfer);
+    if(!label.isEmpty())
+    {
+        fromCustHist.setHistLabel("'"+label.toStdString()+"'");
+        toCustHist.setHistLabel("'"+label.toStdString()+"'");
+    }
+    toCustHist.setHistCustomerId(toCustomerId);
+    toCustHist.setHistProductId(0);
+    toCustHist.setHistPrice(moneyToTransfer);
+    database->openDatabase();
+    database->editCustomerAccount(fromCustomer);
+    database->editCustomerAccount(toCustomer);
+    database->addHist(fromCustHist);
+    database->addHist(toCustHist);
+    database->closeDatabase();
+    // refresh mini historique
+    newGlobal_Hist();
+    //refresh list customer
+    newText_Search(curSearch);
+    //refresh panel customer
+    newClic_Customer(curCustomer->getCustomerId());
+}
+
 void Controller::newClic_Category(int id)
 {
     QString emptyString;qDebug() << id;
@@ -1236,6 +1272,27 @@ void Controller::newClic_IndividualHistory_old(int customerId)
 void Controller::newClic_IndividualGraph(int customerId)
 {
     // To define
+}
+
+void Controller::newClic_moneyTransfer()
+{
+    db_customerQueue dbQueue;
+    db_customerTuple dbTuple;
+    view_customerQueue viewQueue;
+    view_customerTuple viewTuple;
+    database->openDatabase();
+    std::string toto="";
+    dbQueue = database->searchCustomer(toto);
+    database->closeDatabase();
+    int n = dbQueue.size();
+    for(int i = 0 ; i < n ; i++)
+    {
+        dbTuple = dbQueue.front();
+        dbQueue.pop();
+        viewTuple = dbTuple.transformIntoCustomerView();
+        viewQueue.push(viewTuple);
+    }
+    view->moneyTransfer->launch(viewQueue);
 }
 
 std::string Controller::xorCrypt(std::string input)

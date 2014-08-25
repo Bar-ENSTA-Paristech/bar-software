@@ -182,6 +182,7 @@ private:
 class db_histTuple
 {
 public:
+    db_histTuple(){label="DEFAULT";}
     void setHistId (unsigned _id);
     void setHistDate (std::string _date);
     void setHistName (std::string _name);
@@ -190,6 +191,7 @@ public:
     void setHistOperation (std::string operation);
     void setHistCustomerId (unsigned _id);
     void setHistProductId (unsigned _id);
+    void setHistLabel(std::string _label){label=_label;}
 
     int getHistId();
     std::string getHistDate ();
@@ -199,6 +201,7 @@ public:
     std::string getHistOperation();
     unsigned getHistCustomerId();
     unsigned getHistProduct_Id();
+    std::string getHistLabel(){return label;}
 
     view_histTuple transformIntoHistView();
 
@@ -211,6 +214,7 @@ private:
     std::string operation;
     unsigned customer_id;
     unsigned product_id;
+    std::string label;
 };
 
 class view_histTuple
@@ -222,6 +226,7 @@ public:
     void setHistPrice (float _price);
     void setHistFirstName (QString firstName);
     void setHistOperation (QString operation);
+    void setHistLabel(QString _label){label=_label;}
 
     unsigned getHistId();
     QString getHistDate ();
@@ -229,6 +234,7 @@ public:
     float getHistPrice();
     QString getHistFirstName();
     QString getHistOperation();
+    QString getHistLabel(){return label;}
 
     db_histTuple transformIntoHistDb();
 
@@ -239,6 +245,7 @@ private:
     float price;
     QString firstName;
     QString operation;
+    QString label;
 };
 
 class view_cartTuple
@@ -429,6 +436,7 @@ class LeftPart;
 class RightPart;
 class Login;
 class MainWindow;
+class MoneyTransfer;
 class NewCustomer;
 class Popup;
 class ProductsChoices;
@@ -460,6 +468,7 @@ typedef struct{
     RightPart* rightPart;
     Login* login;
     MainWindow* mainWindow;
+    MoneyTransfer* moneyTransfer;
     NewCustomer* newCustomer;
     Popup* currentPopup;
     ProductsChoices* productChoices;

@@ -27,6 +27,7 @@
 #include "editlogin.h"
 #include "stats.h"
 #include "admin.h"
+#include "moneytransfer.h"
 #include "structures.h"
 extern ViewObjects VIEW;
 
@@ -65,6 +66,7 @@ private slots:
     void launchAdmin();
     void stopSplashscreen();
     void launchFullscreen();
+    void launchMoneyTransfer();
 
 private:
     Controller* controller;
@@ -105,6 +107,7 @@ private:
     QPushButton* editLogin;
     QPushButton* stats;
     QPushButton* admin;
+    QPushButton* moneyTransfer;
     QPushButton* fullscreen;
 
 };

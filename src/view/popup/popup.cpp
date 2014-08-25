@@ -19,16 +19,40 @@ Popup::Popup(QWidget *parent) :
 
 bool Popup::isBalanceCorrect(QString value)
 {
-    const QRegExp regex ("^-?[0-9]+(\.[0-9]?)?$");
+    const QRegExp regex ("^-?[0-9]+(\.[0-9]{0,2})?$");
     if(value.contains(regex))
     {
         return true;
     }
     else
     {
-        error->showMessage("Cette quantité d'argent n'est pas valide ! La virgule doit être représentée par un point et la partie décimale ne dépasse pas le dixième. Si la somme est négative, coller la virgule à la partie entière. Ne pas mettre le symbole €. Exemple : -15.5");
+        error->showMessage("Cette quantité d'argent n'est pas valide ! La virgule doit être représentée par un point et la partie décimale ne dépasse pas le centième. Si la somme est négative, coller la virgule à la partie entière. Ne pas mettre le symbole €. Exemple : -15.5");
         return false;
     }
+}
+
+bool Popup::isPositive(QString value)
+{
+    bool ok;
+    float number = value.toFloat(&ok);
+    if(!ok || number <= 0)
+    {
+        error->showMessage("Ce nombre n'est pas valide ou pas positif ! La virgule doit être représentée par un point. Ne pas mettre le symbole €. Exemple : 15.5");
+        return false;
+    }
+    return true;
+}
+
+bool Popup::isNegative(QString value)
+{
+    bool ok;
+    float number = value.toFloat(&ok);
+    if(!ok || number >= 0)
+    {
+        error->showMessage("Ce nombre n'est pas valide ou pas négatif! La virgule doit être représentée par un point. Ne pas mettre le symbole €. Exemple : -15.5");
+        return false;
+    }
+    return true;
 }
 
 bool Popup::isUInteger(QString value)

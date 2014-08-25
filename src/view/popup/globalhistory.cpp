@@ -38,7 +38,7 @@ void GlobalHistory::resizeEvent(QResizeEvent *event)
 // ############## LIST ############
 
 GlobalHistoryList::GlobalHistoryList(QWidget *parent) :
-    MultiList(parent, 6, 0, false)
+    MultiList(parent, 7, 0, false)
 {
     headers[0]->setText("Nom");
     headers[1]->setText("Prénom");
@@ -46,11 +46,13 @@ GlobalHistoryList::GlobalHistoryList(QWidget *parent) :
     headers[3]->setText("Date");
     headers[4]->setText("Montant");
     headers[5]->setText("Void");
+    headers[6]->setText("Libellé");
 
-    stretchColumns = new int[3];
+    stretchColumns = new int[4];
     stretchColumns[0]=2;
     stretchColumns[1]=3;
-    stretchColumns[2]=-1;
+    stretchColumns[2]=6;
+    stretchColumns[3]=-1;
     defaultHeaderWidth = 120;
     hiddenColumn = 5;
     // ####### BUG ######
@@ -79,6 +81,8 @@ void GlobalHistoryList::launchGlobalHistory(view_histQueue &queue)
         model->item(i,1)->setText(tuple.getHistFirstName());
         model->item(i,2)->setText(tuple.getHistOperation());
         model->item(i,3)->setText(tuple.getHistDate());
+        if(tuple.getHistLabel().toLower() != "null")
+            model->item(i,6)->setText(tuple.getHistLabel());
         if(price > 0 || tuple.getHistOperation() == "DEBIT/CREDIT")
             model->item(i,4)->setText(QString::number(price));
         else

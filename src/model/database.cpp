@@ -678,8 +678,7 @@ db_histQueue Database::getFullHist(bool old, int begin)
     {
         if(begin != 0)
             beginCondition = " WHERE historique_save.date_conso >= '"+std::to_string(begin)+"-01-01' ";
-        queryString="SELECT historique_save.his_id, notes.nom, notes.prenom,consos.nom, historique_save.conso_price, historique_save.date_conso, historique_save.client_id,historique_save.conso_id ";
-        //historique_save.his_id, notes.nom, notes.prenom,consos.nom, historique_save.conso_price, historique_save.date_conso, historique_save.client_id,historique_save.conso_id ";
+        queryString="SELECT historique_save.his_id, notes.nom, notes.prenom,consos.nom, historique_save.conso_price, historique_save.date_conso, historique_save.client_id,historique_save.conso_id, historique_save.label ";
         queryString+="FROM historique_save ";
         queryString+="LEFT JOIN consos ";
         queryString+="ON consos.conso_id = historique_save.conso_id ";
@@ -692,7 +691,7 @@ db_histQueue Database::getFullHist(bool old, int begin)
     {
         if(begin != 0)
             beginCondition = " WHERE historique.date_conso >= '"+std::to_string(begin)+"-01-01' ";
-        queryString="SELECT historique.his_id, notes.nom, notes.prenom,consos.nom, historique.conso_price, historique.date_conso, historique.client_id,historique.conso_id ";
+        queryString="SELECT historique.his_id, notes.nom, notes.prenom,consos.nom, historique.conso_price, historique.date_conso, historique.client_id,historique.conso_id, historique.label ";
         queryString+="FROM historique ";
         queryString+="LEFT JOIN consos ";
         queryString+="ON consos.conso_id = historique.conso_id ";
@@ -729,6 +728,7 @@ db_histQueue Database::getFullHist(bool old, int begin)
             hist->setHistOperation(vectorFromQueue[3]);
             hist->setHistCustomerId(recuperatedClientId);
             hist->setHistProductId(recuperatedProductId);
+            hist->setHistLabel(vectorFromQueue[8]);
 
             result.push(*hist);
             j++;
@@ -816,7 +816,7 @@ db_histQueue Database::getCustomerHist(unsigned id, bool old, db_histQueue *queu
         //Utiliser des jointures
         // From client_id -> nom + prénom
         // From conso_id -> conso + prix
-        std::string queryString="SELECT historique.his_id, notes.nom, notes.prenom,consos.nom, historique.conso_price, historique.date_conso ";
+        std::string queryString="SELECT historique.his_id, notes.nom, notes.prenom,consos.nom, historique.conso_price, historique.date_conso, historique.label ";
         queryString+="FROM historique ";
         queryString+="LEFT JOIN consos ";
         queryString+="ON consos.conso_id = historique.conso_id ";
@@ -832,7 +832,7 @@ db_histQueue Database::getCustomerHist(unsigned id, bool old, db_histQueue *queu
     }
     else
     {
-        std::string queryString="SELECT historique_save.his_id, notes.nom, notes.prenom,consos.nom, historique_save.conso_price, historique_save.date_conso ";
+        std::string queryString="SELECT historique_save.his_id, notes.nom, notes.prenom,consos.nom, historique_save.conso_price, historique_save.date_conso, historique.label ";
         queryString+="FROM historique_save ";
         queryString+="LEFT JOIN consos ";
         queryString+="ON consos.conso_id = historique_save.conso_id ";
@@ -866,6 +866,7 @@ db_histQueue Database::getCustomerHist(unsigned id, bool old, db_histQueue *queu
             hist->setHistDate(vectorFromQueue[5]);
             hist->setHistPrice(recuperatedPrice);
             hist->setHistOperation(vectorFromQueue[3]);
+            hist->setHistLabel(vectorFromQueue[6]);
             if(queueToComplete != NULL)
                 queueToComplete->push(*hist);
             else
@@ -894,7 +895,7 @@ db_histQueue Database::getDeletedCustomerHist(unsigned id)
     //Utiliser des jointures
     // From client_id -> nom + prénom
     // From conso_id -> conso + prix
-    std::string queryString="SELECT historique_deleted_account.his_id, notes_deleted_account.nom, notes_deleted_account.prenom,consos.nom, historique_deleted_account.conso_price, historique_deleted_account.date_conso ";
+    std::string queryString="SELECT historique_deleted_account.his_id, notes_deleted_account.nom, notes_deleted_account.prenom,consos.nom, historique_deleted_account.conso_price, historique_deleted_account.date_conso, historique_deleted_account.label ";
     queryString+="FROM historique_deleted_account ";
     queryString+="LEFT JOIN consos ";
     queryString+="ON consos.conso_id = historique_deleted_account.conso_id ";
@@ -925,6 +926,7 @@ db_histQueue Database::getDeletedCustomerHist(unsigned id)
             hist->setHistDate(vectorFromQueue[5]);
             hist->setHistPrice(recuperatedPrice);
             hist->setHistOperation(vectorFromQueue[3]);
+            hist->setHistLabel(vectorFromQueue[6]);
             result.push(*hist);
             j++;
             vectorFromQueue.clear();
@@ -1173,12 +1175,12 @@ int Database::deleteCustomerAccount(int id)
     std::string queryString="";
     std::string idString = std::to_string(id);
 
-    queryString="INSERT INTO historique_deleted_account (his_id, client_id, conso_id, conso_price, date_conso) SELECT his_id, client_id, conso_id, conso_price, date_conso FROM historique WHERE client_id="+idString+" ORDER BY date_conso ASC;";
+    queryString="INSERT INTO historique_deleted_account (his_id, client_id, conso_id, conso_price, date_conso, label) SELECT his_id, client_id, conso_id, conso_price, date_conso, label FROM historique WHERE client_id="+idString+" ORDER BY date_conso ASC;";
     query.setQuery(queryString);
     query.setVerbose(1);
     code=executeQuery(query);
 
-    queryString="INSERT INTO historique_deleted_account (his_id, client_id, conso_price, conso_id, date_conso) SELECT his_id, client_id, conso_price, conso_id, date_conso FROM historique_save WHERE client_id="+idString+" ORDER BY date_conso ASC;";
+    queryString="INSERT INTO historique_deleted_account (his_id, client_id, conso_price, conso_id, date_conso, label) SELECT his_id, client_id, conso_price, conso_id, date_conso, label FROM historique_save WHERE client_id="+idString+" ORDER BY date_conso ASC;";
     query.setQuery(queryString);
     query.setVerbose(1);
     code+=executeQuery(query);
@@ -1397,18 +1399,18 @@ int Database::addHist(db_histTuple tuple,bool to_old)
     //Il faut transfomer les int et float en std::string
     std::string productIdString = std::to_string(product_id);
     std::string priceString = std::to_string(price);
-    convertToPointDecimal(priceString); // peut contenir une virgule (notemment sous linux)
+    convertToPointDecimal(priceString); // peut contenir une virgule (notamment sous linux)
     std::string clientIdString = std::to_string(client_id);
     if (to_old ==false)
     {
-        queryString+="INSERT INTO historique (client_id,conso_id,conso_price,date_conso) VALUES (";
+        queryString+="INSERT INTO historique (client_id,conso_id,conso_price,date_conso, label) VALUES (";
         queryString+=clientIdString;
         queryString+=", ";
         queryString+=productIdString;
         queryString+=", ";
         queryString+=priceString;
         queryString+=", ";
-        queryString+="datetime('now', 'localtime')";
+        queryString+="datetime('now', 'localtime'), "+tuple.getHistLabel();
         queryString+=");";
     }
     else

@@ -446,6 +446,7 @@ db_histTuple view_histTuple::transformIntoHistDb()
     result.setHistDate(date.QString::toStdString());
     result.setHistOperation(operation.QString::toStdString());
     result.setHistPrice(price);
+    result.setHistLabel(label.toStdString());
 
     return result;
 }
@@ -543,6 +544,7 @@ view_histTuple db_histTuple::transformIntoHistView()
     result.setHistDate(QString::fromStdString(date));
     result.setHistOperation(QString::fromStdString(operation));
     result.setHistPrice(price);
+    result.setHistLabel(QString::fromStdString(label));
 
     return result;
 }

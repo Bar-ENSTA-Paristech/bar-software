@@ -115,7 +115,13 @@ qDebug() <<"Size (constr MainWindow t1) " << _controller->database->getqueryResu
     admin->setIconSize(QSize(32,32));
     admin->setStyleSheet("background: none;");
     admin->setToolTip("Panneau d'administration");
-    fullscreen =new QPushButton(QIcon(GLOBAL_PATH + "resources/pictures/fullscreen.png"), "", menuButtons);
+    moneyTransfer = new QPushButton(QIcon(GLOBAL_PATH + "resources/pictures/moneyTransfer.png"), "", menuButtons);
+    moneyTransfer->setFlat(true);
+    moneyTransfer->setCursor(Qt::PointingHandCursor);
+    moneyTransfer->setIconSize(QSize(32,32));
+    moneyTransfer->setStyleSheet("background: none;");
+    moneyTransfer->setToolTip("Effectuer un transfert d'argent entre 2 comptes");
+    fullscreen = new QPushButton(QIcon(GLOBAL_PATH + "resources/pictures/fullscreen.png"), "", menuButtons);
     fullscreen->setFlat(true);
     fullscreen->setCursor(Qt::PointingHandCursor);
     fullscreen->setIconSize(QSize(32,32));
@@ -129,7 +135,8 @@ qDebug() <<"Size (constr MainWindow t1) " << _controller->database->getqueryResu
     buttonsLayout->addWidget(editLogin, 0,5);
     buttonsLayout->addWidget(stats, 0,6);
     buttonsLayout->addWidget(admin, 0,7);
-    buttonsLayout->addWidget(fullscreen,0,8);
+    buttonsLayout->addWidget(moneyTransfer,0,8);
+    buttonsLayout->addWidget(fullscreen,0,9);
     buttonsLayout->setContentsMargins(0,0,0,0);
     menuButtons->setLayout(buttonsLayout);
     // Adding the left and right frames
@@ -174,6 +181,7 @@ qDebug() <<"Size (constr MainWindow t1) " << _controller->database->getqueryResu
     VIEW.editLogin = new EditLogin();
     VIEW.stats = new Stats();
     VIEW.admin = new Admin();
+    VIEW.moneyTransfer = new MoneyTransfer();
     QObject::connect(searchText, SIGNAL(textEdited(const QString &)), this, SLOT(searchChanged(const QString &)));
     QObject::connect(timerSearch, SIGNAL(timeout()), this, SLOT(sendSearch()));
     QObject::connect(timerAtStart, SIGNAL(timeout()), this, SLOT(updateSize()));
@@ -186,6 +194,7 @@ qDebug() <<"Size (constr MainWindow t1) " << _controller->database->getqueryResu
     QObject::connect(editLogin, SIGNAL(clicked()), VIEW.editLogin, SLOT(launchEditLogin()));
     QObject::connect(stats, SIGNAL(clicked()), this, SLOT(launchStats()));
     QObject::connect(admin, SIGNAL(clicked()), this, SLOT(launchAdmin()));
+    QObject::connect(moneyTransfer,SIGNAL(clicked()),this,SLOT(launchMoneyTransfer()));
     QObject::connect(fullscreen,SIGNAL(clicked()),this,SLOT(launchFullscreen()));
 
     // DESIGN
@@ -295,6 +304,7 @@ void MainWindow::setController(Controller *controllerParam)
     VIEW.admin->setController(controller);
     VIEW.stats->setController(controller);
     VIEW.viewStocks->setController(controller);
+    VIEW.moneyTransfer->setController(controller);
 
     controller->mainController();
 }
@@ -433,6 +443,11 @@ void MainWindow::launchFullscreen()
         this->window()->setWindowState(Qt::WindowFullScreen);
         this->update();
     }
+}
+
+void MainWindow::launchMoneyTransfer()
+{
+    controller->newClic_moneyTransfer();
 }
 
 void MainWindow::setSplashscreen(QLabel* splash)
