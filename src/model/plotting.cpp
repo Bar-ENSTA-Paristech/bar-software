@@ -185,6 +185,7 @@ db_dataarray Plotting::customerBalance(int id, int scale, int numberOfPoints)
 
 db_dataarray Plotting::productConsumption(int id, int scale, int numberOfPoints)
 {
+    db->openDatabase();
     db_histQueue product_hist_old = db->getProductHist(id,true);
     db->closeDatabase();
     db->openDatabase();

@@ -9,6 +9,7 @@
 #include <QString>
 #include <vector>
 #include <QDateTime>
+#include <QMutex>
 #include <ctime>
 #include <cstdio>
 #include "sqlite3.h"
@@ -105,6 +106,7 @@ public:
     static int callback(void *arg, int argc, char **argv, char **azColName);
     std::deque<std::string>* getqueryResult(){return queryResult;}
     void printqueryResult(bool debug=true);
+    QMutex databaseAccess;
 private:
     sqlite3* handle; //Pointeur vers la BDD
     int toto;

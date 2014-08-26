@@ -9,9 +9,10 @@
 Controller::Controller()
 {
     /*Call here functions for the default display : allCustomers, history, productTypes ... */
+    currentConsoTypeIndex = 1;
     backupTimer = new QTimer;
     backupTimer->setTimerType(Qt::VeryCoarseTimer);
-    saveBackup();
+    saveBackup(false);
     curCart = new Cart;
     curCustomer = new Customer;
     view_curCustomer = new view_customerTuple;
@@ -81,6 +82,7 @@ void Controller::newText_Search(QString &viewSearch)
 
     database->openDatabase();
     dbQueue = database->searchCustomer(dbSearch);        // Get customer information corresponding to the search from model
+    database->closeDatabase();
 
 
     if ( !dbQueue.empty() ){
@@ -106,7 +108,6 @@ void Controller::newText_Search(QString &viewSearch)
     // Sent result to view
     view->searchResults->setSearchResults(viewQueue );
 
-    database->closeDatabase();
 
 }
 
@@ -120,6 +121,7 @@ void Controller::newGlobal_Hist()
 
     database->openDatabase();
     dbHistoryQueue = database->getLastOperations(30);
+    database->closeDatabase();
 
     if ( !dbHistoryQueue.empty() ){
 
@@ -138,7 +140,6 @@ void Controller::newGlobal_Hist()
     // Sent result to view
     view->history->setHistory(HistoryQueue);
 
-    database->closeDatabase();
 
 }
 
@@ -149,6 +150,7 @@ void Controller::newClic_Customer(unsigned int customerId)
     view_customerTuple tmpViewCustomerInfo;
 
     tmp_dbCustomerInfo = database->getCustomerFromId( customerId );
+    database->closeDatabase();
 
     /* Create the customer */
     tmpViewCustomerInfo=tmp_dbCustomerInfo.transformIntoCustomerView();
@@ -157,7 +159,6 @@ void Controller::newClic_Customer(unsigned int customerId)
     //view->customerPanel->setFuturBalance(tmpViewCustomerInfo.getCustomerBalance()); Ca sert à rien d'afficher deux fois la meme somme ...
     view->customerPanel->setFuturBalance(0,false); // on l'efface pour le nouveau client (reset)
 
-    database->closeDatabase();
 
 }
 
@@ -331,6 +332,7 @@ view_productQueue Controller::getProductsOfCategorie(unsigned view_productTypeId
 
     database->openDatabase();
     dbQueue = database->getProductsFromCategory(view_productTypeId);        // Get product information corresponding to the search from model
+    database->closeDatabase();
 
     if ( !dbQueue.empty() ){
 
@@ -345,7 +347,6 @@ view_productQueue Controller::getProductsOfCategorie(unsigned view_productTypeId
         }
 
     }
-    database->closeDatabase();
     return viewQueue;
 }
 
@@ -418,12 +419,16 @@ bool Controller::view_isLoginCorrect(QString login, QString passwd, LoginType lo
 {
     db_categoryQueue dbQueue;
     db_categoryTuple dbTuple;
-    db_customerQueue dbCustQueue;
     AdminTuple adminTuple;
     std::vector<QString> categories;
+    db_customerQueue dbCustQueue;
+    db_customerTuple dbCustTuple;
+    view_customerQueue viewCustQueue;
+    view_customerTuple viewCustTuple;
 
     std::string _login, log;
     std::string _truepass;
+    std::string emptyString="";
     // ######### TO COMPLETE #######
     int isLoginIncorrect, sizeOfQueue;
 
@@ -516,6 +521,20 @@ bool Controller::view_isLoginCorrect(QString login, QString passwd, LoginType lo
         case NEGATIVE_BALANCE :
             view->cartDisplay->validateNegativeCart();
             break;
+        case MONEY_TRANSFER :
+            database->openDatabase();
+            dbCustQueue = database->searchCustomer(emptyString);
+            database->closeDatabase();
+            sizeOfQueue = dbCustQueue.size();
+            for(int i = 0 ; i < sizeOfQueue ; i++)
+            {
+                dbCustTuple = dbCustQueue.front();
+                dbCustQueue.pop();
+                viewCustTuple = dbCustTuple.transformIntoCustomerView();
+                viewCustQueue.push(viewCustTuple);
+            }
+            view->moneyTransfer->launch(viewCustQueue);
+            break;
         default :
             break;
         }
@@ -562,6 +581,7 @@ void Controller::newClic_IndividualHistory()
         database->openDatabase();
         dbCustomerHist = database->getCustomerHist(id,false,NULL);
         database->getCustomerHist(id, true, &dbCustomerHist);
+        database->closeDatabase();
 
         if ( !dbCustomerHist.empty() ){
 
@@ -579,7 +599,6 @@ void Controller::newClic_IndividualHistory()
         // Send result to view
 
         view->individualHistory->launchIndividualHistory(CustomerHist);
-        database->closeDatabase();
     }
 }
 
@@ -671,13 +690,13 @@ void Controller::receiveCalculatorEntry(float amount, bool isPaidByCard)
     histToBeInserted.setHistPrice(amount);
     qDebug()<<"Modif de l'hist";
     database->addHist(histToBeInserted);
+    database->closeDatabase();
 
     //Send updated information to view so it can display the new customer info
     newText_Search(curSearch);
     curCustomer->setBalance(curCustomer->getBalance() + amount);
     view_curCustomer->setCustomerBalance(view_curCustomer->getCustomerBalance() + amount);
     view->customerPanel->setCustomer(*view_curCustomer);
-    database->closeDatabase();
 
     // refresh historique
     newGlobal_Hist();
@@ -1094,7 +1113,7 @@ void Controller::receiveAdminInfos(AdminTuple tuple)
         catTuple.setCategoryName(tuple.newCustCategoryName);
         database->openDatabase();
         database->editCustCategory(catTuple);
-        database->openDatabase();
+        database->closeDatabase();
 
         std::string log;
         log = currentLoggedCustomer + " -> changed name of customer category (" + std::to_string(catTuple.getCategoryId()) + ") to "+catTuple.getCategoryName();
@@ -1107,7 +1126,7 @@ void Controller::receiveAdminInfos(AdminTuple tuple)
         catTuple.setCategoryName(tuple.newProdCategoryName);
         database->openDatabase();
         database->editProdCategory(catTuple);
-        database->openDatabase();
+        database->closeDatabase();
 
         std::string log;
         log = currentLoggedCustomer + " -> changed name of product category (" + std::to_string(catTuple.getCategoryId()) + ") to "+catTuple.getCategoryName();
@@ -1159,6 +1178,10 @@ void Controller::receiveMoneyTransfer(int fromCustomerId, int toCustomerId, floa
     newText_Search(curSearch);
     //refresh panel customer
     newClic_Customer(curCustomer->getCustomerId());
+
+    std::string log;
+    log = currentLoggedCustomer + " -> transfered "+std::to_string(moneyToTransfer)+"€ from "+fromCustomer.getCustomerFirstname()+" "+fromCustomer.getCustomerName()+" to " + toCustomer.getCustomerFirstname()+" "+ toCustomer.getCustomerName()+" accounts.";
+    appendLog(log);
 }
 
 void Controller::newClic_Category(int id)
@@ -1178,6 +1201,7 @@ void Controller::newClic_Category(int id)
 
         database->openDatabase();
         dbQueue = database->getCustomerFromCategory(id);        // Get customer information corresponding to the search from model
+        database->closeDatabase();
 
         if ( !dbQueue.empty() ){
 
@@ -1193,7 +1217,6 @@ void Controller::newClic_Category(int id)
         // Sent result to view
         view->searchResults->setSearchResults(viewQueue );
 
-        database->closeDatabase();
         break;
     }
 }
@@ -1210,7 +1233,7 @@ void Controller::displayProductGraph(int id, bool consumption)
     {
         database->openDatabase();
         plotting->setDb(database->getHandle());
-
+        database->closeDatabase();
         datas = plotting->productConsumption(id, 10, 100);
         title = "Evolution de la consommation de "+ QString::fromStdString(db_product.getProductName())+
                 " "+QString::number(db_product.getProductVolume())+"cL"+" au cours du temps.";
@@ -1218,9 +1241,9 @@ void Controller::displayProductGraph(int id, bool consumption)
     }
     else
     {
-        //database->openDatabase();
+        database->openDatabase();
         plotting->setDb(database->getHandle());
-
+        database->closeDatabase();
         datas = plotting->productStock(id, 10, 100);
         title = "Evolution des stocks de "+ QString::fromStdString(db_product.getProductName())+
                 " "+QString::number(db_product.getProductVolume())+"cL"+" au cours du temps.";
@@ -1276,23 +1299,9 @@ void Controller::newClic_IndividualGraph(int customerId)
 
 void Controller::newClic_moneyTransfer()
 {
-    db_customerQueue dbQueue;
-    db_customerTuple dbTuple;
-    view_customerQueue viewQueue;
-    view_customerTuple viewTuple;
-    database->openDatabase();
-    std::string toto="";
-    dbQueue = database->searchCustomer(toto);
-    database->closeDatabase();
-    int n = dbQueue.size();
-    for(int i = 0 ; i < n ; i++)
-    {
-        dbTuple = dbQueue.front();
-        dbQueue.pop();
-        viewTuple = dbTuple.transformIntoCustomerView();
-        viewQueue.push(viewTuple);
-    }
-    view->moneyTransfer->launch(viewQueue);
+    view->currentPopup = view->moneyTransfer;
+    view->login->checkIndividual();
+    currentLoginRequest = MONEY_TRANSFER;
 }
 
 std::string Controller::xorCrypt(std::string input)
@@ -1502,9 +1511,17 @@ float Controller::absolute(float val)
     return val;
 }
 
-bool Controller::saveBackup()
+bool Controller::saveBackup(bool databaseOn)
 {
     backupTimer->stop();
+    if(databaseOn)
+    {
+        if(!database->databaseAccess.tryLock())
+        {
+            backupTimer->start(10000);
+            return false;
+        }
+    }
     backupTimer->start(MSEC_BETWEEN_BACKUP);
     QString backupPath = "C:/system_backup/";
     QString backupPath2 = "D:/bar_backup/";
@@ -1519,12 +1536,20 @@ bool Controller::saveBackup()
     if(!dir.exists("C:/system_backup"))
         dir.mkdir("system_backup");
     if(!QFile::copy(GLOBAL_PATH+"resources/BDD/bar.db",backupPath))
+    {
+        if(databaseOn)
+            database->databaseAccess.unlock();
         return false;
+    }
     QDir dir2("D:/");
     if(!dir2.exists("D:/bar_backup"))
         dir2.mkdir("bar_backup");
     if(!QFile::copy(GLOBAL_PATH+"resources/BDD/bar.db",backupPath2))
+    {
+        if(databaseOn)
+            database->databaseAccess.unlock();
         return false;
+    }
     free(timePtr);
     return true;
 }

@@ -136,7 +136,7 @@ public:
     static float absolute(float val);
 
 public slots:
-    bool saveBackup();
+    bool saveBackup(bool databaseOn=true);
     void tvaGenerated();
     static void generateTvaPdf(int year, Database *database, Controller *controller);
 

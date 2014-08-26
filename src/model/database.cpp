@@ -27,7 +27,8 @@ Database::~Database()
 }
 
 int Database::openDatabase()
-{qDebug() <<"Size (openDatabase) " << queryResult->size();
+{
+    databaseAccess.lock();
     //Modification de la configuration de sqlite pour accepter les URI (gestion des repertoires)
     sqlite3_config(SQLITE_CONFIG_URI,1);
 
@@ -65,7 +66,7 @@ int Database::closeDatabase()
         queryResult->clear();
     std::cout<<"Tentative de fermeture de db"<<std::endl;
     int coderesult=sqlite3_close_v2(handle);
-
+    databaseAccess.unlock();
     if (coderesult!=SQLITE_OK)
         std::cout<<"The database could not close properly."<<std::endl;
     else
@@ -832,7 +833,7 @@ db_histQueue Database::getCustomerHist(unsigned id, bool old, db_histQueue *queu
     }
     else
     {
-        std::string queryString="SELECT historique_save.his_id, notes.nom, notes.prenom,consos.nom, historique_save.conso_price, historique_save.date_conso, historique.label ";
+        std::string queryString="SELECT historique_save.his_id, notes.nom, notes.prenom,consos.nom, historique_save.conso_price, historique_save.date_conso, historique_save.label ";
         queryString+="FROM historique_save ";
         queryString+="LEFT JOIN consos ";
         queryString+="ON consos.conso_id = historique_save.conso_id ";
