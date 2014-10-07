@@ -1365,23 +1365,38 @@ void Controller::appendLog(std::string log)
 
     // lecture de l'ensemble pour décryptage afin d'insérer la nouvelle ligne
     FILE* logFile = fopen(path.c_str(), "r");
-    fseek(logFile,0,SEEK_END);
-    long sizeOfLog = ftell(logFile);
-    char *buffer = (char*) malloc((sizeOfLog+1)*sizeof(char));
-    fseek(logFile,0,SEEK_SET); std::cout << "avant:" << ftell(logFile) << " : " << buffer << std::endl;
-    fread(buffer, sizeof(char), sizeOfLog, logFile);
-    fclose(logFile);
-    buffer[sizeOfLog] = '\0';
-    std::string logCrypted(buffer);std::cout << "apres:" << logCrypted << std::endl;
-    std::string logUncrpyted = xorCrypt(logCrypted);
-    logUncrpyted += log + '\n';
-    logCrypted = xorCrypt(logUncrpyted);
+    std::string logCrypted, logUncrypted;
+    if(logFile != NULL)
+    {
+        fseek(logFile,0,SEEK_END);
+        long sizeOfLog = ftell(logFile);
+        char *buffer = (char*) malloc((sizeOfLog+1)*sizeof(char));
+        fseek(logFile,0,SEEK_SET);
+        std::cout << "avant:" << ftell(logFile) << " : " << buffer << std::endl;
+        fread(buffer, sizeof(char), sizeOfLog, logFile);
+        fclose(logFile);
+        buffer[sizeOfLog] = '\0';
+        logCrypted.assign(buffer);
+        logUncrypted = xorCrypt(logCrypted);
+        free(buffer);
+    }
+    else // File might not exist
+    {
+        logUncrypted = "";
+    }
+    std::cout << "apres:" << logCrypted << std::endl;
+    logUncrypted += log + '\n';
+    logCrypted = xorCrypt(logUncrypted);
 
     // Ecriture de l'ensemble crypté dans le fichier
     logFile = fopen(path.c_str(), "w");
+    if(logFile == NULL)
+    {
+        qDebug() << "Error appending log. Must leave function.";
+        return;
+    }
     fwrite(logCrypted.c_str(), sizeof(char), logCrypted.size(), logFile);
     fclose(logFile);
-    free(timePtr);
 }
 
 QString Controller::getLog(int month, int year)
@@ -1395,6 +1410,8 @@ QString Controller::getLog(int month, int year)
         monthStr = std::to_string(month);
     path = GLOBAL_PATH.toStdString() + "resources/system_files/" + std::to_string(year) + "-" + monthStr + ".txt";
     FILE* file = fopen(path.c_str(), "r");
+    if(file == NULL)
+        return log;
     fseek(file,0,SEEK_END);
     long sizeOfLog = ftell(file);
     buffer = (char*) malloc((sizeOfLog+1)*sizeof(char));
