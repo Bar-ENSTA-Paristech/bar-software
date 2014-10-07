@@ -182,7 +182,7 @@ private:
 class db_histTuple
 {
 public:
-    db_histTuple(){label="DEFAULT";}
+    db_histTuple(){label="'NULL'";}
     void setHistId (unsigned _id);
     void setHistDate (std::string _date);
     void setHistName (std::string _name);

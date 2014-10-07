@@ -109,10 +109,10 @@ CustomerPanel::CustomerPanel(QWidget *parent) :
     editCustomer->setEnabled(false);
     deleteCustomer->setEnabled(false);
 
-    QObject::connect(calculator, SIGNAL(clicked()), this, SLOT(launchCalculator()));
-    QObject::connect(history, SIGNAL(clicked()), this, SLOT(launchIndividualHistory()));
-    QObject::connect(editCustomer, SIGNAL(clicked()), this, SLOT(launchEditCustomer()));
-    QObject::connect(deleteCustomer, SIGNAL(clicked()), this, SLOT(launchDeleteCustomer()));
+    QObject::connect(calculator, SIGNAL(clicked()), this, SLOT(launchCalculator()), Qt::QueuedConnection);
+    QObject::connect(history, SIGNAL(clicked()), this, SLOT(launchIndividualHistory()), Qt::QueuedConnection);
+    QObject::connect(editCustomer, SIGNAL(clicked()), this, SLOT(launchEditCustomer()), Qt::QueuedConnection);
+    QObject::connect(deleteCustomer, SIGNAL(clicked()), this, SLOT(launchDeleteCustomer()), Qt::QueuedConnection);
 
     //optionsLayout->addWidget(emptyButton, 0,0);
     optionsLayout->addWidget(calculator, 0,1);

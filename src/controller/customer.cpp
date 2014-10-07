@@ -83,7 +83,7 @@ void Customer::setCategory(int _cat)
 void Customer::setBalance(float _balance)
 {
     if (_balance > balance)
-        cout << "Balance of customer " << name << " " << firstname << "has been raised above its own." << endl;
+        cout << "Balance of customer " << name << " " << firstname << " has been raised above its own." << endl;
     else if (_balance < 0)
         cout << "A negative balance has been given to customer " << name << " " << firstname << "." << endl;
     //checkBalance();

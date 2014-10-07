@@ -21,7 +21,7 @@ Controller::Controller()
     database->openDatabase();
     consoTypes = database->getProdCategories();
     database->closeDatabase();
-    QObject::connect(backupTimer, SIGNAL(timeout()), this, SLOT(saveBackup()));
+    QObject::connect(backupTimer, SIGNAL(timeout()), this, SLOT(saveBackup()), Qt::QueuedConnection);
 }
 
 Controller::~Controller()
@@ -203,6 +203,13 @@ void Controller::newClic_ValidateCart(bool isCash)
     {
         db_productInfo=database->getProductFromId(currentCartController[i].first);
 
+        if (!cashTrans)
+        {
+            qDebug()<<"Modification du compte débité";
+            customerToBeEdited = database->getCustomerFromId(curCustomer->getCustomerId());
+            customerToBeEdited.setCustomerBalance(curCustomer->getBalance()-curCart->getPrice());
+            database->editCustomerAccount(customerToBeEdited);
+        }
         for (unsigned j=0;j<currentCartController[i].second;j++)
         {
             qDebug()<<"Creating a histTuple to insert into the database";
@@ -217,13 +224,6 @@ void Controller::newClic_ValidateCart(bool isCash)
             database->addHist(histToBeInserted);
         }
 
-        if (!cashTrans)
-        {
-            qDebug()<<"Modification du compte débité";
-            customerToBeEdited = database->getCustomerFromId(curCustomer->getCustomerId());
-            customerToBeEdited.setCustomerBalance(curCustomer->getBalance()-curCart->getPrice());
-            database->editCustomerAccount(customerToBeEdited);
-        }
 
         qDebug()<<"Modification des stocks";
         productToBeEdited = db_productInfo;
@@ -636,18 +636,23 @@ void Controller::setCurCustomer(view_customerTuple &tuple)
     float balance = tuple.getCustomerBalance()*1000;
     balance = round(balance);
     balance /= 1000;
+    QString customerName = tuple.getCustomerName();
+    QString customerFirstName = tuple.getCustomerFirstName();
+    removeAccent(customerName);
+    removeAccent(customerFirstName);
+
 
     curCustomer->setCustomerId((tuple.getCustomerId()));
     curCustomer->setBalance(balance);
-    curCustomer->setFirstName(tuple.getCustomerFirstName().QString::toStdString());
+    curCustomer->setFirstName(customerFirstName.QString::toStdString());
     curCustomer->setCategory(tuple.getCustomerCategory());
-    curCustomer->setName(tuple.getCustomerName().QString::toStdString());
+    curCustomer->setName(customerName.QString::toStdString());
     curCustomer->setLogin(tuple.getCustomerLogin().QString::toStdString());
     view_curCustomer->setCustomerId((tuple.getCustomerId()));
     view_curCustomer->setCustomerBalance(balance);
-    view_curCustomer->setCustomerFirstName(tuple.getCustomerFirstName());
+    view_curCustomer->setCustomerFirstName(customerFirstName);
     view_curCustomer->setCustomerCategory(tuple.getCustomerCategory());
-    view_curCustomer->setCustomerName(tuple.getCustomerName());
+    view_curCustomer->setCustomerName(customerName);
     view_curCustomer->setCustomerLogin(tuple.getCustomerLogin());
 }
 
@@ -807,9 +812,13 @@ void Controller::receiveNewCustomerEntry(view_customerTuple& customer, bool isCa
     db_customerTuple dbTuple;
     db_finop_tuple finopTuple;
     finopTuple.setOpValue(customer.getCustomerBalance());
-
-    database->openDatabase();
+    QString firstName = customer.getCustomerFirstName(), name = customer.getCustomerName();
+    removeAccent(firstName);
+    removeAccent(name);
+    customer.setCustomerFirstName(firstName);
+    customer.setCustomerName(name);
     dbTuple = customer.transformIntoCustomerDb();
+    database->openDatabase();
     qDebug() << database->createCustomerAccount( dbTuple );
     // Updating caisse / BDE
     if(finopTuple.getOpValue() != 0)
@@ -1572,4 +1581,15 @@ void Controller::deleteOldBackups()
             qDebug() << "Error : unable to delete " + fileList2[i].absoluteFilePath();
     }*/
     return;
+}
+
+QString &Controller::removeAccent(QString &string)
+{
+    string.replace(QRegExp("[éèêëËÊÈ]"), "e");
+    string.replace(QRegExp("[ìîïÎÏÌ]"), "i");
+    string.replace(QRegExp("[ùûüÙÛÜ]"), "u");
+    string.replace(QRegExp("[àâäÀÂÄ]"), "a");
+    string.replace(QRegExp("[òôöÒÔÖ]"), "o");
+    string.replace(QRegExp("[ỳŷÿỲŶŸ]"), "y");
+    return string;
 }

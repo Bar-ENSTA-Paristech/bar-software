@@ -29,7 +29,7 @@ SearchResults::SearchResults(QWidget *parent) :
     hiddenColumn = 4;
     updateHeadersSize(defaultHeaderWidth, stretchColumns, hiddenColumn);
 
-    QObject::connect(this, SIGNAL(rowFocusChanged(QModelIndex)), this, SLOT(lineClicked(QModelIndex)));
+    QObject::connect(this, SIGNAL(rowFocusChanged(QModelIndex)), this, SLOT(lineClicked(QModelIndex)), Qt::QueuedConnection);
 }
 
 void SearchResults::setSearchResults(view_customerQueue & queue)

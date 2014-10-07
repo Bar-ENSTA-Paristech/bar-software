@@ -91,7 +91,7 @@ void IndividualHistoryList::launchIndividualHistory(view_histQueue &queue)
         queue.pop();
         float price = tuple.getHistPrice();
         // if is normal consumption, we calculate the new total of consumptions
-        if(tuple.getHistOperation() != "CREDIT" && tuple.getHistOperation() != "DEBIT")
+        if(tuple.getHistOperation() != "DEBIT/CREDIT")
             totalPrice += tuple.getHistPrice();
 
         model->item(i,0)->setText(tuple.getHistOperation());

@@ -37,9 +37,9 @@ CartDisplay::CartDisplay(QWidget *parent) :
     timer = new QTimer(this);
     timer->setTimerType(Qt::VeryCoarseTimer); // we don't need accuracy at all here
 
-    QObject::connect(validateButton, SIGNAL(clicked()),this,SLOT(tryValidateCart()));
-    QObject::connect(cancelButton, SIGNAL(clicked()),this,SLOT(cancelCart()));
-    QObject::connect(timer, SIGNAL(timeout()), this, SLOT(timerTimeout()));
+    QObject::connect(validateButton, SIGNAL(clicked()),this,SLOT(tryValidateCart()), Qt::QueuedConnection);
+    QObject::connect(cancelButton, SIGNAL(clicked()),this,SLOT(cancelCart()), Qt::QueuedConnection);
+    QObject::connect(timer, SIGNAL(timeout()), this, SLOT(timerTimeout()), Qt::QueuedConnection);
 
 }
 

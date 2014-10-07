@@ -182,20 +182,20 @@ qDebug() <<"Size (constr MainWindow t1) " << _controller->database->getqueryResu
     VIEW.stats = new Stats();
     VIEW.admin = new Admin();
     VIEW.moneyTransfer = new MoneyTransfer();
-    QObject::connect(searchText, SIGNAL(textEdited(const QString &)), this, SLOT(searchChanged(const QString &)));
-    QObject::connect(timerSearch, SIGNAL(timeout()), this, SLOT(sendSearch()));
-    QObject::connect(timerAtStart, SIGNAL(timeout()), this, SLOT(updateSize()));
-    QObject::connect(timerSplashscreen, SIGNAL(timeout()), this, SLOT(stopSplashscreen()));
-    QObject::connect(globalHistory, SIGNAL(clicked()), this, SLOT(launchGlobalHistory()));
-    QObject::connect(newCustomer, SIGNAL(clicked()), this, SLOT(launchNewCustomer()));
-    QObject::connect(addStock, SIGNAL(clicked()), this, SLOT(launchAddStock()));
-    QObject::connect(addProduct, SIGNAL(clicked()), this, SLOT(launchAddProduct()));
-    QObject::connect(editProduct, SIGNAL(clicked()), this, SLOT(launchEditProduct()));
-    QObject::connect(editLogin, SIGNAL(clicked()), VIEW.editLogin, SLOT(launchEditLogin()));
-    QObject::connect(stats, SIGNAL(clicked()), this, SLOT(launchStats()));
-    QObject::connect(admin, SIGNAL(clicked()), this, SLOT(launchAdmin()));
-    QObject::connect(moneyTransfer,SIGNAL(clicked()),this,SLOT(launchMoneyTransfer()));
-    QObject::connect(fullscreen,SIGNAL(clicked()),this,SLOT(launchFullscreen()));
+    QObject::connect(searchText, SIGNAL(textEdited(const QString &)), this, SLOT(searchChanged(const QString &)), Qt::QueuedConnection);
+    QObject::connect(timerSearch, SIGNAL(timeout()), this, SLOT(sendSearch()), Qt::QueuedConnection);
+    QObject::connect(timerAtStart, SIGNAL(timeout()), this, SLOT(updateSize()), Qt::QueuedConnection);
+    QObject::connect(timerSplashscreen, SIGNAL(timeout()), this, SLOT(stopSplashscreen()), Qt::QueuedConnection);
+    QObject::connect(globalHistory, SIGNAL(clicked()), this, SLOT(launchGlobalHistory()), Qt::QueuedConnection);
+    QObject::connect(newCustomer, SIGNAL(clicked()), this, SLOT(launchNewCustomer()), Qt::QueuedConnection);
+    QObject::connect(addStock, SIGNAL(clicked()), this, SLOT(launchAddStock()), Qt::QueuedConnection);
+    QObject::connect(addProduct, SIGNAL(clicked()), this, SLOT(launchAddProduct()), Qt::QueuedConnection);
+    QObject::connect(editProduct, SIGNAL(clicked()), this, SLOT(launchEditProduct()), Qt::QueuedConnection);
+    QObject::connect(editLogin, SIGNAL(clicked()), VIEW.editLogin, SLOT(launchEditLogin()), Qt::QueuedConnection);
+    QObject::connect(stats, SIGNAL(clicked()), this, SLOT(launchStats()), Qt::QueuedConnection);
+    QObject::connect(admin, SIGNAL(clicked()), this, SLOT(launchAdmin()), Qt::QueuedConnection);
+    QObject::connect(moneyTransfer,SIGNAL(clicked()),this,SLOT(launchMoneyTransfer()), Qt::QueuedConnection);
+    QObject::connect(fullscreen,SIGNAL(clicked()),this,SLOT(launchFullscreen()), Qt::QueuedConnection);
 
     // DESIGN
     menu->setStyleSheet("background : url("+GLOBAL_PATH+"resources/pictures/menu_background.png);");
@@ -329,7 +329,7 @@ void MainWindow::setShortcut()
 
 
     for(int i=0 ; i < numberOfShortcuts ; i++)
-        QObject::connect(shortcuts[i], SIGNAL(activated()), this, SLOT(shortcutRoutine()));
+        QObject::connect(shortcuts[i], SIGNAL(activated()), this, SLOT(shortcutRoutine()), Qt::QueuedConnection);
 }
 
 
