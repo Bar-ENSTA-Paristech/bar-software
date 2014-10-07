@@ -17,7 +17,7 @@
 #include "cart.h"
 #include "product.h"
 
-#define DEV
+//#define DEV
 
 QString GLOBAL_PATH;
 
