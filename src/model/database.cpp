@@ -1463,7 +1463,7 @@ int Database::autoDumpHist()
     int cur_hist_id;
     std::string idstring;
 
-    int limitOfHist = 1000;
+    int limitOfHist = 3000;
     if (size>limitOfHist)
     {
         for(int i=0;i<size;i++)
