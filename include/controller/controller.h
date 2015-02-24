@@ -12,6 +12,7 @@
 #include <QTimer>
 #include <cmath>
 #include <thread>
+#include <QRegExp>
 
 
 #include <memory>
@@ -119,10 +120,8 @@ public:
     void setCurrentLoginRequest(LoginObjects _currentLoginRequest){currentLoginRequest = _currentLoginRequest;}
     db_categoryVector getConsoTypes(){return consoTypes;}
     db_TVAcategoryQueue getTvaRates(){db_TVAcategoryQueue queue; database->openDatabase(); queue=database->getTvaRates(); database->closeDatabase(); return queue;}
-    db_categoryQueue getCustomerCategories(){
-        db_categoryQueue queue; database->openDatabase(); queue=database->getCustCategories(); database->closeDatabase(); return queue;}
-    db_categoryVector getProductsCategories(){
-        db_categoryVector queue; database->openDatabase(); queue=database->getProdCategories(); database->closeDatabase(); return queue;}
+    db_categoryQueue getCustomerCategories(){db_categoryQueue queue; database->openDatabase(); queue=database->getCustCategories(); database->closeDatabase(); return queue;}
+    db_categoryVector getProductsCategories(){db_categoryVector queue; database->openDatabase(); queue=database->getProdCategories(); database->closeDatabase(); return queue;}
 
     void setDb(sqlite3*);
     sqlite3* getDb();
@@ -134,6 +133,7 @@ public:
     void PrintTvaPdf(int year);
     void deleteOldBackups();
     static float absolute(float val);
+    QString& removeAccent(QString& string);
 
 public slots:
     bool saveBackup(bool databaseOn=true);

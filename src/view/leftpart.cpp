@@ -33,7 +33,7 @@ LeftPart::LeftPart(QWidget* parent)
     // ##### FIN TEST #####
     //clickOnCategorie(0);
     //QObject::connect(&categoriesLabels[1], SIGNAL(pressed()), this, SLOT(clickOnCategorie()));
-    QObject::connect(&updateCategorieTimer, SIGNAL(timeout()), this, SLOT(unsetCategorieUpdate()));
+    QObject::connect(&updateCategorieTimer, SIGNAL(timeout()), this, SLOT(unsetCategorieUpdate()), Qt::QueuedConnection);
 
     this->setLayout(layout);
 }
@@ -69,7 +69,7 @@ void LeftPart::setCategories(std::queue<QString> &categories)
         categoriesLabels[i].setId(i);
         layout->addWidget(&categoriesLabels[i]);
         categories.pop();
-        QObject::connect(&categoriesLabels[i], SIGNAL(categorieClicked(int)), this, SLOT(clickOnCategorie(int)));
+        QObject::connect(&categoriesLabels[i], SIGNAL(categorieClicked(int)), this, SLOT(clickOnCategorie(int)), Qt::QueuedConnection);
     }
     categoriesLabels[0].setObjectName("activeCategorie");
     // to get them at top and without space between them

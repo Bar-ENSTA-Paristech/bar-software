@@ -1419,7 +1419,7 @@ int Database::addHist(db_histTuple tuple,bool to_old)
         QDateTime DateTime=QDateTime::fromString(QString::fromStdString(tuple.getHistDate()),format);
         timestamp = QString::number(DateTime.toTime_t()).toStdString();
 
-        queryString+="INSERT INTO historique_save (client_id,conso_id,conso_price,date_conso) VALUES (";
+        queryString+="INSERT INTO historique_save (client_id,conso_id,conso_price,date_conso, label) VALUES (";
         queryString+=clientIdString;
         queryString+=", ";
         queryString+=productIdString;
@@ -1427,7 +1427,7 @@ int Database::addHist(db_histTuple tuple,bool to_old)
         queryString+=priceString;
         queryString+=", datetime(";
         queryString+=timestamp;
-        queryString+=", 'unixepoch', 'localtime'));";
+        queryString+=", 'unixepoch', 'localtime'), "+tuple.getHistLabel()+");";
     }
 
     query.setQuery(queryString);
@@ -1459,13 +1459,12 @@ int Database::autoDumpHist()
     int code=0;
     db_histQueue hist=this->getFullHist();
     db_histTuple tuple;
-    db_histQueue toDump;
     int size=hist.size();
     int cur_hist_id;
     std::string idstring;
 
-    int limitOfHist = 1000;
-    if (size>=limitOfHist)
+    int limitOfHist = 3000;
+    if (size>limitOfHist)
     {
         for(int i=0;i<size;i++)
         {

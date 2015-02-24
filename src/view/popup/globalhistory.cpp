@@ -83,6 +83,8 @@ void GlobalHistoryList::launchGlobalHistory(view_histQueue &queue)
         model->item(i,3)->setText(tuple.getHistDate());
         if(tuple.getHistLabel().toLower() != "null")
             model->item(i,6)->setText(tuple.getHistLabel());
+        else
+            model->item(i,6)->setText("");
         if(price > 0 || tuple.getHistOperation() == "DEBIT/CREDIT")
             model->item(i,4)->setText(QString::number(price));
         else
