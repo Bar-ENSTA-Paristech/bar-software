@@ -1,3 +1,10 @@
+/***********************************************
+********** Developpers, Read this ! ************
+************************************************
+There is a #define DEV which must be activated when developping on QtCreator and must be commented
+when deploying the software on a non developper environment. This 'Macro' is usefull to set correctly the path of resources, a bad define will lead to a crash at the start.
+If you find a cleaner way to manage it, do it
+*/
 #include "controller.h"
 #include "mainwindow.h"
 #include <initializer_list>
